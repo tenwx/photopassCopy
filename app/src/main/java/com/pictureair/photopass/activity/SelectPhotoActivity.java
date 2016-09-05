@@ -426,7 +426,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                         return list;
                     }
                     //数码照片--是则获取未购买的图片 礼物--获取全部
-                    if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                    if (!goodsInfo.getIsAllowBuy()) {
                         if (photoInfo.isPayed == 0) {
                             list.add(photoInfo);
                         }

@@ -140,7 +140,6 @@
             android:columnCount="4"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/pp_padding_20"
-            android:paddingRight="@dimen/pp_padding_20"
             android:paddingTop="@dimen/pp_padding_10"
             android:paddingBottom="@dimen/pp_padding_10"
             android:useDefaultMargins="true" />

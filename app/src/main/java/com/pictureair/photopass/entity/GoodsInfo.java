@@ -21,9 +21,10 @@ public class GoodsInfo implements Serializable {
     private EmbedPhotoConfig ssConfig = null;//商品合成设置（单位：px）
     private int price = 0;//int, 商品价格
     private int sequence = 0;//int,商品序号
-    public String good_SVG_Info = "";//SVG信息
+    private String good_SVG_Info = "";//SVG信息
+    private boolean isAllowBuy;//true：所有照片都可以选择（除了纪念照和视频）；false：只能选择未购买图片
 
-    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info) {
+    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info, boolean isAllowBuy) {
         this.goodsKey = goodsKey;
         this.productId = productId;
         this.storeId = storeId;
@@ -38,6 +39,7 @@ public class GoodsInfo implements Serializable {
         this.price = price;
         this.sequence = sequence;
         this.good_SVG_Info = good_SVG_Info;
+        this.isAllowBuy = isAllowBuy;
     }
 
     public GoodsInfo() {
@@ -153,5 +155,34 @@ public class GoodsInfo implements Serializable {
 
     public void setSsConfig(EmbedPhotoConfig ssConfig) {
         this.ssConfig = ssConfig;
+    }
+
+    public boolean getIsAllowBuy() {
+        return isAllowBuy;
+    }
+
+    public void setIsAllowBuy(boolean allowBuy) {
+        isAllowBuy = allowBuy;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsInfo{" +
+                "goodsKey='" + goodsKey + '\'' +
+                ", productId='" + productId + '\'' +
+                ", storeId='" + storeId + '\'' +
+                ", name='" + name + '\'' +
+                ", nameAlias='" + nameAlias + '\'' +
+                ", copywriter='" + copywriter + '\'' +
+                ", description='" + description + '\'' +
+                ", embedPhotosCount=" + embedPhotosCount +
+                ", pictures=" + pictures +
+                ", entityType=" + entityType +
+                ", ssConfig=" + ssConfig +
+                ", price=" + price +
+                ", sequence=" + sequence +
+                ", good_SVG_Info='" + good_SVG_Info + '\'' +
+                ", isAllowBuy=" + isAllowBuy +
+                '}';
     }
 }

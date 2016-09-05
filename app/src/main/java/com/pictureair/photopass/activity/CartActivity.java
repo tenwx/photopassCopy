@@ -656,6 +656,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         GoodsInfo goodsInfo = new GoodsInfo();
         goodsInfo.setName(cartInfoList.get(requestCode / 10).getProductName());
         goodsInfo.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());
+        goodsInfo.setIsAllowBuy(cartInfoList.get(requestCode / 10).getIsAllowBuy());
         intent.putExtra("goodsInfo", goodsInfo);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);

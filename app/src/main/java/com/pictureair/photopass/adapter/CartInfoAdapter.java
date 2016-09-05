@@ -143,54 +143,30 @@ public class CartInfoAdapter extends BaseAdapter {
             GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
-            if (0 == gridviewlist.size()) {//如果照片数量为0
-                PictureAirLog.v(TAG, "0 == gridviewlist.size()");
+            for (int i = 0; i < gridviewlist.size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 45)) / 4;
+                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 100)) / 4;
                 params.height = params.width;
                 imageView.setLayoutParams(params);
-                imageView.setImageResource(R.drawable.empty);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
-                imageView.setId(position * 10);//给添加的imageview添加id
+                imageView.setId(position * 10 + i);//给添加的imageview添加id
                 gridlayoutList.add(imageView);
                 //imageview设置监听
                 imageView.setOnClickListener(new PhotoOnClickListener());
                 viewHolder.cartGoodPhotosGridLayout.addView(imageView, params);
-//                TextView textView = new TextView(context);
-//                GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//                textView.setLayoutParams(params2);
-//                textView.setText(R.string.add_photo);
-//                textView.setTextColor(Color.WHITE);
-//                textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
-//                viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
-
-            } else {//有照片数量
-                for (int i = 0; i < gridviewlist.size(); i++) {
-                    ImageView imageView = new ImageView(context);
-                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                    params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 45)) / 4;
-                    params.height = params.width;
-                    imageView.setLayoutParams(params);
-                    imageView.setScaleType(ScaleType.CENTER_CROP);
-                    imageView.setId(position * 10 + i);//给添加的imageview添加id
-                    gridlayoutList.add(imageView);
-                    //imageview设置监听
-                    imageView.setOnClickListener(new PhotoOnClickListener());
-                    viewHolder.cartGoodPhotosGridLayout.addView(imageView, params);
-                    if (gridviewlist.get(i).getPhotoUrl() == null || gridviewlist.get(i).getPhotoUrl().equals("")) {
-                        PictureAirLog.v(TAG, "getPhotoUrl() == null");
-                        imageView.setImageResource(R.drawable.empty);
+                if (gridviewlist.get(i).getPhotoUrl() == null || gridviewlist.get(i).getPhotoUrl().equals("")) {
+                    PictureAirLog.v(TAG, "getPhotoUrl() == null");
+                    imageView.setImageResource(R.drawable.empty);
+                } else {
+                    String photoUrl;
+                    if (gridviewlist.get(i).getPhotoUrl().contains("http")) {
+                        photoUrl = gridviewlist.get(i).getPhotoUrl();
                     } else {
-                        String photoUrl;
-                        if (gridviewlist.get(i).getPhotoUrl().contains("http")) {
-                            photoUrl = gridviewlist.get(i).getPhotoUrl();
-                        } else {
-                            photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
-                        }
-                        PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
-                        GlideUtil.load(context, photoUrl, imageView);
+                        photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
                     }
+                    PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
+                    GlideUtil.load(context, photoUrl, imageView);
                 }
             }
         }
