@@ -85,7 +85,9 @@
         android:background="@drawable/bg_border_stroke"
         android:columnCount="4"
         android:orientation="horizontal"
-        android:padding="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_padding_20"
+        android:paddingTop="@dimen/pp_padding_10"
+        android:paddingBottom="@dimen/pp_padding_10"
         android:useDefaultMargins="true"/>
 
     <View

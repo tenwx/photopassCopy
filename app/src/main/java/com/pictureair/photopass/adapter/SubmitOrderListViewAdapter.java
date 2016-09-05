@@ -95,7 +95,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
             for (int i = 0; i < gridviewlist.size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
+                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 100)) / 4;
                 params.height = params.width;
                 imageView.setLayoutParams(params);
 

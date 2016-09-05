@@ -1,6 +1,7 @@
 package com.pictureair.photopass.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,11 +29,16 @@ public class CartItemInfo implements Serializable {
     private boolean isFullPhotos = false;//商品是否加满照片
     private int cartProductType = 3;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品(自己添加)
     private String cartProductImageUrl = "";//自己添加，购物车商品预览图
+    private boolean isAllowBuy = false;//true：所有照片都可以选择（除了纪念照和视频）；false：只能选择未购买图片
 
     public CartItemInfo() {
     }
 
-    public CartItemInfo(String cartId, String storeId, String goodsKey, String productName, String productNameAlias, String description, int entityType, int embedPhotosCount, int unitPrice, int qty, int price, String[] pictures, List<CartPhotosInfo> embedPhotos, boolean isSelect, boolean hasPhoto, int showEdit, int showPhotos, boolean isFullPhotos, int cartProductType, String cartProductImageUrl) {
+    public CartItemInfo(String cartId, String storeId, String goodsKey, String productName,
+                        String productNameAlias, String description, int entityType, int embedPhotosCount,
+                        int unitPrice, int qty, int price, String[] pictures, List<CartPhotosInfo> embedPhotos,
+                        boolean isSelect, boolean hasPhoto, int showEdit, int showPhotos, boolean isFullPhotos,
+                        int cartProductType, String cartProductImageUrl, boolean isAllowBuy) {
         this.cartId = cartId;
         this.storeId = storeId;
         this.goodsKey = goodsKey;
@@ -53,6 +59,7 @@ public class CartItemInfo implements Serializable {
         this.isFullPhotos = isFullPhotos;
         this.cartProductType = cartProductType;
         this.cartProductImageUrl = cartProductImageUrl;
+        this.isAllowBuy = isAllowBuy;
     }
 
     public String getCartId() {
@@ -213,5 +220,56 @@ public class CartItemInfo implements Serializable {
 
     public void setEntityType(int entityType) {
         this.entityType = entityType;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
+    public boolean isHasPhoto() {
+        return hasPhoto;
+    }
+
+    public void setFullPhotos(boolean fullPhotos) {
+        isFullPhotos = fullPhotos;
+    }
+
+    public boolean getIsAllowBuy() {
+        return isAllowBuy;
+    }
+
+    public void setIsAllowBuy(boolean allowBuy) {
+        isAllowBuy = allowBuy;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItemInfo{" +
+                "cartId='" + cartId + '\'' +
+                ", storeId='" + storeId + '\'' +
+                ", goodsKey='" + goodsKey + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productNameAlias='" + productNameAlias + '\'' +
+                ", description='" + description + '\'' +
+                ", entityType=" + entityType +
+                ", embedPhotosCount=" + embedPhotosCount +
+                ", unitPrice=" + unitPrice +
+                ", qty=" + qty +
+                ", price=" + price +
+                ", pictures=" + Arrays.toString(pictures) +
+                ", embedPhotos=" + embedPhotos +
+                ", isSelect=" + isSelect +
+                ", hasPhoto=" + hasPhoto +
+                ", showEdit=" + showEdit +
+                ", showPhotos=" + showPhotos +
+                ", isFullPhotos=" + isFullPhotos +
+                ", cartProductType=" + cartProductType +
+                ", cartProductImageUrl='" + cartProductImageUrl + '\'' +
+                ", isAllowBuy=" + isAllowBuy +
+                '}';
     }
 }

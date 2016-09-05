@@ -122,7 +122,9 @@
         android:columnCount="4"
         android:focusable="false"
         android:orientation="horizontal"
-        android:padding="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_padding_20"
+        android:paddingTop="@dimen/pp_padding_10"
+        android:paddingBottom="@dimen/pp_padding_10"
         android:useDefaultMargins="true"
         android:visibility="gone" />
 
