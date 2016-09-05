@@ -52,7 +52,6 @@ public class StartActivity extends BaseActivity implements Callback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ScreenUtil.setFullScreen(this);
         setContentView(R.layout.activity_start);
         ll_update = (LinearLayout) findViewById(R.id.ll_update);
         img_update = (ImageView) findViewById(R.id.img_update);

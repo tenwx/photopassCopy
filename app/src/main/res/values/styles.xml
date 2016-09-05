@@ -17,6 +17,10 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="StartActivityTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 
     <style name="dialogLogin" parent="android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item><!-- 边框 -->
