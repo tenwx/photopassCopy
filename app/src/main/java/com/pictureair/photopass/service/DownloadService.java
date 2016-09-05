@@ -263,7 +263,7 @@ public class DownloadService extends Service {
             }
         }
         if (adapterHandler != null) {
-            adapterHandler.sendEmptyMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS);
+            adapterHandler.obtainMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS,0).sendToTarget();//0表示需要执行startDownload,1表示不需要
         } else {
             handler.sendEmptyMessage(START_DOWNLOAD);
         }
@@ -282,7 +282,6 @@ public class DownloadService extends Service {
                     break;
                 case START_DOWNLOAD://开始下载
                     PictureAirLog.out("downloadService----------->START_DOWNLOAD");
-                    PictureAirLog.out("handleMessage START_DOWNLOAD");
                     if (downloadList.size() > 0){
                         for (int i = 0; i < downloadList.size(); i++) {
                             DownloadFileStatus fileStatus = downloadList.get(i);
@@ -834,17 +833,18 @@ public class DownloadService extends Service {
         @Override
         public void run() {
             if (!isDownloading) {//如果当前不在下载
+                PictureAirLog.out("PrepareDownloadTask prepareDownload");
                 prepareDownload();
                 isDownloading = true;
             }else{
                 if (adapterHandler != null) {
-                    adapterHandler.sendEmptyMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS);
+                    adapterHandler.obtainMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS,1).sendToTarget();
                 }
 
             }
             processCount.set(0);
             prepareDownloadCount = 0;
-            PictureAirLog.e("addTask","PrepareDownloadTask run prepareDownloadCount = 0");
+            PictureAirLog.out("PrepareDownloadTask PrepareDownloadTask run prepareDownloadCount = 0");
         }
     }
 }

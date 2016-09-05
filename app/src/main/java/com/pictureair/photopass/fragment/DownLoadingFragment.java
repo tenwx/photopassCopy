@@ -167,7 +167,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         info.photoId = fileStatus.getPhotoId();
         info.shootOn = fileStatus.getShootOn();
         info.failedTime = fileStatus.getFailedTime();
-        info.selectPos = position;
+        info.isSelected = position;
         return info;
     }
 
@@ -176,7 +176,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             Iterator<PhotoInfo> iterator = selectPhotos.iterator();
             while (iterator.hasNext()) {
                 PhotoInfo info = iterator.next();
-                if (info.selectPos == pos) {
+                if (info.isSelected == pos) {
                     selectPhotos.remove(info);
                 }
             }
@@ -226,6 +226,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case SERVICE_LOAD_SUCCESS://DownloadService 绑定成功，更新页面，设置下载数量
+                int needStartDownload = (int)msg.obj;
                 Activity activity = getActivity();
                 if (activity != null && activity instanceof LoadManageActivity){
                     LoadManageActivity loadManageActivity = (LoadManageActivity)activity;
@@ -253,7 +254,9 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
                 activityClick();
-                downloadService.startDownload();
+                if (needStartDownload == 0) {
+                    downloadService.startDownload();
+                }
                 dismissPWProgressDialog();
                 break;
             case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
