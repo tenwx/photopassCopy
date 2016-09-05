@@ -132,8 +132,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.deleteButton.setVisibility(View.VISIBLE);
                 groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
-                groupHolderView.paymentButton.setClickable(true);
-                groupHolderView.deleteButton.setClickable(true);
+                groupHolderView.paymentButton.setEnabled(true);
+                groupHolderView.deleteButton.setEnabled(true);
                 break;
 
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
@@ -150,16 +150,16 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                     groupHolderView.paymentButton.setVisibility(View.GONE);
                     groupHolderView.deleteButton.setVisibility(View.GONE);
                 }
-                groupHolderView.paymentButton.setClickable(true);
-                groupHolderView.deleteButton.setClickable(true);
+                groupHolderView.paymentButton.setEnabled(true);
+                groupHolderView.deleteButton.setEnabled(true);
                 break;
             case 6:
                 //已付款，服务器未返回推送
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.deleteButton.setVisibility(View.VISIBLE);
                 groupHolderView.orderStatesTextView.setText(R.string.order_pending);
-                groupHolderView.paymentButton.setClickable(false);
-                groupHolderView.deleteButton.setClickable(false);
+                groupHolderView.paymentButton.setEnabled(false);
+                groupHolderView.deleteButton.setEnabled(false);
 
                 break;
 

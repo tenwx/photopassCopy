@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/order_delete"
-            android:background="@drawable/button_blue"
+            android:background="@drawable/button_blue_shape_and_selector3"
             android:layout_marginRight="@dimen/pp_padding_16"
             android:focusable="false"
             android:paddingBottom="@dimen/pp_margin_5"

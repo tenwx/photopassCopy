@@ -171,12 +171,12 @@ public class OrderActivity extends BaseFragmentActivity {
                     OrderProductInfo orderProductInfo = new OrderProductInfo();
                     orderProductInfo.setOrderTime(orderInfo.orderTime);
                     orderProductInfo.setCartItemInfos(cartItemInfo);
-                    PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
+                    PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderNumber);
                     if (orderInfo.orderStatus == 1) {//1等待买家付款
                         if (orderIds != null && orderIds.size() > 0) {
                             for (String orderId : orderIds) {
                                 //判断orderId是否相同，且状态是否为1（未付款）
-                                if (orderId.equals(orderInfo.orderId + "")) {
+                                if (orderId.equals(orderInfo.orderNumber + "")) {
                                     orderInfo.orderStatus = 6;
                                     break;
                                 }
