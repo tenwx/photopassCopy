@@ -63,7 +63,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private RelativeLayout rlHead, rlBackground;
     private LinearLayout llEnd;
     private ImageView ivIsLove;
-    private TextView tvLoding;
+    private TextView tvLoding, videoDateTV;
     private PWToast myToast;
     private SharePop sharePop;
 
@@ -216,7 +216,11 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         pictureAirDbManager = new PictureAirDbManager(context);
         myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white,true);
-        setTopTitleShow(R.string.my_disney_story);
+        String place = videoInfo.locationName;
+        if (place == null || place.equals("null")) {
+            place = "";
+        }
+        setTopTitleShow(place);
         ivIsLove = getTopRightImageView();
         rlBackground = (RelativeLayout) findViewById(R.id.rl_background);
         tvLoding = (TextView) findViewById(R.id.tv_loding);
@@ -240,6 +244,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         btnPlayOrStop.setImageResource(R.drawable.play);
         btnPlayOrStop.setAlpha(0xBB);
         btnPlayOrStop.setVisibility(View.GONE);
+
+        videoDateTV = (TextView) findViewById(R.id.video_date);
+        videoDateTV.setText(videoInfo.shootOn);
+
         videoPlayerHandler.sendEmptyMessage(UPDATE_UI);
         hideController();
     }

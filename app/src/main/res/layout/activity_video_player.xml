@@ -3,7 +3,7 @@
     android:id="@+id/rl_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background">
+    android:background="@color/white">
 
     <include
         android:id="@+id/head"
@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/gray_light4"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -30,7 +31,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/pp_padding_8">
@@ -58,7 +58,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/pp_padding_8">
@@ -82,6 +81,16 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/video_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pp_margin_16"
+        android:layout_above="@+id/ll_end"
+        android:gravity="center"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_12"/>
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/storyNoNetWorkView"

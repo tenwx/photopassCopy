@@ -89,7 +89,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 				photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
 				viewHolder.videoImageView.setVisibility(View.VISIBLE);
 				ViewGroup.LayoutParams params2 = viewHolder.videoImageView.getLayoutParams();
-				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);
+				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
 				params2.height = params2.width;
 				viewHolder.videoImageView.setLayoutParams(params2);
 			} else {

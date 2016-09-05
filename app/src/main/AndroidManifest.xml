@@ -238,6 +238,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- Disney Video end -->
 
+        <activity
+            android:name=".activity.ADVideoDetailProductActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <!-- 忘记密码 -->
         <activity

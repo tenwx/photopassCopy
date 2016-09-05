@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
@@ -204,10 +205,24 @@ public class StoryFragment extends Fragment {
 			}
 			if (photoInfoArrayList.get(position).isVideo == 1) {
 				PictureAirLog.v(TAG,"点击了视频");
-				PhotoInfo info = photoInfoArrayList.get(position);
-				Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
-				intent.putExtra(DisneyVideoTool.FROM_STORY, info);
-				startActivity(intent);
+
+				if (photoInfoArrayList.get(position).isPayed == 1) {
+					PhotoInfo info = photoInfoArrayList.get(position);
+					Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
+					intent.putExtra(DisneyVideoTool.FROM_STORY, info);
+					startActivity(intent);
+				} else {
+					PictureAirLog.out("未购买的视频");
+					/**
+					 * 1.获取最新的视频信息
+					 * 2.是否是已经购买
+					 * 3.储存最新信息
+					 * 4.跳转或者弹框提示
+					 */
+					Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
+					startActivity(intent);
+				}
+
 			} else {
 				PictureAirLog.v(TAG,"点击了照片");
 				Intent i = new Intent();
