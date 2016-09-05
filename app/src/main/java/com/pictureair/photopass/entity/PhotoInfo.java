@@ -93,7 +93,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		isHasPreset = source.readInt();
 		failedTime = source.readString();
 		isEncrypted = source.readInt();
+		selectPos = source.readInt();
 		isRefreshInfo = source.readInt();
+
 	}
 
 	@Override
@@ -133,6 +135,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeInt(isHasPreset);
 		dest.writeString(failedTime);
 		dest.writeInt(isEncrypted);
+		dest.writeInt(selectPos);
 		dest.writeInt(isRefreshInfo);
 	}
 

@@ -130,7 +130,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                     case DownloadFileStatus.DOWNLOAD_STATE_SELECT:
                         holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
                         holder.tv_speed.setText("0KB/S");
-                        holder.tv_status.setText(mContext.getString(R.string.photo_download_wait_select));
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
                         if (fileStatus.select == 0) {
                             holder.img_status.setImageResource(R.drawable.nosele);
                         }else{

@@ -593,12 +593,11 @@
     <string name="photo_downloading">Downloading</string>
     <string name="photo_download_waiting">Pending</string>
     <string name="photo_download_loading">In progress</string>
-    <string name="photo_download_failed">Failed</string>
+    <string name="photo_download_failed">Re-connect</string>
     <string name="photo_download_reconnecting">Reconnecting</string>
     <string name="photo_download_complete">Completed</string>
     <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_reconnect">Reconnect</string>
-    <string name="photo_download_wait_select">Select</string>
     <string name="photo_download_not_exists">Deleted</string>
     <string name="photo_download_tips">There are no photos downloading in progress</string>
     <string name="photo_download_success_tips">There are no photos downloaded</string>
