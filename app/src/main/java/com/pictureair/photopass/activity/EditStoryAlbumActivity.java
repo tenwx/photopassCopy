@@ -30,7 +30,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
@@ -289,9 +288,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					PictureAirLog.out("select" + position);
 					if (albumArrayList.get(position).isVideo == 1) {
 						PhotoInfo info = albumArrayList.get(position);
-						Intent intent = new Intent(EditStoryAlbumActivity.this, VideoPlayerActivity.class);
-						intent.putExtra(DisneyVideoTool.FROM_STORY, info);
-						startActivity(intent);
+						if (albumArrayList.get(position).isPayed == 1) {
+							Intent intent = new Intent(EditStoryAlbumActivity.this, VideoPlayerActivity.class);
+							intent.putExtra("from_story", info);
+							startActivity(intent);
+						} else {
+							Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
+							intent.putExtra("videoInfo", info);
+							startActivity(intent);
+						}
 					} else {
 						Intent i = new Intent();
 						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);

@@ -609,4 +609,12 @@
     <string name="photo_download_tips3">wait</string>
     <string name="photo_download_tips4">没有可编辑图片哦</string>
     <!--photo download manage start-->
+
+    <!--animated photo-->
+    <string name="animated_photo_title">Animated Photo</string>
+    <string name="animated_photo_add_cart">Add PhotoPass+ to Cart</string>
+    <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
+    <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
+    <string name="animated_photo_introduce_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo</string>
+    <!--animated photo end-->
 </resources>

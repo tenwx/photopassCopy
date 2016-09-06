@@ -32,7 +32,6 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -137,14 +136,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
                 i /= 1000;
                 int minute = i / 60;
-                int hour = minute / 60;
                 int second = i % 60;
                 minute %= 60;
-                // playedTextView.setText(String.format("%02d:%02d:%02d", hour,
-                // minute, second));
 
-                playedTextView.setText(String.format("%02d:%02d", minute,
-                        second));
+                playedTextView.setText(String.format("%02d:%02d", minute, second));
                 videoPlayerHandler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
                 break;
             case HIDE_CONTROLER:
@@ -202,14 +197,11 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void initView() {
-        videoInfo = (PhotoInfo) getIntent().getExtras().get(DisneyVideoTool.FROM_STORY);
+        videoInfo = (PhotoInfo) getIntent().getExtras().get("from_story");
         if (0 != videoInfo.videoWidth || 0 != videoInfo.videoHeight) {
             this.videoWidth = videoInfo.videoWidth;
             this.videoHeight = videoInfo.videoHeight;
 
-            //TEST
-//            this.videoWidth = 1280;
-//            this.videoHeight = 720;
         }
         getIsOnline();//读取网络视频还是本地
         sharePop = new SharePop(context);
@@ -277,7 +269,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     private void startVideo() {
         isPlayFinash = false;
-//        videoPath = "http://m.fallback.wdjcdn.com/baobab/14468618701471.mp4";
         videoPlayerView.setVideoPath(videoPath);
         cancelDelayHide();
         hideControllerDelay();
@@ -307,13 +298,9 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 seekBar.setMax(i);
                 i /= 1000;
                 int minute = i / 60;
-                int hour = minute / 60;
                 int second = i % 60;
                 minute %= 60;
-                durationTextView.setText(String.format("%02d:%02d", minute,
-                        second));
-                // durationTextView.setText(String.format("%02d:%02d:%02d",
-                // hour, minute, second));
+                durationTextView.setText(String.format("%02d:%02d", minute, second));
 
                 videoPlayerView.start();
                 btnPlayOrStop.setVisibility(View.GONE);
@@ -343,9 +330,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                                           boolean fromUser) {
                 PictureAirLog.e(TAG, "===> onProgressChanged");
                 if (fromUser) {
-//                    if (!isLoading) {
                     videoPlayerView.seekTo(progress);
-//                    }
                 }
 
             }
@@ -429,19 +414,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 break;
 
             case SCREEN_DEFAULT:
-                int videoWidth = videoPlayerView.getVideoWidth();
-                int videoHeight = videoPlayerView.getVideoHeight();
-                int mWidth = screenWidth;
-                int mHeight = screenHeight - 25;
-                if (videoWidth > 0 && videoHeight > 0) {
-                    if (videoWidth * mHeight > mWidth * videoHeight) {
-                        mHeight = mWidth * videoHeight / videoWidth;
-                    } else if (videoWidth * mHeight < mWidth * videoHeight) {
-                        mWidth = mHeight * videoWidth / videoHeight;
-                    } else {
-
-                    }
-                }
                 videoPlayerView.setVideoScale(screenWidth, screenHeight);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
@@ -468,6 +440,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private void crossScreen() {
         rlHead.setVisibility(View.GONE);
         llEnd.setVisibility(View.GONE);
+        videoDateTV.setVisibility(View.GONE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
         setVideoResolution(false, videoWidth, videoHeight);
         setVideoScale(SCREEN_FULL);
@@ -476,6 +449,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private void verticalScreen() {
         rlHead.setVisibility(View.VISIBLE);
         llEnd.setVisibility(View.VISIBLE);
+        videoDateTV.setVisibility(View.VISIBLE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
         setVideoResolution(true, videoWidth, videoHeight);
         setVideoScale(SCREEN_DEFAULT);

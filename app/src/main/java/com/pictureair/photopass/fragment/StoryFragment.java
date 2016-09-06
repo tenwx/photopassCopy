@@ -27,7 +27,6 @@ import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
@@ -206,10 +205,10 @@ public class StoryFragment extends Fragment {
 			if (photoInfoArrayList.get(position).isVideo == 1) {
 				PictureAirLog.v(TAG,"点击了视频");
 
-				if (photoInfoArrayList.get(position).isPayed == 1) {
-					PhotoInfo info = photoInfoArrayList.get(position);
+				PhotoInfo info = photoInfoArrayList.get(position);
+				if (photoInfoArrayList.get(position).isPayed == 0) {
 					Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
-					intent.putExtra(DisneyVideoTool.FROM_STORY, info);
+					intent.putExtra("from_story", info);
 					startActivity(intent);
 				} else {
 					PictureAirLog.out("未购买的视频");
@@ -220,6 +219,7 @@ public class StoryFragment extends Fragment {
 					 * 4.跳转或者弹框提示
 					 */
 					Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
+					intent.putExtra("videoInfo", info);
 					startActivity(intent);
 				}
 
