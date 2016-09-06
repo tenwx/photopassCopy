@@ -332,7 +332,7 @@ public class ListOfPPAdapter extends BaseAdapter {
             } else {
                 //选择PP 点击单张直接进入改PP的相册页面
                 if (checkUrl(position)) {
-                    if (arrayList.get(position).getUrlList().size() > 0) {
+                    if (arrayList.get(position).getPhotoCount() > 0) {
                         //进入相册
                         Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
                         i.putExtra("ppCode", arrayList.get(position).getPpCode());
