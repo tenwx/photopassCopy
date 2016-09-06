@@ -1589,11 +1589,11 @@ public class AppUtil {
             } else {
                 filename = filename.substring(filename.lastIndexOf("/") + 1) + ".jpg";
             }
-        } else {
+        } else {//如果是视频数据，文件名统一经过md5处理
             if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
-                filename = filename.substring(filename.lastIndexOf("/") + 1);
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1));
             } else {
-                filename = filename.substring(filename.lastIndexOf("/") + 1) + ".mp4";
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1)) + ".mp4";
             }
         }
         return filename;

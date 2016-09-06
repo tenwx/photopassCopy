@@ -251,13 +251,13 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void getIsOnline(){
-        String fileName = AppUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
+        String fileName = AppUtil.getReallyFileName(videoInfo.photoThumbnail_1024,1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
-            videoPath = Common.PHOTO_URL+videoInfo.photoPathOrURL;
+            videoPath = Common.PHOTO_URL+videoInfo.photoThumbnail_1024;
             PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {

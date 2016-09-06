@@ -206,7 +206,7 @@ public class StoryFragment extends Fragment {
 				PictureAirLog.v(TAG,"点击了视频");
 
 				PhotoInfo info = photoInfoArrayList.get(position);
-				if (photoInfoArrayList.get(position).isPayed == 0) {
+				if (photoInfoArrayList.get(position).isPayed == 1) {
 					Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
 					intent.putExtra("from_story", info);
 					startActivity(intent);

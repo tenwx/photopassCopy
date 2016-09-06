@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/animated_photo_backtground_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/top"
+        android:id="@+id/animated_photo_top_rl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/pp_blue">
@@ -67,40 +68,28 @@
     <LinearLayout
         android:id="@+id/ll_show"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <include
             layout="@layout/surfaceview_mediaplaer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <ScrollView
+    <TextView
+        android:id="@+id/animated_photo_product_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_height="0dp"
+        android:layout_weight="6"
         android:background="@color/pp_light_gray_background"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/pp_margin_16">
-
-            <TextView
-                android:id="@+id/product_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/pp_padding_8"
-                android:text="@string/animated_photo_introduce_text"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_14" />
-
-        </LinearLayout>
-    </ScrollView>
+        android:padding="@dimen/pp_margin_16"
+        android:text="@string/animated_photo_introduce_text"
+        android:textColor="@color/pp_blue"
+        android:textSize="@dimen/text_size_14" />
 
     <LinearLayout
+        android:id="@+id/animated_photo_bottom_btns_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"

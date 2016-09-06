@@ -288,7 +288,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					PictureAirLog.out("select" + position);
 					if (albumArrayList.get(position).isVideo == 1) {
 						PhotoInfo info = albumArrayList.get(position);
-						if (albumArrayList.get(position).isPayed == 1) {
+						if (albumArrayList.get(position).isPayed == 0) {
 							Intent intent = new Intent(EditStoryAlbumActivity.this, VideoPlayerActivity.class);
 							intent.putExtra("from_story", info);
 							startActivity(intent);
