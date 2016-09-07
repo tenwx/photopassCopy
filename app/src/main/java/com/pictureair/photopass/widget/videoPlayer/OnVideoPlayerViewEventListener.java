@@ -1,0 +1,7 @@
+package com.pictureair.photopass.widget.videoPlayer;
+
+/**
+ * Created by bauer_bao on 16/9/7.
+ */
+public interface OnVideoPlayerViewEventListener {
+}

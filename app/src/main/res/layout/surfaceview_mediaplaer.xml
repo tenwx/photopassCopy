@@ -27,7 +27,9 @@
         android:background="@color/transparent"
         android:clickable="false"
         android:scaleType="fitCenter"
-        android:src="@drawable/play" />
+        android:src="@drawable/play"
+        android:alpha="0xBB"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/ll_controler"
