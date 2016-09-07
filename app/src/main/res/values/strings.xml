@@ -103,7 +103,7 @@
     <string name="storypage_no_photo">您的迪士尼乐拍通相册中还没有游玩的照片哦</string>
     <string name="storypage_no_pp">您的迪士尼乐拍通照片将在此显示</string>
     <string name="story_no_photo">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
-    <string name="no_network">加载失败，请检查您当前的网络环境</string>
+    <string name="no_network">当前网络繁忙，请稍后再试！</string>
     <string name="click_button_reload">您可以点击按钮重新加载</string>
     <string name="reload">刷新</string>
     <string name="nomore">没有数据加载!</string>

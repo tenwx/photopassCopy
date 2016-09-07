@@ -110,7 +110,7 @@ public class NotificationServiceHelp {
         new Thread() {
             public void run() {
                 try {
-                    socket = new SocketIO(Common.BASE_URL_TEST);
+                    socket = new SocketIO(Common.BASE_URL_SOCKET);
                     socket.connect(new IOCallback() {
                         @Override
                         public void onMessage(JSONObject json, IOAcknowledge arg1) {

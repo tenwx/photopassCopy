@@ -103,7 +103,7 @@
     <string name="storypage_no_photo">There are no photos in your\nDisney PhotoPass account</string>
     <string name="storypage_no_pp">Your Disney PhotoPass photos will appear here</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
-    <string name="no_network">Please check your network again.</string>
+    <string name="no_network">Network busy. Please try later.</string>
     <string name="click_button_reload">Click button to reload</string>
     <string name="reload">Refresh</string>
     <string name="nomore">No more data to load!</string>
