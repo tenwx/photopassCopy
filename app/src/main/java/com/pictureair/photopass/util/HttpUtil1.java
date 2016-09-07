@@ -1,9 +1,9 @@
 package com.pictureair.photopass.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.http.ApiFactory;
-import com.pictureair.photopass.http.CallTask;
+import com.pictureair.photopass.http.BasicResultCallTask;
+import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.http.PhotoPassAuthApi;
 import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
 
@@ -26,22 +26,22 @@ public class HttpUtil1 {
      * @param url       请求url
      * @param callback  请求回调
      * */
-    public static CallTask asyncGet(final String url,final HttpCallback callback){
+    public static BasicResultCallTask asyncGet(final String url, final HttpCallback callback){
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.get(url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -59,21 +59,21 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncGet(final String url,Map params,final HttpCallback callback){
+    public static BasicResultCallTask asyncGet(final String url, Map params, final HttpCallback callback){
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url, params, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.get(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -90,20 +90,20 @@ public class HttpUtil1 {
      * @param url       请求url
      * @param callback  请求回调
      * */
-    public static CallTask asyncPost(final String url,final HttpCallback callback) {
+    public static BasicResultCallTask asyncPost(final String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.post(url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -121,20 +121,20 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncPost(final String url,Map params,final HttpCallback callback) {
+    public static BasicResultCallTask asyncPost(final String url, Map params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url, params, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.post(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -152,20 +152,20 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncDelete(final String url,Map params,final HttpCallback callback) {
+    public static BasicResultCallTask asyncDelete(final String url, Map params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.delete(url, params, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.delete(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -183,20 +183,20 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncPut(final String url,Map params,final HttpCallback callback) {
+    public static BasicResultCallTask asyncPut(final String url, Map params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.put(url, params, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.put(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
             }
         }));
-        task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(BasicResult<JSONObject> result) {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                callback.onSuccess(result.getResult());
+                callback.onSuccess(result);
             }
 
             @Override
@@ -214,10 +214,10 @@ public class HttpUtil1 {
      * @param url       请求url
      * @param callback  请求回调
      * */
-    public static CallTask asyncDownloadBinaryData(final String url,final HttpCallback callback) {
+    public static BinaryCallBack asyncDownloadBinaryData(final String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<ResponseBody>(request.download(url, new ProgressListener() {
+        BinaryCallBack task = new BinaryCallBack<ResponseBody>(request.download(url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
@@ -266,10 +266,10 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncDownloadBinaryData(final String url,Map params,final HttpCallback callback) {
+    public static BinaryCallBack asyncDownloadBinaryData(final String url, Map params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<ResponseBody>(request.download(url, params, new ProgressListener() {
+        BinaryCallBack task = new BinaryCallBack<ResponseBody>(request.download(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
@@ -318,10 +318,10 @@ public class HttpUtil1 {
      * @param params    请求参数
      * @param callback  请求回调
      * */
-    public static CallTask asyncUpload(final String url, Map<String,RequestBody> params, final HttpCallback callback) {
+    public static BasicResultCallTask asyncUpload(final String url, Map<String,RequestBody> params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        CallTask task = new CallTask<JSONObject>(request.upload(url, params, new ProgressListener() {
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.upload(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 callback.onProgress(bytesRead,contentLength);
