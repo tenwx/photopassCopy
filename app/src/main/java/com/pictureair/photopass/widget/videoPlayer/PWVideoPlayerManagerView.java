@@ -2,6 +2,8 @@ package com.pictureair.photopass.widget.videoPlayer;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,14 +14,14 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.VideoPlayerView;
 
 /**
  * Created by bauer_bao on 16/9/7.
+ * 视频播放控件
  */
-public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnClickListener,
-        MediaPlayer.OnErrorListener, VideoPlayerView.MySizeChangeLinstener, SeekBar.OnSeekBarChangeListener,
-        VideoPlayerView.myMediapalerPrepared, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPlayer.OnErrorListener,
+        VideoPlayerView.OnVideoSizeChangedListenser, SeekBar.OnSeekBarChangeListener,
+        VideoPlayerView.OnVideoPlayerViewPreparedListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
     private VideoPlayerView videoPlayerView;
     private TextView loadingTV, hasPlayedTV, durationTV;
     private ImageButton playOrStopButton;
@@ -30,16 +32,50 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnC
     private OnVideoPlayerViewEventListener videoPlayerViewEventListener;
 
     private static final String TAG = PWVideoPlayerManagerView.class.getSimpleName();
+    private final static int TIME = 3000;
+    public final static int SCREEN_FULL = 0;
+    public final static int SCREEN_DEFAULT = 1;
+    private final static int PROGRESS_CHANGED = 2;
+    private final static int HIDE_CONTROLER = 3;
 
     private int playedTime;// 最小化 保存播放时间
-    private int screenWidth = 0;
-    private int screenHeight = 0;
     private boolean isPaused = false;
-    private int videoHeight = 480;
-    private int videoWidth = 480;
     private boolean isOnline ;//网络true || 本地false
-    private String videoPath;//视频本地路径 || 视频网络地址
     private boolean isPlayFinash = false;//是否播放完毕
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case PROGRESS_CHANGED:// 进度改变
+                    int i = videoPlayerView.getCurrentPosition();
+                    seekBar.setProgress(i);
+                    if (isOnline) {
+                        int j = videoPlayerView.getBufferPercentage();
+                        seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
+                    } else {
+                        seekBar.setSecondaryProgress(0);
+                    }
+
+                    i /= 1000;
+                    int minute = i / 60;
+                    int second = i % 60;
+                    minute %= 60;
+
+                    hasPlayedTV.setText(String.format("%02d:%02d", minute, second));
+                    handler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
+                    break;
+
+                case HIDE_CONTROLER:
+                    hideController();
+                    break;
+
+                default:
+                    break;
+            }
+            return false;
+        }
+    });
 
     public PWVideoPlayerManagerView(Context context) {
         super(context);
@@ -63,45 +99,29 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnC
         seekBar = (SeekBar) findViewById(R.id.seekbar);
         durationTV = (TextView) findViewById(R.id.duration);
 
-        controllerBarLL.setOnClickListener(this);
-        seekBar.setOnSeekBarChangeListener(this);
-
         videoPlayerView.setOnErrorListener(this);
-        videoPlayerView.setMySizeChangeLinstener(this);
-        videoPlayerView.setMyMediapalerPrepared(this);
+        videoPlayerView.setOnVideoSizeChangedListenser(this);
+        videoPlayerView.setOnVideoPlayerViewPreparedListener(this);
         videoPlayerView.setOnPreparedListener(this);
         videoPlayerView.setOnCompletionListener(this);
-    }
 
-    public void initData() {
-    }
+        seekBar.setOnSeekBarChangeListener(this);
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_controler:
-                if (isPaused) {
-                    playVideo();
-                } else {
-                    pausedVideo();
-                }
-                break;
-
-            default:
-                break;
-        }
+        setEnabled(false);
+        hideController();
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        PictureAirLog.d(TAG, "===> onError");
         videoPlayerView.stopPlayback();
         return false;
     }
 
     @Override
-    public void doMyThings() {
+    public void onSizeChanged() {
         PictureAirLog.d(TAG, "===> doMyThings");
-//        setVideoScale(SCREEN_DEFAULT);
+        videoPlayerViewEventListener.setVideoScale(SCREEN_DEFAULT);
     }
 
     @Override
@@ -116,28 +136,27 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnC
     public void onStartTrackingTouch(SeekBar seekBar) {
         PictureAirLog.d(TAG, "===> onStartTrackingTouch");
 
-//        adVideoHandler.removeMessages(HIDE_CONTROLER);
+        handler.removeMessages(HIDE_CONTROLER);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         PictureAirLog.d(TAG, "===> onStopTrackingTouch");
 
-//        adVideoHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-
+        handler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
     }
 
     @Override
-    public void myOnrepared(MediaPlayer mp) {
+    public void onVideoPlayerViewPrepared(MediaPlayer mp) {
         PictureAirLog.d(TAG, "===> myOnrepared");
         loadingTV.setVisibility(View.GONE);
-//        videoPlayerLL.setEnabled(true);
+        setEnabled(true);
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         PictureAirLog.d(TAG, "===> onPrepared");
-//        setVideoScale(SCREEN_DEFAULT);// 按比例（全屏）
+        videoPlayerViewEventListener.setVideoScale(SCREEN_DEFAULT);
         showController();
         int i = videoPlayerView.getDuration();
         PictureAirLog.d("onCompletion", "" + i);
@@ -147,49 +166,124 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnC
         int second = i % 60;
         minute %= 60;
         durationTV.setText(String.format("%02d:%02d", minute, second));
-
         videoPlayerView.start();
         playOrStopButton.setVisibility(View.GONE);
         hideControllerDelay();
-
-//        adVideoHandler.sendEmptyMessage(PROGRESS_CHANGED);
+        handler.sendEmptyMessage(PROGRESS_CHANGED);
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         PictureAirLog.d(TAG, "===> onCompletion");
-
         pausedVideo();
         isPlayFinash = true;
     }
 
     /**
+     * 设置监听
+     * @param videoPlayerViewEventListener
+     */
+    public void setOnVideoPlayerViewEventListener(OnVideoPlayerViewEventListener videoPlayerViewEventListener) {
+        this.videoPlayerViewEventListener = videoPlayerViewEventListener;
+    }
+
+    /**
+     * 设置视频播放尺寸
+     * @param width
+     * @param height
+     */
+    public void setVideoScale(int width, int height) {
+        videoPlayerView.setVideoScale(width, height);
+    }
+
+    /**
+     * 设置loading的文案
+     * @param strId
+     */
+    public void setLoadingText(int strId) {
+        loadingTV.setText(strId);
+    }
+
+    /**
+     * 获取当前播放的时间
+     * @return
+     */
+    public int getCurrentIndexTime() {
+        return videoPlayerView.getCurrentPosition();
+    }
+
+    /**
      * 暂停播放
      */
-    private void pausedVideo(){
+    public void pausedVideo(){
         isPaused = true;
         videoPlayerView.pause();
+        playedTime = videoPlayerView.getCurrentPosition();
         playOrStopButton.setVisibility(View.VISIBLE);
-        cancelDelayHide();
+        cancelDelayHideController();
         showController();
     }
 
     /**
      * 播放视频
      */
-    private void playVideo(){
+    public void playVideo(){
         isPaused = false;
         isPlayFinash = false;
         videoPlayerView.start();
         playOrStopButton.setVisibility(View.GONE);
-        cancelDelayHide();
+        cancelDelayHideController();
         hideControllerDelay();
     }
 
-    private void hideControllerDelay() {
-//        adVideoHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
+    /**
+     * 是否在暂停中
+     * @return
+     */
+    public boolean isPaused() {
+        return isPaused;
     }
 
+    /**
+     * 继续播放视频
+     */
+    public void resumeVideo() {
+        isPaused = true;
+        if (!isPlayFinash){
+            videoPlayerView.seekTo(playedTime);
+            videoPlayerView.start();
+            if (videoPlayerView.isPlaying()) {
+                playOrStopButton.setVisibility(View.GONE);
+                hideControllerDelay();
+            }
+            isPaused = false;
+        }
+    }
+
+    /**
+     * 结束播放视频
+     */
+    public void stopVideo() {
+        if (videoPlayerView.isPlaying()) {
+            videoPlayerView.stopPlayback();
+        }
+    }
+
+    /**
+     * 开始播放视频
+     * @param videoPath
+     */
+    public void startPlayVideo(String videoPath, boolean isOnline) {
+        this.isOnline = isOnline;
+        isPlayFinash = false;
+        videoPlayerView.setVideoPath(videoPath);
+        cancelDelayHideController();
+        hideControllerDelay();
+    }
+
+    /**
+     * 显示控制栏
+     */
     private void showController() {
         if (!controllerBarLL.isShown()) {
             controllerBarLL.setVisibility(View.VISIBLE);
@@ -197,10 +291,23 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements View.OnC
         }
     }
 
-    private void cancelDelayHide() {
-//        adVideoHandler.removeMessages(HIDE_CONTROLER);
+    /**
+     * 取消隐藏控制栏
+     */
+    private void cancelDelayHideController() {
+        handler.removeMessages(HIDE_CONTROLER);
     }
 
+    /**
+     * 隐藏控制栏
+     */
+    private void hideControllerDelay() {
+        handler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
+    }
+
+    /**
+     * 隐藏控制栏
+     */
     private void hideController() {
         if (controllerBarLL.isShown()) {
             controllerBarLL.setVisibility(View.GONE);

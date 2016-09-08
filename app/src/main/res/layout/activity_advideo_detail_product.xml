@@ -65,17 +65,11 @@
             android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_show"
+    <com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView
+        android:id="@+id/animated_photo_pwvideo_pmv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
-
-        <include
-            layout="@layout/surfaceview_mediaplaer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/animated_photo_product_detail"

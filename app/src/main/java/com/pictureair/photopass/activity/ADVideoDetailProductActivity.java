@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,11 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -27,16 +24,17 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.VideoPlayerView;
+import com.pictureair.photopass.widget.videoPlayer.OnVideoPlayerViewEventListener;
+import com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView;
 
 import java.io.File;
 
 /**
  * Created by bauer_bao on 16/9/2.
  */
-public class ADVideoDetailProductActivity extends BaseActivity implements View.OnClickListener {
+public class ADVideoDetailProductActivity extends BaseActivity implements View.OnClickListener, OnVideoPlayerViewEventListener {
 
-    private LinearLayout videoPlayerLL, animatedPhotoBackgroundLL, animatedPhotoBottomBtnsLL;
+    private LinearLayout animatedPhotoBackgroundLL, animatedPhotoBottomBtnsLL;
     private RelativeLayout animatedPhotoTopBarRl;
     private ImageView backImageView;
     private ImageView cartImageView;
@@ -48,64 +46,19 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private PhotoInfo videoInfo;
 
     //视频组件
-    private SeekBar seekBar;
-    private VideoPlayerView videoPlayerView;
-    private TextView durationTextView;
-    private TextView playedTextView;
-    private ImageButton btnPlayOrStop;
-    private LinearLayout llControler;
-    private TextView tvLoding;
+    private PWVideoPlayerManagerView pwVideoPlayerManagerView;
 
-    private final static int PROGRESS_CHANGED = 0;
-    private final static int HIDE_CONTROLER = 1;
-    private final static int SCREEN_FULL = 0;
-    private final static int SCREEN_DEFAULT = 1;
-    private final static int TIME = 3000;
-    private static final int UPDATE_UI = 2866;
     private final static String TAG = ADVideoDetailProductActivity.class.getSimpleName();
 
-    private int playedTime;// 最小化 保存播放时间
     private int screenWidth = 0;
     private int screenHeight = 0;
-    private boolean isPaused = false;
-    private int videoHeight = 480;
-    private int videoWidth = 480;
     private boolean isOnline ;//网络true || 本地false
     private String videoPath;//视频本地路径 || 视频网络地址
-    private boolean isPlayFinash = false;//是否播放完毕
 
     private Handler adVideoHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case PROGRESS_CHANGED:// 进度改变
-                    int i = videoPlayerView.getCurrentPosition();
-                    seekBar.setProgress(i);
-                    if (isOnline) {
-                        int j = videoPlayerView.getBufferPercentage();
-                        seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
-                    } else {
-                        seekBar.setSecondaryProgress(0);
-                    }
-
-                    i /= 1000;
-                    int minute = i / 60;
-                    int second = i % 60;
-                    minute %= 60;
-
-                    playedTextView.setText(String.format("%02d:%02d", minute, second));
-                    adVideoHandler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
-                    break;
-
-                case HIDE_CONTROLER:
-                    hideController();
-                    break;
-
-                case UPDATE_UI:
-                    Configuration cf = getResources().getConfiguration();
-                    int ori = cf.orientation;
-                    adjustScreenUI(ori == cf.ORIENTATION_LANDSCAPE);
-                    break;
 
                 default:
                     break;
@@ -122,19 +75,18 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         initView();
         initData();
 
-        initVideoComponents();
-
-        adVideoHandler.sendEmptyMessage(UPDATE_UI);
+        Configuration cf = getResources().getConfiguration();
+        int ori = cf.orientation;
+        adjustScreenUI(ori == cf.ORIENTATION_LANDSCAPE);
 
         if (isOnline && AppUtil.getNetWorkType(this) == AppUtil.NETWORKTYPE_INVALID) {
-            tvLoding.setText(R.string.no_network);
+            pwVideoPlayerManagerView.setLoadingText(R.string.no_network);
         } else {
-            startVideo();// 开始播放视频
+            pwVideoPlayerManagerView.startPlayVideo(videoPath, isOnline);// 开始播放视频
         }
     }
 
     private void initView() {
-        videoPlayerLL = (LinearLayout) findViewById(R.id.ll_show);
         backImageView = (ImageView) findViewById(R.id.rt);
         cartImageView = (ImageView) findViewById(R.id.button_bag);
         cartCountTextView = (TextView) findViewById(R.id.textview_cart_count);
@@ -144,6 +96,8 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         animatedPhotoTopBarRl = (RelativeLayout) findViewById(R.id.animated_photo_top_rl);
         animatedPhotoIntroduce = (TextView) findViewById(R.id.animated_photo_product_detail);
         animatedPhotoBottomBtnsLL = (LinearLayout) findViewById(R.id.animated_photo_bottom_btns_ll);
+        animatedPhotoBackgroundLL = (LinearLayout) findViewById(R.id.animated_photo_backtground_ll);
+        pwVideoPlayerManagerView = (PWVideoPlayerManagerView) findViewById(R.id.animated_photo_pwvideo_pmv);
 
         backImageView.setOnClickListener(this);
         cartImageView.setOnClickListener(this);
@@ -151,123 +105,17 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         buyPPPBtn.setOnClickListener(this);
         upgradePPP.setOnClickListener(this);
         addPPPToCart.setOnClickListener(this);
+        pwVideoPlayerManagerView.setOnClickListener(this);
+        pwVideoPlayerManagerView.setOnVideoPlayerViewEventListener(this);
     }
 
     private void initData() {
         pwToast = new PWToast(this);
         videoInfo = (PhotoInfo) getIntent().getExtras().get("videoInfo");
 
-        //测试数据
-        videoInfo.videoWidth = 480;
-        videoInfo.videoHeight = 480;
-        videoInfo.photoThumbnail_1024 = "http://192.168.8.3/media/44ac0bc36a4eb8ae015c6d1789dbf32be2045a08b7b69bf61accac881130641d";
-
         getScreenSize();
         getReallyVideoUrl();
         setVideoResolution(true);
-    }
-
-    private void initVideoComponents() {
-        //视频组件
-        llControler = (LinearLayout) findViewById(R.id.ll_controler);
-        durationTextView = (TextView) findViewById(R.id.duration);
-        playedTextView = (TextView) findViewById(R.id.has_played);
-        btnPlayOrStop = (ImageButton) findViewById(R.id.btn_play_or_stop);
-        seekBar = (SeekBar) findViewById(R.id.seekbar);
-        videoPlayerView = (VideoPlayerView) findViewById(R.id.vv);
-        animatedPhotoBackgroundLL = (LinearLayout) findViewById(R.id.animated_photo_backtground_ll);
-        tvLoding = (TextView) findViewById(R.id.tv_loding);
-
-        hideController();
-
-        videoPlayerLL.setOnClickListener(this);
-        //设置播放错误监听
-        videoPlayerView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                PictureAirLog.d(TAG, "===> onError");
-                videoPlayerView.stopPlayback();
-                return false;
-            }
-
-        });
-
-        //屏幕大小发生改变的情况
-        videoPlayerView.setMySizeChangeLinstener(new VideoPlayerView.MySizeChangeLinstener() {
-            @Override
-            public void doMyThings() {
-                PictureAirLog.d(TAG, "===> doMyThings");
-                setVideoScale(SCREEN_DEFAULT);
-            }
-        });
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekbar, int progress, boolean fromUser) {
-                PictureAirLog.d(TAG, "===> onProgressChanged");
-                if (fromUser) {
-                    videoPlayerView.seekTo(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar arg0) {
-                PictureAirLog.d(TAG, "===> onStartTrackingTouch");
-
-                adVideoHandler.removeMessages(HIDE_CONTROLER);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                PictureAirLog.d(TAG, "===> onStopTrackingTouch");
-
-                adVideoHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-            }
-        });
-
-        videoPlayerView.setMyMediapalerPrepared(new VideoPlayerView.myMediapalerPrepared() {
-            @Override
-            public void myOnrepared(MediaPlayer mp) {
-                PictureAirLog.d(TAG, "===> myOnrepared");
-                tvLoding.setVisibility(View.GONE);
-                videoPlayerLL.setEnabled(true);
-            }
-        });
-        videoPlayerView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer arg0) {
-                PictureAirLog.d(TAG, "===> onPrepared");
-                setVideoScale(SCREEN_DEFAULT);// 按比例（全屏）
-                showController();
-                int i = videoPlayerView.getDuration();
-                PictureAirLog.d("onCompletion", "" + i);
-                seekBar.setMax(i);
-                i /= 1000;
-                int minute = i / 60;
-                int second = i % 60;
-                minute %= 60;
-                durationTextView.setText(String.format("%02d:%02d", minute, second));
-
-                videoPlayerView.start();
-                btnPlayOrStop.setVisibility(View.GONE);
-                hideControllerDelay();
-
-                adVideoHandler.sendEmptyMessage(PROGRESS_CHANGED);
-            }
-        });
-
-        videoPlayerView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer arg0) {
-                PictureAirLog.d(TAG, "===> onCompletion");
-
-                pausedVideo();
-                isPlayFinash = true;
-            }
-        });
     }
 
     @Override
@@ -296,12 +144,13 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             case R.id.animated_photo_add_cart_btn://把ppp加入购物车
                 break;
 
-            case R.id.ll_show:
+            case R.id.animated_photo_pwvideo_pmv:
+                PictureAirLog.out("click video");
                 // 单次处理
-                if (isPaused) {
-                    playVideo();
+                if (pwVideoPlayerManagerView.isPaused()) {
+                    pwVideoPlayerManagerView.playVideo();
                 } else {
-                    pausedVideo();
+                    pwVideoPlayerManagerView.pausedVideo();
                 }
                 break;
 
@@ -321,34 +170,19 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     @Override
     protected void onPause() {
         super.onPause();
-        playedTime = videoPlayerView.getCurrentPosition();
-        pausedVideo();
+        pwVideoPlayerManagerView.pausedVideo();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateCartCount();
-        isPaused = true;
-        if (!isPlayFinash){
-            videoPlayerView.seekTo(playedTime);
-            videoPlayerView.start();
-            if (videoPlayerView.isPlaying()) {
-                btnPlayOrStop.setVisibility(View.GONE);
-                hideControllerDelay();
-            }
-            isPaused = false;
-        }
+        pwVideoPlayerManagerView.resumeVideo();
     }
 
     @Override
     protected void onDestroy() {
-        adVideoHandler.removeMessages(PROGRESS_CHANGED);
-        adVideoHandler.removeMessages(HIDE_CONTROLER);
-
-        if (videoPlayerView.isPlaying()) {
-            videoPlayerView.stopPlayback();
-        }
+        pwVideoPlayerManagerView.stopVideo();
         adVideoHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
@@ -375,7 +209,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
             videoPath = videoInfo.photoThumbnail_1024;
-//            videoPath = Common.PHOTO_URL + videoInfo.photoThumbnail_1024;
             PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {
@@ -383,13 +216,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             videoPath = file.getPath();
             isOnline = false;
         }
-    }
-
-    private void startVideo() {
-        isPlayFinash = false;
-        videoPlayerView.setVideoPath(videoPath);
-        cancelDelayHide();
-        hideControllerDelay();
     }
 
     /**
@@ -400,37 +226,16 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         screenWidth = ScreenUtil.getScreenWidth(this);
     }
 
-    private void hideControllerDelay() {
-        adVideoHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-    }
 
-    private void hideController() {
-        if (llControler.isShown()) {
-            llControler.setVisibility(View.GONE);
-            btnPlayOrStop.setVisibility(View.GONE);
-        }
-    }
-
-    private void showController() {
-        if (!llControler.isShown()) {
-            llControler.setVisibility(View.VISIBLE);
-            btnPlayOrStop.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void cancelDelayHide() {
-        adVideoHandler.removeMessages(HIDE_CONTROLER);
-    }
-
-    // 设置可以全屏
-    private void setVideoScale(int flag) {
-        videoPlayerView.setVideoScale(screenWidth, screenHeight);
+    @Override
+    public void setVideoScale(int flag) {
+        pwVideoPlayerManagerView.setVideoScale(screenWidth, screenHeight);
         switch (flag) {
-            case SCREEN_FULL:
+            case PWVideoPlayerManagerView.SCREEN_FULL:
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
 
-            case SCREEN_DEFAULT:
+            case PWVideoPlayerManagerView.SCREEN_DEFAULT:
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
         }
@@ -446,7 +251,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         animatedPhotoBottomBtnsLL.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
         animatedPhotoBackgroundLL.setBackgroundColor(ContextCompat.getColor(this, isLandscape ? R.color.black : R.color.gray_light));
         setVideoResolution(!isLandscape);
-        setVideoScale(isLandscape ? SCREEN_FULL : SCREEN_DEFAULT);
+        setVideoScale(isLandscape ? PWVideoPlayerManagerView.SCREEN_FULL : PWVideoPlayerManagerView.SCREEN_DEFAULT);
     }
 
     /**
@@ -455,45 +260,22 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
      * @param isVertical  竖屏？横屏
      */
     private void setVideoResolution(boolean isVertical) {
-        ViewGroup.LayoutParams layoutParams = videoPlayerLL.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = pwVideoPlayerManagerView.getLayoutParams();
         if (isVertical) {//竖屏
             layoutParams.width = ScreenUtil.getScreenWidth(this);
-            layoutParams.height = layoutParams.width * videoHeight / videoWidth;
+            layoutParams.height = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
         } else {//横屏
             layoutParams.height = ScreenUtil.getScreenHeight(this);
-            layoutParams.width = layoutParams.height * videoWidth / videoHeight;
+            layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
         }
-        videoPlayerLL.setLayoutParams(layoutParams);
+        pwVideoPlayerManagerView.setLayoutParams(layoutParams);
     }
 
     private void setPausedOrPlay() {
-        if (isPaused) {
-            pausedVideo();
+        if (pwVideoPlayerManagerView.isPaused()) {
+            pwVideoPlayerManagerView.pausedVideo();
         } else {
-            playVideo();
+            pwVideoPlayerManagerView.playVideo();
         }
-    }
-
-    /**
-     * 暂停播放
-     */
-    private void pausedVideo(){
-        isPaused = true;
-        videoPlayerView.pause();
-        btnPlayOrStop.setVisibility(View.VISIBLE);
-        cancelDelayHide();
-        showController();
-    }
-
-    /**
-     * 播放视频
-     */
-    private void playVideo(){
-        isPaused = false;
-        isPlayFinash = false;
-        videoPlayerView.start();
-        btnPlayOrStop.setVisibility(View.GONE);
-        cancelDelayHide();
-        hideControllerDelay();
     }
 }

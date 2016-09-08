@@ -4,24 +4,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -37,8 +31,8 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
-import com.pictureair.photopass.widget.VideoPlayerView;
-import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
+import com.pictureair.photopass.widget.videoPlayer.OnVideoPlayerViewEventListener;
+import com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -50,46 +44,32 @@ import java.util.ArrayList;
  *
  * @author bass
  */
-public class VideoPlayerActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
+public class VideoPlayerActivity extends BaseActivity implements OnClickListener,
+        PWDialog.OnPWDialogClickListener, OnVideoPlayerViewEventListener {
     private final static String TAG = "VideoPlayerActivity";
     private final static int SCREEN_FULL = 0;
     private final static int SCREEN_DEFAULT = 1;
     private static final int UPDATE_UI = 2866;
-    private SeekBar seekBar = null;
-    private TextView durationTextView = null;
-    private TextView playedTextView = null;
-    private ImageButton btnPlayOrStop = null;
     private RelativeLayout rlHead, rlBackground;
     private LinearLayout llEnd;
     private ImageView ivIsLove;
-    private TextView tvLoding, videoDateTV;
+    private TextView videoDateTV;
+    private PWVideoPlayerManagerView pwVideoPlayerManagerView;
     private PWToast myToast;
     private SharePop sharePop;
 
     private Context context;
-    private LinearLayout llControler, llShow, llShare, llDownload;
-    private VideoPlayerView videoPlayerView = null;
+    private LinearLayout llShare, llDownload;
 
-    private int playedTime;// 最小化 保存播放时间
     private int screenWidth = 0;
     private int screenHeight = 0;
-    private final static int TIME = 3000;
-    private boolean isControllerShow = true;
-    private boolean isPaused = false;
-    private final static int PROGRESS_CHANGED = 0;
-    private final static int HIDE_CONTROLER = 1;
     private PhotoInfo videoInfo;
     private int mNetWorkType;  //当前网络的状态
     private PWDialog pwDialog; //  对话框
     private PictureAirDbManager pictureAirDbManager;
-    //视频实际播放的宽高//4:3默认尺寸
-    private int videoHeight = 600;
-    private int videoWidth = 800;
-    private final int NOT_NETWORK = 111;
     private boolean isOnline ;//网络true || 本地false
     private String videoPath;//视频本地路径 || 视频网络地址
     private int shareType = 0;
-    private boolean isPlayFinash = false;//是否播放完毕
     private final Handler videoPlayerHandler = new VideoPlayerHandler(this);
 
     private static class VideoPlayerHandler extends Handler{
@@ -119,41 +99,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 shareType = msg.what;
                 break;
 
-            case NOT_NETWORK:
-                tvLoding.setText(R.string.no_network);
-                break;
-
-            case PROGRESS_CHANGED:// 进度改变
-
-                int i = videoPlayerView.getCurrentPosition();
-                seekBar.setProgress(i);
-                if (isOnline) {
-                    int j = videoPlayerView.getBufferPercentage();
-                    seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
-                } else {
-                    seekBar.setSecondaryProgress(0);
-                }
-
-                i /= 1000;
-                int minute = i / 60;
-                int second = i % 60;
-                minute %= 60;
-
-                playedTextView.setText(String.format("%02d:%02d", minute, second));
-                videoPlayerHandler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
-                break;
-            case HIDE_CONTROLER:
-                hideController();
-                break;
-
             case UPDATE_UI:
                 Configuration cf = context.getResources().getConfiguration();
                 int ori = cf.orientation;
-                if (ori == cf.ORIENTATION_LANDSCAPE) {
-                    crossScreen();
-                } else if (ori == cf.ORIENTATION_PORTRAIT) {
-                    verticalScreen();
-                }
+                adjustScreenUI(ori == cf.ORIENTATION_LANDSCAPE);
                 //更新收藏图标
                 if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))) {
                     videoInfo.isLove = 1;
@@ -175,35 +124,22 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         setContentView(R.layout.activity_video_player);
         context = this;
         initView();
-        initBtnEvent();// 所有按钮的事件˙
-        myOnError();// 播放错误
-        myVVSizeChangeLinstener();// 屏幕大小发生改变的情况
-        getScreenSize();// 给底下菜单的布局
-        initSeekBarEvent();// 进度条调整
-        initVVEvent();// VideoPlayerView类的回调
-        getNetwork();
+        initListener();// 所有按钮的事件˙
+        getScreenSize();
+        startPlayVideo();
     }
 
-    private void getNetwork() {
-        if (!isOnline) {
-            startVideo();
+    private void startPlayVideo() {
+        if (isOnline && AppUtil.getNetWorkType(this) == AppUtil.NETWORKTYPE_INVALID) {
+            pwVideoPlayerManagerView.setLoadingText(R.string.no_network);
         } else {
-            if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
-                videoPlayerHandler.sendEmptyMessage(NOT_NETWORK);
-            } else {
-                startVideo();// 开始播放视频
-            }
+            pwVideoPlayerManagerView.startPlayVideo(videoPath, isOnline);// 开始播放视频
         }
     }
 
     private void initView() {
         videoInfo = (PhotoInfo) getIntent().getExtras().get("from_story");
-        if (0 != videoInfo.videoWidth || 0 != videoInfo.videoHeight) {
-            this.videoWidth = videoInfo.videoWidth;
-            this.videoHeight = videoInfo.videoHeight;
-
-        }
-        getIsOnline();//读取网络视频还是本地
+        getReallyVideoUrl();//读取网络视频还是本地
         sharePop = new SharePop(context);
         pictureAirDbManager = new PictureAirDbManager(context);
         myToast = new PWToast(context);
@@ -215,49 +151,34 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         setTopTitleShow(place);
         ivIsLove = getTopRightImageView();
         rlBackground = (RelativeLayout) findViewById(R.id.rl_background);
-        tvLoding = (TextView) findViewById(R.id.tv_loding);
         llShare = (LinearLayout) findViewById(R.id.ll_share);
         llDownload = (LinearLayout) findViewById(R.id.ll_download);
 
         rlHead = (RelativeLayout) findViewById(R.id.head);
         llEnd = (LinearLayout) findViewById(R.id.ll_end);
-        llShow = (LinearLayout) findViewById(R.id.ll_show);
-        llShow.setEnabled(false);
-
-        // 控制栏的
-        llControler = (LinearLayout) findViewById(R.id.ll_controler);
-        durationTextView = (TextView) findViewById(R.id.duration);
-        playedTextView = (TextView) findViewById(R.id.has_played);
-
-        btnPlayOrStop = (ImageButton) findViewById(R.id.btn_play_or_stop);
-        seekBar = (SeekBar) findViewById(R.id.seekbar);
-        videoPlayerView = (VideoPlayerView) findViewById(R.id.vv);
-
-        btnPlayOrStop.setImageResource(R.drawable.play);
-        btnPlayOrStop.setAlpha(0xBB);
-        btnPlayOrStop.setVisibility(View.GONE);
+        pwVideoPlayerManagerView = (PWVideoPlayerManagerView) findViewById(R.id.video_player_pmv);
 
         videoDateTV = (TextView) findViewById(R.id.video_date);
         videoDateTV.setText(videoInfo.shootOn);
 
         videoPlayerHandler.sendEmptyMessage(UPDATE_UI);
-        hideController();
     }
 
-    private void initBtnEvent() {
-        llShow.setOnClickListener(this);
+    private void initListener() {
+        pwVideoPlayerManagerView.setOnClickListener(this);
+        pwVideoPlayerManagerView.setOnVideoPlayerViewEventListener(this);
         llShare.setOnClickListener(this);
         llDownload.setOnClickListener(this);
     }
 
-    private void getIsOnline(){
+    private void getReallyVideoUrl(){
         String fileName = AppUtil.getReallyFileName(videoInfo.photoThumbnail_1024,1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
-            videoPath = Common.PHOTO_URL+videoInfo.photoThumbnail_1024;
+            videoPath = videoInfo.photoThumbnail_1024;
             PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {
@@ -265,115 +186,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             videoPath = file.getPath();
             isOnline = false;
         }
-    }
-
-    private void startVideo() {
-        isPlayFinash = false;
-        videoPlayerView.setVideoPath(videoPath);
-        cancelDelayHide();
-        hideControllerDelay();
-    }
-
-    private void initVVEvent() {
-        videoPlayerView.setMyMediapalerPrepared(new VideoPlayerView.myMediapalerPrepared() {
-            @Override
-            public void myOnrepared(MediaPlayer mp) {
-                PictureAirLog.e(TAG, "===> myOnrepared");
-                tvLoding.setVisibility(View.GONE);
-                llShow.setEnabled(true);
-//                isLoading = false;
-            }
-        });
-        videoPlayerView.setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer arg0) {
-                PictureAirLog.e(TAG, "===> onPrepared");
-                setVideoScale(SCREEN_DEFAULT);// 按比例（全屏）
-                // setVideoScale(SCREEN_FULL);//全屏（会改变视频尺寸）
-                if (isControllerShow) {
-                    showController();
-                }
-                int i = videoPlayerView.getDuration();
-                PictureAirLog.d("onCompletion", "" + i);
-                seekBar.setMax(i);
-                i /= 1000;
-                int minute = i / 60;
-                int second = i % 60;
-                minute %= 60;
-                durationTextView.setText(String.format("%02d:%02d", minute, second));
-
-                videoPlayerView.start();
-                btnPlayOrStop.setVisibility(View.GONE);
-                hideControllerDelay();
-
-                videoPlayerHandler.sendEmptyMessage(PROGRESS_CHANGED);
-            }
-        });
-
-        videoPlayerView.setOnCompletionListener(new OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer arg0) {
-                PictureAirLog.e(TAG, "===> onCompletion");
-
-                pausedVideo();
-                isPlayFinash = true;
-            }
-        });
-    }
-
-    private void initSeekBarEvent() {
-        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekbar, int progress,
-                                          boolean fromUser) {
-                PictureAirLog.e(TAG, "===> onProgressChanged");
-                if (fromUser) {
-                    videoPlayerView.seekTo(progress);
-                }
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar arg0) {
-                PictureAirLog.e(TAG, "===> onStartTrackingTouch");
-
-                videoPlayerHandler.removeMessages(HIDE_CONTROLER);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                PictureAirLog.e(TAG, "===> onStopTrackingTouch");
-
-                videoPlayerHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-            }
-        });
-    }
-
-    private void myVVSizeChangeLinstener() {
-        videoPlayerView.setMySizeChangeLinstener(new MySizeChangeLinstener() {
-            @Override
-            public void doMyThings() {
-                PictureAirLog.e(TAG, "===> doMyThings");
-
-                setVideoScale(SCREEN_DEFAULT);
-            }
-        });
-    }
-
-    private void myOnError() {
-        videoPlayerView.setOnErrorListener(new OnErrorListener() {
-
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                PictureAirLog.e(TAG, "===> onError");
-
-                videoPlayerView.stopPlayback();
-                return false;
-            }
-
-        });
     }
 
     /**
@@ -384,37 +196,16 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         screenWidth = ScreenUtil.getScreenWidth(context);
     }
 
-    private void hideControllerDelay() {
-        videoPlayerHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-    }
-
-    private void hideController() {
-        if (llControler.getVisibility() == View.VISIBLE) {
-            llControler.setVisibility(View.GONE);
-            btnPlayOrStop.setVisibility(View.GONE);
-        }
-    }
-
-    private void showController() {
-        llControler.setVisibility(View.VISIBLE);
-        btnPlayOrStop.setVisibility(View.VISIBLE);
-        isControllerShow = true;
-    }
-
-    private void cancelDelayHide() {
-        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
-    }
-
     // 设置可以全屏
-    private void setVideoScale(int flag) {
+    @Override
+    public void setVideoScale(int flag) {
+        pwVideoPlayerManagerView.setVideoScale(screenWidth, screenHeight);
         switch (flag) {
             case SCREEN_FULL:
-                videoPlayerView.setVideoScale(screenWidth, screenHeight);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
 
             case SCREEN_DEFAULT:
-                videoPlayerView.setVideoScale(screenWidth, screenHeight);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
         }
@@ -423,86 +214,55 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     /**
      * 当横竖屏切换的时候会直接调用onCreate方法中的 onConfigurationChanged方法
      */
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         getScreenSize();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             sharePop.dismiss();
-            crossScreen();//横屏计算大小
+            adjustScreenUI(true);
         } else {
-            verticalScreen();//竖屏计算大小
+            adjustScreenUI(false);
         }
-        isPausedOrPlay();
+        setPausedOrPlay();
         super.onConfigurationChanged(newConfig);
     }
 
-    private void crossScreen() {
-        rlHead.setVisibility(View.GONE);
-        llEnd.setVisibility(View.GONE);
-        videoDateTV.setVisibility(View.GONE);
-        rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
-        setVideoResolution(false, videoWidth, videoHeight);
-        setVideoScale(SCREEN_FULL);
-    }
-
-    private void verticalScreen() {
-        rlHead.setVisibility(View.VISIBLE);
-        llEnd.setVisibility(View.VISIBLE);
-        videoDateTV.setVisibility(View.VISIBLE);
-        rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
-        setVideoResolution(true, videoWidth, videoHeight);
-        setVideoScale(SCREEN_DEFAULT);
+    /**
+     * 调整ui
+     * @param isLandscape 是不是横屏模式
+     */
+    private void adjustScreenUI(boolean isLandscape) {
+        rlHead.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
+        llEnd.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
+        videoDateTV.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
+        rlBackground.setBackgroundColor(ContextCompat.getColor(this, isLandscape ? R.color.black : R.color.gray_light));
+        setVideoResolution(!isLandscape);
+        setVideoScale(isLandscape ? PWVideoPlayerManagerView.SCREEN_FULL : PWVideoPlayerManagerView.SCREEN_DEFAULT);
     }
 
     /**
      * 设置视频显示尺寸
      *
      * @param isVertical  竖屏？横屏
-     * @param videoWidth  视频宽
-     * @param videoHeight 视频高
      */
-    private void setVideoResolution(boolean isVertical, int videoWidth, int videoHeight) {
-        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
+    private void setVideoResolution(boolean isVertical) {
+        ViewGroup.LayoutParams layoutParams = pwVideoPlayerManagerView.getLayoutParams();
         if (isVertical) {//竖屏
             layoutParams.width = ScreenUtil.getScreenWidth(this);
-            layoutParams.height = layoutParams.width * videoHeight / videoWidth;
+            layoutParams.height = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
         } else {//横屏
             layoutParams.height = ScreenUtil.getScreenHeight(this);
-            layoutParams.width = layoutParams.height * videoWidth / videoHeight;
+            layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
         }
-        llShow.setLayoutParams(layoutParams);
+        pwVideoPlayerManagerView.setLayoutParams(layoutParams);
     }
 
-    private void isPausedOrPlay() {
-        if (isPaused) {
-            pausedVideo();
+    private void setPausedOrPlay() {
+        if (pwVideoPlayerManagerView.isPaused()) {
+            pwVideoPlayerManagerView.pausedVideo();
         } else {
-            playVideo();
+            pwVideoPlayerManagerView.playVideo();
         }
-    }
-
-    /**
-     * 暂停播放
-     */
-    private void pausedVideo(){
-        isPaused = true;
-        videoPlayerView.pause();
-        btnPlayOrStop.setVisibility(View.VISIBLE);
-        cancelDelayHide();
-        showController();
-    }
-
-    /**
-     * 播放视频
-     */
-    private void playVideo(){
-        isPaused = false;
-        isPlayFinash = false;
-        videoPlayerView.start();
-        btnPlayOrStop.setVisibility(View.GONE);
-        cancelDelayHide();
-        hideControllerDelay();
     }
 
     @Override
@@ -513,15 +273,17 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 sharePop.setshareinfo(null, videoInfo.shareURL, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, 0, videoPlayerHandler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
+
             case R.id.ll_download:
                 downloadVideo();
                 break;
-            case R.id.ll_show:
+
+            case R.id.video_player_pmv:
                 // 单次处理
-                if (isPaused) {
-                    playVideo();
+                if (pwVideoPlayerManagerView.isPaused()) {
+                    pwVideoPlayerManagerView.playVideo();
                 } else {
-                    pausedVideo();
+                    pwVideoPlayerManagerView.pausedVideo();
                 }
                 break;
 
@@ -619,28 +381,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void onPause() {
-        playedTime = videoPlayerView.getCurrentPosition();
-        pausedVideo();
-
-        PictureAirLog.e(TAG, "=======>onPause   playedTime:" + playedTime);
+        pwVideoPlayerManagerView.pausedVideo();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        PictureAirLog.e(TAG, "=======>onResume   playedTime:" + playedTime);
-
-        isPaused = true;
-        if (!isPlayFinash){
-            videoPlayerView.seekTo(playedTime);
-            videoPlayerView.start();
-            if (videoPlayerView.isPlaying()) {
-                btnPlayOrStop.setVisibility(View.GONE);
-                hideControllerDelay();
-            }
-            isPaused = false;
-        }
-
         if (sharePop != null) {
             PictureAirLog.out("sharePop not null");
             if (shareType != SharePop.TWITTER) {
@@ -648,17 +394,14 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 sharePop.dismissDialog();
             }
         }
+
+        pwVideoPlayerManagerView.resumeVideo();
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        videoPlayerHandler.removeMessages(PROGRESS_CHANGED);
-        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
-
-        if (videoPlayerView.isPlaying()) {
-            videoPlayerView.stopPlayback();
-        }
+        pwVideoPlayerManagerView.stopVideo();
         videoPlayerHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }

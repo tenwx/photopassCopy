@@ -1,9 +1,8 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.photopass.widget.videoPlayer;
 
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -49,14 +48,14 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     private OnErrorListener mOnErrorListener;
     private boolean mStartWhenPrepared;
     private int mSeekWhenPrepared;
-    private MySizeChangeLinstener mMyChangeLinstener;
-    private myMediapalerPrepared myMediapalerPrepared;
+    private OnVideoSizeChangedListenser mMyChangeLinstener;
+    private OnVideoPlayerViewPreparedListener myMediapalerPrepared;
 
-    public interface myMediapalerPrepared {
-        void myOnrepared(MediaPlayer mp);
+    public interface OnVideoPlayerViewPreparedListener {
+        void onVideoPlayerViewPrepared(MediaPlayer mp);
     }
 
-    public void setMyMediapalerPrepared(myMediapalerPrepared myMediapalerPrepared) {
+    public void setOnVideoPlayerViewPreparedListener(OnVideoPlayerViewPreparedListener myMediapalerPrepared) {
         this.myMediapalerPrepared = myMediapalerPrepared;
     }
 
@@ -75,11 +74,11 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         setLayoutParams(lp);
     }
 
-    public interface MySizeChangeLinstener {
-        public void doMyThings();
+    public interface OnVideoSizeChangedListenser {
+        void onSizeChanged();
     }
 
-    public void setMySizeChangeLinstener(MySizeChangeLinstener l) {
+    public void setOnVideoSizeChangedListenser(OnVideoSizeChangedListenser l) {
         mMyChangeLinstener = l;
     }
 
@@ -107,27 +106,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         int height = getDefaultSize(mVideoHeight, heightMeasureSpec);
         setMeasuredDimension(width, height);
     }
-
-//    public int resolveAdjustedSize(int desiredSize, int measureSpec) {
-//        int result = desiredSize;
-//        int specMode = MeasureSpec.getMode(measureSpec);
-//        int specSize = MeasureSpec.getSize(measureSpec);
-//
-//        switch (specMode) {
-//            case MeasureSpec.UNSPECIFIED:
-//                result = desiredSize;
-//                break;
-//
-//            case MeasureSpec.AT_MOST:
-//                result = Math.min(desiredSize, specSize);
-//                break;
-//
-//            case MeasureSpec.EXACTLY:
-//                result = specSize;
-//                break;
-//        }
-//        return result;
-//    }
 
     private void initVideoView() {
         mVideoWidth = 0;
@@ -204,14 +182,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         }
     }
 
-//    public void setMediaController(MediaController controller) {
-//        if (mMediaController != null) {
-//            mMediaController.hide();
-//        }
-//        mMediaController = controller;
-//        attachMediaController();
-//    }
-
     private void attachMediaController() {
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
@@ -227,13 +197,13 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
 
                 public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
 
-                    PictureAirLog.e(TAG, "===> onVideoSizeChanged");
+                    PictureAirLog.d(TAG, "===> onVideoSizeChanged");
 
                     mVideoWidth = mp.getVideoWidth();
                     mVideoHeight = mp.getVideoHeight();
 
                     if (mMyChangeLinstener != null) {
-                        mMyChangeLinstener.doMyThings();
+                        mMyChangeLinstener.onSizeChanged();
                     }
 
                     if (mVideoWidth != 0 && mVideoHeight != 0) {
@@ -244,9 +214,9 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
 
     MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         public void onPrepared(MediaPlayer mp) {
-            PictureAirLog.e(TAG, "===> onPrepared");
+            PictureAirLog.d(TAG, "===> onPrepared");
 
-            myMediapalerPrepared.myOnrepared(mp);
+            myMediapalerPrepared.onVideoPlayerViewPrepared(mp);
             mIsPrepared = true;
             if (mOnPreparedListener != null) {
                 mOnPreparedListener.onPrepared(mMediaPlayer);
@@ -289,49 +259,42 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         }
     };
 
-    private OnCompletionListener mCompletionListener =
-            new OnCompletionListener() {
-                public void onCompletion(MediaPlayer mp) {
-                    if (mMediaController != null) {
-                        mMediaController.hide();
-                    }
-                    if (mOnCompletionListener != null) {
-                        mOnCompletionListener.onCompletion(mMediaPlayer);
-                    }
-                }
-            };
+    private OnCompletionListener mCompletionListener = new OnCompletionListener() {
+        public void onCompletion(MediaPlayer mp) {
+            if (mMediaController != null) {
+                mMediaController.hide();
+            }
+            if (mOnCompletionListener != null) {
+                mOnCompletionListener.onCompletion(mMediaPlayer);
+            }
+        }
+    };
 
-    private OnErrorListener mErrorListener =
-            new OnErrorListener() {
-                public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
-                    PictureAirLog.e(TAG, "===> Error: " + framework_err + "," + impl_err);
+    private OnErrorListener mErrorListener = new OnErrorListener() {
+        public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
+            PictureAirLog.d(TAG, "===> Error: " + framework_err + "," + impl_err);
 
-                    if (mMediaController != null) {
-                        mMediaController.hide();
-                    }
+            if (mMediaController != null) {
+                mMediaController.hide();
+            }
 
-                    if (mOnErrorListener != null) {
-                        if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
-                            return true;
-                        }
-                    }
-
-                    if (getWindowToken() != null) {
-//                        Resources r = mContext.getResources();
-//                        int messageId;
-                    }
+            if (mOnErrorListener != null) {
+                if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
                     return true;
                 }
-            };
+            }
 
-    private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener =
-            new MediaPlayer.OnBufferingUpdateListener() {
-                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                    PictureAirLog.e(TAG, "===> onBufferingUpdate: ");
+            return true;
+        }
+    };
 
-                    mCurrentBufferPercentage = percent;
-                }
-            };
+    private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
+        public void onBufferingUpdate(MediaPlayer mp, int percent) {
+            PictureAirLog.d(TAG, "===> onBufferingUpdate: ");
+
+            mCurrentBufferPercentage = percent;
+        }
+    };
 
     /**
      * Register a callback to be invoked when the media file
@@ -368,7 +331,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback() {
         public void surfaceChanged(SurfaceHolder holder, int format,
                                    int w, int h) {
-            PictureAirLog.e(TAG, "===> surfaceChanged ");
+            PictureAirLog.d(TAG, "===> surfaceChanged ");
 
             mSurfaceWidth = w;
             mSurfaceHeight = h;
@@ -496,7 +459,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     }
 
     public void seekTo(int msec) {
-        PictureAirLog.e(TAG, "seekTo :" + msec);
+        PictureAirLog.d(TAG, "seekTo :" + msec);
         if (mMediaPlayer != null && mIsPrepared) {
             mMediaPlayer.seekTo(msec);
         } else {

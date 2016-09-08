@@ -144,13 +144,30 @@ public class JsonUtil {
                     info.photoThumbnail_1024 = sb.toString().trim();
                 }
 
-                if (info.isVideo == 1) {
-                    if (object.containsKey("width")) {
-                        info.videoWidth = object.getIntValue("width");
+                if (info.isVideo == 1 && info.isPayed == 1) {
+                    if (x1024.containsKey("width")) {
+                        info.videoWidth = x1024.getIntValue("width");
                     }
 
-                    if (object.containsKey("height")) {
-                        info.videoHeight = object.getIntValue("height");
+                    if (x1024.containsKey("height")) {
+                        info.videoHeight = x1024.getIntValue("height");
+                    }
+                } else if (info.isVideo == 1 && info.isPayed == 0) {
+                    if (object.containsKey("adInfo")) {
+                        JSONObject adObj = object.getJSONObject("adInfo");
+                        if (adObj.containsKey("url")) {
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(Common.PHOTO_URL).append(adObj.getString("url"));
+                            info.photoThumbnail_1024 = sb.toString().trim();
+                        }
+
+                        if (adObj.containsKey("width")) {
+                            info.videoWidth = adObj.getIntValue("width");
+                        }
+
+                        if (adObj.containsKey("height")) {
+                            info.videoHeight = adObj.getIntValue("height");
+                        }
                     }
                 }
             }

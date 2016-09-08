@@ -9,14 +9,11 @@
         android:id="@+id/head"
         layout="@layout/top_bar" />
 
-    <LinearLayout
-        android:id="@+id/ll_show"
+    <com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView
+        android:id="@+id/video_player_pmv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
-
-        <include layout="@layout/surfaceview_mediaplaer" />
-    </LinearLayout>
+        android:layout_centerInParent="true"/>
 
     <LinearLayout
         android:id="@+id/ll_end"
