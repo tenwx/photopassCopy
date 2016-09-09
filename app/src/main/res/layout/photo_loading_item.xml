@@ -12,15 +12,29 @@
         android:id="@+id/rl_photo_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/loading_img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/icon_disney_null_photo"
+        <RelativeLayout
+            android:id="@+id/loading_image_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:scaleType="centerCrop"
-            />
+            >
+            <ImageView
+                android:id="@+id/loading_img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/icon_disney_null_photo"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
+                />
+            <ImageView
+                android:id="@+id/loading_video"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/play"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                />
+        </RelativeLayout>
             <LinearLayout
                 android:id="@+id/photo_loading_status"
                 android:layout_width="70dp"
@@ -53,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/loading_img"
+            android:layout_toRightOf="@id/loading_image_layout"
             android:layout_toLeftOf="@id/photo_loading_status"
             android:layout_marginLeft="@dimen/pp_margin_5"
             android:layout_marginRight="@dimen/pp_margin_5"

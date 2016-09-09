@@ -158,7 +158,12 @@ public class DownloadService extends Service {
                     if (photos.size() >0) {
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
-                            DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024,photoInfo.photoThumbnail_512,photoInfo.photoThumbnail_1024,photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                            DownloadFileStatus fileStatus = null;
+                            if (photoInfo.isVideo == 0) {
+                                fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024, photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                            }else{
+                                fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024, photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                            }
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
 
@@ -292,7 +297,11 @@ public class DownloadService extends Service {
                                     fileStatus.setPosition(i);
                                     taskList.put(fileStatus.getPhotoId(), fileStatus);
                                     PictureAirLog.out("START_DOWNLOAD photoid and positiong " + fileStatus.getPhotoId() +" "+fileStatus.getPosition());
-                                    getNewUrl(fileStatus);
+                                    if (fileStatus.isVideo() == 0) {
+                                        getNewUrl(fileStatus);
+                                    }else if (fileStatus.isVideo() == 1){
+                                        downLoad(fileStatus);
+                                    }
                                 } else {
                                     break;
                                 }
@@ -495,7 +504,6 @@ public class DownloadService extends Service {
      */
     private void downLoad(final DownloadFileStatus fileStatus) {
         PictureAirLog.out("downloadurl--->" + fileStatus.getUrl());
-
         // 使用友盟统计点击下载次数
         UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
         downloadImgOrVideo(fileStatus);
@@ -512,7 +520,7 @@ public class DownloadService extends Service {
             RequestParams params = new RequestParams();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
-            HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), params, new HttpCallback() {
+            HttpUtil1.asyncDownloadBinaryData(fileStatus.getUrl(), params, new HttpCallback() {
                 long startTime;
                 long lastTime;
                 @Override
