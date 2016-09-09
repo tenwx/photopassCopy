@@ -62,7 +62,6 @@ public class DownloadService extends Service {
     private AtomicInteger failed_num = new AtomicInteger(0);//下载失败的照片数
     private CopyOnWriteArrayList<DownloadFileStatus> tempList = new CopyOnWriteArrayList<>();
     private boolean mFinish = false;
-    private boolean mStartDownloadFinish = false;
     private boolean mIsErrorsAdd = false;
 
     private Context mContext = this;
@@ -112,7 +111,6 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         PictureAirLog.out("DownloadService ----------> onStartCommand");
         mFinish = false;
-        mStartDownloadFinish = false;
         fixedThreadPool.execute(new AddDownloadTask(intent));
         return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
@@ -298,8 +296,7 @@ public class DownloadService extends Service {
                                     break;
                                 }
                             }
-                            if (i == downloadList.size() -1 && taskList.size() == 0 && !mStartDownloadFinish){
-                                mStartDownloadFinish = true;
+                            if (i == downloadList.size() -1 && taskList.size() == 0 ){
                                 stopSelf();//下载服务停止
                                 downed_num.set(0);
                                 failed_num.set(0);
@@ -309,7 +306,7 @@ public class DownloadService extends Service {
                         }
                     }else{//从数据库中查找出所有下载失败的照片无法直接下载，会从这里结束
                         PictureAirLog.out("finish download-------------->");
-                        mStartDownloadFinish = true;
+//                        mStartDownloadFinish = true;
                         stopSelf();//下载服务停止
                         downed_num.set(0);
                         failed_num.set(0);
