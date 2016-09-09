@@ -141,11 +141,13 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         new Thread() {
             public void run() {
                 ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>(); //创造一个List。
-                for (int i = 0; i< finalPhotoCode.length; i++){
-                    PPinfo pPinfo = new PPinfo();
-                    pPinfo.setPpCode(finalPhotoCode[i]);
-                    pPinfo.setShootDate(shootTime);
-                    PPlist.add(pPinfo);
+                if (finalPhotoCode != null) {
+                    for (int i = 0; i< finalPhotoCode.length; i++){
+                        PPinfo pPinfo = new PPinfo();
+                        pPinfo.setPpCode(finalPhotoCode[i]);
+                        pPinfo.setShootDate(shootTime);
+                        PPlist.add(pPinfo);
+                    }
                 }
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(PPlist, 2);
 
