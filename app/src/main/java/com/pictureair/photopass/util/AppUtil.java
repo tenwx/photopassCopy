@@ -97,6 +97,19 @@ public class AppUtil {
     private final static String TAG = "AppUtil";
 
     /**
+     * 没有网络
+     */
+    public static final int NETWORKTYPE_INVALID = 0;
+    /**
+     * 流量网络，或统称为快速网络
+     */
+    public static final int NETWORKTYPE_MOBILE = 1;
+    /**
+     * wifi网络
+     */
+    public static final int NETWORKTYPE_WIFI = 2;
+
+    /**
      * 密码为空
      */
     public static final int PWD_EMPTY = 3;
@@ -122,19 +135,15 @@ public class AppUtil {
      */
     public static final int PWD_HEAD_OR_FOOT_IS_SPACE = 8;
 
+    /**
+     * 水平留白
+     */
+    public static final int HORIZONTAL_MARGIN = 9;
 
     /**
-     * 没有网络
+     * 垂直留白
      */
-    public static final int NETWORKTYPE_INVALID = 0;
-    /**
-     * 流量网络，或统称为快速网络
-     */
-    public static final int NETWORKTYPE_MOBILE = 1;
-    /**
-     * wifi网络
-     */
-    public static final int NETWORKTYPE_WIFI = 2;
+    public static final int VERTICAL_MARGIN = 10;
 
     //当前网络类型
     public static int mNetWorkType;
@@ -1729,5 +1738,21 @@ public class AppUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 根据宽高比例比较获取留白方向
+     * @param targetW 比较的view
+     * @param targetH
+     * @param comparedW 被比较的view
+     * @param comparedH
+     * @return
+     */
+    public static int getOrientationMarginByAspectRatio(int targetW, int targetH, int comparedW, int comparedH) {
+        if (targetH / (float) targetW > comparedH / (float) comparedW) {//左右会留白
+            return HORIZONTAL_MARGIN;
+        } else {//上下会留白
+            return VERTICAL_MARGIN;
+        }
     }
 }

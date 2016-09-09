@@ -77,6 +77,7 @@
         android:layout_height="0dp"
         android:layout_weight="6"
         android:background="@color/pp_light_gray_background"
+        android:gravity="center_vertical"
         android:padding="@dimen/pp_margin_16"
         android:text="@string/animated_photo_introduce_text"
         android:textColor="@color/pp_blue"

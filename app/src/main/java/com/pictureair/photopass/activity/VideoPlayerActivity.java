@@ -199,7 +199,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     // 设置可以全屏
     @Override
     public void setVideoScale(int flag) {
-        pwVideoPlayerManagerView.setVideoScale(screenWidth, screenHeight);
         switch (flag) {
             case SCREEN_FULL:
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -254,6 +253,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             layoutParams.height = ScreenUtil.getScreenHeight(this);
             layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
         }
+        pwVideoPlayerManagerView.setVideoScale(layoutParams.width, layoutParams.height);
         pwVideoPlayerManagerView.setLayoutParams(layoutParams);
     }
 
@@ -261,7 +261,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         if (pwVideoPlayerManagerView.isPaused()) {
             pwVideoPlayerManagerView.pausedVideo();
         } else {
-            pwVideoPlayerManagerView.playVideo();
+            pwVideoPlayerManagerView.resumeVideo();
         }
     }
 
@@ -281,7 +281,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             case R.id.video_player_pmv:
                 // 单次处理
                 if (pwVideoPlayerManagerView.isPaused()) {
-                    pwVideoPlayerManagerView.playVideo();
+                    pwVideoPlayerManagerView.resumeVideo();
                 } else {
                     pwVideoPlayerManagerView.pausedVideo();
                 }

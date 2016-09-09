@@ -148,7 +148,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 PictureAirLog.out("click video");
                 // 单次处理
                 if (pwVideoPlayerManagerView.isPaused()) {
-                    pwVideoPlayerManagerView.playVideo();
+                    pwVideoPlayerManagerView.resumeVideo();
                 } else {
                     pwVideoPlayerManagerView.pausedVideo();
                 }
@@ -229,7 +229,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
     @Override
     public void setVideoScale(int flag) {
-        pwVideoPlayerManagerView.setVideoScale(screenWidth, screenHeight);
         switch (flag) {
             case PWVideoPlayerManagerView.SCREEN_FULL:
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -261,13 +260,24 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
      */
     private void setVideoResolution(boolean isVertical) {
         ViewGroup.LayoutParams layoutParams = pwVideoPlayerManagerView.getLayoutParams();
+        int videoHeight;
         if (isVertical) {//竖屏
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             layoutParams.height = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
+            videoHeight = layoutParams.height;
         } else {//横屏
-            layoutParams.height = ScreenUtil.getScreenHeight(this);
-            layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
+            if (AppUtil.getOrientationMarginByAspectRatio(videoInfo.videoWidth,
+                    videoInfo.videoHeight, screenWidth, screenHeight) == AppUtil.HORIZONTAL_MARGIN) {//水平留白
+                layoutParams.height = screenHeight;
+                layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
+                videoHeight = layoutParams.height;
+            } else {//上下留白
+                layoutParams.width = screenWidth;
+                layoutParams.height = screenHeight;
+                videoHeight = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
+            }
         }
+        pwVideoPlayerManagerView.setVideoScale(layoutParams.width, videoHeight);
         pwVideoPlayerManagerView.setLayoutParams(layoutParams);
     }
 
@@ -275,7 +285,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         if (pwVideoPlayerManagerView.isPaused()) {
             pwVideoPlayerManagerView.pausedVideo();
         } else {
-            pwVideoPlayerManagerView.playVideo();
+            pwVideoPlayerManagerView.resumeVideo();
         }
     }
 }
