@@ -229,17 +229,6 @@ public class StoryFragment extends Fragment {
 		}
 	}
 
-	//				Bundle bundle = new Bundle();
-//				PhotoPreviewInfo photoPreviewInfo = new PhotoPreviewInfo();
-//				photoPreviewInfo.activity = "storyFragment";
-//				photoPreviewInfo.position = position;//在那个相册中的位置
-//				photoPreviewInfo.photoId = photoInfoArrayList.get(position).photoId;
-//				photoPreviewInfo.targetphotos = targetArrayList;
-//				photoPreviewInfo.photos = photoInfoArrayList;//那个相册的全部图片路径
-//				bundle.putParcelable("photopreviewinfo", photoPreviewInfo);
-//				i.putExtra("bundle", bundle);
-//				getContext().startActivity(i);
-	
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub

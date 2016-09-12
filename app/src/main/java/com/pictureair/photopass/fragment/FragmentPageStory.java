@@ -1009,7 +1009,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     super.run();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     if (context != null) {
-                        favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                        favouritePhotoList.addAll(AppUtil.insertSortFavouritePhotos(
                                 pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     }
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
@@ -1171,7 +1171,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     favouritePhotoList.clear();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     if (context != null) {
-                        favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                        favouritePhotoList.addAll(AppUtil.insertSortFavouritePhotos(
                                 pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
 
                     }
