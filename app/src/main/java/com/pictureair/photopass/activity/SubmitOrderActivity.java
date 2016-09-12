@@ -712,7 +712,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
-                    intent2.putExtra("couponCodes", couponCodes.toString());
+                    intent2.putExtra("couponCodes", couponCodes == null ? "" : couponCodes.toString());
                     intent2.putExtra("invoice",invoice);
                     //传递商品类型，用于成功后返回订单
                     if (deliveryType.contains("1")) {

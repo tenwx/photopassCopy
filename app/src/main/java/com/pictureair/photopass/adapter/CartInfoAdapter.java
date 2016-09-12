@@ -280,7 +280,7 @@ public class CartInfoAdapter extends BaseAdapter {
                 return;
             }
             if (!ishandle) {//如果已经在处理中，则忽略响应，反之，进行处理
-                if (cartItemInfo.getCartProductType() == 2) {//如果是pp不允许添加或者减少数量
+                if (cartItemInfo.getCartProductType() == 2 && v.getId() == holderView.cartAddImageView.getId()) {//如果是pp不允许添加或者减少数量
                     myToast.setTextAndShow(R.string.cannot_change_count, Common.TOAST_SHORT_TIME);
                     return;
                 }

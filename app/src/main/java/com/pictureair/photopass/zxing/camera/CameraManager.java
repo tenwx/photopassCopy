@@ -262,6 +262,9 @@ public final class CameraManager {
             Point screenResolution = configManager.getScreenResolution();
             //modify here
             PictureAirLog.out("rect :" + rect.width() + "_height:" + rect.height());
+            if (cameraResolution == null) {
+                cameraResolution = new Point(ScreenUtil.getDpi(context), ScreenUtil.getScreenWidth(context));
+            }
             int temp = rect.width() / 4;  // 为了 增加识别得范围。故增加区域
             rect.left = (rect.left - temp) * cameraResolution.y / screenResolution.x;
             rect.right = (rect.right  + temp) * cameraResolution.y / screenResolution.x;
