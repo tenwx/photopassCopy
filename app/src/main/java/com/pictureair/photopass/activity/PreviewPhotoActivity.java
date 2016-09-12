@@ -884,7 +884,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
                 while (photoInfoIterator.hasNext()) {
                     PhotoInfo info = photoInfoIterator.next();
-                    if (info.isVideo == 1) {
+                    if (info.isVideo == 1 && info.isPayed == 0) {
                         photoInfoIterator.remove();
                     }
                 }
@@ -1048,6 +1048,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
             touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
+        }
+
+        if (photoInfo.isVideo == 1) {
+            editButton.setVisibility(View.GONE);
+            makegiftButton.setVisibility(View.GONE);
+        } else {
+            editButton.setVisibility(View.VISIBLE);
+            makegiftButton.setVisibility(View.VISIBLE);
         }
     }
 

@@ -172,7 +172,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void getReallyVideoUrl(){
-        String fileName = AppUtil.getReallyFileName(videoInfo.photoThumbnail_1024,1);
+        String fileName = AppUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();

@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
-import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
@@ -202,26 +201,20 @@ public class StoryFragment extends Fragment {
 			if (position < 0) {
 				position = 0;
 			}
-			if (photoInfoArrayList.get(position).isVideo == 1) {
-				PictureAirLog.v(TAG,"点击了视频");
+			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {
+				PictureAirLog.v(TAG, "点击了视频");
 
 				PhotoInfo info = photoInfoArrayList.get(position);
-				if (photoInfoArrayList.get(position).isPayed == 1) {
-					Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
-					intent.putExtra("from_story", info);
-					startActivity(intent);
-				} else {
-					PictureAirLog.out("未购买的视频");
-					/**
-					 * 1.获取最新的视频信息
-					 * 2.是否是已经购买
-					 * 3.储存最新信息
-					 * 4.跳转或者弹框提示
-					 */
-					Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
-					intent.putExtra("videoInfo", info);
-					startActivity(intent);
-				}
+				PictureAirLog.out("未购买的视频");
+				/**
+				 * 1.获取最新的视频信息
+				 * 2.是否是已经购买
+				 * 3.储存最新信息
+				 * 4.跳转或者弹框提示
+				 */
+				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
+				intent.putExtra("videoInfo", info);
+				startActivity(intent);
 
 			} else {
 				PictureAirLog.v(TAG,"点击了照片");

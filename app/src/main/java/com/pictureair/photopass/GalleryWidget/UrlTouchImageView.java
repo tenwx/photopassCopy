@@ -40,7 +40,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 public class UrlTouchImageView extends RelativeLayout {
     protected TouchImageView mImageView;
-    protected ImageView progressImageView;
+    protected ImageView progressImageView, videoPlayImageView;
 
     protected Context mContext;
 
@@ -97,6 +97,25 @@ public class UrlTouchImageView extends RelativeLayout {
         progressImageView.setLayoutParams(params);
         progressImageView.setImageResource(R.drawable.loading_0);
         this.addView(progressImageView);
+
+        videoPlayImageView = new ImageView(mContext);
+        params = new LayoutParams(ScreenUtil.getScreenWidth(mContext) / 6, ScreenUtil.getScreenWidth(mContext) / 6);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        videoPlayImageView.setLayoutParams(params);
+        videoPlayImageView.setImageResource(R.drawable.play);
+        this.addView(videoPlayImageView);
+        videoPlayImageView.setVisibility(GONE);
+    }
+
+    /**
+     * 显示视频图标，并且需要回调点击事件
+     */
+    public void setVideoType() {
+        videoPlayImageView.setVisibility(VISIBLE);
+    }
+
+    public void disableZoom() {
+        mImageView.disableZoom();
     }
 
     /**

@@ -245,17 +245,15 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public void resumeVideo() {
         PictureAirLog.out("resume video");
         if (isPaused) {
-            if (!isPlayFinished){
-                videoPlayerView.seekTo(playedTime);
-                videoPlayerView.start();
-                if (videoPlayerView.isPlaying()) {
-                    playOrStopButton.setVisibility(View.GONE);
-                    cancelDelayHideController();
-                    hideControllerDelay();
-                }
-                startTrackingSeekbar();
-                isPaused = false;
+            videoPlayerView.seekTo(playedTime);
+            videoPlayerView.start();
+            if (videoPlayerView.isPlaying()) {
+                playOrStopButton.setVisibility(View.GONE);
+                cancelDelayHideController();
+                hideControllerDelay();
             }
+            startTrackingSeekbar();
+            isPaused = false;
         }
     }
 
