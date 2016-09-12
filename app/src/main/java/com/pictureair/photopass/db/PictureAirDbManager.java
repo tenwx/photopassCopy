@@ -1453,8 +1453,7 @@ public class PictureAirDbManager {
     public List<PhotoDownLoadInfo> getPhotos(String userId,String  success){
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
         database = DBManager.getInstance().readData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        PictureAirLog.out("cursor open ---> getPhotos");
         Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime", new String[]{userId,success});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
@@ -1468,10 +1467,13 @@ public class PictureAirDbManager {
                     photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            database.setTransactionSuccessful();
             PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
@@ -1479,7 +1481,6 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
         return photos;
@@ -1493,8 +1494,7 @@ public class PictureAirDbManager {
     public List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId,String  success){
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
         database = DBManager.getInstance().readData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        PictureAirLog.out("cursor open ---> getPhotosOrderByTime");
         Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime desc", new String[]{userId,success});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
@@ -1508,10 +1508,13 @@ public class PictureAirDbManager {
                     photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            database.setTransactionSuccessful();
             PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
@@ -1519,7 +1522,6 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
         return photos;
@@ -1541,7 +1543,7 @@ public class PictureAirDbManager {
                     users.add(user);
                 } while (cursor.moveToNext());
             }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+            PictureAirLog.out("cursor close ---> getAllUsers");
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -1560,8 +1562,7 @@ public class PictureAirDbManager {
     public List<PhotoDownLoadInfo> getAllPhotos(String userId){
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
         database = DBManager.getInstance().readData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        PictureAirLog.out("cursor open ---> getAllPhotos");
         Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
@@ -1577,10 +1578,13 @@ public class PictureAirDbManager {
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
                     photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            database.setTransactionSuccessful();
             PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
@@ -1588,7 +1592,6 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
         return photos;
@@ -1601,8 +1604,7 @@ public class PictureAirDbManager {
     public List<PhotoDownLoadInfo> getPhotosByPhotoId(String photoId){
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
         database = DBManager.getInstance().readData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        PictureAirLog.out("cursor open ---> getPhotosByPhotoId");
         Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where photoId = ? and success = 'true'", new String[]{photoId});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
@@ -1616,10 +1618,13 @@ public class PictureAirDbManager {
                     photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            database.setTransactionSuccessful();
             PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
@@ -1627,7 +1632,6 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
         return photos;
@@ -1660,6 +1664,10 @@ public class PictureAirDbManager {
                 values.put("isVideo", fileStatus.getIsVideo());
                 values.put("success", status);
                 values.put("failedTime", fileStatus.getFailedTime());
+                values.put("photoThumbnail_512", fileStatus.getPhotoThumbnail_512());
+                values.put("photoThumbnail_1024", fileStatus.getPhotoThumbnail_1024());
+                values.put("videoWidth", fileStatus.getVideoWidth());
+                values.put("videoHeight", fileStatus.getVideoHeight());
                 database.insert(Common.PHOTOS_LOAD, "", values);
             }
             database.setTransactionSuccessful();
@@ -1723,7 +1731,7 @@ public class PictureAirDbManager {
         int res;
         try {
             res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ?",new String[]{userId,"false"});
-            PictureAirLog.e("deleteDownloadPhoto","count:" + res);
+            PictureAirLog.e("deleteDownloadFailPhotoByUserId","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){
             PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
@@ -1743,7 +1751,7 @@ public class PictureAirDbManager {
         int res = 0;
         try {
             res = database.delete(Common.PHOTOS_LOAD,"userId = ? and _id=?",new String[]{userId,String.valueOf(info.getId())});
-            PictureAirLog.e("deleteDownloadPhoto","count:" + res);
+            PictureAirLog.e("deleteRepeatPhoto","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){
             PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
@@ -1802,7 +1810,7 @@ public class PictureAirDbManager {
 
         database = DBManager.getInstance().writData();
         database.beginTransaction();
-        PictureAirLog.out("cursor open ---> updateLoadPhotos");
+        PictureAirLog.out("cursor open ---> updateLoadPhotoList");
         try {
             for (int i=0;i<list.size();i++) {
                 PhotoDownLoadInfo info = list.get(i);
@@ -1822,7 +1830,7 @@ public class PictureAirDbManager {
         PhotoDownLoadInfo photoInfo = null;
         CopyOnWriteArrayList<PhotoDownLoadInfo> list = new CopyOnWriteArrayList<>();
         database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> ExistPhoto");
+        PictureAirLog.out("cursor open ---> getExistPhoto");
         Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
@@ -1838,6 +1846,11 @@ public class PictureAirDbManager {
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
                     photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
+
                     list.add(photoInfo);
                 }while (cursor.moveToNext());
             }

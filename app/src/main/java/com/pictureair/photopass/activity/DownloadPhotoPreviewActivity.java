@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
+import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -30,6 +31,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -41,7 +43,7 @@ import java.util.Locale;
 /**
  * Created by pengwu on 16/7/29.
  */
-public class DownloadPhotoPreviewActivity extends BaseActivity implements View.OnClickListener{
+public class DownloadPhotoPreviewActivity extends BaseActivity implements View.OnClickListener,PhotoEventListener {
 
     private TextView locationTextView;
     private GalleryViewPager mViewPager;
@@ -71,8 +73,26 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
     private Handler previewPhotoHandler;
 
+    private PWToast pwToast;
+
     public static final int NO_PHOTOS = 2323;
     private static final int CHECK_EXIST = 2324;
+
+    @Override
+    public void videoClick(int position) {
+
+        PhotoInfo info = photolist.get(position);
+        String fileName = AppUtil.getReallyFileName(info.photoPathOrURL,info.isVideo);
+        PictureAirLog.e(TAG, "filename=" + fileName);
+        final File file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
+        if (!file.exists()){
+            pwToast.setTextAndShow(R.string.photo_download_not_exists,PWToast.LENGTH_SHORT);
+        }else {
+            Intent intent = new Intent(this, VideoPlayerActivity.class);
+            intent.putExtra("from_story", info);
+            startActivity(intent);
+        }
+    }
 
     private static class PreViewHandler extends Handler{
         private final WeakReference<DownloadPhotoPreviewActivity> mActivity;
@@ -113,6 +133,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist,1);
+                pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
@@ -173,6 +194,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.download_preview_fra_layout);
         titleBar = (RelativeLayout) findViewById(R.id.download_preview_titlebar);
         shareImgBtn = (ImageButton) findViewById(R.id.download_preview_share);
+        pwToast = new PWToast(MyApplication.getInstance());
         shareImgBtn.setOnClickListener(this);
         returnImageView.setOnClickListener(this);
         PictureAirLog.v(TAG, "----------------------->initing...1");
@@ -208,15 +230,19 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         String loadUrl;
                         //如果文件名过长导致无法保存，会将文件名进行MD5，数据库中保存在FailedTime字段，此处是对这种情况的特殊处理
                         if (TextUtils.isEmpty(downLoadInfo.getFailedTime())){
-                            String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), 0);
+                            String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), downLoadInfo.getIsVideo());
                             loadUrl = Common.PHOTO_DOWNLOAD_PATH + fileName;
                         }else{
                             loadUrl = downLoadInfo.getFailedTime();
                         }
-                        photoInfo.photoPathOrURL = loadUrl;
+                        if (downLoadInfo.getIsVideo() == 0) {
+                            photoInfo.photoPathOrURL = loadUrl;
+                        }else{
+                            photoInfo.photoPathOrURL = downLoadInfo.getUrl();
+                        }
                         photoInfo.photoThumbnail = downLoadInfo.getPreviewUrl();
-                        photoInfo.photoThumbnail_512 = "";
-                        photoInfo.photoThumbnail_1024 = "";
+                        photoInfo.photoThumbnail_512 = downLoadInfo.getPhotoThumbnail_512();
+                        photoInfo.photoThumbnail_1024 = downLoadInfo.getPhotoThumbnail_1024();
                         photoInfo.photoPassCode = "";
                         photoInfo.locationId = "";
                         photoInfo.locationName = "";
@@ -228,8 +254,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.isVideo = downLoadInfo.getIsVideo();
                         photoInfo.isLove = 0;
                         photoInfo.fileSize = 0;
-                        photoInfo.videoHeight = 0;
-                        photoInfo.videoWidth = 0;
+                        photoInfo.videoHeight = downLoadInfo.getVideoHeight();
+                        photoInfo.videoWidth = downLoadInfo.getVideoWidth();
                         photoInfo.isHasPreset = 0;
                         photoInfo.isEncrypted = 1;
                         photoInfo.onLine = 0;

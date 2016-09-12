@@ -223,8 +223,8 @@
     <string name="downloading">Downloading Now</string>
     <string name="downloading_percent">Downloading %1$d</string>
     <string name="finish_download">Download Successful!</string>
-    <string name="download_detail1">Downloaded %1$d photo(s)!</string>
-    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s), please try again later!</string>
+    <string name="download_detail1">Downloaded %1$d file(s)!</string>
+    <string name="download_detail2">Downloaded %1$d file(s), failed to download %2$d file(s), please try again later!</string>
     <!-- download end -->
 
     <!-- edit start -->

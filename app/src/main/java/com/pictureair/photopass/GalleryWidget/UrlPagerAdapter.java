@@ -74,10 +74,16 @@ public class UrlPagerAdapter extends BasePagerAdapter {
             }
 
         } else if (mResources.get(position).onLine == 0) {//本地图
-            PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
-            PictureAirLog.v("instantiateItem", "local photo : " + position + position);
-            iv.setProgressImageViewVisible(true);
-            iv.setImagePath(mResources.get(position).photoPathOrURL);
+            if (mResources.get(position).isVideo == 0) {
+                PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
+                PictureAirLog.v("instantiateItem", "local photo : " + position + position);
+                iv.setProgressImageViewVisible(true);
+                iv.setImagePath(mResources.get(position).photoPathOrURL);
+            }else{
+                iv.setUrl(Common.PHOTO_URL + mResources.get(position).photoThumbnail_512, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+                iv.disableZoom();
+                iv.setVideoType(position, photoEventListener);
+            }
 
         } else {//模糊图
             iv.setProgressImageViewVisible(false);

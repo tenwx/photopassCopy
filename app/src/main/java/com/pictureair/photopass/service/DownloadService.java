@@ -160,9 +160,13 @@ public class DownloadService extends Service {
                             PhotoInfo photoInfo = photos.get(i);
                             DownloadFileStatus fileStatus = null;
                             if (photoInfo.isVideo == 0) {
-                                fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024, photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                                fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
+                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
+                                        photoInfo.videoWidth, photoInfo.videoHeight);
                             }else{
-                                fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024, photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                                fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
+                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
+                                        photoInfo.videoWidth, photoInfo.videoHeight);
                             }
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
@@ -261,7 +265,8 @@ public class DownloadService extends Service {
 
                 for (int i = 0; i < infos.size(); i++) {
                     PhotoDownLoadInfo info = infos.get(i);
-                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "","","","0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), "");
+                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "","","","0", "0", "0",
+                            info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), "", info.getVideoWidth(),info.getVideoHeight());
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
                     addToDownloadList(fileStatus);
                 }
@@ -327,7 +332,7 @@ public class DownloadService extends Service {
                     break;
                 case FINISH_DOWNLOAD://下载结束
                     //如果下载数目一致，提示用户下载完毕，并且让service停止掉
-                    PictureAirLog.out("下载完毕,共下载了" + downed_num.get() + "张照片，失败了" + failed_num.get() + "张");
+                    PictureAirLog.out("下载完毕,共下载了" + downed_num.get() + "个文件，失败了" + failed_num.get() + "个");
                     String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num.get());
                     if (failed_num.get() >0) {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num.get(), failed_num.get());
