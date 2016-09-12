@@ -35,6 +35,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
+import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -83,7 +84,8 @@ import java.util.Locale;
  * @author bauer_bao
  */
 @SuppressLint({"FloatMath", "NewApi"})
-public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback, PWDialog.OnPWDialogClickListener {
+public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
+        PWDialog.OnPWDialogClickListener, PhotoEventListener {
     private SettingUtil settingUtil;
     //工具条
     private TextView editButton;
@@ -490,6 +492,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
+                pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
@@ -1915,5 +1918,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     break;
             }
         }
+    }
+
+    @Override
+    public void videoClick(int position) {
+        PhotoInfo info = photolist.get(position);
+        Intent intent = new Intent(this, VideoPlayerActivity.class);
+        intent.putExtra("from_story", info);
+        startActivity(intent);
     }
 }

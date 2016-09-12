@@ -110,8 +110,15 @@ public class UrlTouchImageView extends RelativeLayout {
     /**
      * 显示视频图标，并且需要回调点击事件
      */
-    public void setVideoType() {
+    public void setVideoType(final int position, final PhotoEventListener photoEventListener) {
         videoPlayImageView.setVisibility(VISIBLE);
+        videoPlayImageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PictureAirLog.out("start play video ---> onclick" + position);
+                photoEventListener.videoClick(position);
+            }
+        });
     }
 
     public void disableZoom() {

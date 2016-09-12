@@ -31,6 +31,7 @@ import java.util.List;
 public class UrlPagerAdapter extends BasePagerAdapter {
 
     private int defaultType;
+    private PhotoEventListener photoEventListener;
     public UrlPagerAdapter(Context context,List<PhotoInfo> resources){
         super(context, resources);
         this.defaultType = 0;
@@ -48,7 +49,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
-        final UrlTouchImageView iv = new UrlTouchImageView(mContext);
+        UrlTouchImageView iv = new UrlTouchImageView(mContext);
         iv.setDefaultType(defaultType);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {//网络图
             iv.setProgressImageViewVisible(true);
@@ -69,7 +70,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
                 PictureAirLog.out("show video info");
                 iv.setUrl(Common.PHOTO_URL + mResources.get(position).photoThumbnail_512, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
                 iv.disableZoom();
-                iv.setVideoType();
+                iv.setVideoType(position, photoEventListener);
             }
 
         } else if (mResources.get(position).onLine == 0) {//本地图
@@ -85,5 +86,9 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
         return iv;
+    }
+
+    public void setOnPhotoEventListener(PhotoEventListener listener) {
+        photoEventListener = listener;
     }
 }
