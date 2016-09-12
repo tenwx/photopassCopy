@@ -869,21 +869,24 @@ public class AppUtil {
      * @param list
      * @return
      */
-    public static ArrayList<PhotoInfo> insterSortFavouritePhotos(ArrayList<PhotoInfo> list) {
-        PictureAirLog.d("inster sort", list.size() + "");
+    public static ArrayList<PhotoInfo> insertSortFavouritePhotos(ArrayList<PhotoInfo> list) {
+        PictureAirLog.d("insert sort", list.size() + "");
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         boolean findPosition = false;
         for (int i = 0; i < list.size(); i++) {
             if (resultArrayList.size() > 1) {//从第三个开始插入
                 for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
                     if (resultArrayList.get(j).locationName.equals(list.get(i).locationName) &&
-                            !resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
-                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime) &&
-                            !resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
-                        findPosition = true;
-                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
-                        resultArrayList.add(j, list.get(i));
-                        break;
+                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime)) {
+                        if (resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
+                                resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
+
+                        } else {
+                            findPosition = true;
+                            list.get(i).sectionId = resultArrayList.get(j).sectionId;
+                            resultArrayList.add(j + 1, list.get(i));
+                            break;
+                        }
                     }
                 }
 
@@ -903,7 +906,8 @@ public class AppUtil {
                 if (i == 0) {
                     list.get(i).sectionId = 0;
                 } else if (i == 1) {
-                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)) {
+                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)
+                            && resultArrayList.get(0).shootTime.equals(list.get(i).shootTime)) {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId;
                     } else {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId + 1;
@@ -912,7 +916,7 @@ public class AppUtil {
                 resultArrayList.add(list.get(i));
             }
         }
-        PictureAirLog.d("inster sort", resultArrayList.size() + "");
+        PictureAirLog.d("insert sort", resultArrayList.size() + "");
         return resultArrayList;
     }
 

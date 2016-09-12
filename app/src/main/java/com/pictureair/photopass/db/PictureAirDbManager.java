@@ -646,14 +646,10 @@ public class PictureAirDbManager {
                     // 获取图片路径
                     PhotoInfo photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                     for (int i = 0; i < locationItemInfos.size(); i++) {
-                        PictureAirLog.out("find favorite location---->");
                         if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
-                            PictureAirLog.out("found favorite location---->");
                             if (language.equals(Common.ENGLISH)) {
-                                PictureAirLog.out("found favorite endligh location---->");
                                 photoInfo.locationName = locationItemInfos.get(i).placeENName;
                             } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                                PictureAirLog.out("found favorite chinese location---->");
                                 photoInfo.locationName = locationItemInfos.get(i).placeCHName;
                             }
                             break;
@@ -661,10 +657,8 @@ public class PictureAirDbManager {
                     }
                     if (TextUtils.isEmpty(photoInfo.locationName)) {
                         if (language.equals(Common.ENGLISH)) {
-                            PictureAirLog.out("found favorite endligh location---->");
                             photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeENName;
                         } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                            PictureAirLog.out("found favorite chinese location---->");
                             photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeCHName;
                         }
                     }
@@ -1001,7 +995,7 @@ public class PictureAirDbManager {
         database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
 
         //删除过期的数据之后，再查询photo表的信息
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = ? and isVideo = 0 order by shootOn desc", new String[]{hasBought ? "1" : "0"});
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = ? order by shootOn desc", new String[]{hasBought ? "1" : "0"});
         PhotoInfo photoInfo;
         if (cursor.moveToFirst()) {//判断是否photo数据
             do {

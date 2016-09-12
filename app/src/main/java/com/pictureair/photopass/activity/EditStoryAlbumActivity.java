@@ -259,7 +259,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void run() {
 				originalAlbumArrayList = pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
-				albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(originalAlbumArrayList));
+				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList));
 				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
 			}
 		}).start();
@@ -286,17 +286,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					itemOnClick(position, view);
 				} else {//预览模式，点击进入大图预览
 					PictureAirLog.out("select" + position);
-					if (albumArrayList.get(position).isVideo == 1) {
+					if (albumArrayList.get(position).isVideo == 1 && albumArrayList.get(position).isPayed == 0) {
 						PhotoInfo info = albumArrayList.get(position);
-						if (albumArrayList.get(position).isPayed == 0) {
-							Intent intent = new Intent(EditStoryAlbumActivity.this, VideoPlayerActivity.class);
-							intent.putExtra("from_story", info);
-							startActivity(intent);
-						} else {
-							Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
-							intent.putExtra("videoInfo", info);
-							startActivity(intent);
-						}
+						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
+						intent.putExtra("videoInfo", info);
+						startActivity(intent);
 					} else {
 						Intent i = new Intent();
 						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);

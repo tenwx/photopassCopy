@@ -826,7 +826,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                    photolist.addAll(AppUtil.insertSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this,
                                     SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""),
                                     simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
@@ -834,7 +834,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else if (tabName.equals("editStory")){//编辑PP照片页面
                     String ppCode = bundle.getString("ppCode");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                    photolist.addAll(AppUtil.insertSortFavouritePhotos(
                             pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
