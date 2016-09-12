@@ -214,6 +214,10 @@ public class StoryFragment extends Fragment {
 				 */
 				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
 				intent.putExtra("videoInfo", info);
+				Bundle bundle = new Bundle();
+				bundle.putInt("position", position);
+				bundle.putString("tab", tabName[tab]);
+				intent.putExtra("bundle", bundle);
 				startActivity(intent);
 
 			} else {

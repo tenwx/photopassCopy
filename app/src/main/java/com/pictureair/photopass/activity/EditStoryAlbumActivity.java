@@ -290,6 +290,10 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						PhotoInfo info = albumArrayList.get(position);
 						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
 						intent.putExtra("videoInfo", info);
+						Bundle bundle = new Bundle();
+						bundle.putInt("position", position);
+						bundle.putString("tab", "editStory");
+						intent.putExtra("bundle", bundle);
 						startActivity(intent);
 					} else {
 						Intent i = new Intent();
