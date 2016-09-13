@@ -262,6 +262,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     ll_loading.setVisibility(View.GONE);
                     rl_loading.setVisibility(View.VISIBLE);
                 }
+                dismissPWProgressDialog();
                 break;
 
             case REMOVE_FAILED_PHOTOS://表示已删除所有下载失败的照片，更新页面

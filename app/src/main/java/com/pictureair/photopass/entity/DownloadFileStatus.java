@@ -62,6 +62,11 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
+        if (url == null) url = "";
+        if (photoThumbnail_512 == null) photoThumbnail_512 = "";
+        if (photoThumbnail_1024 == null) photoThumbnail_1024 = "";
+        if (originalUrl == null) originalUrl = "";
+        if (photoThumbnail == null) photoThumbnail = "";
         this.url = url;
         this.photoThumbnail_512 = photoThumbnail_512;
         this.photoThumbnail_1024 = photoThumbnail_1024;
@@ -81,6 +86,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setUrl(String url) {
+        if (url == null) url = "";
         this.url = url;
     }
 
@@ -89,6 +95,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setPhotoThumbnail_512(String photoThumbnail_512) {
+        if (photoThumbnail_512 == null) photoThumbnail_512 = "";
         this.photoThumbnail_512 = photoThumbnail_512;
     }
 
@@ -97,6 +104,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setPhotoThumbnail_1024(String photoThumbnail_1024) {
+        if (photoThumbnail_1024 == null) photoThumbnail_1024 = "";
         this.photoThumbnail_1024 = photoThumbnail_1024;
     }
 
@@ -105,6 +113,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setOriginalUrl(String originalUrl) {
+        if (originalUrl == null) originalUrl = "";
         this.originalUrl = originalUrl;
     }
 
@@ -113,6 +122,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setNewUrl(String newUrl) {
+        if (newUrl == null) newUrl = "";
         this.newUrl = newUrl;
     }
 
@@ -186,6 +196,7 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setPhotoThumbnail(String photoThumbnail) {
+        if (photoThumbnail == null) photoThumbnail = "";
         this.photoThumbnail = photoThumbnail;
     }
 

@@ -111,7 +111,12 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         PictureAirLog.out("DownloadService ----------> onStartCommand");
         mFinish = false;
-        fixedThreadPool.execute(new AddDownloadTask(intent));
+        if (intent != null) {
+            fixedThreadPool.execute(new AddDownloadTask(intent));
+        }else{
+            forceFinish();
+            stopSelf();
+        }
         return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
 
@@ -134,10 +139,10 @@ public class DownloadService extends Service {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
                                 DownloadFileStatus fileStatus = downloadList.get(j);
-                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                                if (fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
-                                }else if(fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
+                                }else if(fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
                                 }
@@ -219,9 +224,11 @@ public class DownloadService extends Service {
                 }
 
             } else {
+                forceFinish();
                 stopSelf();//下载服务停止
             }
         } else {
+            forceFinish();
             stopSelf();//下载服务停止
         }
     }
@@ -716,6 +723,12 @@ public class DownloadService extends Service {
 
     public boolean isDownloading (){
         return isDownloading;
+    }
+
+    private void forceFinish(){
+        if (adapterHandler != null){
+            adapterHandler.sendEmptyMessage(DownLoadingFragment.DOWNLOAD_FINISH);
+        }
     }
 
     public boolean downloadListContainsFailur(){
