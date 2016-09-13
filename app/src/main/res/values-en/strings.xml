@@ -388,6 +388,11 @@
     <string name="release_to_refresh">Release loading&#8230;</string>
     <string name="refreshing">Loading&#8230;</string>
     <string name="activated_card">Activated Disney Park Ticket / PhotoPass Card: </string>
+    <string name="use_ppp_upgrade">使用您的迪士尼乐拍通一卡通挑选以下一张迪士尼门票/乐拍通卡进行升级：</string>
+    <string name="use_ppp_upgrade_read_video">查看魔法动画</string>
+    <string name="use_ppp_upgrade_read_photo">查看您的清晰照片</string>
+    <string name="use_ppp_upgrade_pp_code">\n%1$s %2$s\n</string>
+    <string name="use_ppp_upgrade_or">或者</string>
     <!-- ppp end -->
 
     <!-- pp start -->

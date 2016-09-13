@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -97,6 +98,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private static final int TYPE_NOT_SAME_DIALOG = 333;
     private static final int BIND_PP_DIALOG = 444;
     private static final int UPDATE_TIPS_DIALOG = 555;
+    private static final int BUY_PPP_AND_UPDATE_TIP = 666;
 
     private boolean isOnResume = false;
 
@@ -244,6 +246,30 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 MyApplication.getInstance().setNeedRefreshPPPList(false);
                 dismissPWProgressDialog();
+                if (!isUseHavedPPP) {//需要显示弹框
+                    if (!TextUtils.isEmpty(MyApplication.getInstance().getBuyPPPStatus())) {
+                        String photoCode = MyApplication.getInstance().getIsBuyingPhotoPassCode();
+                        String[] codes = photoCode.split(",");
+                        String shootTime = MyApplication.getInstance().getIsBuyingPhotoShootTime();
+
+                        String photoPassInfo = String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[0]);
+                        for (int i = 1; i < codes.length; i++) {
+                            photoPassInfo += getString(R.string.use_ppp_upgrade_or) + String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
+                        }
+                        boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY);
+                        String message = getString(R.string.use_ppp_upgrade) + photoPassInfo +
+                                (isVideo ? getString(R.string.use_ppp_upgrade_read_video) : getString(R.string.use_ppp_upgrade_read_photo));
+
+                        pictureWorksDialog.setPWDialogId(BUY_PPP_AND_UPDATE_TIP)
+                                .setPWDialogMessage(message)
+                                .setPWDialogNegativeButton(null)
+                                .setPWDialogPositiveButton(R.string.dialog_ok1)
+                                .pwDilogShow();
+
+                        MyApplication.getInstance().clearIsBuyingPhotoList();
+                        MyApplication.getInstance().setBuyPPPStatus("");
+                    }
+                }
                 break;
 
             case API1.BIND_PP_FAILURE://获取失败
@@ -806,6 +832,26 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         API1.bindPPsDateToPPP(JSONArray.parseArray(ppsStr), API1.PPPlist.get(listPPPAdapter.getOnclickPosition()).PPPCode, myPPPHandler);
                     }else{
                         newToast.setTextAndShow(R.string.select_your_ppp, Common.TOAST_SHORT_TIME);
+                    }
+                    break;
+
+                case BUY_PPP_AND_UPDATE_TIP://购买完ppp之后，去选择pp升级
+                    int position = 0;
+                    if (position >= list1.size()) {
+                        return;
+                    }
+                    if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
+                        if (list1.get(position).expericePPP == 1) {//体验卡
+//                            Intent intent3 = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
+//                            intent3.putExtra("activity", "mypppactivity");
+//                            intent3.putExtra("pppCode", list1.get(position).PPPCode);
+//                            intent3.putExtra("photoCount", 1);
+//                            startActivity(intent3);
+                        } else {
+                            PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
+                            ppp = list1.get(position);
+                            API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
+                        }
                     }
                     break;
 

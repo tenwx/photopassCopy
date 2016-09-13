@@ -291,6 +291,11 @@ public class Common {
     public static final String FROM_MYPHOTOPASSPAYED = "fromMyPhotoPassBuy";
     public static final String FROM_PREVIEW_PHOTO_ACTIVITY = "fromPreviewPhotoActivity";
     public static final String FROM_PREVIEW_PHOTO_ACTIVITY_PAY = "fromPreviewPhotoActivityBuy";
+
+    //模糊图或者广告页面购买PPP
+    public static final String FROM_AD_ACTIVITY = "fromADProductActivity";
+    public static final String FROM_PREVIEW_ACTIVITY = "fromPreviewActivity";
+
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";
 

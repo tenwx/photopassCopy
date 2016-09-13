@@ -11,4 +11,25 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
+    <RelativeLayout
+        android:id="@+id/preview_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height">
+
+        <ImageView
+            android:id="@+id/video_player_back_imv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white"
+            android:alpha="0.8"/>
+
+    </RelativeLayout>
+
 </RelativeLayout>

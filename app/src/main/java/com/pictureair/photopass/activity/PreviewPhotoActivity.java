@@ -396,7 +396,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
-                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName);
+                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName, null, null);
                 if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                 } else {
@@ -459,6 +459,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 String cartId = jsonObject.getString("cartId");
+
+                myApplication.setIsBuyingPhotoInfo(null, null, photolist.get(currentPosition).photoPassCode, photolist.get(currentPosition).shootTime);
+                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_ACTIVITY);
 
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
@@ -1578,6 +1581,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             } else {
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
             }
+
+            myApplication.setBuyPPPStatus("");
             //按返回，把状态全部清除
             myApplication.clearIsBuyingPhotoList();
         }

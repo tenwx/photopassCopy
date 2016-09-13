@@ -287,6 +287,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         if (!controllerBarLL.isShown()) {
             controllerBarLL.setVisibility(View.VISIBLE);
             playOrStopButton.setVisibility(View.VISIBLE);
+            videoPlayerViewEventListener.setControllerVisible(true);
         }
     }
 
@@ -311,6 +312,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         if (controllerBarLL.isShown()) {
             controllerBarLL.setVisibility(View.GONE);
             playOrStopButton.setVisibility(View.GONE);
+            videoPlayerViewEventListener.setControllerVisible(false);
         }
     }
 

@@ -47,7 +47,10 @@ public class MyApplication extends Application {
 
     private String isBuyingPhotoId;
     private String isBuyingTabName;
+    private String isBuyingPhotoPassCode;
+    private String isBuyingPhotoShootTime;
     private String refreshViewAfterBuyBlurPhoto = "";// 记录是否购买完单张之后刷新页面
+    private String buyPPPStatus = "";//记录购买ppp的状态
 
     public Typeface typeface;//设置默认字体用
     public Typeface typefaceBold;//设置粗字体用
@@ -234,9 +237,11 @@ public class MyApplication extends Application {
     /**
      * 记录当前正在购买的photopass的图片信息
      */
-    public void setIsBuyingPhotoInfo(String photoId, String tabName) {
+    public void setIsBuyingPhotoInfo(String photoId, String tabName, String isBuyingPhotoPassCode, String isBuyingPhotoShootTime) {
         this.isBuyingPhotoId = photoId;
         this.isBuyingTabName = tabName;
+        this.isBuyingPhotoPassCode = isBuyingPhotoPassCode;
+        this.isBuyingPhotoShootTime = isBuyingPhotoShootTime;
     }
 
     /**
@@ -258,11 +263,29 @@ public class MyApplication extends Application {
     }
 
     /**
+     * 获取当前正在购买的photopass的code
+     * @return
+     */
+    public String getIsBuyingPhotoPassCode() {
+        return isBuyingPhotoPassCode;
+    }
+
+    /**
+     * 获取当前正在购买的photopass的对应时间
+     * @return
+     */
+    public String getIsBuyingPhotoShootTime() {
+        return isBuyingPhotoShootTime;
+    }
+
+    /**
      * 清空正在购买的图片信息
      */
     public void clearIsBuyingPhotoList() {
         isBuyingPhotoId = null;
         isBuyingTabName = null;
+        isBuyingPhotoPassCode = null;
+        isBuyingPhotoShootTime = null;
     }
 
 
@@ -271,8 +294,7 @@ public class MyApplication extends Application {
      *
      * @param refreshViewAfterBuyBlurPhoto
      */
-    public void setRefreshViewAfterBuyBlurPhoto(
-            String refreshViewAfterBuyBlurPhoto) {
+    public void setRefreshViewAfterBuyBlurPhoto(String refreshViewAfterBuyBlurPhoto) {
         this.refreshViewAfterBuyBlurPhoto = refreshViewAfterBuyBlurPhoto;
     }
 
@@ -283,6 +305,22 @@ public class MyApplication extends Application {
      */
     public String getRefreshViewAfterBuyBlurPhoto() {
         return refreshViewAfterBuyBlurPhoto;
+    }
+
+    /**
+     * 获取当前购买ppp的状态
+     * @return
+     */
+    public String getBuyPPPStatus() {
+        return buyPPPStatus;
+    }
+
+    /**
+     * 设置当前购买ppp的状态
+     * @param buyPPPStatus
+     */
+    public void setBuyPPPStatus(String buyPPPStatus) {
+        this.buyPPPStatus = buyPPPStatus;
     }
 
     /**

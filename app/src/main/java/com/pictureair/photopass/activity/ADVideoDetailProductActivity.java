@@ -124,6 +124,9 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     String cartId = jsonObject.getString("cartId");
                     dismissPWProgressDialog();
                     if (isBuyNow) {
+                        MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.photoPassCode, videoInfo.shootTime);
+                        MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
+
                         //生成订单
                         Intent intent = new Intent(ADVideoDetailProductActivity.this, SubmitOrderActivity.class);
                         ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
@@ -328,6 +331,9 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     protected void onDestroy() {
         pwVideoPlayerManagerView.stopVideo();
         adVideoHandler.removeCallbacksAndMessages(null);
+
+        MyApplication.getInstance().clearIsBuyingPhotoList();
+        MyApplication.getInstance().setBuyPPPStatus("");
         super.onDestroy();
     }
 
@@ -382,6 +388,11 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
         }
+    }
+
+    @Override
+    public void setControllerVisible(boolean visible) {
+
     }
 
     /**

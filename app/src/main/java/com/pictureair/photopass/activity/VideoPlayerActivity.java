@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -27,6 +28,7 @@ import java.io.File;
 public class VideoPlayerActivity extends BaseActivity implements OnClickListener, OnVideoPlayerViewEventListener {
     private final static String TAG = "VideoPlayerActivity";
     private PWVideoPlayerManagerView pwVideoPlayerManagerView;
+    private ImageView backImageView;
 
     private PhotoInfo videoInfo;
     private boolean isOnline ;//网络true || 本地false
@@ -57,6 +59,9 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         pwVideoPlayerManagerView.setOnClickListener(this);
         pwVideoPlayerManagerView.setOnVideoPlayerViewEventListener(this);
 
+        backImageView = (ImageView) findViewById(R.id.video_player_back_imv);
+        backImageView.setOnClickListener(this);
+
         Configuration cf = getResources().getConfiguration();
         adjustScreenUI(cf.orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
@@ -81,6 +86,11 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     // 设置可以全屏
     @Override
     public void setVideoScale(int flag) {
+    }
+
+    @Override
+    public void setControllerVisible(boolean visible) {
+        backImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -142,6 +152,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 } else {
                     pwVideoPlayerManagerView.pausedVideo();
                 }
+                break;
+
+            case R.id.video_player_back_imv:
+                finish();
                 break;
 
             default:

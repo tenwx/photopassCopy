@@ -7,4 +7,6 @@ public interface OnVideoPlayerViewEventListener {
 
     void setVideoScale(int flag);//设置视频播放尺寸
 
+    void setControllerVisible(boolean visible);//设置控制栏可见
+
 }
