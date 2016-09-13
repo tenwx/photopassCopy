@@ -120,6 +120,9 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             viewHolder = (HeaderViewHolder) convertView.getTag();
         }
 
+        if (list.size() == 0) {
+            return convertView;
+        }
         String headerTime = list.get(position).shootOn;
         for (int i = position; i >= 0; i--) {
             if (list.get(position).sectionId == list.get(i).sectionId) {//当前的
