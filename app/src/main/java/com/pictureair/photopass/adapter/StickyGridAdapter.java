@@ -70,6 +70,9 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         params.height = params.width;
         mViewHolder.mImageView.setLayoutParams(params);
 
+        if (list.size() == 0) {
+            return convertView;
+        }
         String photoUrl;
         if (list.get(position).onLine == 1) {
             if (list.get(position).isVideo == 1) {

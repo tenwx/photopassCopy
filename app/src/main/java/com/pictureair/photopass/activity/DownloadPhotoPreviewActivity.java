@@ -84,7 +84,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         PhotoInfo info = photolist.get(position);
         String fileName = AppUtil.getReallyFileName(info.photoPathOrURL,info.isVideo);
         PictureAirLog.e(TAG, "filename=" + fileName);
-        final File file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
+        File file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
         if (!file.exists()){
             pwToast.setTextAndShow(R.string.photo_download_not_exists,PWToast.LENGTH_SHORT);
         }else {
@@ -117,7 +117,16 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 if (msg.arg1 >= photolist.size() || msg.arg1 != currentPosition) {
                     break;
                 }
-                File file = new File(photolist.get(msg.arg1).photoPathOrURL);
+
+                PhotoInfo info = photolist.get(msg.arg1);
+                File file;
+                if (info.isVideo == 1) {//视频
+                    String fileName = AppUtil.getReallyFileName(info.photoPathOrURL,info.isVideo);
+                    file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
+                } else {//照片
+                    file = new File(info.photoPathOrURL);
+                }
+
                 //更新收藏图标
                 if (msg.arg1 == currentPosition && file.exists()) {//数据库查询的数据是true，并且对应的index还是之前的位置
                     shareImgBtn.setVisibility(View.VISIBLE);
@@ -389,11 +398,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 break;
 
             case R.id.download_preview_share:
-                sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
-                        photolist.get(mViewPager.getCurrentItem()).photoThumbnail,
-                        "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE,
-                        photolist.get(mViewPager.getCurrentItem()).isEncrypted, previewPhotoHandler);
-
+                sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
 

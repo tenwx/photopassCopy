@@ -8,7 +8,7 @@ import android.os.Environment;
 public class Common {
     public static final String APP_NAME = "appName";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
-    public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
+    public static final String TINGYUN_KEY = "3186b0cffd3b49c0b7e6cdf472300437";//听云的key
 
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
@@ -131,6 +131,7 @@ public class Common {
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
     public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
+    public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
 
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";

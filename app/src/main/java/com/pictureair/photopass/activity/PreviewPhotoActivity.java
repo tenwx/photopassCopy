@@ -1265,18 +1265,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                     } else {//编辑前
-                        //判断图片是本地还是网路图片
-                        if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
-                                    photolist.get(mViewPager.getCurrentItem()).photoThumbnail,
-                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE,
-                                    photolist.get(mViewPager.getCurrentItem()).isEncrypted, previewPhotoHandler);
-                        } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
-                        }
-
+                        sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                     }
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {

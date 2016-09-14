@@ -230,10 +230,6 @@
 
         <!-- Disney Video start -->
         <activity
-            android:name=".activity.IsOneGoToVideoActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- Disney Video end -->

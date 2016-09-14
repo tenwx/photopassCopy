@@ -191,7 +191,7 @@ public final class CameraManager {
      */
     public synchronized void setTorch(boolean newSetting) {
         OpenCamera theCamera = camera;
-        if (theCamera != null) {
+        if (theCamera != null && previewing) {//在预览中的时候，才可以设置闪光灯
             if (newSetting != configManager.getTorchState(theCamera.getCamera())) {
                 boolean wasAutoFocusManager = autoFocusManager != null;
                 if (wasAutoFocusManager) {
