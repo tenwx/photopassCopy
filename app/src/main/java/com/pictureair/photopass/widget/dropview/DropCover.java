@@ -165,7 +165,9 @@ public class DropCover extends View implements Callback{
      */
     public void update(float x, float y) {
     	if (touchMode == TOUCH_DOWN) {
-    		mOnDragCompeteListener.onVisible(false);
+            if (mOnDragCompeteListener != null) {
+                mOnDragCompeteListener.onVisible(false);
+            }
     		touchMode = TOUCH_MOVE;
 		}
     	triangle.deltaX = x - mBaseX;
@@ -230,30 +232,17 @@ public class DropCover extends View implements Callback{
             double cos = triangle.deltaX / triangle.hypotenuse;
 
             // A点
-            mPath.moveTo(
-                    (float) (mBaseX - mStrokeWidth * sin),
-                    (float) (mBaseY - mStrokeWidth * cos)
-            );
+            mPath.moveTo((float) (mBaseX - mStrokeWidth * sin), (float) (mBaseY - mStrokeWidth * cos));
             // B点
-            mPath.lineTo(
-                    (float) (mBaseX + mStrokeWidth * sin),
-                    (float) (mBaseY + mStrokeWidth * cos)
-            );
+            mPath.lineTo((float) (mBaseX + mStrokeWidth * sin), (float) (mBaseY + mStrokeWidth * cos));
             // C点
-            mPath.quadTo(
-                    (mBaseX + mTargetX) / 2, (mBaseY + mTargetY) / 2,
-                    (float) (mTargetX + mRadius * sin), (float) (mTargetY + mRadius * cos)
-            );
+            mPath.quadTo((mBaseX + mTargetX) / 2, (mBaseY + mTargetY) / 2,
+                    (float) (mTargetX + mRadius * sin), (float) (mTargetY + mRadius * cos));
             // D点
-            mPath.lineTo(
-                    (float) (mTargetX - mRadius * sin),
-                    (float) (mTargetY - mRadius * cos)
-            );
+            mPath.lineTo((float) (mTargetX - mRadius * sin), (float) (mTargetY - mRadius * cos));
             // A点
-            mPath.quadTo(
-                    (mBaseX + mTargetX) / 2, (mBaseY + mTargetY) / 2,
-                    (float) (mBaseX - mStrokeWidth * sin), (float) (mBaseY - mStrokeWidth * cos)
-            );
+            mPath.quadTo((mBaseX + mTargetX) / 2, (mBaseY + mTargetY) / 2,
+                    (float) (mBaseX - mStrokeWidth * sin), (float) (mBaseY - mStrokeWidth * cos));
             canvas.drawPath(mPath, mPaint);
     }
 
@@ -299,7 +288,9 @@ public class DropCover extends View implements Callback{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mOnDragCompeteListener.onVisible(true);
+                if (mOnDragCompeteListener != null){
+                    mOnDragCompeteListener.onVisible(true);
+                }
                 touchMode = TOUCH_CANCEL;
             }
         });

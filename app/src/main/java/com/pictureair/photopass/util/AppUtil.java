@@ -1582,6 +1582,9 @@ public class AppUtil {
      * @return 文件名
      */
     public static String getReallyFileName(String url,int isVideo) {
+        if (TextUtils.isEmpty(url)) {
+            return "";
+        }
         String filename = url;
         if (isVideo == 0){
             if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
