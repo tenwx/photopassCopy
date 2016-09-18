@@ -121,6 +121,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public boolean onError(MediaPlayer mp, int what, int extra) {
         PictureAirLog.d(TAG, "===> onError");
         videoPlayerView.stopPlayback();
+        handler.removeMessages(PROGRESS_CHANGED);
         return false;
     }
 
@@ -245,6 +246,9 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public void resumeVideo() {
         PictureAirLog.out("resume video");
         if (isPaused) {
+            if (isPlayFinished) {
+                playedTime = 0;
+            }
             videoPlayerView.seekTo(playedTime);
             videoPlayerView.start();
             if (videoPlayerView.isPlaying()) {
