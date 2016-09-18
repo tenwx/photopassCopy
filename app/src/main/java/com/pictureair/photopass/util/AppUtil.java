@@ -97,6 +97,19 @@ public class AppUtil {
     private final static String TAG = "AppUtil";
 
     /**
+     * 没有网络
+     */
+    public static final int NETWORKTYPE_INVALID = 0;
+    /**
+     * 流量网络，或统称为快速网络
+     */
+    public static final int NETWORKTYPE_MOBILE = 1;
+    /**
+     * wifi网络
+     */
+    public static final int NETWORKTYPE_WIFI = 2;
+
+    /**
      * 密码为空
      */
     public static final int PWD_EMPTY = 3;
@@ -122,19 +135,15 @@ public class AppUtil {
      */
     public static final int PWD_HEAD_OR_FOOT_IS_SPACE = 8;
 
+    /**
+     * 水平留白
+     */
+    public static final int HORIZONTAL_MARGIN = 9;
 
     /**
-     * 没有网络
+     * 垂直留白
      */
-    public static final int NETWORKTYPE_INVALID = 0;
-    /**
-     * 流量网络，或统称为快速网络
-     */
-    public static final int NETWORKTYPE_MOBILE = 1;
-    /**
-     * wifi网络
-     */
-    public static final int NETWORKTYPE_WIFI = 2;
+    public static final int VERTICAL_MARGIN = 10;
 
     //当前网络类型
     public static int mNetWorkType;
@@ -860,21 +869,24 @@ public class AppUtil {
      * @param list
      * @return
      */
-    public static ArrayList<PhotoInfo> insterSortFavouritePhotos(ArrayList<PhotoInfo> list) {
-        PictureAirLog.d("inster sort", list.size() + "");
+    public static ArrayList<PhotoInfo> insertSortFavouritePhotos(ArrayList<PhotoInfo> list) {
+        PictureAirLog.d("insert sort", list.size() + "");
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         boolean findPosition = false;
         for (int i = 0; i < list.size(); i++) {
             if (resultArrayList.size() > 1) {//从第三个开始插入
                 for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
                     if (resultArrayList.get(j).locationName.equals(list.get(i).locationName) &&
-                            !resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
-                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime) &&
-                            !resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
-                        findPosition = true;
-                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
-                        resultArrayList.add(j, list.get(i));
-                        break;
+                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime)) {
+                        if (resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
+                                resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
+
+                        } else {
+                            findPosition = true;
+                            list.get(i).sectionId = resultArrayList.get(j).sectionId;
+                            resultArrayList.add(j + 1, list.get(i));
+                            break;
+                        }
                     }
                 }
 
@@ -894,7 +906,8 @@ public class AppUtil {
                 if (i == 0) {
                     list.get(i).sectionId = 0;
                 } else if (i == 1) {
-                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)) {
+                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)
+                            && resultArrayList.get(0).shootTime.equals(list.get(i).shootTime)) {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId;
                     } else {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId + 1;
@@ -903,7 +916,7 @@ public class AppUtil {
                 resultArrayList.add(list.get(i));
             }
         }
-        PictureAirLog.d("inster sort", resultArrayList.size() + "");
+        PictureAirLog.d("insert sort", resultArrayList.size() + "");
         return resultArrayList;
     }
 
@@ -1592,11 +1605,11 @@ public class AppUtil {
             } else {
                 filename = filename.substring(filename.lastIndexOf("/") + 1) + ".jpg";
             }
-        } else {
+        } else {//如果是视频数据，文件名统一经过md5处理
             if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
-                filename = filename.substring(filename.lastIndexOf("/") + 1);
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1));
             } else {
-                filename = filename.substring(filename.lastIndexOf("/") + 1) + ".mp4";
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1)) + ".mp4";
             }
         }
         return filename;
@@ -1732,5 +1745,21 @@ public class AppUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 根据宽高比例比较获取留白方向
+     * @param targetW 比较的view
+     * @param targetH
+     * @param comparedW 被比较的view
+     * @param comparedH
+     * @return
+     */
+    public static int getOrientationMarginByAspectRatio(int targetW, int targetH, int comparedW, int comparedH) {
+        if (targetH / (float) targetW > comparedH / (float) comparedW) {//左右会留白
+            return HORIZONTAL_MARGIN;
+        } else {//上下会留白
+            return VERTICAL_MARGIN;
+        }
     }
 }

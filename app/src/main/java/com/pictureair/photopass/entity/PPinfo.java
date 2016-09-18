@@ -1,5 +1,6 @@
 package com.pictureair.photopass.entity;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PPinfo {
@@ -9,7 +10,7 @@ public class PPinfo {
 	private String shootDate;//shootDate
 	private int isHidden;//是否已经隐藏（0否，1是）
 	private String location;//图片位置
-	private List<String> urlList;//图片路径
+	private List<HashMap<String, String>> urlList;//图片路径
 	private List<PhotoInfo> selectPhotoItemInfos;//用于点进去看图片详情
 	
 	public int isSelected;//0，未选中，1，选中，2，不可选    DayOfPP里面
@@ -62,11 +63,11 @@ public class PPinfo {
 		this.location = location;
 	}
 
-	public List<String> getUrlList() {
+	public List<HashMap<String, String>> getUrlList() {
 		return urlList;
 	}
 
-	public void setUrlList(List<String> urlList) {
+	public void setUrlList(List<HashMap<String, String>> urlList) {
 		this.urlList = urlList;
 	}
 
@@ -86,10 +87,8 @@ public class PPinfo {
 		this.isSelected = isSelected;
 	}
 
-	public PPinfo(String ppCode, int photoCount, int isUpgrade,
-			String shootDate, int isHidden, String location,
-			List<String> urlList, List<PhotoInfo> selectPhotoItemInfos,
-			int isSelected) {
+	public PPinfo(String ppCode, int photoCount, int isUpgrade, String shootDate, int isHidden, String location,
+				  List<HashMap<String, String>> urlList, List<PhotoInfo> selectPhotoItemInfos, int isSelected) {
 		super();
 		this.ppCode = ppCode;
 		this.photoCount = photoCount;

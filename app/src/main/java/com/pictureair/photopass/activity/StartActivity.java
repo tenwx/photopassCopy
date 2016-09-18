@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.networkbench.agent.impl.NBSAppAgent;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -53,6 +54,10 @@ public class StartActivity extends BaseActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        //初始化听云统计，必须放入工程的入口Startactivity
+        NBSAppAgent.setLicenseKey(Common.TINGYUN_KEY).withLocationServiceEnabled(true).start(this.getApplicationContext());
+
         ll_update = (LinearLayout) findViewById(R.id.ll_update);
         img_update = (ImageView) findViewById(R.id.img_update);
         spinner = (AnimationDrawable) img_update.getBackground();

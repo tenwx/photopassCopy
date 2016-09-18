@@ -31,6 +31,7 @@ import java.util.List;
 public class UrlPagerAdapter extends BasePagerAdapter {
 
     private int defaultType;
+    private PhotoEventListener photoEventListener;
     public UrlPagerAdapter(Context context,List<PhotoInfo> resources){
         super(context, resources);
         this.defaultType = 0;
@@ -48,35 +49,52 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
-        final UrlTouchImageView iv = new UrlTouchImageView(mContext);
+        UrlTouchImageView iv = new UrlTouchImageView(mContext);
         iv.setDefaultType(defaultType);
-        if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
+        if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {//网络图
             iv.setProgressImageViewVisible(true);
-            //1.获取需要显示文件的文件名
-            String fileString = AppUtil.getReallyFileName(mResources.get(position).photoThumbnail_1024, 0);
-            //2、判断文件是否存在sd卡中
-            File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
-            if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
-                PictureAirLog.out("file in sd card");
-                iv.setImagePath(file.toString());
+            if (mResources.get(position).isVideo == 0) {//照片
+                //1.获取需要显示文件的文件名
+                String fileString = AppUtil.getReallyFileName(mResources.get(position).photoThumbnail_1024, 0);
+                //2、判断文件是否存在sd卡中
+                File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
+                if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
+                    PictureAirLog.out("file in sd card");
+                    iv.setImagePath(file.toString());
 
-            } else {
-                PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
-                iv.setUrl(mResources.get(position).photoThumbnail_1024, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+                } else {
+                    PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
+                    iv.setUrl(mResources.get(position).photoThumbnail_1024, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+                }
+            } else {//视频
+                PictureAirLog.out("show video info");
+                iv.setUrl(Common.PHOTO_URL + mResources.get(position).photoThumbnail_512, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+                iv.disableZoom();
+                iv.setVideoType(position, photoEventListener);
             }
 
-        } else if (mResources.get(position).onLine == 0) {
-            PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
-            PictureAirLog.v("instantiateItem", "local photo : " + position + position);
-            iv.setProgressImageViewVisible(true);
-            iv.setImagePath(mResources.get(position).photoPathOrURL);
+        } else if (mResources.get(position).onLine == 0) {//本地图
+            if (mResources.get(position).isVideo == 0) {
+                PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
+                PictureAirLog.v("instantiateItem", "local photo : " + position + position);
+                iv.setProgressImageViewVisible(true);
+                iv.setImagePath(mResources.get(position).photoPathOrURL);
+            }else{
+                iv.setUrl(Common.PHOTO_URL + mResources.get(position).photoThumbnail_512, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+                iv.disableZoom();
+                iv.setVideoType(position, photoEventListener);
+            }
 
-        } else {
+        } else {//模糊图
             iv.setProgressImageViewVisible(false);
         }
 
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
         return iv;
+    }
+
+    public void setOnPhotoEventListener(PhotoEventListener listener) {
+        photoEventListener = listener;
     }
 }

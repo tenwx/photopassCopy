@@ -35,7 +35,9 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
      *  failedTime      失败时间（不用了）
      *  success         下载状态，表示状态 下载成功  下载失败  下载中
      * */
-    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD + "(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text,isVideo integer,failedTime text,success text)";
+    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD + "(_id integer primary key autoincrement," +
+            "userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text," +
+            "isVideo integer,failedTime text,success text,photoThumbnail_512 text,photoThumbnail_1024 text,videoWidth integer,videoHeight integer)";
 
     public PictureAirDBHelper(Context context) {
         this(context, Common.PHOTOPASS_INFO_NAME);
@@ -262,6 +264,10 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         }
 
         if (upgradeVersion == 2) {
+            db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD photoThumbnail_512 text;");
+            db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD photoThumbnail_1024 text;");
+            db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoWidth integer default '0';");
+            db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoHeight integer default '0';");
             upgradeVersion = 3;
         }
 

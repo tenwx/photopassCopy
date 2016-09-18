@@ -36,6 +36,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
+import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -84,7 +85,8 @@ import java.util.Locale;
  * @author bauer_bao
  */
 @SuppressLint({"FloatMath", "NewApi"})
-public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback, PWDialog.OnPWDialogClickListener {
+public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
+        PWDialog.OnPWDialogClickListener, PhotoEventListener {
     private SettingUtil settingUtil;
     //工具条
     private TextView editButton;
@@ -395,7 +397,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
-                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName);
+                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName, null, null);
                 if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                 } else {
@@ -459,6 +461,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 String cartId = jsonObject.getString("cartId");
 
+                myApplication.setIsBuyingPhotoInfo(null, null, photolist.get(currentPosition).photoPassCode, photolist.get(currentPosition).shootTime);
+                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_ACTIVITY);
+
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
                 ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
@@ -491,6 +496,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
+                pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
@@ -828,7 +834,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                    photolist.addAll(AppUtil.insertSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this,
                                     SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""),
                                     simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
@@ -836,7 +842,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else if (tabName.equals("editStory")){//编辑PP照片页面
                     String ppCode = bundle.getString("ppCode");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                    photolist.addAll(AppUtil.insertSortFavouritePhotos(
                             pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
@@ -889,13 +895,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
                 while (photoInfoIterator.hasNext()) {
                     PhotoInfo info = photoInfoIterator.next();
-                    if (info.isVideo == 1) {
+                    if (info.isVideo == 1 && info.isPayed == 0) {
                         photoInfoIterator.remove();
                     }
                 }
                 PictureAirLog.out("photolist size ---->" + photolist.size());
                 PictureAirLog.out("currentPosition ---->" + currentPosition);
                 currentPosition = photolist.indexOf(currentPhotoInfo);
+                PictureAirLog.out("photoid--->" + photolist.get(currentPosition).photoId);
                 PictureAirLog.out("currentPosition ---->" + currentPosition);
                 PictureAirLog.v(TAG, "photo size is " + photolist.size());
                 PictureAirLog.v(TAG, "thumbnail is " + photolist.get(currentPosition).photoThumbnail);
@@ -1052,6 +1059,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
             touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
+        }
+
+        if (photoInfo.isVideo == 1) {
+            editButton.setVisibility(View.GONE);
+            makegiftButton.setVisibility(View.GONE);
+        } else {
+            editButton.setVisibility(View.VISIBLE);
+            makegiftButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1255,18 +1270,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                     } else {//编辑前
-                        //判断图片是本地还是网路图片
-                        if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
-                                    photolist.get(mViewPager.getCurrentItem()).photoThumbnail,
-                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE,
-                                    photolist.get(mViewPager.getCurrentItem()).isEncrypted, previewPhotoHandler);
-                        } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
-                        }
-
+                        sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                     }
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
@@ -1571,6 +1577,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             } else {
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
             }
+
+            myApplication.setBuyPPPStatus("");
             //按返回，把状态全部清除
             myApplication.clearIsBuyingPhotoList();
         }
@@ -1915,5 +1923,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     break;
             }
         }
+    }
+
+    @Override
+    public void videoClick(int position) {
+        PhotoInfo info = photolist.get(position);
+        Intent intent = new Intent(this, VideoPlayerActivity.class);
+        intent.putExtra("from_story", info);
+        startActivity(intent);
     }
 }

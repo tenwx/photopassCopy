@@ -8,7 +8,7 @@ import android.os.Environment;
 public class Common {
     public static final String APP_NAME = "appName";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
-    public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
+    public static final String TINGYUN_KEY = "3186b0cffd3b49c0b7e6cdf472300437";//听云的key
 
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
@@ -134,6 +134,7 @@ public class Common {
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
     public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
+    public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
 
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
@@ -211,7 +212,6 @@ public class Common {
     public static final String PPS = "pps";
     public static final String ppp1 = "ppp";
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
-    public static final String LAST_UPDATE_VIDEO_TIME = "lastUpdateVideoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference
@@ -262,7 +262,7 @@ public class Common {
     public static final String FIRST_START_ACTIVITY_INFO_TABLE = "first_start_activity";
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
-    public static final int PHOTOPASS_INFO_VERSION = 2;
+    public static final int PHOTOPASS_INFO_VERSION = 3;
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
     public static final String AD_LOCATION = "ad_location";
     public static final String THREAD_INFO = "thread_info";
@@ -295,6 +295,11 @@ public class Common {
     public static final String FROM_MYPHOTOPASSPAYED = "fromMyPhotoPassBuy";
     public static final String FROM_PREVIEW_PHOTO_ACTIVITY = "fromPreviewPhotoActivity";
     public static final String FROM_PREVIEW_PHOTO_ACTIVITY_PAY = "fromPreviewPhotoActivityBuy";
+
+    //模糊图或者广告页面购买PPP
+    public static final String FROM_AD_ACTIVITY = "fromADProductActivity";
+    public static final String FROM_PREVIEW_ACTIVITY = "fromPreviewActivity";
+
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";
 

@@ -447,7 +447,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
             tv_selectAll.setText(R.string.edit_story_all);
             selectAll=false;
-            ll_pop.setVisibility(View.GONE);
             ll_pop.startAnimation(animationOut);
         }
     }

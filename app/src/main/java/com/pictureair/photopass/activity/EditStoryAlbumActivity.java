@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,6 +35,7 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private ImageView backRelativeLayout;
 	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, titleTextView, editTextView;
 	private LinearLayout editBarLinearLayout;
-	private GridView pinnedSectionListView;
+	private StickyGridHeadersGridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
 	private RelativeLayout noCountView;
 	private TextView noCountTextView;
@@ -231,7 +231,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		disAllTextView = (TextView) findViewById(R.id.select_disall);
 		downloadTextView = (TextView) findViewById(R.id.select_download);
 		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
-		pinnedSectionListView = (GridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
+		pinnedSectionListView = (StickyGridHeadersGridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
 		titleTextView = (TextView) findViewById(R.id.text);
 		noCountView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
 		noCountTextView = (TextView) findViewById(R.id.no_photo_textView);
@@ -259,7 +259,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void run() {
 				originalAlbumArrayList = pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
-				albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(originalAlbumArrayList));
+				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList));
 				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
 			}
 		}).start();
@@ -286,14 +286,25 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					itemOnClick(position, view);
 				} else {//预览模式，点击进入大图预览
 					PictureAirLog.out("select" + position);
-					Intent i = new Intent();
-					i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putInt("position", position);
-					bundle.putString("tab", "editStory");
-					bundle.putString("ppCode", ppCode);
-					i.putExtra("bundle", bundle);
-					startActivity(i);
+					if (albumArrayList.get(position).isVideo == 1 && albumArrayList.get(position).isPayed == 0) {
+						PhotoInfo info = albumArrayList.get(position);
+						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
+						intent.putExtra("videoInfo", info);
+						Bundle bundle = new Bundle();
+						bundle.putInt("position", position);
+						bundle.putString("tab", "editStory");
+						intent.putExtra("bundle", bundle);
+						startActivity(intent);
+					} else {
+						Intent i = new Intent();
+						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putInt("position", position);
+						bundle.putString("tab", "editStory");
+						bundle.putString("ppCode", ppCode);
+						i.putExtra("bundle", bundle);
+						startActivity(i);
+					}
 				}
 			}
 		});

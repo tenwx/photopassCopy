@@ -25,6 +25,8 @@ public class DownloadFileStatus implements Parcelable{
     private String photoThumbnail;
     public String shootOn;
     private String failedTime;//用作文件存储路径，文件名过长时保存会抛出异常，此时把文件名进行MD5处理，在预览图片的时候直接根据文件路径查看，而不是url
+    private int videoWidth;//视频宽高
+    private int videoHeight;
     public static final int DOWNLOAD_STATE_DOWNLOADING = 0x01;
     public static final int DOWNLOAD_STATE_WAITING = 0x02;
     public static final int DOWNLOAD_STATE_FAILURE = 0x03;
@@ -59,9 +61,13 @@ public class DownloadFileStatus implements Parcelable{
         this.shootOn = source.readString();
         this.failedTime = source.readString();
         this.select = source.readInt();
+        this.videoWidth = source.readInt();
+        this.videoHeight = source.readInt();
     }
 
-    public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
+    public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, String currentSize,
+                              String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,
+                              String failedTime,int videoWidth,int videoHeight) {
         if (url == null) url = "";
         if (photoThumbnail_512 == null) photoThumbnail_512 = "";
         if (photoThumbnail_1024 == null) photoThumbnail_1024 = "";
@@ -79,6 +85,8 @@ public class DownloadFileStatus implements Parcelable{
         this.photoThumbnail = photoThumbnail;
         this.shootOn = shootOn;
         this.failedTime = failedTime;
+        this.videoWidth = videoWidth;
+        this.videoHeight = videoHeight;
     }
 
     public String getUrl() {
@@ -214,6 +222,22 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setFailedTime(String failedTime) {
         this.failedTime = failedTime;
+    }
+
+    public int getVideoWidth() {
+        return videoWidth;
+    }
+
+    public void setVideoWidth(int videoWidth) {
+        this.videoWidth = videoWidth;
+    }
+
+    public int getVideoHeight() {
+        return videoHeight;
+    }
+
+    public void setVideoHeight(int videoHeight) {
+        this.videoHeight = videoHeight;
     }
 
     @Override

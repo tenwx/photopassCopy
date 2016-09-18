@@ -51,6 +51,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.photo_load_success_item,null);
             holder = new Holder();
             holder.img = (ImageView)convertView.findViewById(R.id.load_success_img);
+            holder.videoMask = (ImageView)convertView.findViewById(R.id.load_success_video);
             holder.tv_shootTime = (TextView) convertView.findViewById(R.id.load_success_shoottime);
             holder.tv_size = (TextView) convertView.findViewById(R.id.load_success_size);
             holder.tv_loadTime = (TextView) convertView.findViewById(R.id.load_success_time);
@@ -62,6 +63,12 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         }
         PhotoDownLoadInfo info = photos.get(position);
         if (info != null) {
+
+            if (info.getIsVideo() == 0){
+                holder.videoMask.setVisibility(View.GONE);
+            }else{
+                holder.videoMask.setVisibility(View.VISIBLE);
+            }
             String previewUrl = info.getPreviewUrl();
             if (holder.img.getTag(R.id.glide_image_tag) == null || !holder.img.getTag(R.id.glide_image_tag).equals(previewUrl)){
                 GlideUtil.load(mContext, previewUrl, holder.img);
@@ -86,6 +93,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
 
     public class Holder{
         public ImageView img;
+        public ImageView videoMask;
         public TextView tv_shootTime;
         public TextView tv_size;
         public TextView tv_loadTime;

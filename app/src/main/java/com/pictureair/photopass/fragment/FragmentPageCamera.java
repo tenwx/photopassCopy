@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 
 /**
@@ -19,7 +18,6 @@ public class FragmentPageCamera extends BaseFragment {
     private boolean hasHidden = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        DisneyVideoTool.getIsOneGoToDisneyVideoPage(getActivity());
         return inflater.inflate(R.layout.fragment_camera, null);
     }
 

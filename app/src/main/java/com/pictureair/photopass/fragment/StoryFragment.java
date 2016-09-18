@@ -14,23 +14,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
-import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.util.ArrayList;
 
@@ -40,7 +39,7 @@ import de.greenrobot.event.Subscribe;
 
 public class StoryFragment extends Fragment {
 	private static final String TAG = "StoryFragment";
-	private GridView gridView;
+	private StickyGridHeadersGridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
 	private TextView noPhotoTextView;
 	private StickyGridAdapter stickyGridAdapter;
@@ -95,7 +94,7 @@ public class StoryFragment extends Fragment {
 			
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
-		gridView = (GridView) view.findViewById(R.id.stickyGridHeadersGridView);
+		gridView = (StickyGridHeadersGridView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
 		
@@ -202,12 +201,25 @@ public class StoryFragment extends Fragment {
 			if (position < 0) {
 				position = 0;
 			}
-			if (photoInfoArrayList.get(position).isVideo == 1) {
-				PictureAirLog.v(TAG,"点击了视频");
+			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {
+				PictureAirLog.v(TAG, "点击了视频");
+
 				PhotoInfo info = photoInfoArrayList.get(position);
-				Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
-				intent.putExtra(DisneyVideoTool.FROM_STORY, info);
+				PictureAirLog.out("未购买的视频");
+				/**
+				 * 1.获取最新的视频信息
+				 * 2.是否是已经购买
+				 * 3.储存最新信息
+				 * 4.跳转或者弹框提示
+				 */
+				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
+				intent.putExtra("videoInfo", info);
+				Bundle bundle = new Bundle();
+				bundle.putInt("position", position);
+				bundle.putString("tab", tabName[tab]);
+				intent.putExtra("bundle", bundle);
 				startActivity(intent);
+
 			} else {
 				PictureAirLog.v(TAG,"点击了照片");
 				Intent i = new Intent();
@@ -221,17 +233,6 @@ public class StoryFragment extends Fragment {
 		}
 	}
 
-	//				Bundle bundle = new Bundle();
-//				PhotoPreviewInfo photoPreviewInfo = new PhotoPreviewInfo();
-//				photoPreviewInfo.activity = "storyFragment";
-//				photoPreviewInfo.position = position;//在那个相册中的位置
-//				photoPreviewInfo.photoId = photoInfoArrayList.get(position).photoId;
-//				photoPreviewInfo.targetphotos = targetArrayList;
-//				photoPreviewInfo.photos = photoInfoArrayList;//那个相册的全部图片路径
-//				bundle.putParcelable("photopreviewinfo", photoPreviewInfo);
-//				i.putExtra("bundle", bundle);
-//				getContext().startActivity(i);
-	
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub

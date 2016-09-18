@@ -223,8 +223,8 @@
     <string name="downloading">Downloading Now</string>
     <string name="downloading_percent">Downloading %1$d</string>
     <string name="finish_download">Download Successful!</string>
-    <string name="download_detail1">Downloaded %1$d photo(s)!</string>
-    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s), please try again later!</string>
+    <string name="download_detail1">Downloaded %1$d file(s)!</string>
+    <string name="download_detail2">Downloaded %1$d file(s), failed to download %2$d file(s), please try again later!</string>
     <!-- download end -->
 
     <!-- edit start -->
@@ -388,6 +388,11 @@
     <string name="release_to_refresh">Release loading&#8230;</string>
     <string name="refreshing">Loading&#8230;</string>
     <string name="activated_card">Activated Disney Park Ticket / PhotoPass Card: </string>
+    <string name="use_ppp_upgrade">使用您的迪士尼乐拍通一卡通挑选以下一张迪士尼门票/乐拍通卡进行升级：</string>
+    <string name="use_ppp_upgrade_read_video">查看魔法动画</string>
+    <string name="use_ppp_upgrade_read_photo">查看您的清晰照片</string>
+    <string name="use_ppp_upgrade_pp_code">\n%1$s %2$s\n</string>
+    <string name="use_ppp_upgrade_or">或者</string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -607,4 +612,12 @@
     <string name="photo_download_tips3">Your photo is still downloading, please try again later</string>
     <string name="photo_download_tips4">No editable photo</string>
     <!--photo download manage start-->
+
+    <!--animated photo-->
+    <string name="animated_photo_title">Animated Photo</string>
+    <string name="animated_photo_add_cart">Add PhotoPass+ to Cart</string>
+    <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
+    <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
+    <string name="animated_photo_introduce_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo</string>
+    <!--animated photo end-->
 </resources>

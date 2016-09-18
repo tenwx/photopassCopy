@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.mob.tools.utils.UIHandler;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -54,8 +55,7 @@ import static com.mob.tools.utils.R.getStringRes;
 /**
  * 此控件负责photo页面中menu下拉菜单的内容
  */
-public class SharePop extends PopupWindow implements OnClickListener,
-        PlatformActionListener, Callback {
+public class SharePop extends PopupWindow implements OnClickListener, PlatformActionListener, Callback {
     private final String TAG = "SharePop";
     private static final int MSG_ACTION_CCALLBACK = 2;
     private static final int MSG_CANCEL_NOTIFY = 3;
@@ -63,10 +63,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
     private Context context;
     private LayoutInflater inflater;
     private View defaultView;
-    private TextView wechat, wechatMoments, qq, qqzone, sina, facebook,
-            twitter;
+    private TextView wechat, wechatMoments, qq, qqzone, sina, facebook, twitter;
     private TextView sharecancel;
-    private String imagePath, imageUrl, thumbnailUrl, shareUrl, type;
+    private String imagePath, imageUrl, thumbnailUrl, shareUrl;
+    private boolean isOnline;
+    private boolean isVideo;
     private int isEncrypted;
     private String sharePlatform;
     private String shareId;
@@ -81,9 +82,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
     private String photoId;
     private String shareFileType;//必须为：photo、userInfo、product、video
     public static final String SHARE_PHOTO_TYPE = "photo";
-    public static final String SHARE_VIDEO_TYOE = "video";
-
-    private PWToast myToast;
+    public static final String SHARE_VIDEO_TYPE = "video";
 
     public SharePop(Context context) {
         super(context);
@@ -100,10 +99,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
                     JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
                     shareUrl = shareInfo.getString("shareUrl");
                     shareId = shareInfo.getString("shareId");
-                    PictureAirLog.out("tokenid----->" + MyApplication.getTokenId());
+                    PictureAirLog.d(TAG, "tokenid----->" + MyApplication.getTokenId());
                     PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
 
-                    if ("online".equals(type) && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
+                    if (isOnline && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
                         API1.getNewPhotosInfo(MyApplication.getTokenId(), photoId, msg.arg1, mHandler);
 
                     } else {
@@ -137,12 +136,9 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     private void initPopupWindow() {
         ShareSDK.initSDK(context);
-        myToast = new PWToast(context);
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         defaultView = inflater.inflate(R.layout.share_dialog, null);
-        defaultView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT));
+        defaultView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         setContentView(defaultView);
         setWidth(LayoutParams.MATCH_PARENT);
         setHeight(LayoutParams.WRAP_CONTENT);
@@ -152,8 +148,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
         setOutsideTouchable(true);
 
         wechat = (TextView) defaultView.findViewById(R.id.wechat);
-        wechatMoments = (TextView) defaultView
-                .findViewById(R.id.wechat_moments);
+        wechatMoments = (TextView) defaultView.findViewById(R.id.wechat_moments);
         qq = (TextView) defaultView.findViewById(R.id.qq);
         qqzone = (TextView) defaultView.findViewById(R.id.qqzone);
         sina = (TextView) defaultView.findViewById(R.id.sina);
@@ -181,23 +176,37 @@ public class SharePop extends PopupWindow implements OnClickListener,
     /**
      * 设置需要分享的信息
      *
-     * @param imagePath     本地图片路径
-     * @param imageUrl      网络图片url
-     * @param thumbnailUrl
-     * @param type          判断是否是本地还是网络，类型有“local”“online”
-     * @param photoId       id
-     * @param shareFileType 视频还是照片
+     * @param photoInfo
      * @param handler
      */
-    public void setshareinfo(String imagePath, String imageUrl, String thumbnailUrl, String type, String photoId, String shareFileType, int isEncrypted, Handler handler) {
-        this.imagePath = imagePath;
-        this.imageUrl = imageUrl;
-        this.thumbnailUrl = thumbnailUrl;
-        this.type = type;
-        this.photoId = photoId;
+    public void setshareinfo(PhotoInfo photoInfo, Handler handler) {
+        isOnline = photoInfo.onLine == 1;
+        isVideo = photoInfo.isVideo == 1;
+        if (isOnline || isVideo) {//网络或者视频
+            imagePath = null;
+            imageUrl = photoInfo.photoThumbnail_1024;
+            thumbnailUrl = photoInfo.photoThumbnail;
+            photoId = photoInfo.photoId;
+            isEncrypted = photoInfo.isEncrypted;
+
+        } else {//本地
+            imagePath = photoInfo.photoPathOrURL;
+            imageUrl = null;
+            thumbnailUrl = null;
+            photoId = null;
+            isEncrypted = 0;
+        }
+
+        if (isVideo) {
+            shareFileType = SHARE_VIDEO_TYPE;
+        } else {
+            shareFileType = SHARE_PHOTO_TYPE;
+        }
+
+        PictureAirLog.d(TAG, "imagePath" + imagePath);
+        PictureAirLog.d(TAG, "imageurl" + imageUrl);
+        PictureAirLog.d(TAG, "thumbnail" + thumbnailUrl);
         this.handler = handler;
-        this.isEncrypted = isEncrypted;
-        this.shareFileType = shareFileType;
     }
 
 
@@ -207,22 +216,27 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param context
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片url
-     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     * @param isOnline      判断是否是本地还是网络，类型有“local”“online”
      */
-    private void wechatmonentsShare(Context context, String imagePath,
-                                    String imageUrl, String shareUrl, String type) {
+    private void wechatmonentsShare(Context context, String imagePath, String thumbnailUrl,
+                                    String imageUrl, String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, WechatMoments.NAME);
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         ShareParams shareParams = new ShareParams();
         shareParams.title = context.getString(R.string.share_app_name);
-        // 本地图片可以
-        if ("local".equals(type)) {// 本地图片
-            shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
-            shareParams.imagePath = imagePath;
-        } else if ("online".equals(type)) {// 网络图片
-            shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
-            shareParams.imageUrl = imageUrl;
-//            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
+        if (isVideo) {
+            shareParams.shareType = Platform.SHARE_WEBPAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+            shareParams.imageUrl = thumbnailUrl;
+            shareParams.url = imageUrl;// share_webpage的时候需要这个参数
+        } else {
+            // 本地图片可以
+            if (!isOnline) {// 本地图片
+                shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
+                shareParams.imagePath = imagePath;
+            } else {// 网络图片
+                shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+                shareParams.imageUrl = imageUrl;
+            }
         }
         platform.share(shareParams);
     }
@@ -233,22 +247,27 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param context
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片url
-     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     * @param isOnline      判断是否是本地还是网络，类型有“local”“online”
      */
-    private void wechatFriendsShare(Context context, String imagePath,
-                                    String imageUrl, String shareUrl, String type) {
+    private void wechatFriendsShare(Context context, String imagePath, String thumbnailUrl,
+                                    String imageUrl, String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, Wechat.NAME);
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         ShareParams shareParams = new ShareParams();
         shareParams.title = context.getString(R.string.share_app_name);
-        // 本地图片可以
-        if ("local".equals(type)) {// 本地图片
-            shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
-            shareParams.imagePath = imagePath;
-        } else if ("online".equals(type)) {// 网络图片
-            shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
-            shareParams.imageUrl = imageUrl;
-//            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
+        if (isVideo) {
+            shareParams.shareType = Platform.SHARE_WEBPAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+            shareParams.imageUrl = thumbnailUrl;
+            shareParams.url = imageUrl;// share_webpage的时候需要这个参数
+        } else {
+            // 本地图片可以
+            if (!isOnline) {// 本地图片
+                shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
+                shareParams.imagePath = imagePath;
+            } else {// 网络图片
+                shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+                shareParams.imageUrl = imageUrl;
+            }
         }
         platform.share(shareParams);
     }
@@ -259,31 +278,35 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param context
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片url
-     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     * @param isOnline      判断是否是本地还是网络，类型有“local”“online”
      */
     private void qzoneShare(Context context, String imagePath, String thumbnailUrl, String imageUrl,
-                            String shareUrl, String type) {
+                            String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, QZone.NAME);
         if (platform.isClientValid()) {
             platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
             cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
             shareParams.title = context.getString(R.string.share_app_name);
-            shareParams.text = context.getResources().getString(
-                    R.string.share_text);
-            if ("local".equals(type)) {// 本地图片
-                shareParams.setImagePath(imagePath);
-                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
-            } else if ("online".equals(type)) {// 网络图片
+            shareParams.text = context.getResources().getString(R.string.share_text);
+            if (isVideo) {
                 shareParams.imageUrl = thumbnailUrl;
-                shareParams.titleUrl = shareUrl;
-                shareParams.siteUrl = shareUrl;
+                shareParams.titleUrl = imageUrl;
+                shareParams.siteUrl = imageUrl;
+            } else {
+                if (!isOnline) {// 本地图片
+                    shareParams.setImagePath(imagePath);
+                    shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
+                } else {// 网络图片
+                    shareParams.imageUrl = thumbnailUrl;
+                    shareParams.titleUrl = shareUrl;
+                    shareParams.siteUrl = shareUrl;
+                }
             }
             shareParams.site = context.getString(R.string.share_app_name);
             platform.share(shareParams);
         } else {
             dismissDialog();
-            showNotification(2000,
-                    context.getString(R.string.share_failure_qzone));
+            showNotification(2000, context.getString(R.string.share_failure_qzone));
         }
     }
 
@@ -294,32 +317,36 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param imagePath
      * @param imageUrl
      * @param shareUrl
-     * @param type
+     * @param isOnline
      */
     private void qqShare(Context context, String imagePath, String thumbnailUrl, String imageUrl,
-                         String shareUrl, String type) {
+                         String shareUrl, boolean isOnline) {
         // TODO Auto-generated method stub
         Platform platform = ShareSDK.getPlatform(context, QQ.NAME);
         if (platform.isClientValid()) {
             platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
             cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
             shareParams.title = context.getString(R.string.share_app_name);
-            shareParams.text = context.getResources().getString(
-                    R.string.share_text);
-            if ("local".equals(type)) {// 本地图片
-                shareParams.setImagePath(imagePath);
-                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
-            } else if ("online".equals(type)) {// 网络图片
+            shareParams.text = context.getResources().getString(R.string.share_text);
+            if (isVideo) {
+                PictureAirLog.d(TAG, "VIDEO");
                 shareParams.imageUrl = thumbnailUrl;
-                shareParams.titleUrl = shareUrl;
-                // shareParams.siteUrl = shareUrl;
+                shareParams.titleUrl = imageUrl;
+            } else {
+                if (!isOnline) {// 本地图片
+                    PictureAirLog.d(TAG, "LOCAL");
+                    shareParams.setImagePath(imagePath);
+                    shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
+                } else {// 网络图片
+                    PictureAirLog.d(TAG, "PHOTO");
+                    shareParams.imageUrl = thumbnailUrl;
+                    shareParams.titleUrl = shareUrl;
+                }
             }
-            // shareParams.site = context.getString(R.string.app_name);
             platform.share(shareParams);
         } else {
             dismissDialog();
-            showNotification(2000,
-                    context.getString(R.string.share_failure_qzone));
+            showNotification(2000, context.getString(R.string.share_failure_qzone));
         }
     }
 
@@ -330,21 +357,26 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片URL
      * @param shareUrl
-     * @param type      本地还是网络的标记
+     * @param isOnline      本地还是网络的标记
      */
-    private void sinaShare(Context context, String imagePath, String imageUrl,
-                           String shareUrl, String type) {
+    private void sinaShare(Context context, String imagePath, String thumbnailUrl, String imageUrl,
+                           String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, SinaWeibo.NAME);
-
 //        platform.SSOSetting(false);// 未审核，必须要关闭SSO，true代表关闭。审核过了之后才要设置为false，新版本，貌似已经不需要这个了
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         cn.sharesdk.sina.weibo.SinaWeibo.ShareParams shareParams = new cn.sharesdk.sina.weibo.SinaWeibo.ShareParams();
-        shareParams.text = context.getString(R.string.share_text);
-        if ("local".equals(type)) {// 本地图片
-            shareParams.setImagePath(imagePath);
-        } else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
-            shareParams.setImageUrl(imageUrl);
-//            shareParams.setUrl(shareUrl);
+
+        if (isVideo) {
+            shareParams.text = context.getString(R.string.share_text) + imageUrl;
+            shareParams.setImageUrl(thumbnailUrl);
+        } else {
+            if (!isOnline) {// 本地图片
+                shareParams.text = context.getString(R.string.share_text);
+                shareParams.setImagePath(imagePath);
+            } else {// 网络图片
+                shareParams.text = context.getString(R.string.share_text);
+                shareParams.setImageUrl(imageUrl);
+            }
         }
         platform.share(shareParams);
     }
@@ -356,25 +388,24 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片URL
      * @param shareUrl  文本评论
-     * @param type      本地还是网络的标记
+     * @param isOnline      本地还是网络的标记
      */
     private void facebookShare(Context context, String imagePath,  String thumbnailUrl,
-                               String imageUrl, String shareUrl, String type) {
+                               String imageUrl, String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, Facebook.NAME);
         if (platform.isClientValid()) {
             platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
             cn.sharesdk.facebook.Facebook.ShareParams shareParams = new cn.sharesdk.facebook.Facebook.ShareParams();
             shareParams.text = context.getString(R.string.share_app_name);
-            if ("local".equals(type)) {// 本地图片
+            if (!isOnline) {// 本地图片
                 shareParams.setImagePath(imagePath);
-            } else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
+            } else {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
                 shareParams.setImageUrl(thumbnailUrl);
             }
             platform.share(shareParams);
         } else {
             dismissDialog();
-            showNotification(2000,
-                    context.getString(R.string.share_failure_facebook));
+            showNotification(2000, context.getString(R.string.share_failure_facebook));
         }
     }
 
@@ -384,17 +415,17 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param context
      * @param imagePath
      * @param imageUrl
-     * @param type
+     * @param isOnline
      */
     private void twitterShare(Context context, String imagePath, String thumbnailUrl,
-                              String imageUrl, String shareUrl, String type) {
+                              String imageUrl, String shareUrl, boolean isOnline) {
         Platform platform = ShareSDK.getPlatform(context, Twitter.NAME);
         platform.setPlatformActionListener(this);
         cn.sharesdk.twitter.Twitter.ShareParams shareParams = new cn.sharesdk.twitter.Twitter.ShareParams();
-        if ("local".equals(type)) {
+        if (!isOnline) {
             shareParams.text = context.getString(R.string.share_text);
             shareParams.setImagePath(imagePath);
-        } else if ("online".equals(type)) {
+        } else {
             shareParams.text = shareUrl;
         }
         platform.share(shareParams);
@@ -409,10 +440,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param context
      * @param imagePath 本地图片路径
      * @param imageUrl  网络图片url
-     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     * @param isOnline      判断是否是本地还是网络，类型有“local”“online”
      */
     private void instagramShare(Context context, String imagePath, String thumbnailUrl, String imageUrl,
-                                String shareUrl, String type) {
+                                String shareUrl, boolean isOnline) {
         PictureAirLog.i(TAG, "---> instagram分享");
         Platform platform = ShareSDK.getPlatform(context, Instagram.NAME);
         if (platform.isClientValid()) {
@@ -421,24 +452,22 @@ public class SharePop extends PopupWindow implements OnClickListener,
             cn.sharesdk.instagram.Instagram.ShareParams shareParams = new cn.sharesdk.instagram.Instagram.ShareParams();
             shareParams.text = context.getResources().getString(
                     R.string.share_text);
-            if ("local".equals(type)) {// 本地图片
+            if (!isOnline) {// 本地图片
                 shareParams.setImagePath(imagePath);
-            } else if ("online".equals(type)) {// 网络图片
+            } else {// 网络图片
                 shareParams.imageUrl = thumbnailUrl;
             }
             platform.share(shareParams);
         } else {
             PictureAirLog.i(TAG, "---> instagram分享---用户没有安装客户端");
             dismissDialog();
-            showNotification(2000,
-                    context.getString(R.string.share_failure_instagram));
+            showNotification(2000, context.getString(R.string.share_failure_instagram));
         }
     }
 
 
     /**
      * 开始分享
-     *
      * @param id
      */
     private void startShare(int id) {
@@ -447,60 +476,60 @@ public class SharePop extends PopupWindow implements OnClickListener,
             case R.id.wechat_moments:
                 shareType = Common.EVENT_ONCLICK_SHARE_WECHAT_MOMENTS;
                 sharePlatform = "wechat moments";
-                wechatmonentsShare(context, imagePath, imageUrl, shareUrl, type);
+                wechatmonentsShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 break;
 
             case R.id.wechat:
                 shareType = Common.EVENT_ONCLICK_SHARE_WECHAT;
                 sharePlatform = "wechat";
-                wechatFriendsShare(context, imagePath, imageUrl, shareUrl, type);
+                wechatFriendsShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 break;
 
             case R.id.qq:
                 shareType = Common.EVENT_ONCLICK_SHARE_QQ;
                 sharePlatform = "qq";
-                if (type.equals("local")) {// 本地
+                if (!isOnline && !isVideo) {// 本地
                     createThumbNail(id);
                 } else {
-                    qqShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, type);
+                    qqShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 }
                 break;
 
             case R.id.qqzone:
                 shareType = Common.EVENT_ONCLICK_SHARE_QQZONE;
                 sharePlatform = "qzone";
-                if (type.equals("local")) {
+                if (!isOnline && !isVideo) {
                     createThumbNail(id);
                 } else {
-                    qzoneShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, type);
+                    qzoneShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 }
                 break;
 
             case R.id.sina:
                 shareType = Common.EVENT_ONCLICK_SHARE_SINA_WEIBO;
                 sharePlatform = "sina";
-                if (type.equals("local")) {// 本地
+                if (!isOnline && !isVideo) {// 本地
                     createThumbNail(id);
                 } else {
-                    sinaShare(context, imagePath, imageUrl, shareUrl, type);
+                    sinaShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 }
                 break;
 
             case R.id.facebook:
-                PictureAirLog.out("fb on click");
+                PictureAirLog.d(TAG, "fb on click");
                 shareType = Common.EVENT_ONCLICK_SHARE_FACEBOOK;
                 sharePlatform = "facebook";
-                facebookShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, type);
+                facebookShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 break;
 
             case R.id.twitter:
                 shareType = Common.EVENT_ONCLICK_SHARE_TWITTER;
                 sharePlatform = "twitter";
                 handler.sendEmptyMessage(TWITTER);
-                if (type.equals("local")) {// 本地
+                if (!isOnline && !isVideo) {// 本地
                     createThumbNail(id);
                 } else {
-                    twitterShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, type);
+                    twitterShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 }
                 break;
 
@@ -528,19 +557,14 @@ public class SharePop extends PopupWindow implements OnClickListener,
             case R.id.sina:
             case R.id.facebook:
             case R.id.twitter:
-                PictureAirLog.out("share on click--->");
-//				if (!Common.DEBUG) {//release版本
-//					dialog.dismiss();
-//					myToast.setTextAndShow(R.string.share_not_open, Common.TOAST_SHORT_TIME);
-//				} else {
-                if ("local".equals(type)) {//开始分享
-                    PictureAirLog.out("local");
+                PictureAirLog.d(TAG, "share on click--->");
+                if (!isOnline || isVideo) {//本地图片或者视频，都直接开始分享
+                    PictureAirLog.d(TAG, "local or video");
                     startShare(v.getId());
-                } else if ("online".equals(type)) {//网络，需要获取shareURL
-                    PictureAirLog.out("online");
+                } else {//网络，需要获取shareURL
+                    PictureAirLog.d(TAG, "online");
                     API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
                 }
-//				}
                 break;
 
             case R.id.share_cancel:
@@ -558,11 +582,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     private void createThumbNail(final int id) {
         // TODO Auto-generated method stub
-        PictureAirLog.out("share pop---->start create thumbnail");
+        PictureAirLog.d(TAG, "share pop---->start create thumbnail");
         GlideUtil.load(context, GlideUtil.getFileUrl(imagePath), new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
-                PictureAirLog.out("share pop---->get the bitmap");
+                PictureAirLog.d(TAG, "share pop---->get the bitmap");
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 loadedImage.compress(Bitmap.CompressFormat.JPEG, 20, baos);
                 byte[] datas = baos.toByteArray();
@@ -572,7 +596,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                 }
                 shareFile = new File(Common.SHARE_PATH + AppUtil.getReallyFileName(imagePath, 0));
                 if (!shareFile.exists()) {
-                    PictureAirLog.out("share pop---->start deal thumbnail");
+                    PictureAirLog.d(TAG, "share pop---->start deal thumbnail");
                     BufferedOutputStream stream = null;
                     try {
                         shareFile.createNewFile();
@@ -595,19 +619,19 @@ public class SharePop extends PopupWindow implements OnClickListener,
                 switch (id) {
                     case R.id.twitter:
                         // 生成缩略图成功， 需要开始分享
-                        twitterShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        twitterShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, isOnline);
                         break;
 
                     case R.id.sina:
-                        sinaShare(context, shareFile.toString(), imageUrl, shareUrl, type);
+                        sinaShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, isOnline);
                         break;
 
                     case R.id.qq:
-                        qqShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        qqShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, isOnline);
                         break;
 
                     case R.id.qqzone:
-                        qzoneShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        qzoneShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, isOnline);
                         break;
 
                     default:
@@ -622,7 +646,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
      */
     public void dismissDialog() {
         if (null != pwProgressDialog) {
-            PictureAirLog.out("share pop dismiss");
+            PictureAirLog.d(TAG, "share pop dismiss");
             pwProgressDialog.pwProgressDialogDismiss();
         }
     }
@@ -646,10 +670,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
                         // 失败
                         String expName = msg.obj.getClass().getSimpleName();
                         if ("WechatClientNotExistException".equals(expName)
-                                || "WechatTimelineNotSupportedException"
-                                .equals(expName)
-                                || "WechatFavoriteNotSupportedException"
-                                .equals(expName)) {
+                                || "WechatTimelineNotSupportedException".equals(expName)
+                                || "WechatFavoriteNotSupportedException".equals(expName)) {
                             int resId = getStringRes(context, "share_failure_wechat");
                             if (resId > 0) {
                                 showNotification(2000, context.getString(resId));
@@ -671,10 +693,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
                     case 3: {
                         // 取消
-                        // PictureAirLog.out("3333");
+                        // PictureAirLog.d("3333");
                         int resId = getStringRes(context, "share_canceled");
                         if (resId > 0) {
-                            // PictureAirLog.out("3333"+context.getString(resId));
+                            // PictureAirLog.d("3333"+context.getString(resId));
                             showNotification(2000, context.getString(resId));
                         }
                         ShareSDK.stopSDK();
@@ -786,15 +808,19 @@ public class SharePop extends PopupWindow implements OnClickListener,
     private void showNotification(long cancelTime, String text) {
         try {
             Context app = context.getApplicationContext();
-            NotificationManager nm = (NotificationManager) app
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager nm = (NotificationManager) app.getSystemService(Context.NOTIFICATION_SERVICE);
             final int id = Integer.MAX_VALUE / 13 + 1;
             nm.cancel(id);
 
 //			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
-            Notification notification = new NotificationCompat.Builder(app).
-                    setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).build();//.setContentIntent(pi)
+            Notification notification = new NotificationCompat.Builder(app)
+                    .setSmallIcon(R.drawable.pp_icon)
+                    .setAutoCancel(true)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(text)
+                    .setWhen(System.currentTimeMillis())
+                    .setTicker(text)
+                    .build();//.setContentIntent(pi)
             notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
             nm.notify(id, notification);
 

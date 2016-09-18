@@ -524,6 +524,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         // myApplication.setIsBuyingPhotoInfo(null);
         myApplication.clearIsBuyingPhotoList();
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
+        myApplication.setBuyPPPStatus("");
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         AppManager.getInstance().killActivity(SelectPhotoActivity.class);
@@ -541,6 +542,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         newToast.setTextAndShow(isCancel ? R.string.cancel_deal : R.string.pay_unsuccesss, Common.TOAST_SHORT_TIME);
         myApplication.clearIsBuyingPhotoList();
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
+        myApplication.setBuyPPPStatus("");
         if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
             //返回到上一个界面
             AppManager.getInstance().killActivity(SubmitOrderActivity.class);
@@ -745,16 +747,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         super.TopViewClick(view);
         switch (view.getId()) {
             case R.id.topLeftView:
-                //返回键
-                if (isNeedPay) {
-                    PictureAirLog.v(TAG, "TopViewClick topLeftView");
-                    CancelInPayment(true);
-                } else {
-                    //0元支付  购物车数量恢复
-                    int currentCartCount = SPUtils.getInt(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                    SPUtils.put(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
-                    finish();
-                }
+                backToLastActivity();
 
                 break;
             default:
@@ -765,6 +758,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        backToLastActivity();
+    }
+
+    private void backToLastActivity() {
         //返回键
         if (isNeedPay) {
             PictureAirLog.v(TAG, "TopViewClick onBackPressed");

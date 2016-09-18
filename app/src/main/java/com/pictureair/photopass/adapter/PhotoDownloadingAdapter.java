@@ -56,6 +56,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.photo_loading_item,null);
             holder.rl = (RelativeLayout) convertView.findViewById(R.id.rl_photo_loading);
             holder.img = (ImageView) convertView.findViewById(R.id.loading_img);
+            holder.videoMask = (ImageView) convertView.findViewById(R.id.loading_video);
             holder.tv_shootTime = (TextView) convertView.findViewById(R.id.photo_loading_tv_take_time);
             holder.tv_size = (TextView) convertView.findViewById(R.id.photo_loading_tv_size);
             holder.tv_speed = (TextView) convertView.findViewById(R.id.photo_loading_tv_speed);
@@ -70,6 +71,12 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         holder.tv_shootTime.setText(fileStatus.getShootOn());
         if (fileStatus != null) {
             try {
+                if (fileStatus.isVideo() == 0){
+                    holder.videoMask.setVisibility(View.GONE);
+                }else{
+                    holder.videoMask.setVisibility(View.VISIBLE);
+                }
+
                 if (holder.img.getTag(R.id.glide_image_tag) == null || !holder.img.getTag(R.id.glide_image_tag).equals(fileStatus.getPhotoThumbnail())) {
                     GlideUtil.load(mContext, fileStatus.getPhotoThumbnail(), holder.img);
                     holder.img.setTag(R.id.glide_image_tag, fileStatus.getPhotoThumbnail());
@@ -154,6 +161,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
     public class Holder{
         public RelativeLayout rl;
         public ImageView img;
+        public ImageView videoMask;
         public TextView tv_shootTime;
         public TextView tv_size;
         public TextView tv_speed;

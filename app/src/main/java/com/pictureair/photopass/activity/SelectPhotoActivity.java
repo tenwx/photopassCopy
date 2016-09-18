@@ -4,25 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,7 +27,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
@@ -58,7 +47,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     //申明控件
     private ImageView rtLayout;
     private Button btnGoToSelectPhoto;
-    private TextView okButton, tvHead;
+    private TextView okButton;
     private GridView gridView;
     private ViewPhotoGridViewAdapter photoPassAdapter;
     private RelativeLayout noPhotoRelativeLayout;
@@ -76,15 +65,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private int selectedCount = 0;//已经选择了的图片数量
     private GoodsInfo goodsInfo;//存放商品信息
 
-    private boolean isBuy = false;//只显示已购买的照片
-    private LinearLayout llNullPhoto;
-    private PopupWindow popupWindow;
     private Context context;
     //底部view
-    private LinearLayout llDisneyVideoFoot, llShopPhoto;
-    private TextView tvBubble, tvDisneyNullPhoto;
-    private TranslateAnimation shakeBubble;
-    private boolean isDisneyVideo = false;
+    private TextView tvDisneyNullPhoto;
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
     private PictureAirDbManager pictureAirDbManager;
@@ -117,30 +100,16 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case GET_PHOTOS_DONE:
-
                 //判断是否有照片
-                if (isBuy) {//disney video
-                    if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
-                        llNullPhoto.setVisibility(View.GONE);
-                        gridView.setVisibility(View.VISIBLE);
-                        tvBubble.setAlpha(0.9f);
-                        tvBubble.setVisibility(View.VISIBLE);
-                        bubbleStart();
-                    } else {
-                        gridView.setVisibility(View.GONE);
-                        llNullPhoto.setVisibility(View.VISIBLE);
-                    }
+                if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
+                    noPhotoRelativeLayout.setVisibility(View.GONE);
+                    gridView.setVisibility(View.VISIBLE);
                 } else {
-                    if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
-                        noPhotoRelativeLayout.setVisibility(View.GONE);
-                        gridView.setVisibility(View.VISIBLE);
-                    } else {
-                        gridView.setVisibility(View.GONE);
-                        noPhotoRelativeLayout.setVisibility(View.VISIBLE);
-                        if (activity.equals("mypppactivity")) {
-                            noPhotoTextView.setText(R.string.no_photo_update);
-                            noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
-                        }
+                    gridView.setVisibility(View.GONE);
+                    noPhotoRelativeLayout.setVisibility(View.VISIBLE);
+                    if (activity.equals("mypppactivity")) {
+                        noPhotoTextView.setText(R.string.no_photo_update);
+                        noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
                     }
                 }
                 photoPassAdapter.notifyDataSetChanged();
@@ -148,19 +117,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 break;
 
             case 111:
-                if (isDisneyVideo) {
-                    okButton.setText(String.format(getString(R.string.disney_video_edit_photo), msg.arg1, photocount));//更新button
-                } else {
-                    okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
-                }
-
-                break;
-
-            case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
-                // 发送成功
-                dismissPWProgressDialog();
-                clearData();
-                initPopWindow();
+                okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
                 break;
 
             case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED://制作视频失败
@@ -234,28 +191,14 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         gridView = (GridView) findViewById(R.id.gridView_all);
         gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         //空照片介绍页面
-        llNullPhoto = (LinearLayout) findViewById(R.id.ll_null_photo);
         btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
         btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
-        tvHead = (TextView) findViewById(R.id.tv_head);
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         noPhotoTextView = (TextView) findViewById(R.id.no_photo_textView);
         noPhotoImageView = (ImageView) findViewById(R.id.no_photo_iv);
         okButton = (TextView) findViewById(R.id.button1);
         ivDisneyNullPhoto = (ImageView) findViewById(R.id.iv_disney_null_photo);
         tvDisneyNullPhoto = (TextView) findViewById(R.id.tv_disney_null_photo);
-
-        /*
-         * 更新标题
-         * 迪士尼视频页面的选择照片底部有3个Icon
-         */
-        if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
-            isBuy = true;
-            isDisneyVideo = true;
-            tvHead.setText(getString(R.string.story_tab_bought));
-            rtLayout.setImageResource(R.drawable.back_white_disney_video);
-            initDisneySelectPhotoFootView();
-        }
 
         //绑定监听
         tvDisneyNullPhoto.setOnClickListener(this);
@@ -269,11 +212,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         pictureAirDbManager = new PictureAirDbManager(this);
 
         PictureAirLog.out("photocount--->" + photocount);
-        if (isDisneyVideo) {
-            okButton.setText(String.format(getString(R.string.disney_video_edit_photo), 0, photocount));
-        } else {
-            okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
-        }
+        okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
         okButton.setEnabled(false);
 
         new Thread() {
@@ -282,8 +221,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 super.run();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
-                photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
+                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
+                photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo());
                 PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
                 selectPhotoHandler.sendEmptyMessage(GET_PHOTOS_DONE);
             }
@@ -298,145 +237,37 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         if (myApplication.needScanPhoto()) {//如果刚进入这个页面，则onresume不需要重新扫描文件，所以直接将变量设为false，以免造成oncreate和onresume同时进行，造成collection数组越界
             myApplication.setneedScanPhoto(false);
         }
-        //获取可选图片总数
-//        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    /**
-     * 初始化视频制作选择照片的底部view
-     * okButton回收之前是右上角的文本
-     */
-    private void initDisneySelectPhotoFootView() {
-        tvBubble = (TextView) findViewById(R.id.tv_bubble);
-        llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
-        llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
-        tvBubble.setText(String.format(getString(R.string.disney_video_bubble), photocount));//更新最多选多少张
-//        okButton.setVisibility(View.GONE);
-        okButton = null;
-        okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
-//        okButton.setVisibility(View.VISIBLE);
-        llDisneyVideoFoot.setVisibility(View.VISIBLE);
-        llShopPhoto.setOnClickListener(this);
-
-    }
-
-    /**
-     * 开始气泡
-     */
-    private void bubbleStart() {
-        shakeBubble = new TranslateAnimation(0, 0, 10, 0);
-        shakeBubble.setDuration(5000);//设置动画持续时间
-        shakeBubble.setRepeatCount(Animation.INFINITE);//设置重复次数
-        shakeBubble.setInterpolator(new CycleInterpolator(5));
-        shakeBubble.setRepeatMode(Animation.REVERSE);
-        tvBubble.startAnimation(shakeBubble);
-        bubbleAnimationListener();
-    }
-
-    /**
-     * 监听气泡
-     */
-    private void bubbleAnimationListener() {
-        shakeBubble.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                goneBubble();
-            }
-
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-    }
-
-    /**
-     * 隐藏气泡
-     */
-    private void goneBubble() {
-        if (isDisneyVideo && tvBubble.getVisibility() == View.VISIBLE && null != shakeBubble) {
-            tvBubble.clearAnimation();
-            shakeBubble.cancel();
-            tvBubble.setVisibility(View.GONE);
-        }
-    }
-
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        boolean onTouchBubbleOut = false;//如果触摸气泡之外消失bubble，则设置为ture
-        if (event.getAction() == MotionEvent.ACTION_DOWN && onTouchBubbleOut) {
-            if (isShouldHideInput(tvBubble, event)) {
-                goneBubble();
-            }
-            return super.dispatchTouchEvent(event);
-        }
-        if (getWindow().superDispatchTouchEvent(event)) {
-            return true;
-        }
-        return onTouchEvent(event);
-    }
-
-    public boolean isShouldHideInput(View v, MotionEvent event) {
-        if (v != null && (v instanceof TextView)) {
-            int[] leftTop = {0, 0};
-            v.getLocationInWindow(leftTop);
-            int left = leftTop[0];
-            int top = leftTop[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
      * 将photoItemInfo的列表转成photoInfo的列表
      */
-    private ArrayList<PhotoInfo> transferPhotoItemInfoToPhotoInfo(boolean isBuy) {
+    private ArrayList<PhotoInfo> transferPhotoItemInfoToPhotoInfo() {
         ArrayList<PhotoInfo> list = new ArrayList<>();
         for (PhotoInfo photoInfo : photopassList) {
             photoInfo.isChecked = 1;
             photoInfo.isSelected = 0;
             photoInfo.showMask = 0;
-            if (isBuy) {//制作视频的时候，需要已购买的图片
-                if (photoInfo.isPayed == 1) {
+            if (activity.equals("mypppactivity")) {//ppp体验卡选图使用未购买的图片
+                if (photoInfo.isPayed == 0) {
                     list.add(photoInfo);
                 }
             } else {
-                if (activity.equals("mypppactivity")) {//ppp体验卡选图使用未购买的图片
+                //数码照片--是则获取未购买的图片 礼物--获取全部
+                if (goodsInfo == null) {
+                    PictureAirLog.v(TAG, "goodsInfo == null");
+                    return list;
+                }
+                //数码照片--是则获取未购买的图片 礼物--获取全部
+                if (!goodsInfo.getIsAllowBuy()) {
                     if (photoInfo.isPayed == 0) {
                         list.add(photoInfo);
                     }
-                } else {//购买的时候，需要未购买的图片
-                    if (goodsInfo == null) {
-                        PictureAirLog.v(TAG, "goodsInfo == null");
-                        return list;
-                    }
-                    //数码照片--是则获取未购买的图片 礼物--获取全部
-                    if (!goodsInfo.getIsAllowBuy()) {
-                        if (photoInfo.isPayed == 0) {
-                            list.add(photoInfo);
-                        }
-                    } else {//需要排除纪念照，纪念照不允许制作
-                        if (!photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
-                            list.add(photoInfo);
-                        }
+                } else {//需要排除纪念照，纪念照不允许制作
+                    if (!photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                        list.add(photoInfo);
                     }
                 }
-
             }
         }
         return list;
@@ -448,7 +279,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         super.onResume();
         if (myApplication.needScanPhoto()) {//需要刷新
             PictureAirLog.v(TAG, "need scan photo--------------");
-//            checkNewPhotos(Common.PHOTO_SAVE_PATH, magicArrayList, Common.ALBUM_MAGIC);
             myApplication.setneedScanPhoto(false);
         } else {
             PictureAirLog.v(TAG, "has new edit photo false");
@@ -463,7 +293,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            goneBubble();
             //获取对应相册中的SelectPhotoItemInfo对象
             info = photoPassArrayList.get(position);
             viewPhotoGridViewAdapter = photoPassAdapter;
@@ -511,24 +340,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         }
     }
 
-    /**
-     * 点击popwindow确认
-     */
-    private void clearData() {
-        okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
-        photoPassAdapter.startSelectPhoto(1, 0);
-        photoURLlist.clear();
-        isEnabled();
-    }
-
     @Override
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.btn_submit://点击弹窗后，不退出activity。照片总数清零，button清0
-                popupWindow.dismiss();
-                break;
-
             case R.id.tv_disney_null_photo:
             case R.id.iv_disney_null_photo:
             case R.id.ll_shop_photo:
@@ -574,19 +389,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     intent.putExtra("photopath", photoURLlist);
                     setResult(20, intent);
                     finish();
-                } else if (activity.equals("disney_video")) {
-                    showPWProgressDialog();
-                    StringBuffer photos = new StringBuffer();
-                    for (int i = 0; i < photoURLlist.size(); i++) {
-                        String photoId = photoURLlist.get(i).photoId;
-                        if (i == 0) {
-                            photos.append(photoId);
-                        } else {
-                            photos.append("," + photoId);
-                        }
-                    }
-                    PictureAirLog.i(TAG, "photos===>" + photos.toString());
-                    API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
                 } else if (activity.equals("mypppactivity")) {
                     //绑定图片到ppp
                     showPWProgressDialog();
@@ -607,42 +409,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL) && photoURLlist.size() > 0)) {//1.选择的数量和需要的数量一致，2.数码商品
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
-            if (isDisneyVideo) {//
-                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-                okButton.setTextColor(getResources().getColor(R.color.pp_purple));
-            }
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));
-            if (isDisneyVideo) {
-                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-            }
         }
-    }
-
-    private void initPopWindow() {
-        // 利用layoutInflater获得View
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popView = inflater.inflate(R.layout.popupwindow_disney_video_select_photo, null);
-        popupWindow = new PopupWindow(popView,
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setFocusable(true);
-        ColorDrawable cd = new ColorDrawable(0x000000);
-        popupWindow.setBackgroundDrawable(cd);
-        popupWindow.setOutsideTouchable(true);
-        //设置popwindow出现和消失动画
-        popupWindow.setAnimationStyle(R.style.from_center_anim);
-        popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
-        TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
-        tv1.setTypeface(MyApplication.getInstance().getFontBold());
-        Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
-        btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
-        btnSubmit.setOnClickListener(this);
-        popupWindow.update();
-
     }
 
     @Override
@@ -650,7 +420,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         super.onDestroy();
         selectPhotoHandler.removeCallbacksAndMessages(null);
     }
-
 }
 
 

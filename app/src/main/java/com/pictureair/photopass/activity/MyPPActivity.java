@@ -147,7 +147,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case UPDATE_UI:
                 PictureAirLog.out("update ui----->");
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
+                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, showPPCodeList, 1);// 根据条码从数据库获取图片
                 PictureAirLog.out("pp code size --->" + showPPCodeList.size());
                 // 更新界面  查看pp页面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
@@ -564,7 +564,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         new Thread() {
             public void run() {
 //                PictureAirLog.e("","API1.PPlist:"+API1.PPlist.size());
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(API1.PPlist, 2);
+                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(MyPPActivity.this, API1.PPlist, 2);
 //                PictureAirLog.e("","showPPCodeList.size():"+showPPCodeList.size());
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
@@ -714,7 +714,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             public void run() {
                 PictureAirLog.out("start save json in thread");
                 final JSONArray responseArray = jsonObject.getJSONArray("photos");
-                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false, false);
+                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false);
                 //通知已经处理完毕
                 myPPHandler.sendEmptyMessage(SAVE_JSON_DONE);
             }

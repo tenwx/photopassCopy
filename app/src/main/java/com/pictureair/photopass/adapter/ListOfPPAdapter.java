@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
@@ -19,29 +18,26 @@ import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.PWPhotoPassPhotoView;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * pp数据的适配器
  */
-public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
+public class ListOfPPAdapter extends BaseAdapter {
     private ArrayList<PPinfo> arrayList;
     private Context mContext;
     private int screenWidth = 0;// 屏幕宽度
     private ViewHolder holder;
     private doDeletePhotoListener deleteListner;
     private LinearLayout.LayoutParams params;
-    private RelativeLayout.LayoutParams params2;
     private PWToast myToast;
-    private SimpleDateFormat sdf;
 
     private boolean isSelete;
     private Handler mHandler;
@@ -63,14 +59,9 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         this.mHandler = mHandler;
         this.isDeletePP = isDeletePP;
         myToast = new PWToast(mContext);
-        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         screenWidth = ScreenUtil.getScreenWidth(mContext);// 获取屏幕宽度
-        params = new LinearLayout.LayoutParams(
-                (screenWidth - 24) / 6, (screenWidth - 24) / 6);
+        params = new LinearLayout.LayoutParams((screenWidth - 24) / 6, (screenWidth - 24) / 6);
         params.setMargins(2, 2, 2, 2);
-
-        params2 = new RelativeLayout.LayoutParams(
-                (screenWidth - 24) / 6, (screenWidth - 24) / 6);
 
         this.pppInfo = pppInfo;
         map = new HashMap<>();
@@ -105,23 +96,22 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.my_pp_list, null);
             holder.ppCode = (TextView) convertView.findViewById(R.id.pp_code);
             holder.deleteMyPP = (ImageView) convertView.findViewById(R.id.delete_my_pp);
-            holder.image1 = (ImageView) convertView.findViewById(R.id.pp_img1);
-            holder.image2 = (ImageView) convertView.findViewById(R.id.pp_img2);
-            holder.image3 = (ImageView) convertView.findViewById(R.id.pp_img3);
-            holder.image4 = (ImageView) convertView.findViewById(R.id.pp_img4);
-            holder.image5 = (ImageView) convertView.findViewById(R.id.pp_img5);
-            holder.image6 = (ImageView) convertView.findViewById(R.id.pp_img6);
-            holder.image7 = (ImageView) convertView.findViewById(R.id.pp_img7);
-            holder.image8 = (ImageView) convertView.findViewById(R.id.pp_img8);
-            holder.image9 = (ImageView) convertView.findViewById(R.id.pp_img9);
-            holder.image10 = (ImageView) convertView.findViewById(R.id.pp_img10);
-            holder.image11 = (ImageView) convertView.findViewById(R.id.pp_img11);
-            holder.image12 = (ImageView) convertView.findViewById(R.id.pp_img12);
+            holder.image1 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img1);
+            holder.image2 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img2);
+            holder.image3 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img3);
+            holder.image4 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img4);
+            holder.image5 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img5);
+            holder.image6 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img6);
+            holder.image7 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img7);
+            holder.image8 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img8);
+            holder.image9 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img9);
+            holder.image10 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img10);
+            holder.image11 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img11);
+            holder.image12 = (PWPhotoPassPhotoView) convertView.findViewById(R.id.pp_img12);
 
             holder.ppImageLayout1 = (LinearLayout) convertView.findViewById(R.id.pp_image_layout1);
             holder.ppImageLayout2 = (LinearLayout) convertView.findViewById(R.id.pp_image_layout2);
-            holder.showCconutLayout = (RelativeLayout) convertView.findViewById(R.id.show_conut_layout);
-            holder.photoCount = (TextView) convertView.findViewById(R.id.photo_count);
+            holder.dividerView = convertView.findViewById(R.id.divider_line);
             holder.conerImageView = (ImageView) convertView.findViewById(R.id.my_pp_miqi);
             holder.tvShootDate = (TextView) convertView.findViewById(R.id.tv_shoot_date);
             holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
@@ -157,26 +147,16 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, true));//删除图片
         }
 
-
         if (arrayList == null || arrayList.size() <= 0) {
             return convertView;
         }
 
-
-        // 初始化数据
         // 初始化pp码
-        PPinfo ppInfo1 = new PPinfo();
-        ppInfo1 = arrayList.get(position);
-        ArrayList<String> urlList = new ArrayList<String>();
+        PPinfo ppInfo1 = arrayList.get(position);
         holder.ppCode.setText(ppInfo1.getPpCode());
-        if (ppInfo1.getUrlList() == null || ppInfo1.getUrlList().size() <= 0) {
-            ppInfo1.setUrlList(new ArrayList<String>());
-        }
 
         // 图片显示
-        int photoCount = ppInfo1.getUrlList().size();
-        urlList.removeAll(urlList);
-        urlList.addAll(ppInfo1.getUrlList());
+        int photoCount = ppInfo1.getPhotoCount();
         if (photoCount == 0) {
             holder.conerImageView.setImageResource(R.drawable.my_pp_miqi_no_photo);
         } else {
@@ -184,80 +164,25 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         }
         if (photoCount <= 6) {
             holder.ppImageLayout2.setVisibility(View.GONE);
-            holder.photoCount.setVisibility(View.GONE);
-            for (int i = 0; i < 6; i++) {
-                int num = 6 - photoCount;
-                if (num > 0 && i > photoCount - 1) {
-                    // 显示默认图片
-                    urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
-                }
-            }
+            holder.dividerView.setVisibility(View.VISIBLE);
+
         } else if (photoCount > 6) {
-
+            holder.dividerView.setVisibility(View.GONE);
             holder.ppImageLayout2.setVisibility(View.VISIBLE);
-            if (photoCount <= 12) {
-                for (int i = 0; i < 12; i++) {
-                    int num = 12 - photoCount;
-                    if (num > 0 && i > photoCount - 1) {
-                        // 显示默认图片
-                        urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
-                    }
-                }
-            }
-
-            if (photoCount >= 12) {
-                holder.photoCount.setVisibility(View.VISIBLE);
-                holder.photoCount.setText(urlList.size() + "");
-
-            } else {
-                holder.photoCount.setVisibility(View.GONE);
-
-            }
 
             holder.image7.setLayoutParams(params);
             holder.image8.setLayoutParams(params);
             holder.image9.setLayoutParams(params);
             holder.image10.setLayoutParams(params);
             holder.image11.setLayoutParams(params);
-            holder.showCconutLayout.setLayoutParams(params);
-            holder.image12.setLayoutParams(params2);
+            holder.image12.setLayoutParams(params);
 
-            String url7 = urlList.get(6);
-            String url8 = urlList.get(7);
-            String url9 = urlList.get(8);
-            String url10 = urlList.get(9);
-            String url11 = urlList.get(10);
-            String url12 = urlList.get(11);
-
-            if (holder.image7.getTag(R.id.glide_image_tag) == null || !holder.image7.getTag(R.id.glide_image_tag).equals(url7)) {
-                GlideUtil.load(mContext, url7, holder.image7);
-                holder.image7.setTag(R.id.glide_image_tag, url7);
-            }
-
-            if (holder.image8.getTag(R.id.glide_image_tag) == null || !holder.image8.getTag(R.id.glide_image_tag).equals(url8)) {
-                GlideUtil.load(mContext, url8, holder.image8);
-                holder.image8.setTag(R.id.glide_image_tag, url8);
-            }
-
-            if (holder.image9.getTag(R.id.glide_image_tag) == null || !holder.image9.getTag(R.id.glide_image_tag).equals(url9)) {
-                GlideUtil.load(mContext, url9, holder.image9);
-                holder.image9.setTag(R.id.glide_image_tag, url9);
-            }
-
-            if (holder.image10.getTag(R.id.glide_image_tag) == null || !holder.image10.getTag(R.id.glide_image_tag).equals(url10)) {
-                GlideUtil.load(mContext, url10, holder.image10);
-                holder.image10.setTag(R.id.glide_image_tag, url10);
-            }
-
-            if (holder.image11.getTag(R.id.glide_image_tag) == null || !holder.image11.getTag(R.id.glide_image_tag).equals(url11)) {
-                GlideUtil.load(mContext, url11, holder.image11);
-                holder.image11.setTag(R.id.glide_image_tag, url11);
-            }
-
-            if (holder.image12.getTag(R.id.glide_image_tag) == null || !holder.image12.getTag(R.id.glide_image_tag).equals(url12)) {
-                GlideUtil.load(mContext, url12, holder.image12);
-                holder.image12.setTag(R.id.glide_image_tag, url12);
-            }
+            holder.image7.initData(ppInfo1.getUrlList().get(6), 6, photoCount);
+            holder.image8.initData(ppInfo1.getUrlList().get(7), 7, photoCount);
+            holder.image9.initData(ppInfo1.getUrlList().get(8), 8, photoCount);
+            holder.image10.initData(ppInfo1.getUrlList().get(9), 9, photoCount);
+            holder.image11.initData(ppInfo1.getUrlList().get(10), 10, photoCount);
+            holder.image12.initData(ppInfo1.getUrlList().get(11), 11, photoCount);
         }
 
         holder.image1.setLayoutParams(params);
@@ -267,57 +192,25 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         holder.image5.setLayoutParams(params);
         holder.image6.setLayoutParams(params);
 
-        String url1 = urlList.get(0);
-        String url2 = urlList.get(1);
-        String url3 = urlList.get(2);
-        String url4 = urlList.get(3);
-        String url5 = urlList.get(4);
-        String url6 = urlList.get(5);
-
-        if (holder.image1.getTag(R.id.glide_image_tag) == null || !holder.image1.getTag(R.id.glide_image_tag).equals(url1)) {
-            GlideUtil.load(mContext, url1, holder.image1);
-            holder.image1.setTag(R.id.glide_image_tag, url1);
-        }
-
-        if (holder.image2.getTag(R.id.glide_image_tag) == null || !holder.image2.getTag(R.id.glide_image_tag).equals(url2)) {
-            GlideUtil.load(mContext, url2, holder.image2);
-            holder.image2.setTag(R.id.glide_image_tag, url2);
-        }
-
-        if (holder.image3.getTag(R.id.glide_image_tag) == null || !holder.image3.getTag(R.id.glide_image_tag).equals(url3)) {
-            GlideUtil.load(mContext, url3, holder.image3);
-            holder.image3.setTag(R.id.glide_image_tag, url3);
-        }
-
-        if (holder.image4.getTag(R.id.glide_image_tag) == null || !holder.image4.getTag(R.id.glide_image_tag).equals(url4)) {
-            GlideUtil.load(mContext, url4, holder.image4);
-            holder.image4.setTag(R.id.glide_image_tag, url4);
-        }
-
-        if (holder.image5.getTag(R.id.glide_image_tag) == null || !holder.image5.getTag(R.id.glide_image_tag).equals(url5)) {
-            GlideUtil.load(mContext, url5, holder.image5);
-            holder.image5.setTag(R.id.glide_image_tag, url5);
-        }
-
-        if (holder.image6.getTag(R.id.glide_image_tag) == null || !holder.image6.getTag(R.id.glide_image_tag).equals(url6)) {
-            GlideUtil.load(mContext, url6, holder.image6);
-            holder.image6.setTag(R.id.glide_image_tag, url6);
-        }
-
+        holder.image1.initData(ppInfo1.getUrlList().get(0), 0, photoCount);
+        holder.image2.initData(ppInfo1.getUrlList().get(1), 1, photoCount);
+        holder.image3.initData(ppInfo1.getUrlList().get(2), 2, photoCount);
+        holder.image4.initData(ppInfo1.getUrlList().get(3), 3, photoCount);
+        holder.image5.initData(ppInfo1.getUrlList().get(4), 4, photoCount);
+        holder.image6.initData(ppInfo1.getUrlList().get(5), 5, photoCount);
         return convertView;
     }
 
     private class ViewHolder {
         TextView ppCode;// pp的时间，pp码，pp对应的照片的数量,
-        ImageView deleteMyPP;//删除PP
-        ImageView image1, image2, image3, image4, image5, image6, image7,
-                image8, image9, image10, image11, image12, img_no_check;
+        ImageView deleteMyPP, img_no_check;//删除PP，选中按钮
+        PWPhotoPassPhotoView image1, image2, image3, image4, image5, image6, image7,
+                image8, image9, image10, image11, image12;
         LinearLayout ppImageLayout1, ppImageLayout2;
-        RelativeLayout showCconutLayout;
-        TextView photoCount;
         ImageView conerImageView;
         LinearLayout itemLayout;
         TextView tvShootDate;
+        View dividerView;
     }
 
     /**
@@ -334,22 +227,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             return false;
         }
         return true;
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
-        switch (v.getId()) {
-            case R.id.pp_code:
-
-                break;
-            case R.id.delete_my_pp:
-
-                break;
-            default:
-                break;
-        }
     }
 
     /**
@@ -455,7 +332,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             } else {
                 //选择PP 点击单张直接进入改PP的相册页面
                 if (checkUrl(position)) {
-                    if (arrayList.get(position).getUrlList().size() > 0) {
+                    if (arrayList.get(position).getPhotoCount() > 0) {
                         //进入相册
                         Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
                         i.putExtra("ppCode", arrayList.get(position).getPpCode());

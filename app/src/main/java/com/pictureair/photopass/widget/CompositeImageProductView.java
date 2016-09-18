@@ -102,7 +102,7 @@ public class CompositeImageProductView extends RelativeLayout{
 		//如果以下商品需要加载商品图片
 		if (goodName.equals("canvas")||goodName.equals("iphone5Case")||goodName.equals("keyChain")||goodName.equals("mug")) {
 			onlySelectedImageView.setVisibility(View.INVISIBLE);
-			GlideUtil.load(getContext(), Common.BASE_URL_TEST + goodURL, new SimpleTarget<Bitmap>() {
+			GlideUtil.load(context, Common.BASE_URL_TEST + goodURL, new SimpleTarget<Bitmap>() {
 				@Override
 				public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 					/**********************************************************************************/
@@ -152,9 +152,9 @@ public class CompositeImageProductView extends RelativeLayout{
 				params.height = viewHeight;
 				onlySelectedImageView.setLayoutParams(params);
 				if (goodName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, onlySelectedImageView);
+					GlideUtil.load(context, msg.obj.toString(), isEncrypted, onlySelectedImageView);
 				}else {
-					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap> () {
+					GlideUtil.load(context, msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap> () {
 
 						@Override
 						public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -287,7 +287,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				addView(photoImageView);
 				PictureAirLog.out("------------->"+msg.obj.toString());
 				if (goodName.equals("mug")) {//直接显示，同时处理mask层
-					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, photoImageView);
+					GlideUtil.load(context, msg.obj.toString(), isEncrypted, photoImageView);
 					//添加mask层
 					handler.sendEmptyMessage(LOAD_SELECTED_IMAGE_FOR_MUG_CASE);
 					
@@ -303,14 +303,14 @@ public class CompositeImageProductView extends RelativeLayout{
 					m.obj = msg.obj;
 					handler.sendMessage(m);
 				}else {//直接显示
-					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, photoImageView);
+					GlideUtil.load(context, msg.obj.toString(), isEncrypted, photoImageView);
 				}
 				break;
 				
 			case LOAD_SELECTED_IMAGE_FOR_IPHONE_CASE://手机壳
 				
 				/*************************对添加的图片进行处理********************************/
-				GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
+				GlideUtil.load(context, msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
 
 					@Override
 					public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -387,7 +387,7 @@ public class CompositeImageProductView extends RelativeLayout{
 
 			case LOAD_SELECTED_IMAGE_FOR_KEYCHAIN_CASE://钥匙圈
 				/*************************对添加的图片进行处理********************************/
-				GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
+				GlideUtil.load(context, msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
 					@Override
 					public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 						Matrix matrix = new Matrix();

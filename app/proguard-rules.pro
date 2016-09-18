@@ -211,3 +211,8 @@
 -keep class com.baidu.kirin.** { *; }
 -keep class com.baidu.mobstat.** { *; }
 -keep class com.baidu.bottom.** { *; }
+
+# 听云统计 ProGuard configurations for NetworkBench Lens
+-keep class com.networkbench.** { *; }
+-dontwarn com.networkbench.**
+# End NetworkBench Lens

@@ -70,14 +70,17 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         params.height = params.width;
         mViewHolder.mImageView.setLayoutParams(params);
 
+        if (list.size() == 0) {
+            return convertView;
+        }
         String photoUrl;
         if (list.get(position).onLine == 1) {
             if (list.get(position).isVideo == 1) {
-                PictureAirLog.out("load video--->" + list.get(position).photoPathOrURL);
-                photoUrl = Common.PHOTO_URL + list.get(position).photoPathOrURL;
+                PictureAirLog.out("load video--->" + list.get(position).photoThumbnail_512);
+                photoUrl = Common.PHOTO_URL + list.get(position).photoThumbnail_512;
                 mViewHolder.videoImageView.setVisibility(View.VISIBLE);
                 LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
-                params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);
+                params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
                 params2.height = params2.width;
                 mViewHolder.videoImageView.setLayoutParams(params2);
             } else {
@@ -143,19 +146,12 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 //            PictureAirLog.out("getview---->local photo");
             viewHolder.storyAddressNameTextView.setText(R.string.story_tab_magic);
         } else {
-            if (list.get(position).isVideo == 1) {
-//                PictureAirLog.out("getview---->video");
-
-                viewHolder.storyAddressNameTextView.setText(R.string.video_location);
-            } else {
-
 //                PictureAirLog.out("getview---->photo online");
-                String place = list.get(position).locationName;
-                if (place == null || place.equals("null")) {
-                    place = "";
-                }
-                viewHolder.storyAddressNameTextView.setText(place);
+            String place = list.get(position).locationName;
+            if (place == null || place.equals("null")) {
+                place = "";
             }
+            viewHolder.storyAddressNameTextView.setText(place);
         }
 
         String country = list.get(position).locationCountry;

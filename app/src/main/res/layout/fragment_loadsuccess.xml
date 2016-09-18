@@ -79,7 +79,7 @@
         <ListView
             android:id="@+id/lv_load_success"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:divider="@color/gray_light3"
             android:dividerHeight="@dimen/pp_height_1"
             android:layout_below="@id/dash_line"
