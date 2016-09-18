@@ -61,6 +61,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public static final int DOWNLOAD_FINISH = 5555;
     public static final int REMOVE_FAILED_PHOTOS = 6666;
     public static final int PHOTO_ALL_SELECT = 7777;
+    public static final int BIND_INIT = 8888;
     private RelativeLayout rl_loading;
     private RelativeLayout ll_loading;
     private Button button;
@@ -77,7 +78,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private boolean isEdit;
 
 
-    private final Handler adapterHandler = new AdapterHandler(this);
+    private Handler adapterHandler;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -202,6 +203,28 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
     private void dealHandler(Message msg) {
         switch (msg.what) {
+            case BIND_INIT:
+                if (downloadService != null) {
+                    downloadList = downloadService.getDownloadList();
+                    downloadService.setAdapterhandler(adapterHandler);
+                    if (AppUtil.checkPermission(MyApplication.getInstance(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        showPWProgressDialog();
+                    }
+                    if (downloadList != null && downloadList.size() >0) {
+                        ll_loading.setVisibility(View.VISIBLE);
+                        rl_loading.setVisibility(View.GONE);
+                        adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
+                        lv_loading.setAdapter(adapter);
+                    }
+                    Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
+                    ArrayList<PhotoInfo> photos = new ArrayList<>();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("photos", photos);
+                    intent.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent);
+                    PictureAirLog.v("onServiceConnected","false");
+                }
+                break;
             case PHOTO_STATUS_UPDATE://更新listview
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
@@ -218,8 +241,13 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 if (downloadList != null) {
                     downloadList = downloadService.getDownloadList();
                     PictureAirLog.v("PHOTO_REMOVE","downloadList.size: "+downloadList.size());
-                    adapter.setList(downloadList);
-                    adapter.notifyDataSetChanged();
+                    if (adapter != null) {
+                        adapter.setList(downloadList);
+                        adapter.notifyDataSetChanged();
+                    }else{
+                        adapter = new PhotoDownloadingAdapter(getContext(),downloadList);
+                        lv_loading.setAdapter(adapter);
+                    }
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
                     downloadService.sendAddDownLoadMessage();
                 }
@@ -238,7 +266,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                         ll_loading.setVisibility(View.VISIBLE);
                         rl_loading.setVisibility(View.GONE);
                         PictureAirLog.v("SERVICE_LOAD_SUCCESS","new adapter ");
-                        adapter = new PhotoDownloadingAdapter(MyApplication.getInstance(),downloadList);
+                        adapter = new PhotoDownloadingAdapter(getContext(),downloadList);
                         lv_loading.setAdapter(adapter);
                     }else{
                         PictureAirLog.v("SERVICE_LOAD_SUCCESS","nothing ");
@@ -361,26 +389,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         public void onServiceConnected(ComponentName name, IBinder service) {
             DownloadService.PhotoBind photoBind = (DownloadService.PhotoBind)service;
             downloadService = photoBind.getService();
-            if (downloadService != null) {
-                downloadList = downloadService.getDownloadList();
-                downloadService.setAdapterhandler(adapterHandler);
-                if (AppUtil.checkPermission(MyApplication.getInstance(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    showPWProgressDialog();
-                }
-                if (downloadList != null && downloadList.size() >0) {
-                    ll_loading.setVisibility(View.VISIBLE);
-                    rl_loading.setVisibility(View.GONE);
-                    adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
-                    lv_loading.setAdapter(adapter);
-                }
-                Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
-                ArrayList<PhotoInfo> photos = new ArrayList<>();
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("photos", photos);
-                intent.putExtras(bundle);
-                MyApplication.getInstance().startService(intent);
-                PictureAirLog.v("onServiceConnected","false");
+            if (adapterHandler == null){
+                adapterHandler =  new AdapterHandler(DownLoadingFragment.this);
             }
+            adapterHandler.sendEmptyMessage(BIND_INIT);
+
         }
 
         @Override
@@ -501,13 +514,22 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             downloadService.setAdapterhandler(null);
             unBind();
         }
+        if (adapterHandler != null){
+            adapterHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     private void updateView(){
         PictureAirLog.v("updateView","updateView");
         downloadList = downloadService.getDownloadList();
-        adapter.setList(downloadList);
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.setList(downloadList);
+            adapter.notifyDataSetChanged();
+        } else {
+            adapter = new PhotoDownloadingAdapter(getContext(),downloadList);
+            lv_loading.setAdapter(adapter);
+        }
+
     }
 
     public boolean changeToSelectState(){
