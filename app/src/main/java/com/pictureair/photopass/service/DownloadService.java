@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
@@ -494,7 +493,7 @@ public class DownloadService extends Service {
 
 
     private void getNewUrl(DownloadFileStatus fileStatus){
-        if (fileStatus.ifRequestForNewUrl()) {
+        if (AppUtil.needRequestForNewUrl(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
             PictureAirLog.out("getNewUrl>>>>>>>>>>>  requestNewUrl");
             API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, fileStatus);
         }else{

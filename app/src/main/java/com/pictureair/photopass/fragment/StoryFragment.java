@@ -17,10 +17,14 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
+import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
+import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
@@ -29,6 +33,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.PWProgressDialog;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.util.ArrayList;
@@ -37,7 +43,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 
-public class StoryFragment extends Fragment {
+public class StoryFragment extends Fragment implements IGetLastestVideoInfoView, PWDialog.OnPWDialogClickListener {
 	private static final String TAG = "StoryFragment";
 	private StickyGridHeadersGridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
@@ -51,6 +57,10 @@ public class StoryFragment extends Fragment {
 	private static Handler handler;
 	
 	private static StoryFragment storyFragment;
+
+	private GetLastestVideoInfoPresenter lastestVideoInfoPresenter;
+	private PWProgressDialog pwProgressDialog;
+	private PWDialog pwDialog;
 
 	private static final int REFRESH = 666;
 	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
@@ -71,17 +81,13 @@ public class StoryFragment extends Fragment {
 		// TODO Auto-generated constructor stub
 	}
 
-
-	
 	@Override
 	public void onAttach(Context context) {
-//		System.out.println("storyfragemnt---->onattach");
 		// TODO Auto-generated method stub
 		if (getArguments() != null) {
 			photoInfoArrayList = getArguments().getParcelableArrayList("photo");
 			targetArrayList = getArguments().getParcelableArrayList("target");
 			tab = getArguments().getInt("tab");
-//			application = (MyApplication) getActivity().getApplication();
 		}
 		super.onAttach(context);
 	}
@@ -89,16 +95,13 @@ public class StoryFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		System.out.println("story fragment--------> oncreateView");
 		if (view == null) {
-			
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
 		gridView = (StickyGridHeadersGridView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
-		
-		
+
 		refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         refreshLayout.setEnabled(true);
@@ -115,12 +118,15 @@ public class StoryFragment extends Fragment {
 				}
 			}
 		});
-        
-        
-		
+
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null) {
 			parent.removeView(view);
+		}
+
+		if (pwProgressDialog == null){
+			pwProgressDialog = new PWProgressDialog(getContext())
+					.pwProgressDialogCreate();
 		}
 		return view;
 	}
@@ -190,37 +196,34 @@ public class StoryFragment extends Fragment {
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+		if (pwProgressDialog != null) {
+			pwProgressDialog.pwProgressDialogDismiss();
+		}
 	}
 
-	//照片点击的监听类
-	private class PhotoOnItemClickListener implements OnItemClickListener{
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+	@Override
+	public void getNewInfoDone(int dealStatus, int position) {
+		if (pwProgressDialog != null) {
+			pwProgressDialog.pwProgressDialogDismiss();
+		}
 
-			if (position < 0) {
-				position = 0;
-			}
-			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {
-				PictureAirLog.v(TAG, "点击了视频");
+		switch (dealStatus) {
+			case GetLastestVideoInfoPresenter.NETWORK_ERROR://网络问题
+				PWToast.getInstance(getContext()).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+				break;
 
-				PhotoInfo info = photoInfoArrayList.get(position);
-				PictureAirLog.out("未购买的视频");
-				/**
-				 * 1.获取最新的视频信息
-				 * 2.是否是已经购买
-				 * 3.储存最新信息
-				 * 4.跳转或者弹框提示
-				 */
-				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
-				intent.putExtra("videoInfo", info);
-				Bundle bundle = new Bundle();
-				bundle.putInt("position", position);
-				bundle.putString("tab", tabName[tab]);
-				intent.putExtra("bundle", bundle);
-				startActivity(intent);
+			case GetLastestVideoInfoPresenter.VIDEO_MAKING://依旧在制作中
+				if (pwDialog == null) {
+					pwDialog = new PWDialog(getContext())
+							.setPWDialogMessage(R.string.magic_in_the_making)
+							.setPWDialogPositiveButton(R.string.button_ok)
+							.setOnPWDialogClickListener(this)
+							.pwDialogCreate();
+				}
+				pwDialog.pwDilogShow();
+				break;
 
-			} else {
+			case GetLastestVideoInfoPresenter.VIDEO_FINISHED://已经制作完成
 				PictureAirLog.v(TAG,"点击了照片");
 				Intent i = new Intent();
 				i.setClass(getContext(), PreviewPhotoActivity.class);
@@ -229,6 +232,60 @@ public class StoryFragment extends Fragment {
 				bundle.putString("tab", tabName[tab]);
 				i.putExtra("bundle", bundle);
 				getContext().startActivity(i);
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void onPWDialogButtonClicked(int which, int dialogId) {
+
+	}
+
+	//照片点击的监听类
+	private class PhotoOnItemClickListener implements OnItemClickListener{
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+			if (position < 0) {
+				position = 0;
+			}
+			if (photoInfoArrayList.get(position).isVideo == 1) {
+				PictureAirLog.v(TAG, "点击了视频");
+				if (photoInfoArrayList.get(position).isPayed == 0) {//未购买，直接进入广告的播放页
+					PhotoInfo info = photoInfoArrayList.get(position);
+					PictureAirLog.out("未购买的视频");
+
+					Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
+					intent.putExtra("videoInfo", info);
+					Bundle bundle = new Bundle();
+					bundle.putInt("position", position);
+					bundle.putString("tab", tabName[tab]);
+					intent.putExtra("bundle", bundle);
+					startActivity(intent);
+				} else {//已购买，检查是否重新获取数据
+					/**
+					 * 1.检查数据库，是否需要重新获取数据
+					 * 2.获取最新的视频信息
+					 * 3.储存最新信息
+					 * 4.跳转或者弹框提示
+					 */
+					if (null != pwProgressDialog) {//更新message
+						pwProgressDialog.setPWProgressDialogMessage(R.string.is_loading);
+					}
+					pwProgressDialog.pwProgressDialogShow();
+
+					if (lastestVideoInfoPresenter == null) {
+						lastestVideoInfoPresenter = new GetLastestVideoInfoPresenter(getContext(), StoryFragment.this, MyApplication.getTokenId());
+					}
+
+					lastestVideoInfoPresenter.videoInfoClick(photoInfoArrayList.get(position).photoId, position);
+				}
+
+			} else {
+				getNewInfoDone(GetLastestVideoInfoPresenter.VIDEO_FINISHED, position);
 			}
 		}
 	}

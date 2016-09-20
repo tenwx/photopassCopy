@@ -599,7 +599,7 @@ public class API1 {
                 if (photos.size() > 0) {
                     PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
                     PictureAirLog.out("jsonobject---->" + photoInfo.photoThumbnail_1024);
-                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_SUCCESS, id, 0, photoInfo.photoThumbnail_1024).sendToTarget();
+                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_SUCCESS, id, 0, photoInfo).sendToTarget();
 
                 } else {
                     handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, 401, 0).sendToTarget();
