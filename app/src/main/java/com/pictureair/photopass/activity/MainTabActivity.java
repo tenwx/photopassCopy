@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,6 +69,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private ImageView explored;
     private Handler handler;
 
+    //story的引导层
+    private RelativeLayout leadViewRL;
+    private ImageView leadViewIV;
+
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
 
@@ -112,6 +117,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         hasCreated = true;
         initView();
         setTabSelection(0, false);
+        initLeadView();
     }
 
     //清除acahe框架的缓存数据
@@ -177,6 +183,27 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
+    }
+
+    private void initLeadView() {
+        if (TextUtils.isEmpty(SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, null))) {//第一次进入，需要显示引导层
+            leadViewRL = (RelativeLayout) findViewById(R.id.story_lead_view_rl);
+            leadViewIV = (ImageView) findViewById(R.id.story_lead_iv);
+            leadViewRL.setVisibility(View.VISIBLE);
+            leadViewRL.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SPUtils.put(MainTabActivity.this, Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, Common.STORY_LEAD_VIEW);
+                    leadViewRL.setVisibility(View.GONE);
+                }
+            });
+
+            if (application.getLanguageType().equals(Common.ENGLISH)) {
+                leadViewIV.setImageResource(R.drawable.story_lead_en);
+            } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                leadViewIV.setImageResource(R.drawable.story_lead_zh);
+            }
+        }
     }
 
     @Override
