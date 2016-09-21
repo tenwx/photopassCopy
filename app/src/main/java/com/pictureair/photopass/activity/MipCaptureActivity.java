@@ -278,7 +278,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
-        if (getIntent().getStringExtra("type").equals("coupon")) {//coupon
+        if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))
+                && getIntent().getStringExtra("type").equals("coupon")) {//coupon
             tvScanQRcodeTips.setText(R.string.scan_coupon_intro);
         } else {
             setTopRightValueAndShow(R.drawable.manual_input,true);

@@ -436,15 +436,22 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
                 }
 
-                intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
-                Bundle bundle1 = new Bundle();
-                bundle1.putInt("position", -2);  //代表从 pp＋绑定PP
-                bundle1.putString("tab", SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName",""));
-                bundle1.putString("ppsStr",ppsStr);
-                intent.putExtra("bundle", bundle1);
-                startActivity(intent);
-                this.finish();
+                if (AppManager.getInstance().checkActivity(ADVideoDetailProductActivity.class)) {//存在，是视频通过已有的ppp升级流程
+                    AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
+
+                } else {//照片通过ppp升级的流程
+                    intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putInt("position", -2);  //代表从 pp＋绑定PP
+                    bundle1.putString("tab", SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName",""));
+                    bundle1.putString("ppsStr",ppsStr);
+                    intent.putExtra("bundle", bundle1);
+                    startActivity(intent);
+
+                }
+                finish();
                 break;
+
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
                 dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
