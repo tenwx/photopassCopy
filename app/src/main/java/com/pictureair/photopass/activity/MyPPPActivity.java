@@ -614,10 +614,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener);
         String languageType = MyApplication.getInstance().getLanguageType();
         if (languageType == null) {
-            ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
+            ppp_guideView.setImageResource(R.drawable.ppp_guide_zh);
         } else {
             if (languageType.equals(Common.SIMPLE_CHINESE)) {
-                ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
+                ppp_guideView.setImageResource(R.drawable.ppp_guide_zh);
             } else {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
             }
