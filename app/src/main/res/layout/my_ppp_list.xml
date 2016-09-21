@@ -14,7 +14,6 @@
         android:paddingLeft="@dimen/pp_margin_16"
         android:paddingRight="@dimen/pp_margin_16"
         android:paddingTop="@dimen/pp_padding_10">
-        android:paddingRight="@dimen/pp_margin_16">
 
         <TextView
             android:id="@+id/time"

@@ -283,6 +283,7 @@ public class Common {
     public static final String GET_LAST_CONTENT_TIME = "lastContentTime";
     public static final String LANGUAGE = "language";
     public static final String WECHAT_PAY_STATUS = "wechat_pay_status";
+    public static final String PPP_GUIDE = "ppp_guide";
 
     //app的语言
     public static final String ENGLISH = "en";//英语

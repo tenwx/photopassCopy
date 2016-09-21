@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,11 +59,11 @@ import de.greenrobot.event.Subscribe;
 public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRefreshListener, PWDialog.OnPWDialogClickListener{
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
-    private ImageView setting;
+    private ImageView setting, ppp_guideView;
     private MyListView listPPP;
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
-    private LinearLayout ll_button_area;//无PP＋时 底部的两个按钮的区域。
+    private LinearLayout ll_button_area, ll_guide_layout;//无PP＋时 底部的两个按钮的区域。
     private LinearLayout nopppLayout;
 
     private PWToast newToast;
@@ -112,14 +113,27 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
     private final Handler myPPPHandler = new MyPPPHandler(this);
 
+    ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            PictureAirLog.out("MyPPPActivity onGlobalLayout out");
+            if (listPPP.isShown() && listPPPAdapter.getArrayList()!= null && listPPPAdapter != null && listPPPAdapter.getArrayList().size() > 0) {
+                PictureAirLog.out("MyPPPActivity onGlobalLayout in");
+                if (listPPP.getViewTreeObserver().isAlive()) {
+                    listPPP.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                showGuideView();
+            }
+        }
+    };
+
     @Override
     public void onRefresh() {
         Message message = new Message();
         message.what = 3;
         myPPPHandler.sendMessageDelayed(message,1000);
     }
-
-
+    
     private static class MyPPPHandler extends Handler {
         private final WeakReference<MyPPPActivity> mActivity;
 
@@ -247,28 +261,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 MyApplication.getInstance().setNeedRefreshPPPList(false);
                 dismissPWProgressDialog();
                 if (!isUseHavedPPP) {//需要显示弹框
-                    if (!TextUtils.isEmpty(MyApplication.getInstance().getBuyPPPStatus())) {
-                        String photoCode = MyApplication.getInstance().getIsBuyingPhotoPassCode();
-                        String[] codes = photoCode.split(",");
-                        String shootTime = MyApplication.getInstance().getIsBuyingPhotoShootTime();
-
-                        String photoPassInfo = String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[0]);
-                        for (int i = 1; i < codes.length; i++) {
-                            photoPassInfo += getString(R.string.use_ppp_upgrade_or) + String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
-                        }
-                        boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY);
-                        String message = getString(R.string.use_ppp_upgrade) + photoPassInfo +
-                                (isVideo ? getString(R.string.use_ppp_upgrade_read_video) : getString(R.string.use_ppp_upgrade_read_photo));
-
-                        pictureWorksDialog.setPWDialogId(BUY_PPP_AND_UPDATE_TIP)
-                                .setPWDialogMessage(message)
-                                .setPWDialogNegativeButton(null)
-                                .setPWDialogPositiveButton(R.string.dialog_ok1)
-                                .pwDilogShow();
-
-                        MyApplication.getInstance().clearIsBuyingPhotoList();
-                        MyApplication.getInstance().setBuyPPPStatus("");
-                    }
+                    showDialog();
                 }
                 break;
 
@@ -487,6 +480,62 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         refreshLayout.finishRefreshing();
     }
 
+    private void showGuideView(){
+        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
+        if (!isGuide) {
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, true);
+            //调整imageview大小
+            View view = listPPP.getChildAt(0);
+            if (view != null) {
+                if (view.getTag() != null && view.getTag() instanceof ListOfPPPAdapter.ViewHolder) {
+                    ListOfPPPAdapter.ViewHolder holder = (ListOfPPPAdapter.ViewHolder)view.getTag();
+                    if (holder != null && holder.pp3_img != null && holder.time != null) {
+
+                        holder.pp3_img.measure(0,0);
+                        holder.time.measure(0,0);
+                        //计算列表第三个米奇头的宽高
+                        int height = holder.pp3_img.getMeasuredHeight();
+                        int tWidth =  holder.time.getMeasuredWidth();
+                        //计算列表中第三个米奇头的宽
+                        int width = (ScreenUtil.getScreenWidth(MyPPPActivity.this) - (2 * ScreenUtil.dip2px(MyPPPActivity.this, 16) + tWidth + ScreenUtil.dip2px(MyPPPActivity.this, 100))) / 3;
+
+                        int oriImgWidth = 583;//图片原宽
+                        int oriImgHeight= 324;//图片高
+                        //计算引导图中imageView的宽高
+                        int guideImgWidth = ScreenUtil.getScreenWidth(MyPPPActivity.this) - 2 * ScreenUtil.dip2px(MyPPPActivity.this, 16);
+                        int guideImgHeight = (int)(((guideImgWidth*1.0f) / oriImgWidth) * oriImgHeight);
+                        //计算列表中第三个米奇头的中心
+                        int midLeft = (int)(ScreenUtil.getScreenWidth(MyPPPActivity.this) - width/2f - ScreenUtil.dip2px(MyPPPActivity.this, 16));
+                        int midTop = (int)(ScreenUtil.dip2px(MyPPPActivity.this, 52)+ ScreenUtil.dip2px(MyPPPActivity.this, 10)+ height /2f);
+                        //计算引导图右上角米奇头的中心
+                        //引导图右上角米奇头宽62，米奇头距离右边15
+                        int guideMikeyMidLeft =ScreenUtil.getScreenWidth(MyPPPActivity.this) - ScreenUtil.dip2px(MyPPPActivity.this, 16) - (int)(((guideImgWidth * 1.0f) / oriImgWidth ) * (31 + 15));
+                        //引导图右上角米奇头宽52，米奇头距离上边25
+                        int guideMikeyMidTop = ScreenUtil.dip2px(MyPPPActivity.this, 52) + (int)(((guideImgWidth * 1.0f) / oriImgWidth) * (26 + 25));
+                        LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) ppp_guideView.getLayoutParams();
+                        //设置margin移动图片重合两个米奇头的中心
+                        params1.rightMargin += (guideMikeyMidLeft - midLeft);
+                        params1.leftMargin -= (guideMikeyMidLeft - midLeft);
+                        if (params1.rightMargin < 0 ) {
+                            params1.rightMargin = 0;
+                        }
+
+                        if (params1.leftMargin <= 0) {
+                            params1.leftMargin = 0;
+                        }
+                        params1.width = guideImgWidth;
+                        params1.height = guideImgHeight;
+                        params1.topMargin += (midTop - guideMikeyMidTop);
+                        ppp_guideView.setLayoutParams(params1);
+                        PictureAirLog.out("midLeft: "+String.valueOf(midLeft)+" "+"midTop: "+String.valueOf(midTop));
+                        PictureAirLog.out("guideMikeyMidLeft: "+String.valueOf(guideMikeyMidLeft)+" "+"guideMikeyMidTop: "+String.valueOf(guideMikeyMidTop));
+                        ll_guide_layout.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -518,9 +567,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
+        ll_guide_layout = (LinearLayout) findViewById(R.id.ppp_ll_guide);
+        ppp_guideView = (ImageView) findViewById(R.id.ppp_img_guide_view);
         nopppLayout.setVisibility(View.INVISIBLE);
         ll_button_area.setVisibility(View.GONE);
         refreshLayout.setVisibility(View.GONE);
+        ll_guide_layout.setVisibility(View.GONE);
         back.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
     }
@@ -557,7 +609,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         myToast = new PWToast(this);
         refreshLayout.setListView(listPPP);
         refreshLayout.setOnRefreshListener(this);
-
+        ll_guide_layout.setOnClickListener(this);
+        ViewTreeObserver viewTreeObserver = listPPP.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener);
+        String languageType = MyApplication.getInstance().getLanguageType();
+        if (languageType == null) {
+            ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
+        } else {
+            if (languageType.equals(Common.SIMPLE_CHINESE)) {
+                ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
+            } else {
+                ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
+            }
+        }
     }
 
     //获取ppp数据
@@ -681,6 +745,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         .pwDilogShow();
                 break;
 
+            case R.id.ppp_ll_guide:
+                ll_guide_layout.setVisibility(View.GONE);
+                if (!isUseHavedPPP) {//需要显示弹框
+                    showDialog();
+                }
+                break;
+
             default:
                 break;
         }
@@ -793,6 +864,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 EventBus.getDefault().unregister(this);
             }
             myPPPHandler.removeCallbacksAndMessages(null);
+            if (listPPP.getViewTreeObserver().isAlive()){
+                listPPP.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+            }
         }
     }
 
@@ -807,6 +881,34 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         return String.format(getString(R.string.pp_ok), count1, count2);
     }
 
+
+    private void showDialog(){
+        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
+        if (isGuide) {
+            if (!TextUtils.isEmpty(MyApplication.getInstance().getBuyPPPStatus())) {
+                String photoCode = MyApplication.getInstance().getIsBuyingPhotoPassCode();
+                String[] codes = photoCode.split(",");
+                String shootTime = MyApplication.getInstance().getIsBuyingPhotoShootTime();
+
+                String photoPassInfo = String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[0]);
+                for (int i = 1; i < codes.length; i++) {
+                    photoPassInfo += getString(R.string.use_ppp_upgrade_or) + String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
+                }
+                boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY);
+                String message = getString(R.string.use_ppp_upgrade) + photoPassInfo +
+                        (isVideo ? getString(R.string.use_ppp_upgrade_read_video) : getString(R.string.use_ppp_upgrade_read_photo));
+
+                pictureWorksDialog.setPWDialogId(BUY_PPP_AND_UPDATE_TIP)
+                        .setPWDialogMessage(message)
+                        .setPWDialogNegativeButton(null)
+                        .setPWDialogPositiveButton(R.string.dialog_ok1)
+                        .pwDilogShow();
+
+                MyApplication.getInstance().clearIsBuyingPhotoList();
+                MyApplication.getInstance().setBuyPPPStatus("");
+            }
+        }
+    }
 
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {

@@ -164,4 +164,20 @@
                 android:scrollbars="none" />
     </com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout>
 
+    <LinearLayout
+        android:id="@+id/ppp_ll_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/guide_background"
+        >
+        <ImageView
+            android:id="@+id/ppp_img_guide_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scaleType="fitXY"/>
+    </LinearLayout>
+
 </RelativeLayout>

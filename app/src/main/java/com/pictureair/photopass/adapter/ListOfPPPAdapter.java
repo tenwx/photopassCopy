@@ -253,10 +253,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		holder.ppp_detail.setVisibility(View.GONE);
 	}
 
-	private class ViewHolder {
-		TextView time;//绑定的时间
+	public class ViewHolder {
+		public TextView time;//绑定的时间
 		TextView pppNumber;//ppp卡的序列号
-		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
+		public ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
 		TextView tvExpired; //日期
 		ImageView ppp_imageView;//背景图
 		View pppCardCenterCover;
