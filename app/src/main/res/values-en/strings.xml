@@ -130,6 +130,7 @@
     <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
     <string name="confirm_ppp_code_text_hint">Please check your PhotoPass+ password \n If the password is incorrect, please key in manually</string>
+    <string name="scan_coupon_intro">请扫描您的抵用券二维码，更快获得您的抵用券</string>
     <!-- scan end -->
 
     <!-- manual input start -->

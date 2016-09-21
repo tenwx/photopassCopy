@@ -38,11 +38,8 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	}
 
 	public void initPopupWindow() {
-		inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		pppView = inflater.inflate(R.layout.ppppop, null);
-//		pppView.setLayoutParams(new LayoutParams(ScreenUtil.getScreenWidth(context) / 3,
-//				LayoutParams.WRAP_CONTENT));
 		setContentView(pppView);
 		llBuy = (TextView) pppView.findViewById(R.id.buyTextView);
 		llAuto = (TextView) pppView.findViewById(R.id.scanTextView);

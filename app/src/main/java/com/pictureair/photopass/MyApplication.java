@@ -399,7 +399,7 @@ public class MyApplication extends Application {
      * 读取粗字体
      */
     public Typeface getFontBold() {
-        if (getLanguageType() != null && getLanguageType().equals("cn")) {
+        if (getLanguageType() != null && getLanguageType().equals(Common.SIMPLE_CHINESE)) {//如果简体中文，使用默认字体
             return Typeface.DEFAULT_BOLD;
         }
         if (null == typefaceBold) {

@@ -104,6 +104,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             } else if (resultString.contains("VID=")) {//包含VID
                 code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
 
+            } else if (resultString.contains("promoid=")) {//包含promoid   https://www.disneyphotopass.com.cn/?src=coupon&promoid=xxxxxxxxxxxxxxxx
+                code = resultString.substring(resultString.lastIndexOf("promoid=") + 8, resultString.length());//promoid仅仅是抵用券的code
+
             } else if (resultString.length() >= 16 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于16-22位之间，并且都是纯数字
                 code = resultString;
 
@@ -259,7 +262,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         navigationView = findViewById(R.id.bottom_status_bar_view);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.auto);
-        setTopRightValueAndShow(R.drawable.manual_input,true);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
@@ -275,6 +277,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
+
+        if (getIntent().getStringExtra("type").equals("coupon")) {//coupon
+            tvScanQRcodeTips.setText(R.string.scan_coupon_intro);
+        } else {
+            setTopRightValueAndShow(R.drawable.manual_input,true);
+
+        }
 
         //设置顶部状态栏和底部虚拟按键的对应View的高度
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

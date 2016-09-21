@@ -130,6 +130,7 @@
     <string name="camera_closed">请先在设置中打开相机权限</string>
     <string name="camera_closed_jump_to_manual">因为没有打开相机权限，所以请手动输入</string>
     <string name="confirm_ppp_code_text_hint">请核对迪士尼乐拍通一卡通密码\n\n如密码错误，请手动修改</string>
+    <string name="scan_coupon_intro">请扫描您的抵用券二维码，更快获得您的抵用券</string>
     <!-- scan end -->
 
     <!-- manual input start -->

@@ -27,7 +27,6 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -35,7 +34,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
@@ -57,7 +55,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private final String TAG = "MyPPActivity";
     private final int GET_SELECT_PP_SUCCESS = 2222;
     private final int REMOVE_PP_FROM_DB_FINISH = 3333;
-    private static final int SYNC_BOUGHT_PHOTO_DIALOG = 4444;
     private static final int BIND_TIP_DIALOG = 5555;
     private static final int WRONG_DATE_DIALOG = 6666;
     private static final int DELETE_API_DIALOG = 7777;
@@ -79,7 +76,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private int selectedCurrent = -1;
     private int selectedTag = -1;
     private String selectedPhotoId = null;//记录已经购买了的照片的photoId
-    private String userId;
     private int deletePosition;
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
@@ -92,7 +88,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private PPPinfo dppp;
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
     private PWToast myToast;
-    private SettingUtil settingUtil;
 
     private PWDialog pictureWorksDialog;
 
@@ -305,45 +300,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 dismissPWProgressDialog();
                 break;
 
-//                case API1.FAILURE://连接失败
-//                    if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
-//                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
-//                    } else {//获取失败
-//                        myToast.setTextAndShow(R.string.select_bind_pp_faile, Common.TOAST_SHORT_TIME);
-//                    }
-//                    break;
-
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 ((MyApplication) getApplication()).setNeedRefreshPPPList(true);
-//                    goIntent(); //备注。
-//                     tips。如果绑定成功。
-                if (settingUtil.isFirstTipsSyns(userId)) {
-                    //如果没有设置过。
-                    if (settingUtil.isAutoUpdate(userId)) {
-                        if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                            downloadPhotoList(); // 下载。
-                        }
-                        goIntent();
-                    } else {
-                        pictureWorksDialog.setPWDialogId(SYNC_BOUGHT_PHOTO_DIALOG)
-                                .setPWDialogMessage(R.string.first_tips_syns_msg2)
-                                .setPWDialogNegativeButton(R.string.first_tips_syns_no_msg2)
-                                .setPWDialogPositiveButton(R.string.first_tips_syns_yes_msg2)
-                                .setPWDialogContentCenter(true)
-                                .pwDilogShow();
-
-                    }
-                    settingUtil.insertSettingFirstTipsSynsStatus(userId);
-                } else {
-                    if (settingUtil.isAutoUpdate(userId)) {
-                        // 下载。
-                        if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                            downloadPhotoList();
-                        }
-                    }
-                    goIntent();
-                }
                 break;
 
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
@@ -402,7 +361,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
     private void initView() {
         pictureAirDbManager = new PictureAirDbManager(this);
-        settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
@@ -411,7 +369,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         back.setOnClickListener(this);
         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false);
-        userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         pictureWorksDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
@@ -607,35 +564,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         return String.format(getString(R.string.pp_ok), count1, count2);
     }
 
-    //下载照片
-    private void downloadPhotoList() {
-        if (tempPhotoLists.size() > 0) {
-            for (int i = 0; i < tempPhotoLists.size(); i++) {
-                download(pictureAirDbManager.getPhotoUrlByPhotoIDAndShootOn(tempPhotoLists.get(i).photoId, tempPhotoLists.get(i).shootTime));
-            }
-        }
-        goIntent();
-    }
-
-    private void download(ArrayList<PhotoInfo> arrayList) {
-        if (arrayList.size() > 0) {
-            Intent intent = new Intent(MyPPActivity.this,
-                    DownloadService.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("photos", arrayList);
-            intent.putExtras(bundle);
-            startService(intent);
-        }
-    }
-
-    private void goIntent() {
-        Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
-        API1.PPPlist.clear();
-        dismissPWProgressDialog();
-        startActivity(intent);
-        finish();
-    }
-
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
@@ -723,24 +651,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
-        if (which == DialogInterface.BUTTON_NEGATIVE) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
             switch (dialogId) {
-                case SYNC_BOUGHT_PHOTO_DIALOG:
-                    settingUtil.deleteSettingAutoUpdateStatus(userId);
-                    goIntent();
-                    break;
-            }
-
-        } else if (which == DialogInterface.BUTTON_POSITIVE) {
-            switch (dialogId) {
-                case SYNC_BOUGHT_PHOTO_DIALOG:
-                    settingUtil.insertSettingAutoUpdateStatus(userId);
-                    if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                        downloadPhotoList();
-                    }
-                    goIntent();
-                    break;
-
                 case BIND_TIP_DIALOG:
                     if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
                             pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
