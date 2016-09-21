@@ -91,6 +91,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             Intent intent = new Intent(this, VideoPlayerActivity.class);
             intent.putExtra("from_story", info);
             startActivity(intent);
+            overridePendingTransition(R.anim.activity_fadein, R.anim.activity_fadeout);
         }
     }
 

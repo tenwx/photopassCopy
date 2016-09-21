@@ -358,7 +358,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
-            videoPath = videoInfo.photoThumbnail_1024;
+            videoPath = videoInfo.adURL;
             PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {

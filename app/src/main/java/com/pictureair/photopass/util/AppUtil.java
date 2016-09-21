@@ -857,6 +857,7 @@ public class AppUtil {
                 temp.isHasPreset = temp2.isHasPreset;
                 temp.isEncrypted = temp2.isEncrypted;
                 temp.isRefreshInfo = temp2.isRefreshInfo;
+                temp.adURL = temp2.adURL;
                 tempInfos.add(temp);
             }
         }
@@ -1642,6 +1643,7 @@ public class AppUtil {
         sInfo.videoWidth = cursor.getInt(cursor.getColumnIndex("videoWidth"));
         sInfo.isHasPreset = cursor.getInt(cursor.getColumnIndex("isHasPreset"));
         sInfo.isEncrypted = cursor.getInt(cursor.getColumnIndex("enImg"));
+        sInfo.adURL = cursor.getString(cursor.getColumnIndex("adURL"));
         sInfo.onLine = 1;
         sInfo.isChecked = 0;
         sInfo.isSelected = 0;
@@ -1761,5 +1763,37 @@ public class AppUtil {
         } else {//上下会留白
             return VERTICAL_MARGIN;
         }
+    }
+
+    /**
+     * 判断是否是最新的数据 原图路径如果和 1024 512 128缩略图都不一样，表示原图路径是正确的，否则原图路径错误
+     *
+     * @param photoPathOrURL
+     * @param photoThumbnail_1024
+     * @param photoThumbnail_512
+     * @param photoThumbnail
+     * @return
+     */
+    public static boolean needRequestForNewUrl(String photoPathOrURL, String photoThumbnail_1024, String photoThumbnail_512, String photoThumbnail){
+        if (TextUtils.isEmpty(photoPathOrURL)) return true;
+
+        if (!TextUtils.isEmpty(photoThumbnail_1024)){
+            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail_1024)){
+                return true;
+            }
+        }
+
+        if (!TextUtils.isEmpty(photoThumbnail_512)){//不要用equals，因为PHOTO_URL会改端口号
+            if (photoPathOrURL.endsWith(photoThumbnail_512)){
+                return true;
+            }
+        }
+
+        if (!TextUtils.isEmpty(photoThumbnail)){
+            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail)){
+                return true;
+            }
+        }
+        return false;
     }
 }

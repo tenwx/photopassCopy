@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -155,7 +156,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 break;
 
             case R.id.video_player_back_imv:
-                finish();
+                exitActivity();
                 break;
 
             default:
@@ -179,5 +180,18 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     protected void onDestroy() {
         pwVideoPlayerManagerView.stopVideo();
         super.onDestroy();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitActivity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exitActivity() {
+        finish();
+        overridePendingTransition(R.anim.activity_fadein, R.anim.activity_fadeout);
     }
 }

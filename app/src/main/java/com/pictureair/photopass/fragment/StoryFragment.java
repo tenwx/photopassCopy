@@ -56,7 +56,6 @@ public class StoryFragment extends Fragment {
 	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
 	
 	public static StoryFragment getInstance(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int tab, Handler h){
-//		System.out.println("storyfragment----->getinstance");
 		handler = h;
 		storyFragment = new StoryFragment();
 		Bundle bundle = new Bundle();
@@ -71,17 +70,13 @@ public class StoryFragment extends Fragment {
 		// TODO Auto-generated constructor stub
 	}
 
-
-	
 	@Override
 	public void onAttach(Context context) {
-//		System.out.println("storyfragemnt---->onattach");
 		// TODO Auto-generated method stub
 		if (getArguments() != null) {
 			photoInfoArrayList = getArguments().getParcelableArrayList("photo");
 			targetArrayList = getArguments().getParcelableArrayList("target");
 			tab = getArguments().getInt("tab");
-//			application = (MyApplication) getActivity().getApplication();
 		}
 		super.onAttach(context);
 	}
@@ -89,16 +84,13 @@ public class StoryFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		System.out.println("story fragment--------> oncreateView");
 		if (view == null) {
-			
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
 		gridView = (StickyGridHeadersGridView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
-		
-		
+
 		refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         refreshLayout.setEnabled(true);
@@ -115,20 +107,18 @@ public class StoryFragment extends Fragment {
 				}
 			}
 		});
-        
-        
-		
+
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null) {
 			parent.removeView(view);
 		}
+
 		return view;
 	}
 
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-//		System.out.println("story fragment--------> on activity created");
 		/**
 		 * airpass需要统计用户图片数量
 		 */
@@ -152,8 +142,7 @@ public class StoryFragment extends Fragment {
 				}
 			}
 		}
-		
-		
+
 		stickyGridAdapter = new StickyGridAdapter(getContext(), photoInfoArrayList);
 		gridView.setAdapter(stickyGridAdapter);
 		gridView.setOnItemClickListener(new PhotoOnItemClickListener());
@@ -195,23 +184,17 @@ public class StoryFragment extends Fragment {
 	//照片点击的监听类
 	private class PhotoOnItemClickListener implements OnItemClickListener{
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 			if (position < 0) {
 				position = 0;
 			}
-			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {
-				PictureAirLog.v(TAG, "点击了视频");
 
+			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {//广告视频
+				PictureAirLog.v(TAG, "点击了广告视频");
 				PhotoInfo info = photoInfoArrayList.get(position);
 				PictureAirLog.out("未购买的视频");
-				/**
-				 * 1.获取最新的视频信息
-				 * 2.是否是已经购买
-				 * 3.储存最新信息
-				 * 4.跳转或者弹框提示
-				 */
+
 				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
 				intent.putExtra("videoInfo", info);
 				Bundle bundle = new Bundle();

@@ -112,7 +112,8 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     break;
 
                 case API1.GET_NEW_PHOTOS_INFO_SUCCESS:
-                    imageUrl = msg.obj.toString();
+                    PhotoInfo photoInfo = (PhotoInfo) msg.obj;
+                    imageUrl = photoInfo.photoThumbnail_1024;
                     startShare(msg.arg1);
                     break;
 
@@ -259,6 +260,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
             shareParams.shareType = Platform.SHARE_WEBPAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
             shareParams.imageUrl = thumbnailUrl;
             shareParams.url = imageUrl;// share_webpage的时候需要这个参数
+            shareParams.text = context.getResources().getString(R.string.share_text);
         } else {
             // 本地图片可以
             if (!isOnline) {// 本地图片

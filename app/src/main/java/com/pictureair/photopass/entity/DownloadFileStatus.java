@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.pictureair.photopass.util.Common;
-
 /**
  * Created by pengwu on 16/7/12.
  */
@@ -288,29 +286,4 @@ public class DownloadFileStatus implements Parcelable{
         return str;
     }
 
-    /**
-     * 原图路径如果和 1024 512 128缩略图都不一样，表示原图路径是正确的，否则原图路径错误
-     * */
-    public boolean ifRequestForNewUrl(){
-        if (TextUtils.isEmpty(originalUrl)) return true;
-        if (!TextUtils.isEmpty(photoThumbnail_1024)){
-            if (originalUrl.equalsIgnoreCase(photoThumbnail_1024)){
-                return true;
-            }
-        }
-
-        if (!TextUtils.isEmpty(photoThumbnail_512)){
-            if (originalUrl.equalsIgnoreCase(Common.PHOTO_URL+"/"+photoThumbnail_512)){
-                return true;
-            }
-        }
-
-        if (!TextUtils.isEmpty(photoThumbnail)){
-            if (originalUrl.equalsIgnoreCase(photoThumbnail)){
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

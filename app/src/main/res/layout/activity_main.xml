@@ -153,4 +153,26 @@
                 android:textSize="@dimen/text_size_12" />
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/story_lead_view_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blur_mask"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/story_lead_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/pp_margin_10"
+            android:layout_marginLeft="@dimen/pp_margin_5"
+            android:layout_marginRight="@dimen/pp_width_3"
+            android:layout_marginTop="@dimen/pp_padding_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/story_lead_zh" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

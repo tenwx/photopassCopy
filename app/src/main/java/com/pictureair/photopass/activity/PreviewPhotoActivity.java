@@ -40,6 +40,8 @@ import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
+import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -86,7 +88,7 @@ import java.util.Locale;
  */
 @SuppressLint({"FloatMath", "NewApi"})
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
-        PWDialog.OnPWDialogClickListener, PhotoEventListener {
+        PWDialog.OnPWDialogClickListener, PhotoEventListener, IGetLastestVideoInfoView {
     private SettingUtil settingUtil;
     //工具条
     private TextView editButton;
@@ -201,6 +203,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int GO_SETTING_DIALOG = 1005;
     private static final int DOWNLOAD_DIALOG = 1006;
     private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 1007;
+    private static final int VIDEO_STILL_MAKING_DIALOG = 1008;
 
     private PWDialog pictureWorksDialog;
 
@@ -265,6 +268,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private volatile String touchSpeet = "";
 
     long time = 0;
+
+    //点击视频播放的处理对象
+    private GetLastestVideoInfoPresenter lastestVideoInfoPresenter;
 
     /**
      * 处理Message
@@ -1627,6 +1633,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             dia.getWindow().setAttributes(layoutParams);
         }
+
+        if (pictureWorksDialog != null) {
+            pictureWorksDialog.autoFitScreen();
+        }
         super.onConfigurationChanged(newConfig);
 
         String language = MyApplication.getInstance().getLanguageType();
@@ -1927,9 +1937,48 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     @Override
     public void videoClick(int position) {
-        PhotoInfo info = photolist.get(position);
-        Intent intent = new Intent(this, VideoPlayerActivity.class);
-        intent.putExtra("from_story", info);
-        startActivity(intent);
+        /**
+         * 1.检查数据库，是否需要重新获取数据
+         * 2.获取最新的视频信息
+         * 3.储存最新信息
+         * 4.跳转或者弹框提示
+         */
+        showPWProgressDialog(R.string.is_loading);
+
+        if (lastestVideoInfoPresenter == null) {
+            lastestVideoInfoPresenter = new GetLastestVideoInfoPresenter(this, this, MyApplication.getTokenId());
+        }
+
+        lastestVideoInfoPresenter.videoInfoClick(photolist.get(position).photoId, position);
+    }
+
+    @Override
+    public void getNewInfoDone(int dealStatus, int position) {
+        dismissPWProgressDialog();
+
+        switch (dealStatus) {
+            case GetLastestVideoInfoPresenter.NETWORK_ERROR://网络问题
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                break;
+
+            case GetLastestVideoInfoPresenter.VIDEO_MAKING://依旧在制作中
+                pictureWorksDialog.setPWDialogId(VIDEO_STILL_MAKING_DIALOG)
+                        .setPWDialogMessage(R.string.magic_in_the_making)
+                        .setPWDialogNegativeButton(null)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .pwDilogShow();
+                break;
+
+            case GetLastestVideoInfoPresenter.VIDEO_FINISHED://已经制作完成
+                PhotoInfo info = photolist.get(position);
+                Intent intent = new Intent(this, VideoPlayerActivity.class);
+                intent.putExtra("from_story", info);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_fadein, R.anim.activity_fadeout);
+                break;
+
+            default:
+                break;
+        }
     }
 }

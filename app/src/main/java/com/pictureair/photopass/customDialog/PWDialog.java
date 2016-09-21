@@ -41,6 +41,7 @@ import com.pictureair.photopass.util.ScreenUtil;
  * 1.方法名和Dialog自带的不一样，调用时需要注意
  * 2.回调接口，不要使用匿名内部类的形式，不然回调太多，太冗余，dialogId也起不到作用
  * 3.title、positiveButton、negativeButton，如果内容为null，则不显示该控件
+ * 4.如果涉及到旋转屏幕，在旋转的时候，autoFitScreen需要调用此方法，保证弹框显示正常
  *
  * 怎么使用：
  * eg：
@@ -354,11 +355,7 @@ public class PWDialog extends Dialog {
         setContentView(view);
         setCancelable(cancelable);
 
-        Window dialogWindow = getWindow();
-        WindowManager.LayoutParams params = dialogWindow.getAttributes();
-        params.width = (int) (ScreenUtil.getScreenWidth(mContext) * 0.9);
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialogWindow.setAttributes(params);
+        autoFitScreen();
         return this;
     }
 
@@ -370,6 +367,17 @@ public class PWDialog extends Dialog {
         if (!isShowing()) {
             show();
         }
+    }
+
+    /**
+     * 自动适应屏幕，只有切换屏幕方向的时候用到
+     */
+    public void autoFitScreen() {
+        Window dialogWindow = getWindow();
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        params.width = (int) (ScreenUtil.getScreenWidth(mContext) * 0.9);
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialogWindow.setAttributes(params);
     }
 
     /**

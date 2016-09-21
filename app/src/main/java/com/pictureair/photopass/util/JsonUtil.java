@@ -158,7 +158,7 @@ public class JsonUtil {
                         if (adObj.containsKey("url")) {
                             StringBuffer sb = new StringBuffer();
                             sb.append(Common.PHOTO_URL).append(adObj.getString("url"));
-                            info.photoThumbnail_1024 = sb.toString().trim();
+                            info.adURL = sb.toString().trim();
                         }
 
                         if (adObj.containsKey("width")) {

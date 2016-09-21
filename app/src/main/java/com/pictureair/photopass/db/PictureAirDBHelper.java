@@ -103,7 +103,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                         "videoWidth integer, " +
                         "videoHeight integer, " +
                         "isHasPreset integer, " +
-                        "enImg integer)"
+                        "enImg integer, " +
+                        "adURL text)"
         );
 
         /**
@@ -154,7 +155,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                         "videoHeight integer, " +
                         "isOnLine integer," +
                         "isHasPreset integer, " +
-                        "enImg integer)"
+                        "enImg integer, " +
+                        "adURL text)"
         );
 
         /**
@@ -268,6 +270,9 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD photoThumbnail_1024 text;");
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoWidth integer default '0';");
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoHeight integer default '0';");
+
+            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD adURL text;");
+            db.execSQL("ALTER TABLE " + Common.FAVORITE_INFO_TABLE + " ADD adURL text;");
             upgradeVersion = 3;
         }
 

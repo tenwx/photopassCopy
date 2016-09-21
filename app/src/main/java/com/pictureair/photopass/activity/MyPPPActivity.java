@@ -133,7 +133,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         message.what = 3;
         myPPPHandler.sendMessageDelayed(message,1000);
     }
-    
+
     private static class MyPPPHandler extends Handler {
         private final WeakReference<MyPPPActivity> mActivity;
 
