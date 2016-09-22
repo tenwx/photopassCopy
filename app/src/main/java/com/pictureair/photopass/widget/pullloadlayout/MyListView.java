@@ -23,7 +23,7 @@ public class MyListView extends ListView{
         super.computeScroll();
         if (mScroll.computeScrollOffset()){
             scrollTo(mScroll.getCurrX(),mScroll.getCurrY());
+            invalidate();
         }
-        invalidate();
     }
 }
