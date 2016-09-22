@@ -223,12 +223,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         } else {
             settingHandler.sendEmptyMessage(2);
         }
-
-        if (settingUtil.isAutoUpdate(userId)) {
-            settingHandler.sendEmptyMessage(3);
-        } else {
-            settingHandler.sendEmptyMessage(4);
-        }
     }
 
     @Override

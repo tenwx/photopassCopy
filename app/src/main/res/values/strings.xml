@@ -162,7 +162,7 @@
     <string name="photo_selected">此照片已经被选择</string>
     <string name="limit_photos">不能超过%1$d张照片</string>
     <string name="select_photos">请选择您的照片</string>
-    <string name="magic_in_the_making">魔法动画正在制作中&#8230;</string>
+    <string name="magic_in_the_making">魔法动画照片还未上传</string>
     <string name="we_will_send_you_to">我们将立即发送给您！</string>
     <string name="my_disney_story_once_it_is_ready">当“我的迪士尼故事”制作完成后</string>
     <string name="disney_video_about_null_photo_note">如果您想开启“我的迪士尼故事”，请尽快购买迪士尼乐拍通一卡通吧！</string>
@@ -389,11 +389,10 @@
     <string name="release_to_refresh">松开立即加载更多</string>
     <string name="refreshing">正在加载更多数据&#8230;</string>
     <string name="activated_card">已激活的迪士尼门票/乐拍通卡号：</string>
-    <string name="use_ppp_upgrade">使用您的迪士尼乐拍通一卡通挑选以下一张迪士尼门票/乐拍通卡进行升级：</string>
-    <string name="use_ppp_upgrade_read_video">查看魔法动画</string>
-    <string name="use_ppp_upgrade_read_photo">查看您的清晰照片</string>
-    <string name="use_ppp_upgrade_pp_code">\n%1$s %2$s\n</string>
-    <string name="use_ppp_upgrade_or">或者</string>
+    <string name="use_ppp_upgrade_read_video">以下迪士尼门票／乐拍通卡包含魔法动画照片。\n%1$s\n\n您可激活此卡查看您的魔法动画照片！</string>
+    <string name="use_ppp_upgrade_read_photo">以下迪士尼门票／乐拍通卡包含清晰照片。\n%1$s\n\n您可激活此卡查看您的清晰照片！</string>
+    <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
+    <string name="use_ppp_upgrade_ok">我知道了</string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -615,10 +614,10 @@
     <!--photo download manage start-->
 
     <!--animated photo-->
-    <string name="animated_photo_title">魔法动画</string>
+    <string name="animated_photo_title">魔法动画照片</string>
     <string name="animated_photo_add_cart">把迪士尼乐拍通一卡通加入购物车</string>
     <string name="animated_photo_buy_ppp">我要购买迪士尼乐拍通一卡通</string>
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
-    <string name="animated_photo_introduce_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo</string>
+    <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开通这个魔法吧！</string>
     <!--animated photo end-->
 </resources>

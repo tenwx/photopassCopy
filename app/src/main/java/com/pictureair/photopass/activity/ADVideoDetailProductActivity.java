@@ -395,6 +395,11 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
     }
 
+    @Override
+    public void onError() {
+        pwVideoPlayerManagerView.setLoadingText(R.string.http_error_code_401);
+    }
+
     /**
      * 调整ui
      * @param isLandscape 是不是横屏模式

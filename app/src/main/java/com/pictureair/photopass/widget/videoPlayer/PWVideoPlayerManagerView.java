@@ -48,8 +48,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case PROGRESS_CHANGED:// 进度改变
-                    PictureAirLog.out("change progress");
                     int i = videoPlayerView.getCurrentPosition();
+                    PictureAirLog.out("change progress----->" + i);
                     seekBar.setProgress(i);
                     if (isOnline) {
                         int j = videoPlayerView.getBufferPercentage();
@@ -58,22 +58,21 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                         seekBar.setSecondaryProgress(0);
                     }
 
-                    i /= 1000;
-                    int minute = i / 60;
-                    int second = i % 60;
-                    minute %= 60;
-
-                    hasPlayedTV.setText(String.format("%02d:%02d", minute, second));
+                    setPlayedTv(i);
 
                     if (!isPaused && !isPlayFinished) {
-                        handler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
+                        handler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 200);
                     } else if (isPlayFinished) {
                         seekBar.setProgress(seekBar.getMax());
                     }
                     break;
 
                 case HIDE_CONTROLER:
-                    hideController();
+                    if (isPaused || isPlayFinished) {
+
+                    } else {
+                        hideController();
+                    }
                     break;
 
                 default:
@@ -120,6 +119,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         PictureAirLog.d(TAG, "===> onError");
+        videoPlayerViewEventListener.onError();
         videoPlayerView.stopPlayback();
         handler.removeMessages(PROGRESS_CHANGED);
         return false;
@@ -135,9 +135,10 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         PictureAirLog.d(TAG, "===> onProgressChanged");
         if (fromUser) {
-            PictureAirLog.out("test--->" + progress);
+            PictureAirLog.out("test   progress changed --->" + progress);
             playedTime = progress;
             videoPlayerView.seekTo(progress);
+            setPlayedTv(progress);
         }
     }
 
@@ -224,12 +225,12 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public void pausedVideo(){
         isPaused = true;
         videoPlayerView.pause();
-        playedTime = videoPlayerView.getCurrentPosition();
+//        playedTime = videoPlayerView.getCurrentPosition();
         playOrStopButton.setVisibility(View.VISIBLE);
         cancelDelayHideController();
         showController();
 
-        PictureAirLog.out("test--->" + playedTime);
+        PictureAirLog.out("test   pause--->" + playedTime);
     }
 
     /**
@@ -249,7 +250,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
             if (isPlayFinished) {
                 playedTime = 0;
             }
-            videoPlayerView.seekTo(playedTime);
+//            videoPlayerView.seekTo(playedTime);
             videoPlayerView.start();
             if (videoPlayerView.isPlaying()) {
                 playOrStopButton.setVisibility(View.GONE);
@@ -331,5 +332,17 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
             isPaused = false;
             isPlayFinished = false;
         }
+    }
+
+    /**
+     * 设置已播放的时间
+     * @param time
+     */
+    private void setPlayedTv(int time) {
+        time /= 1000;
+        int minute = time / 60;
+        int second = time % 60;
+        minute %= 60;
+        hasPlayedTV.setText(String.format("%02d:%02d", minute, second));
     }
 }
