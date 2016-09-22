@@ -86,7 +86,8 @@ public class UrlPagerAdapter extends BasePagerAdapter {
             }
 
         } else {//模糊图
-            iv.setProgressImageViewVisible(false);
+            iv.setBlurImageUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
+            iv.setProgressImageViewVisible(true);
         }
 
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

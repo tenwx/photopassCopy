@@ -33,10 +33,19 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AESKeyHelper;
+import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.BlurUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+
+import java.io.File;
 
 public class UrlTouchImageView extends RelativeLayout {
     protected TouchImageView mImageView;
@@ -46,7 +55,14 @@ public class UrlTouchImageView extends RelativeLayout {
 
     private int defaultType;
 
+    //模糊
+    private File dirFile;
+    private Bitmap oriClearBmp = null;// 原图
+
     private static final int LOAD_FILE_FAILED = 1;
+    private static final int LOAD_FROM_LOCAL = 444;
+    private static final int LOAD_FROM_NETWORK = 555;
+    private static final String TAG = UrlTouchImageView.class.getSimpleName();
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -58,6 +74,36 @@ public class UrlTouchImageView extends RelativeLayout {
                     mImageView.setScaleType(ScaleType.CENTER);
                     mImageView.setImageBitmap(bitmap);//如果这里直接用setImageResource，导致没有左右滑动
                     progressImageView.setVisibility(GONE);
+                    break;
+
+                case LOAD_FROM_NETWORK:
+                    //添加模糊
+                    if (null != oriClearBmp) {
+                        PictureAirLog.v(TAG, "bitmap 2 not null");
+                        initBlur();
+                    } else {
+                        PictureAirLog.v(TAG, "oriClearBmp null-->");
+                        mImageView.setImageResource(R.drawable.ic_failed);
+                    }
+                    PictureAirLog.out("set enable in network");
+                    break;
+
+                case LOAD_FROM_LOCAL:
+                    byte[] arg2 = null;
+                    try {
+                        arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    if (null != arg2)
+                        oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                    if (null != oriClearBmp) {
+                        initBlur();
+                    } else {
+                        mImageView.setImageResource(R.drawable.ic_failed);
+                    }
+                    PictureAirLog.out("set enable in local");
                     break;
 
                 default:
@@ -176,6 +222,57 @@ public class UrlTouchImageView extends RelativeLayout {
                         return false;
                     }
                 }, mImageView);
+    }
+
+    /**
+     * 设置blur url
+     * @param blurImageUrl
+     */
+    public void setBlurImageUrl(String blurImageUrl, String photoId) {
+        dirFile = new File(getContext().getApplicationContext().getCacheDir() + "/" + photoId + Common.OFFSET);//创建一个以ID为名字的文件，放入到app缓存文件下
+
+        PictureAirLog.v(TAG, dirFile.toString());
+        PictureAirLog.v(TAG, "photo URL ------->" + blurImageUrl);
+        if (dirFile.exists()) {//如果文件存在
+            PictureAirLog.v(TAG, "file exists");
+            handler.sendEmptyMessageDelayed(LOAD_FROM_LOCAL, 200);
+        } else {//如果文件不存在，下载文件到缓存
+            PictureAirLog.v(TAG, "file is not exist");
+            HttpUtil1.asyncDownloadBinaryData(blurImageUrl, new HttpCallback() {
+                @Override
+                public void onSuccess(byte[] binaryData) {
+                    super.onSuccess(binaryData);
+                    byte[] data = AppUtil.getRealByte(binaryData);
+                    if (data == null) {
+                        data = binaryData;
+                    }
+                    try {
+                        AESKeyHelper.encrypt(data, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    handler.sendEmptyMessage(LOAD_FROM_NETWORK);
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    super.onFailure(status);
+                    handler.sendEmptyMessage(LOAD_FROM_NETWORK);
+                }
+            });
+        }
+    }
+
+    /**
+     * 根据照片的购买情况确定布局和显示模式
+     */
+    private void initBlur() {
+        PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+//        maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Bitmap.Config.ARGB_8888, true);
+        oriClearBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+        mImageView.setImageBitmap(oriClearBmp);
     }
 
     /**
