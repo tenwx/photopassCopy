@@ -602,6 +602,7 @@
     <string name="photo_download_failed">Re-connect</string>
     <string name="photo_download_reconnecting">Reconnecting</string>
     <string name="photo_download_complete">Completed</string>
+    <string name="photo_download_upload">高清图上传中稍后重连</string>
     <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_reconnect">Reconnect</string>
     <string name="photo_download_not_exists">Deleted</string>

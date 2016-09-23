@@ -432,4 +432,8 @@ public class HttpUtil1 {
             }
         }
     }
+
+    public static void cancelAllRequest() {
+        asyncHttpClient.cancelAllRequests(true);
+    }
 }

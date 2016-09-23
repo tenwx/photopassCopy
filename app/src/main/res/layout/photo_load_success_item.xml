@@ -9,18 +9,18 @@
     android:background="@color/pp_light_gray_background">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
         <RelativeLayout
             android:id="@+id/load_success_image_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true">
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
             <ImageView
                 android:id="@+id/load_success_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/icon_disney_null_photo"
                 android:scaleType="centerCrop"
                 android:layout_centerInParent="true"
                 />
@@ -37,7 +37,7 @@
         <RelativeLayout
             android:id="@+id/load_success_layout"
             android:layout_width="130dp"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true">
             <LinearLayout
@@ -61,7 +61,7 @@
                     android:id="@+id/load_success_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_6"
+                    android:layout_marginTop="@dimen/pp_margin_10"
                     android:text="2016-6-20 17:40"
                     android:gravity="center"
                     android:textColor="@color/gray2"
@@ -80,7 +80,7 @@
         <LinearLayout
             android:id="@+id/load_success_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:orientation="vertical"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/load_success_image_layout"
@@ -98,7 +98,7 @@
                 android:id="@+id/load_success_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/pp_margin_6"
+                android:layout_marginTop="@dimen/pp_margin_10"
                 android:textSize="@dimen/text_size_12"
                 android:text="大小"
                 android:gravity="center_vertical|left"

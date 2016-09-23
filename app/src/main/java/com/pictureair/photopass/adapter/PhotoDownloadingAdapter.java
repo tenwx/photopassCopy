@@ -146,6 +146,14 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         holder.img_status.mCanDraw = false;
                         holder.img_status.setProgress(0);
                         break;
+                    case DownloadFileStatus.DOWNLOAD_STATE_UPLOADING:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText("0KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_upload));
+                        holder.img_status.setImageResource(R.drawable.photo_status_error);
+                        holder.img_status.mCanDraw = false;
+                        holder.img_status.setProgress(0);
+                        break;
                     default:
                         break;
                 }

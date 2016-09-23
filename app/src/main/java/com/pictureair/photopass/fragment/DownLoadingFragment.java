@@ -104,7 +104,8 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
             }else{//非编辑状态下点击item 直接下载
                 DownloadFileStatus reconnecFile = downloadList.get(position);
-                if (reconnecFile != null && reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
+                if (reconnecFile != null && (reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE
+                        || reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_UPLOADING)){
                     reconnecFile.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
                     reconnecFile.setCurrentSize("0");
                     reconnecFile.setLoadSpeed("0");
@@ -222,21 +223,19 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     bundle.putParcelableArrayList("photos", photos);
                     intent.putExtras(bundle);
                     MyApplication.getInstance().startService(intent);
-                    PictureAirLog.v("onServiceConnected","false");
                 }
                 break;
             case PHOTO_STATUS_UPDATE://更新listview
-                PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
                 if (fileStatus != null) {
-                    if (fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
+                    if (fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE
+                            || fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_UPLOADING){
                         downloadService.sendAddDownLoadMessage();
                     }
                 }
                 break;
             case PHOTO_REMOVE://下载成功后删除
-                PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
                     downloadList = downloadService.getDownloadList();
@@ -260,21 +259,17 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     loadManageActivity.successFragmentLoading();
                 }
                 if (adapter == null) {
-                    PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter= null ");
                     downloadList = downloadService.getDownloadList();
                     if (downloadList != null && downloadList.size() >0) {
                         ll_loading.setVisibility(View.VISIBLE);
                         rl_loading.setVisibility(View.GONE);
-                        PictureAirLog.v("SERVICE_LOAD_SUCCESS","new adapter ");
                         adapter = new PhotoDownloadingAdapter(getContext(),downloadList);
                         lv_loading.setAdapter(adapter);
                     }else{
-                        PictureAirLog.v("SERVICE_LOAD_SUCCESS","nothing ");
                         ll_loading.setVisibility(View.GONE);
                         rl_loading.setVisibility(View.VISIBLE);
                     }
                 }else{
-                    PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter!= null ");
                     downloadList = downloadService.getDownloadList();
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
@@ -430,7 +425,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 for (int i=0;i<selectPhotos.size();i++){
                     PhotoInfo info = selectPhotos.get(i);
                     list.add(info);
-                    if (i != 0 && (i % 50 == 0) && (i != selectPhotos.size() - 1)) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
+                    if (i != 0 && (i % 50 == 0) && (i != selectPhotos.size() - 1) && list.size() > 0) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
                         //开始将图片加入下载队列
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList("photos", list);
@@ -443,12 +438,14 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("photos", list);
-                bundle.putInt("prepareDownloadCount",selectPhotos.size());
-                bundle.putInt("reconnect",1);
-                intent1.putExtras(bundle);
-                MyApplication.getInstance().startService(intent1);
+                if (list.size() > 0) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("photos", list);
+                    bundle.putInt("prepareDownloadCount", selectPhotos.size());
+                    bundle.putInt("reconnect", 1);
+                    intent1.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent1);
+                }
                 break;
 
             case R.id.tv_downloading_delete:
@@ -520,7 +517,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void updateView(){
-        PictureAirLog.v("updateView","updateView");
         downloadList = downloadService.getDownloadList();
         if (adapter != null) {
             adapter.setList(downloadList);

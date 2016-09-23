@@ -33,7 +33,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
      *  downloadTime    下载时间
      *  isVideo         是否视频
      *  failedTime      失败时间（不用了）
-     *  success         下载状态，表示状态 下载成功  下载失败  下载中
+     *  success         下载状态，表示状态 下载成功  下载失败  下载中  上传中
      * */
     private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD + "(_id integer primary key autoincrement," +
             "userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text," +

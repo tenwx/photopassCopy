@@ -602,6 +602,7 @@
     <string name="photo_download_failed">点击重连</string>
     <string name="photo_download_reconnecting">重连中</string>
     <string name="photo_download_complete">下载完成</string>
+    <string name="photo_download_upload">高清图上传中稍后重连</string>
     <string name="photo_download_clear">清空列表</string>
     <string name="photo_download_reconnect">重连</string>
     <string name="photo_download_not_exists">源文件已删除</string>

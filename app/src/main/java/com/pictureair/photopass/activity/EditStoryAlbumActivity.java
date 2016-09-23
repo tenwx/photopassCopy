@@ -191,7 +191,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				}
 			}
 
-			if (i != 0 && (i % 50 == 0) && (i != albumArrayList.size() - 1)) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
+			if (i != 0 && (i % 50 == 0) && (i != albumArrayList.size() - 1) && hasPayedList.size() > 0) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
 				//开始将图片加入下载队列
 				Bundle bundle = new Bundle();
 				bundle.putParcelableArrayList("photos", hasPayedList);
@@ -204,12 +204,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		PictureAirLog.out("download list size---->" + hasPayedList.size());
 
-		//开始将图片加入下载队列
-		Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList("photos", hasPayedList);
-		bundle.putInt("prepareDownloadCount",prepareDownloadCount);
-		intent.putExtras(bundle);
-		startService(intent);
+		if (hasPayedList.size() > 0) {
+			//开始将图片加入下载队列
+			Bundle bundle = new Bundle();
+			bundle.putParcelableArrayList("photos", hasPayedList);
+			bundle.putInt("prepareDownloadCount", prepareDownloadCount);
+			intent.putExtras(bundle);
+			startService(intent);
+		}
 
 		//弹框提示，可以进去下载管理页面
 		pictureWorksDialog.setPWDialogId(GO_DOWNLOAD_ACTIVITY_DIALOG)

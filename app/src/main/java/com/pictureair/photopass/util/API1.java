@@ -2166,14 +2166,25 @@ public class API1 {
                 if (photos.size() > 0) {
                     PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
                     fileStatus.setNewUrl(photoInfo.photoPathOrURL);
-                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
+                    if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
+                        handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                    } else {
+                        Message msg =  handler.obtainMessage();
+                        msg.what = DOWNLOAD_PHOTO_FAILED;
+                        Bundle bundle = new Bundle();
+                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                        bundle.putParcelable("url",fileStatus);
+                        bundle.putInt("status",404);
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    }
                 } else {
                     Message msg =  handler.obtainMessage();
                     msg.what = DOWNLOAD_PHOTO_FAILED;
                     Bundle bundle = new Bundle();
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
                     bundle.putParcelable("url",fileStatus);
-                    bundle.putInt("status",401);
+                    bundle.putInt("status",404);
                     msg.setData(bundle);
                     handler.sendMessage(msg);
                 }
@@ -2275,7 +2286,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
-
+        PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
         HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), params, new HttpCallback() {
             long startTime;
             long lastTime;
@@ -2300,7 +2311,11 @@ public class API1 {
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_FAILED;
                 Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                if (status != 404) {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                } else {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                }
                 bundle.putParcelable("url",fileStatus);
                 bundle.putInt("status",status);
                 msg.setData(bundle);
@@ -2578,6 +2593,10 @@ public class API1 {
                 handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
             }
         });
+    }
+
+    public static void cancelAllRequest() {
+        HttpUtil1.cancelAllRequest();
     }
 
 }

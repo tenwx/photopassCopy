@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -46,6 +48,13 @@ public class AppExitUtil {
                     Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
                     intent.putExtra("status", "disconnect");
                     MyApplication.getInstance().startService(intent);
+
+                    //关闭下载
+                    Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("logout",true);
+                    intent1.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent1);
 
                     Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

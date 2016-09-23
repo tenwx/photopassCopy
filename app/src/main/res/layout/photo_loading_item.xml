@@ -17,12 +17,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             >
             <ImageView
                 android:id="@+id/loading_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/icon_disney_null_photo"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
                 />
@@ -35,37 +35,39 @@
                 android:scaleType="centerInside"
                 />
         </RelativeLayout>
-            <LinearLayout
-                android:id="@+id/photo_loading_status"
-                android:layout_width="70dp"
-                android:layout_height="60dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true">
-                <com.pictureair.photopass.widget.CircleProgressImage
-                    android:id="@+id/photo_loading_img_status"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    app:borderColor="@color/pp_blue"
-                    android:src="@drawable/photo_status_load"
-                    android:layout_marginTop="@dimen/pp_margin_8"
-                    />
 
-                <TextView
-                    android:id="@+id/photo_loading_tv_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_12"
-                    android:gravity="center"
-                    android:text="等待中"
-                    android:textColor="@color/gray2"
-                    android:layout_marginTop="@dimen/pp_margin_5"
-                    />
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/photo_loading_status"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true">
+            <com.pictureair.photopass.widget.CircleProgressImage
+            android:id="@+id/photo_loading_img_status"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            app:borderColor="@color/pp_blue"
+            android:src="@drawable/photo_status_load"
+            android:layout_marginTop="@dimen/pp_margin_8"
+            />
+
+            <TextView
+                android:id="@+id/photo_loading_tv_status"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/text_size_12"
+                android:gravity="center"
+                android:text="等待中"
+                android:textColor="@color/gray2"
+                android:layout_marginTop="@dimen/pp_margin_5"
+                />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/loading_image_layout"
             android:layout_toLeftOf="@id/photo_loading_status"

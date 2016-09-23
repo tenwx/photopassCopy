@@ -1531,7 +1531,48 @@ public class PictureAirDbManager {
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return photos;
+    }
+
+    /**
+     * 获取对应状态的photo信息
+     * @param userId
+     * @param status1 状态有 成功 “true”  失败 “false”  下载中 “load” 原图上传中 upload
+     * @param status2 状态有 成功 “true”  失败 “false”  下载中 “load” 原图上传中 upload
+     * */
+    public List<PhotoDownLoadInfo> getPhotos(String userId, String status1, String status2){
+        List<PhotoDownLoadInfo> photos = new ArrayList<>();
+        database = DBManager.getInstance().readData();
+        PictureAirLog.out("cursor open ---> getPhotos");
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? or success = ? order by downloadTime", new String[]{userId,status1,status2});
+        try {
+            if (cursor.moveToFirst()) {//判断是否photo数据
+                do {
+                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
+                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
+                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
+                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
+                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
+                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
+                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
+                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
+                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
+                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
+                    photos.add(photoInfo);
+                } while (cursor.moveToNext());
+            }
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -1572,7 +1613,6 @@ public class PictureAirDbManager {
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -1642,7 +1682,6 @@ public class PictureAirDbManager {
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -1682,7 +1721,6 @@ public class PictureAirDbManager {
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -1787,7 +1825,7 @@ public class PictureAirDbManager {
         database.beginTransaction();
         int res;
         try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ?",new String[]{userId,"false"});
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ? or success = ?",new String[]{userId,"false","upload"});
             PictureAirLog.e("deleteDownloadFailPhotoByUserId","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){
