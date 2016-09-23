@@ -21,7 +21,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  */
 public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPlayer.OnErrorListener,
         VideoPlayerView.OnVideoSizeChangedListenser, SeekBar.OnSeekBarChangeListener,
-        VideoPlayerView.OnVideoPlayerViewPreparedListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
     private VideoPlayerView videoPlayerView;
     private TextView loadingTV, hasPlayedTV, durationTV;
     private ImageButton playOrStopButton;
@@ -38,10 +38,10 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     private final static int PROGRESS_CHANGED = 2;
     private final static int HIDE_CONTROLER = 3;
 
-    private int playedTime;// 最小化 保存播放时间
     private boolean isPaused = true;
     private boolean isOnline ;//网络true || 本地false
     private boolean isPlayFinished = true;//是否播放完毕
+    private boolean isReady = false;//视频是否已经准备好
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -49,7 +49,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
             switch (msg.what) {
                 case PROGRESS_CHANGED:// 进度改变
                     int i = videoPlayerView.getCurrentPosition();
-                    PictureAirLog.out("change progress----->" + i);
+                    PictureAirLog.d(TAG, "change progress----->" + i);
                     seekBar.setProgress(i);
                     if (isOnline) {
                         int j = videoPlayerView.getBufferPercentage();
@@ -60,7 +60,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
                     setPlayedTv(i);
 
-                    if (!isPaused && !isPlayFinished) {
+                    if (!isPaused && !isPlayFinished && isReady) {
                         handler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 200);
                     } else if (isPlayFinished) {
                         seekBar.setProgress(seekBar.getMax());
@@ -106,13 +106,11 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
         videoPlayerView.setOnErrorListener(this);
         videoPlayerView.setOnVideoSizeChangedListenser(this);
-        videoPlayerView.setOnVideoPlayerViewPreparedListener(this);
         videoPlayerView.setOnPreparedListener(this);
         videoPlayerView.setOnCompletionListener(this);
 
         seekBar.setOnSeekBarChangeListener(this);
-
-        setEnabled(false);
+        seekBar.setEnabled(false);
         hideController();
     }
 
@@ -133,10 +131,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        PictureAirLog.d(TAG, "===> onProgressChanged");
+        PictureAirLog.d(TAG, "===> onProgressChanged" + progress);
         if (fromUser) {
-            PictureAirLog.out("test   progress changed --->" + progress);
-            playedTime = progress;
             videoPlayerView.seekTo(progress);
             setPlayedTv(progress);
         }
@@ -153,19 +149,16 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     }
 
     @Override
-    public void onVideoPlayerViewPrepared(MediaPlayer mp) {
-        PictureAirLog.d(TAG, "===> onVideoPlayerViewPrepared");
-        loadingTV.setVisibility(View.GONE);
-        setEnabled(true);
-    }
-
-    @Override
     public void onPrepared(MediaPlayer mp) {
         PictureAirLog.d(TAG, "===> onPrepared");
+        loadingTV.setVisibility(View.GONE);
+        isReady = true;
+        seekBar.setEnabled(true);
+
         videoPlayerViewEventListener.setVideoScale(SCREEN_DEFAULT);
         showController();
         int i = videoPlayerView.getDuration();
-        PictureAirLog.d("onCompletion", "" + i);
+        PictureAirLog.d(TAG, "" + i);
         seekBar.setMax(i);
         i /= 1000;
         int minute = i / 60;
@@ -225,12 +218,10 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     public void pausedVideo(){
         isPaused = true;
         videoPlayerView.pause();
-//        playedTime = videoPlayerView.getCurrentPosition();
-        playOrStopButton.setVisibility(View.VISIBLE);
+        playOrStopButton.setVisibility(isReady ? VISIBLE : GONE);
         cancelDelayHideController();
         showController();
-
-        PictureAirLog.out("test   pause--->" + playedTime);
+        handler.removeMessages(PROGRESS_CHANGED);
     }
 
     /**
@@ -245,12 +236,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
      * 继续播放视频
      */
     public void resumeVideo() {
-        PictureAirLog.out("resume video");
-        if (isPaused) {
-            if (isPlayFinished) {
-                playedTime = 0;
-            }
-//            videoPlayerView.seekTo(playedTime);
+        PictureAirLog.d(TAG, "resume video" + isPaused);
+        if (isReady && isPaused) {
             videoPlayerView.start();
             if (videoPlayerView.isPlaying()) {
                 playOrStopButton.setVisibility(View.GONE);
@@ -270,6 +257,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
             videoPlayerView.stopPlayback();
         }
         isPaused = true;
+        handler.removeMessages(PROGRESS_CHANGED);
     }
 
     /**
@@ -277,12 +265,9 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
      * @param videoPath
      */
     public void startPlayVideo(String videoPath, boolean isOnline) {
-        PictureAirLog.out("start play video");
+        PictureAirLog.d(TAG, "start play video");
         this.isOnline = isOnline;
-        startTrackingSeekbar();
         videoPlayerView.setVideoPath(videoPath);
-        cancelDelayHideController();
-        hideControllerDelay();
     }
 
     /**
@@ -291,7 +276,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     private void showController() {
         if (!controllerBarLL.isShown()) {
             controllerBarLL.setVisibility(View.VISIBLE);
-            playOrStopButton.setVisibility(View.VISIBLE);
+            playOrStopButton.setVisibility(isReady ? VISIBLE : GONE);
             videoPlayerViewEventListener.setControllerVisible(true);
         }
     }
@@ -326,7 +311,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
      */
     private void startTrackingSeekbar() {
         //暂停了，或者停止播放了，才开始播放
-        PictureAirLog.out("start tracking seekbar--->" + isPaused + isPlayFinished);
+        PictureAirLog.d(TAG, "start tracking seekbar--->" + isPaused + isPlayFinished);
         if (isPaused || isPlayFinished) {
             handler.sendEmptyMessage(PROGRESS_CHANGED);
             isPaused = false;

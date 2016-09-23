@@ -49,15 +49,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     private boolean mStartWhenPrepared;
     private int mSeekWhenPrepared;
     private OnVideoSizeChangedListenser mMyChangeLinstener;
-    private OnVideoPlayerViewPreparedListener myMediapalerPrepared;
-
-    public interface OnVideoPlayerViewPreparedListener {
-        void onVideoPlayerViewPrepared(MediaPlayer mp);
-    }
-
-    public void setOnVideoPlayerViewPreparedListener(OnVideoPlayerViewPreparedListener myMediapalerPrepared) {
-        this.myMediapalerPrepared = myMediapalerPrepared;
-    }
 
     public int getVideoWidth() {
         return mVideoWidth;
@@ -123,6 +114,9 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
      * @param path
      */
     public void setVideoPath(String path) {
+        if (path == null) {
+            path = "";
+        }
         setVideoURI(Uri.parse(path));
     }
 
@@ -215,8 +209,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         public void onPrepared(MediaPlayer mp) {
             PictureAirLog.d(TAG, "===> onPrepared");
-
-            myMediapalerPrepared.onVideoPlayerViewPrepared(mp);
             mIsPrepared = true;
             if (mOnPreparedListener != null) {
                 mOnPreparedListener.onPrepared(mMediaPlayer);

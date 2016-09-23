@@ -1424,17 +1424,7 @@ public class AppUtil {
         //处理网络图片
         for (int l = 0; l < photoList.size(); l++) {
             PhotoInfo info = photoList.get(l);
-            int resultPosition = -1;
-            //			PictureAirLog.d(TAG, "scan photo list:"+l);
-            //先挑选出相同的locationid信息
-            for (int i = 0; i < locationList.size(); i++) {
-                //				PictureAirLog.d(TAG, "scan location:"+i);
-                if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                    resultPosition = i;
-                    break;
-                }
-            }
-
+            int resultPosition = findPositionInLocationList(info, locationList);
             if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
                 resultPosition = locationList.size() - 1;
                 info.locationId = "others";
@@ -1795,5 +1785,23 @@ public class AppUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 在locationlist中查找指定的loactionid，如果有，返回对应的索引值，如果没有，则返回-1，表示是其他地点
+     * @param info
+     * @param locationList
+     * @return
+     */
+    public static int findPositionInLocationList(PhotoInfo info, ArrayList<DiscoverLocationItemInfo> locationList) {
+        int resultPosition = -1;
+        //先挑选出相同的locationid信息
+        for (int i = 0; i < locationList.size(); i++) {
+            if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
+                resultPosition = i;
+                break;
+            }
+        }
+        return resultPosition;
     }
 }

@@ -44,6 +44,7 @@ import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
+import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
 import com.pictureair.photopass.util.ACache;
@@ -847,6 +848,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
+        if (TextUtils.isEmpty(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, null))) {
+            EventBus.getDefault().post(new StoryLoadCompletedEvent());
+        }
         isOnCreate = false;
     }
 
@@ -1072,17 +1076,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //处理网络图片
                     for (int l = 0; l < photoPassPicList.size(); l++) {
                         PhotoInfo info = photoPassPicList.get(l);
-                        int resultPosition = -1;
-//                        PictureAirLog.d(TAG, "scan photo list:" + l);
-                        //先挑选出相同的locationid信息
-                        for (int i = 0; i < locationList.size(); i++) {
-//                            PictureAirLog.d(TAG, "scan location:" + i);
-                            if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                                resultPosition = i;
-                                break;
-                            }
-                        }
 
+                        int resultPosition = AppUtil.findPositionInLocationList(info, locationList);
                         if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
                             resultPosition = locationList.size() - 1;
                             info.locationId = "others";
@@ -1270,7 +1265,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         boolean isContains = false;
         //判断是否已经购买
         if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
-            PictureAirLog.d(TAG, "add to bought list");
+            PictureAirLog.d(TAG, "add to bought list" + info.locationId);
             for (int j = 0; j < boughtItemInfoList.size(); j++) {
                 PictureAirLog.d(TAG, "检查之前的是否存在");
 
@@ -1377,6 +1372,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l >= 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassPicList.get(l);
+
+            //先检查locationid，是否数据其他地点的照片
+            int resultPosition = AppUtil.findPositionInLocationList(info, locationList);
+            if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
+                resultPosition = locationList.size() - 1;
+                info.locationId = "others";
+            }
+
+            if (resultPosition < 0 ) {
+                resultPosition = 0;
+            }
+
             //查找list_clone有图片的item，如果找到locationid，在判断是否有同一天的photos，如果有同一天的，add进去，如果没有，新建一个项
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {//遍历list，查找locationid一样的内容
                 PictureAirLog.out("遍历地址");
@@ -1471,23 +1478,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("找到位置");
                 findLocation = false;
             } else {//如果之前没有找到对应的位置，遍历地址列表，需要新建一个item，并且放入到最上方
-                int resultPosition = -1;
-                for (int k = 0; k < locationList.size(); k++) {
-                    PictureAirLog.out("没有找到位置，遍历location");
-                    if (info.locationId.equals(locationList.get(k).locationId) || locationList.get(k).locationIds.contains(info.locationId)) {
-                        resultPosition = k;
-                        break;
-                    }
-                }
-                if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
-                    resultPosition = locationList.size() - 1;
-                    info.locationId = "others";
-                }
-
-                if (resultPosition < 0 ) {
-                    resultPosition = 0;
-                }
-
                 PictureAirLog.out("找到其他的location");
                 itemInfo = new PhotoItemInfo();
                 itemInfo.locationId = locationList.get(resultPosition).locationId;

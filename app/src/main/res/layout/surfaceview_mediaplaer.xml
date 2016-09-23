@@ -18,12 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/is_loading"
+        android:textColor="@color/white"
+        android:alpha="0.9"
         android:textSize="@dimen/text_size_14" />
 
     <ImageButton
         android:id="@+id/btn_play_or_stop"
-        android:layout_width="@dimen/pp_height_80"
-        android:layout_height="@dimen/pp_height_80"
+        android:layout_width="@dimen/pp_height_60"
+        android:layout_height="@dimen/pp_height_60"
         android:layout_centerInParent="true"
         android:background="@color/transparent"
         android:clickable="false"

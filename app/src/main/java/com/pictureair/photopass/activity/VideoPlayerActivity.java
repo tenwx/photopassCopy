@@ -82,6 +82,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             videoPath = file.getPath();
             isOnline = false;
         }
+        if (videoInfo.videoHeight == 0) {
+            videoInfo.videoHeight = 480;
+        }
+        if (videoInfo.videoWidth == 0) {
+            videoInfo.videoWidth = 480;
+        }
     }
 
     // 设置可以全屏
@@ -178,7 +184,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void onResume() {
-        pwVideoPlayerManagerView.resumeVideo();
         super.onResume();
     }
 

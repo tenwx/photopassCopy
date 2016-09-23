@@ -119,6 +119,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
 
                 case API1.GET_NEW_PHOTOS_INFO_FAILED:
                 case API1.GET_SHARE_URL_FAILED:
+                    PictureAirLog.d(TAG, "error--" + msg.arg1);
                     //获取url失败，1.通知notify，2、关闭sdk
                     dismissDialog();
                     shareUrl = null;
@@ -564,7 +565,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     PictureAirLog.d(TAG, "local or video");
                     startShare(v.getId());
                 } else {//网络，需要获取shareURL
-                    PictureAirLog.d(TAG, "online");
+                    PictureAirLog.d(TAG, "online get share url");
                     API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
                 }
                 break;

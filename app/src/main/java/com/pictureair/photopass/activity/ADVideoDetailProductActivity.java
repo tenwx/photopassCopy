@@ -366,6 +366,12 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             videoPath = file.getPath();
             isOnline = false;
         }
+        if (videoInfo.videoHeight == 0) {
+            videoInfo.videoHeight = 480;
+        }
+        if (videoInfo.videoWidth == 0) {
+            videoInfo.videoWidth = 480;
+        }
     }
 
     /**
