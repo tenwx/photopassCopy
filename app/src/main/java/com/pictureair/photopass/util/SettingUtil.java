@@ -26,8 +26,7 @@ public class SettingUtil {
 	 * @return
 	 */
 	public boolean isOnlyWifiDownload(String userInfoId) {
-		return pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI,
-				userInfoId);// 是否仅wifi下载。
+		return pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI, userInfoId);// 是否仅wifi下载。
 	}
 	
 	/**
@@ -36,8 +35,7 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void deleteSettingOnlyWifiStatus(String userInfoId) {
-		pictureAirDbManager.deleteSettingStatus(Common.SETTING_ONLY_WIFI,
-				userInfoId);
+		pictureAirDbManager.deleteSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
 	}
 
 	/**
@@ -46,15 +44,9 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void insertSettingOnlyWifiStatus(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_ONLY_WIFI,
-				userInfoId);
+		pictureAirDbManager.insertSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
 	}
-	
-   //  tips 1 , 网络下载模式流程。 end
-	
-	
-	
-	
+
    //  tips 2 , 推广AirPass+ 弹窗流程。 start
 	/**
 	 * 如果airPass中的照片首次到达了十张。 字段存在，就不是首次，字段不存在，首次。
@@ -62,8 +54,7 @@ public class SettingUtil {
 	 * @return
 	 */
 	public boolean isFirstPP10(String userInfoId){
-		return !(pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_FIRST_PP10,
-				userInfoId));
+		return !(pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_FIRST_PP10, userInfoId));
 	}
 	
 	/**
@@ -72,69 +63,7 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void insertSettingFirstPP10Status(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_FIRST_PP10,
-				userInfoId);
+		pictureAirDbManager.insertSettingStatus(Common.SETTING_FIRST_PP10, userInfoId);
 	}
-   //  tips 2 , 推广AirPass+ 弹窗流程。 end
-	
-	
-	
-	
-   //  tips 3 , 同步更新流程。 Start
-	/**
-	 * 获取 是否第一次购买单张图片。
-	 * 如果字段存在,就不是第一次提示同步。如果不存在，就是第一次
-	 * @return
-	 */
-	public boolean isFirstTipsSyns(String userInfoId){
-		return !(pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_FIRST_TIPS_SYNS,
-				userInfoId));
-	}
-	
-	/**
-	 * 增加字段，代表不是第一次了。
-	 * @return
-	 */
-	public void insertSettingFirstTipsSynsStatus(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_FIRST_TIPS_SYNS,
-				userInfoId);
-	}
-	
-	/**
-	 * 获取 是否自动更新
-	 *
-	 * @return
-	 */
-	public boolean isAutoUpdate(String userInfoId) {
-		return pictureAirDbManager.checkFirstBuyPhoto(
-				Common.SETTING_AUTO_UPDATE, userInfoId); // 是否自动更新
-	}
-	
-	/**
-	 * 删除 "自动更新" 设置中的字段。
-	 * 
-	 * @param userInfoId
-	 */
-	public void deleteSettingAutoUpdateStatus(String userInfoId) {
-		pictureAirDbManager.deleteSettingStatus(Common.SETTING_AUTO_UPDATE,
-				userInfoId);
-	}
-
-	/**
-	 * 增加 "自动更新" 设置中的字段。
-	 * 
-	 * @param userInfoId
-	 */
-	public void insertSettingAutoUpdateStatus(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_AUTO_UPDATE,
-				userInfoId);
-	}
-	
-	
-   //  tips 3 , 同步更新流程。  end
-
-
-	
-	
 
 }

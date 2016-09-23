@@ -9,4 +9,6 @@ public interface OnVideoPlayerViewEventListener {
 
     void setControllerVisible(boolean visible);//设置控制栏可见
 
+    void onError();//加载视频失败
+
 }

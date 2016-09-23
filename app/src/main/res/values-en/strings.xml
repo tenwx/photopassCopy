@@ -130,7 +130,7 @@
     <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
     <string name="confirm_ppp_code_text_hint">Please check your PhotoPass+ password \n If the password is incorrect, please key in manually</string>
-    <string name="scan_coupon_intro">请扫描您的抵用券二维码，更快获得您的抵用券</string>
+    <string name="scan_coupon_intro">Please scan your coupon QR code</string>
     <!-- scan end -->
 
     <!-- manual input start -->
@@ -162,7 +162,7 @@
     <string name="photo_selected">The photo has been selected</string>
     <string name="limit_photos">Cannot more than %1$d picture(s)!</string>
     <string name="select_photos">Please select your photos</string>
-    <string name="magic_in_the_making">Animated Photo in the making&#8230;</string>
+    <string name="magic_in_the_making">Animated magic photo is uploading&#8230;</string>
     <string name="we_will_send_you_to">My Disney Story will be sent to you</string>
     <string name="my_disney_story_once_it_is_ready"> once it is ready.</string>
     <string name="disney_video_about_null_photo_note">If you wish to create your very own “My Disney Story”, please purchase Disney PhotoPass+</string>
@@ -389,11 +389,10 @@
     <string name="release_to_refresh">Release loading&#8230;</string>
     <string name="refreshing">Loading&#8230;</string>
     <string name="activated_card">Activated Disney Park Ticket / PhotoPass Card: </string>
-    <string name="use_ppp_upgrade">使用您的迪士尼乐拍通一卡通挑选以下一张迪士尼门票/乐拍通卡进行升级：</string>
-    <string name="use_ppp_upgrade_read_video">查看魔法动画</string>
-    <string name="use_ppp_upgrade_read_photo">查看您的清晰照片</string>
-    <string name="use_ppp_upgrade_pp_code">\n%1$s %2$s\n</string>
-    <string name="use_ppp_upgrade_or">或者</string>
+    <string name="use_ppp_upgrade_read_video">The following Disney Park Ticket/PhotoPass card(s) includes Animated Magic Photo(s).\n%1$s\n\nYou can activate to view them!</string>
+    <string name="use_ppp_upgrade_read_photo">The following Disney Park Ticket/PhotoPass card(s) includes PhotoPass Photo(s).\n%1$s\n\nYou can activate to view them!</string>
+    <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
+    <string name="use_ppp_upgrade_ok">Okay, got it!</string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -616,10 +615,10 @@
     <!--photo download manage start-->
 
     <!--animated photo-->
-    <string name="animated_photo_title">Animated Photo</string>
+    <string name="animated_photo_title">Animated Magic Photo</string>
     <string name="animated_photo_add_cart">Add PhotoPass+ to Cart</string>
     <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
     <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
-    <string name="animated_photo_introduce_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo</string>
+    <string name="animated_photo_introduce_text">Want to see your Disney friends coming alive in your photos? Purchase PhotoPass+ now to unlock this magic today!</string>
     <!--animated photo end-->
 </resources>

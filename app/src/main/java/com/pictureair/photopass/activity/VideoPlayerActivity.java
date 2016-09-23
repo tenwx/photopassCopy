@@ -94,6 +94,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         backImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void onError() {
+        setControllerVisible(true);
+        pwVideoPlayerManagerView.setLoadingText(R.string.http_error_code_401);
+    }
+
     /**
      * 当横竖屏切换的时候会直接调用onCreate方法中的 onConfigurationChanged方法
      */

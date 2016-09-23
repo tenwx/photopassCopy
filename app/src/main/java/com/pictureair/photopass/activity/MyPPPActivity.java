@@ -72,7 +72,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private ArrayList<PPPinfo> list1;// 绑定了pp的pp+
     private ArrayList<PPPinfo> listNormal;// 已激活未激活的pp+
     private ArrayList<PPPinfo> listNoUse;// 已过期已用完的pp+
-    private PWToast myToast;
 
     private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
     private int currentPosition = 0;//记录选中的项的索引值
@@ -99,7 +98,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private static final int TYPE_NOT_SAME_DIALOG = 333;
     private static final int BIND_PP_DIALOG = 444;
     private static final int UPDATE_TIPS_DIALOG = 555;
-    private static final int BUY_PPP_AND_UPDATE_TIP = 666;
+    private static final int BUY_PPP_AND_UPDATE_TIP_DIALOG = 666;
 
     private boolean isOnResume = false;
 
@@ -403,7 +402,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             case 3:
                 if (status == normal) {
                     if (listNoUse == null || listNoUse.size() < 1) {
-                        myToast.setTextAndShow(R.string.ppp_load_all);
+                        newToast.setTextAndShow(R.string.ppp_load_all);
                     } else {
                         listPPPAdapter.setArrayList(list1);
                     }
@@ -413,10 +412,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     listPPP.setSelection(listPPP.getLastVisiblePosition()+1);
                 }else if (status == unUse) {
                     status = full;
-                    myToast.setTextAndShow(R.string.ppp_load_all);
+                    newToast.setTextAndShow(R.string.ppp_load_all);
                     finishLoad();
                 }else if (status == full){
-                    myToast.setTextAndShow(R.string.ppp_load_all);
+                    newToast.setTextAndShow(R.string.ppp_load_all);
                     finishLoad();
                 }
                 break;
@@ -613,7 +612,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         button_scan_ppp.setOnClickListener(this);
 //		optionImageView.setOnClickListener(this);
 //		optoinTextView.setOnClickListener(this);
-        myToast = new PWToast(this);
         refreshLayout.setListView(listPPP);
         refreshLayout.setOnRefreshListener(this);
         ll_guide_layout.setOnClickListener(this);
@@ -899,16 +897,16 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
                 String photoPassInfo = String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[0]);
                 for (int i = 1; i < codes.length; i++) {
-                    photoPassInfo += getString(R.string.use_ppp_upgrade_or) + String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
+                    photoPassInfo += String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
                 }
                 boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY);
-                String message = getString(R.string.use_ppp_upgrade) + photoPassInfo +
-                        (isVideo ? getString(R.string.use_ppp_upgrade_read_video) : getString(R.string.use_ppp_upgrade_read_photo));
 
-                pictureWorksDialog.setPWDialogId(BUY_PPP_AND_UPDATE_TIP)
+                String message = String.format(getString(isVideo ? R.string.use_ppp_upgrade_read_video : R.string.use_ppp_upgrade_read_photo), photoPassInfo);
+
+                pictureWorksDialog.setPWDialogId(BUY_PPP_AND_UPDATE_TIP_DIALOG)
                         .setPWDialogMessage(message)
                         .setPWDialogNegativeButton(null)
-                        .setPWDialogPositiveButton(R.string.dialog_ok1)
+                        .setPWDialogPositiveButton(R.string.use_ppp_upgrade_ok)
                         .pwDilogShow();
 
                 MyApplication.getInstance().clearIsBuyingPhotoList();
@@ -944,7 +942,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     }
                     break;
 
-                case BUY_PPP_AND_UPDATE_TIP://购买完ppp之后，去选择pp升级
+                case BUY_PPP_AND_UPDATE_TIP_DIALOG://购买完ppp之后，去选择pp升级
                     int position = 0;
                     if (position >= list1.size()) {
                         return;
