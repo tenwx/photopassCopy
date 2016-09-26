@@ -52,7 +52,7 @@ public class DealCodeUtil {
 	public static final int DEAL_CHID_CODE_SUCCESS = 5;
 
 	/**
-	 * 需要返回信息
+	 * 需要返回信息，如果是coupon需要将couponInfo返回
 	 */
 	public static final int STATE_RETURN_MSG = 1;
 
@@ -62,9 +62,9 @@ public class DealCodeUtil {
 	public static final int STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS = 4;
 
 	/**
-	 * 正常流程进入，并且绑定ppp或者coupon成功，不需要将结果返回
+	 * 正常流程进入，并且绑定ppp成功，不需要将结果返回
 	 */
-	public static final int STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS = 3;
+	public static final int STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS = 3;
 
 	private int id = 0;
 	
@@ -247,7 +247,7 @@ public class DealCodeUtil {
 							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 
 						}else {
-							bundle3.putInt("status", STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS);
+							bundle3.putInt("status", STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS);
 							PictureAirLog.out("scan ppp ok 333");
 							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 
@@ -260,7 +260,7 @@ public class DealCodeUtil {
 						PictureAirLog.out("coupon---->" + msg.obj.toString());
 						CouponInfo couponInfo = JsonUtil.getCouponInfo(((JSONObject) msg.obj).getJSONObject("PPP"));
 						//将对象放入bundle3中
-						bundle3.putInt("status", STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS);
+						bundle3.putInt("status", STATE_RETURN_MSG);
 						PictureAirLog.out("coupon---->" + couponInfo == null ? " null " : "not null");
 						bundle3.putSerializable("coupon", couponInfo);
 						PictureAirLog.out("scan coupon ok");

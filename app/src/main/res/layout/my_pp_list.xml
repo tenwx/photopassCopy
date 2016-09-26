@@ -99,21 +99,21 @@
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img1"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_marginRight="@dimen/pp_margin_5"
@@ -121,20 +121,20 @@
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img5"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img6"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_marginRight="@dimen/pp_margin_5"
@@ -158,21 +158,21 @@
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img7"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img8"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img9"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_marginRight="@dimen/pp_margin_5"
@@ -180,22 +180,22 @@
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img10"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img12"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/play" />
+                android:layout_weight="1" />
 
         </LinearLayout>
     </LinearLayout>

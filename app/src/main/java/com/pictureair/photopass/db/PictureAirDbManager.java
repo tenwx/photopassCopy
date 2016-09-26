@@ -1068,7 +1068,7 @@ public class PictureAirDbManager {
             DBManager.getInstance().closeDatabase();
         }
 
-        return AppUtil.needRequestForNewUrl(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail);
+        return AppUtil.isOldVersionOfTheVideo(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail);
     }
 
     /**

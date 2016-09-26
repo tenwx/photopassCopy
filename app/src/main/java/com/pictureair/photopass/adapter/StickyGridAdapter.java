@@ -75,9 +75,14 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         }
         String photoUrl;
         if (list.get(position).onLine == 1) {
-            if (list.get(position).isVideo == 1) {
-                PictureAirLog.out("load video--->" + list.get(position).photoThumbnail_512);
+            if (list.get(position).isPayed == 1) {
                 photoUrl = Common.PHOTO_URL + list.get(position).photoThumbnail_512;
+            } else {
+                photoUrl = list.get(position).photoThumbnail;
+            }
+            if (list.get(position).isVideo == 1) {
+                PictureAirLog.out("load video--->512 " + list.get(position).photoThumbnail_512);
+                PictureAirLog.out("load video--->128 " + list.get(position).photoThumbnail);
                 mViewHolder.videoImageView.setVisibility(View.VISIBLE);
                 LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
                 params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
@@ -85,11 +90,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
                 mViewHolder.videoImageView.setLayoutParams(params2);
             } else {
                 PictureAirLog.out("load online photo--->" + list.get(position).photoPathOrURL);
-                if (list.get(position).isPayed == 1) {
-                    photoUrl = Common.PHOTO_URL + list.get(position).photoThumbnail_512;
-                } else {
-                    photoUrl = list.get(position).photoThumbnail;
-                }
                 mViewHolder.videoImageView.setVisibility(View.GONE);
             }
         } else {

@@ -92,14 +92,16 @@ public class UrlTouchImageView extends RelativeLayout {
         mImageView.setVisibility(GONE);
 
         progressImageView = new ImageView(mContext);
-        params = new LayoutParams(ScreenUtil.getScreenWidth(mContext) / 3, ScreenUtil.getScreenWidth(mContext) / 3);
+
+        int screenW = ScreenUtil.getPortraitScreenWidth(mContext);
+        params = new LayoutParams(screenW / 3, screenW / 3);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         progressImageView.setLayoutParams(params);
         progressImageView.setImageResource(R.drawable.loading_0);
         this.addView(progressImageView);
 
         videoPlayImageView = new ImageView(mContext);
-        params = new LayoutParams(ScreenUtil.getScreenWidth(mContext) / 6, ScreenUtil.getScreenWidth(mContext) / 6);
+        params = new LayoutParams(screenW / 6, screenW / 6);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         videoPlayImageView.setLayoutParams(params);
         videoPlayImageView.setImageResource(R.drawable.play);

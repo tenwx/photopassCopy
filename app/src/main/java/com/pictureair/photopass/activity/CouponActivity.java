@@ -19,6 +19,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
@@ -33,6 +35,9 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * 优惠卷view
@@ -239,8 +244,19 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     });
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         couponTool.onDestroyCouponTool();
         mAllData.clear();
         mAllData = null;
@@ -391,6 +407,24 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                     }
                 }
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof ScanInfoEvent) {
+            ScanInfoEvent scanInfoEvent = (ScanInfoEvent) baseBusEvent;
+            CouponInfo couponInfo = scanInfoEvent.getCouponInfo();
+
+            if (couponInfo != null) {
+                PictureAirLog.out("coupon----> add success （from scan page）");
+                PictureAirLog.out("coupon no null" + mAllData.size());
+                mAllData.add(0, couponInfo);
+                PictureAirLog.out("coupon no null" + mAllData.size());
+                sortCoupon(mAllData, false);
+            }
+
+            EventBus.getDefault().removeStickyEvent(scanInfoEvent);
         }
     }
 }

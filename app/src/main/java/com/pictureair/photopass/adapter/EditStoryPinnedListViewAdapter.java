@@ -84,9 +84,13 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		viewHolder.maskImageView.setLayoutParams(params);
 		String photoUrl;
 		if (photoList.get(position).onLine == 1) {
+			if (photoList.get(position).isPayed == 1) {
+				photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
+			} else {
+				photoUrl = photoList.get(position).photoThumbnail;
+			}
 			if (photoList.get(position).isVideo == 1) {
 				PictureAirLog.out("load video--->" + photoList.get(position).photoThumbnail_512);
-				photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
 				viewHolder.videoImageView.setVisibility(View.VISIBLE);
 				ViewGroup.LayoutParams params2 = viewHolder.videoImageView.getLayoutParams();
 				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
@@ -94,11 +98,6 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 				viewHolder.videoImageView.setLayoutParams(params2);
 			} else {
 				PictureAirLog.out("load online photo--->" + photoList.get(position).photoPathOrURL);
-				if (photoList.get(position).isPayed == 1) {
-					photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
-				} else {
-					photoUrl = photoList.get(position).photoThumbnail;
-				}
 				viewHolder.videoImageView.setVisibility(View.GONE);
 			}
 		} else {

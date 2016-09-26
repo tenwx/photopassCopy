@@ -527,7 +527,7 @@ public class DownloadService extends Service {
 
 
     private void getNewUrl(DownloadFileStatus fileStatus){
-        if (AppUtil.needRequestForNewUrl(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
+        if (AppUtil.isOldVersionOfTheVideo(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
             PictureAirLog.out("getNewUrl----------->  requestNewUrl");
             API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, fileStatus);
         }else{

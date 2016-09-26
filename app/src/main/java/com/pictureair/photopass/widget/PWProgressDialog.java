@@ -94,7 +94,7 @@ public class PWProgressDialog extends Dialog {
         messageTV = (TextView) view.findViewById(R.id.id_tv_loadingmsg);
         imageView = (ImageView) view.findViewById(R.id.loadingImageView);
         LayoutParams params = imageView.getLayoutParams();
-        params.width = ScreenUtil.getScreenWidth(mContext) / 6;
+        params.width = ScreenUtil.getPortraitScreenWidth(mContext) / 6;
         params.height = params.width;
 
         setContentView(view);

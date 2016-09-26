@@ -1764,7 +1764,7 @@ public class AppUtil {
      * @param photoThumbnail
      * @return
      */
-    public static boolean needRequestForNewUrl(String photoPathOrURL, String photoThumbnail_1024, String photoThumbnail_512, String photoThumbnail){
+    public static boolean isOldVersionOfTheVideo(String photoPathOrURL, String photoThumbnail_1024, String photoThumbnail_512, String photoThumbnail){
         if (TextUtils.isEmpty(photoPathOrURL)) return true;
 
         if (!TextUtils.isEmpty(photoThumbnail_1024)){

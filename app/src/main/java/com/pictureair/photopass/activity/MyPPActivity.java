@@ -303,6 +303,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 ((MyApplication) getApplication()).setNeedRefreshPPPList(true);
+
+                Intent intent0 = new Intent(MyPPActivity.this, MyPPPActivity.class);
+                API1.PPPlist.clear();
+                dismissPWProgressDialog();
+                startActivity(intent0);
+                finish();
                 break;
 
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。

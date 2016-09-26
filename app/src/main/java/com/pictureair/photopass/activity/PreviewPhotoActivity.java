@@ -468,7 +468,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 String cartId = jsonObject.getString("cartId");
 
                 myApplication.setIsBuyingPhotoInfo(null, null, photolist.get(currentPosition).photoPassCode, photolist.get(currentPosition).shootTime);
-                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_ACTIVITY);
+                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY);
 
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
@@ -1584,9 +1584,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
             }
 
-            myApplication.setBuyPPPStatus("");
-            //按返回，把状态全部清除
-            myApplication.clearIsBuyingPhotoList();
+            if (!myApplication.getBuyPPPStatus().equals(Common.FROM_PREVIEW_PPP_ACTIVITY_PAYED)) {//如果已经购买完成，则不需要清除数据，否则才会清除
+                myApplication.setBuyPPPStatus("");
+                //按返回，把状态全部清除
+                myApplication.clearIsBuyingPhotoList();
+            }
+
         }
         previewPhotoHandler.removeCallbacksAndMessages(null);
 
@@ -1937,6 +1940,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     @Override
     public void videoClick(int position) {
+        PictureAirLog.out("start check the video info -->" + position);
         /**
          * 1.检查数据库，是否需要重新获取数据
          * 2.获取最新的视频信息
@@ -1953,7 +1957,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     @Override
-    public void getNewInfoDone(int dealStatus, int position) {
+    public void getNewInfoDone(int dealStatus, int position, PhotoInfo photoInfo, boolean checkByNetwork) {
         dismissPWProgressDialog();
 
         switch (dealStatus) {
@@ -1970,7 +1974,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case GetLastestVideoInfoPresenter.VIDEO_FINISHED://已经制作完成
-                PhotoInfo info = photolist.get(position);
+                //list拿错数据
+                PhotoInfo info;
+                if (checkByNetwork) {
+                    info = photoInfo;
+                } else {
+                    info = photolist.get(position);
+                }
+
                 Intent intent = new Intent(this, VideoPlayerActivity.class);
                 intent.putExtra("from_story", info);
                 startActivity(intent);

@@ -300,7 +300,9 @@ public class Common {
 
     //模糊图或者广告页面购买PPP
     public static final String FROM_AD_ACTIVITY = "fromADProductActivity";
-    public static final String FROM_PREVIEW_ACTIVITY = "fromPreviewActivity";
+    public static final String FROM_AD_ACTIVITY_PAYED = "fromADProductActivityPay";
+    public static final String FROM_PREVIEW_PPP_ACTIVITY = "fromPreviewActivity";
+    public static final String FROM_PREVIEW_PPP_ACTIVITY_PAYED = "fromPreviewActivityPay";
 
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";

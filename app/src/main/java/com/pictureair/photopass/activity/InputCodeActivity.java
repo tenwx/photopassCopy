@@ -78,9 +78,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                     Intent intent2 = new Intent();
                     Bundle bundle = (Bundle) msg.obj;
                     if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type")));
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), null));
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS) {
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
                         intent2.setClass(InputCodeActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
                         startActivity(intent2);

@@ -10,7 +10,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 8
-        versionName "1.2.2"
+        versionName "2.0.0"
 
     }
 

@@ -29,6 +29,28 @@ public class ScreenUtil {
 	}
 
 	/**
+	 * 不管横屏还是竖屏，获取屏幕的真实宽
+	 * @param context
+	 * @return
+     */
+	public static int getPortraitScreenWidth(Context context) {
+		int w = getScreenWidth(context);
+		int h = getScreenHeight(context);
+		return Math.min(w, h);
+	}
+
+	/**
+	 * 不管横屏还是竖屏，获取屏幕的真实高
+	 * @param context
+	 * @return
+	 */
+	public static int getPortraitScreenHeight(Context context) {
+		int w = getScreenWidth(context);
+		int h = getScreenHeight(context);
+		return Math.max(w, h);
+	}
+
+	/**
 	 * 得到设备的密度
 	 */
 	public static float getScreenDensity(Context context) {

@@ -332,8 +332,11 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         pwVideoPlayerManagerView.stopVideo();
         adVideoHandler.removeCallbacksAndMessages(null);
 
-        MyApplication.getInstance().clearIsBuyingPhotoList();
-        MyApplication.getInstance().setBuyPPPStatus("");
+        if (!MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY_PAYED)) {//如果已经购买完成，则不需要清除数据，否则才会清除
+            MyApplication.getInstance().setBuyPPPStatus("");
+            //按返回，把状态全部清除
+            MyApplication.getInstance().clearIsBuyingPhotoList();
+        }
         super.onDestroy();
     }
 

@@ -627,6 +627,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
             }
         }
+        if (AppManager.getInstance().checkActivity(MyPPActivity.class)) {//如果从pp页面去选择未购买的资源去购买ppp，则会出现问题
+            AppManager.getInstance().killActivity(MyPPActivity.class);
+        }
     }
 
     //获取ppp数据
@@ -865,6 +868,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         if (isUseHavedPPP){
 //            API1.PPPlist.clear();
         }else{
+            //防止在出现引导页的时候，按手机返回键，导致数据没有清空造成下次依旧出现弹框的问题。
+            MyApplication.getInstance().clearIsBuyingPhotoList();
+            MyApplication.getInstance().setBuyPPPStatus("");
+
             if (EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().unregister(this);
             }
@@ -899,7 +906,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 for (int i = 1; i < codes.length; i++) {
                     photoPassInfo += String.format(getString(R.string.use_ppp_upgrade_pp_code), shootTime, codes[i]);
                 }
-                boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY);
+                boolean isVideo = MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY_PAYED);
 
                 String message = String.format(getString(isVideo ? R.string.use_ppp_upgrade_read_video : R.string.use_ppp_upgrade_read_photo), photoPassInfo);
 
@@ -943,17 +950,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     break;
 
                 case BUY_PPP_AND_UPDATE_TIP_DIALOG://购买完ppp之后，去选择pp升级
-                    int position = 0;
-                    if (position >= list1.size()) {
+                    if (list1.size() == 0) {
                         return;
+                    }
+
+                    int position = 0;
+                    //按照顺序，找到第一个全新的ppp
+                    for (int i = 0; i < list1.size(); i++) {
+                        if (list1.get(i).bindInfo.size() == 0 && list1.get(position).expired == 0) {
+                            position = i;
+                            break;
+                        }
                     }
                     if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
                         if (list1.get(position).expericePPP == 1) {//体验卡
-//                            Intent intent3 = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
-//                            intent3.putExtra("activity", "mypppactivity");
-//                            intent3.putExtra("pppCode", list1.get(position).PPPCode);
-//                            intent3.putExtra("photoCount", 1);
-//                            startActivity(intent3);
                         } else {
                             PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
                             ppp = list1.get(position);

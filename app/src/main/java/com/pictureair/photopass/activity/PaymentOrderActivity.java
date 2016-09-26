@@ -532,6 +532,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
+        AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
         finish();
     }
 
@@ -555,6 +556,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             AppManager.getInstance().killActivity(MakegiftActivity.class);
             AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
             AppManager.getInstance().killActivity(DetailProductActivity.class);
+            AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
             Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
             startActivity(intent2);
         }
@@ -573,6 +575,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(OrderActivity.class);
+        AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
 
     }
 
@@ -660,6 +663,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             // product
             PictureAirLog.v(TAG, "----------------->buy ppp");
             myApplication.setNeedRefreshPPPList(true);
+            if (myApplication.getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY)) {
+                myApplication.setBuyPPPStatus(Common.FROM_AD_ACTIVITY_PAYED);
+
+            } else if (myApplication.getBuyPPPStatus().equals(Common.FROM_PREVIEW_PPP_ACTIVITY)) {
+                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY_PAYED);
+
+            }
             intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
             API1.PPPlist.clear();
 

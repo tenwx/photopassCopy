@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -175,7 +176,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 dismissPWProgressDialog();
                 PictureAirLog.out("scan failed----->");
                 if (msg.obj != null) {//从ppp,PP页面过来，需要返回
-                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false, getIntent().getStringExtra("type")));
+                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false, getIntent().getStringExtra("type"), null));
                     finish();
                 } else {
                     mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
@@ -189,9 +190,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     Bundle bundle = (Bundle) msg.obj;
                     PictureAirLog.out("status-------->" + bundle.getInt("status"));
                     if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type")));
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), (CouponInfo) bundle.getSerializable("coupon")));
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS) {
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
                         startActivity(intent2);
