@@ -326,7 +326,6 @@ public class DownloadService extends Service {
                                 }
                             }
                             if (i == downloadList.size() -1 && taskList.size() == 0 ){
-                                stopSelf();//下载服务停止
                                 downed_num.set(0);
                                 failed_num.set(0);
                                 isDownloading = false;
@@ -335,7 +334,6 @@ public class DownloadService extends Service {
                         }
                     }else{//从数据库中查找出所有下载失败的照片无法直接下载，会从这里结束
                         PictureAirLog.out("START_DOWNLOAD finish download-------------->");
-                        stopSelf();//下载服务停止
                         downed_num.set(0);
                         failed_num.set(0);
                         isDownloading = false;

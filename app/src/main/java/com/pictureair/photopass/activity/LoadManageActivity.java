@@ -232,6 +232,10 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
             Intent intent = new Intent(this, MainTabActivity.class);
             startActivity(intent);
         }
+
+        if (downLoadingFragment != null) {
+            downLoadingFragment.stopDownloadService();
+        }
         finish();
     }
 

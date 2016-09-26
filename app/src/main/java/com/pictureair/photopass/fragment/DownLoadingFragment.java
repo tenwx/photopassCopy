@@ -562,4 +562,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         }
         return false;
     }
+
+    public void stopDownloadService() {
+        if (downloadService != null && !downloadService.isDownloading()) {
+            Intent intent = new Intent(getContext(),DownloadService.class);
+            getContext().stopService(intent);
+        }
+    }
 }
