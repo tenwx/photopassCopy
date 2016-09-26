@@ -1036,13 +1036,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
-            PictureAirLog.v(TAG, "need show blur view");
-            image01.setVisibility(View.INVISIBLE);
-            showPWProgressDialog();
-            touchtoclean.setVisibility(View.VISIBLE);
-            blurFraRelativeLayout.setVisibility(View.VISIBLE);
-            currentPhotoADTextView.setVisibility(View.GONE);
-            loadPhotoPassPhoto(photoInfo, isOnCreate);
+//            PictureAirLog.v(TAG, "need show blur view");
+//            image01.setVisibility(View.INVISIBLE);
+//            showPWProgressDialog();
+//            touchtoclean.setVisibility(View.VISIBLE);
+//            blurFraRelativeLayout.setVisibility(View.VISIBLE);
+//            currentPhotoADTextView.setVisibility(View.GONE);
+//            loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
             previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
             PictureAirLog.out("set enable in get ad");

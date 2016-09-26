@@ -43,6 +43,7 @@ import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.io.File;
@@ -83,9 +84,8 @@ public class UrlTouchImageView extends RelativeLayout {
                         initBlur();
                     } else {
                         PictureAirLog.v(TAG, "oriClearBmp null-->");
-                        mImageView.setImageResource(R.drawable.ic_failed);
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);
                     }
-                    PictureAirLog.out("set enable in network");
                     break;
 
                 case LOAD_FROM_LOCAL:
@@ -101,9 +101,8 @@ public class UrlTouchImageView extends RelativeLayout {
                     if (null != oriClearBmp) {
                         initBlur();
                     } else {
-                        mImageView.setImageResource(R.drawable.ic_failed);
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);
                     }
-                    PictureAirLog.out("set enable in local");
                     break;
 
                 default:
@@ -272,7 +271,11 @@ public class UrlTouchImageView extends RelativeLayout {
         PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
 //        maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Bitmap.Config.ARGB_8888, true);
         oriClearBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+        progressImageView.setImageResource(getImageResource(100));
+        mImageView.setVisibility(VISIBLE);
+        mImageView.setScaleType(ScaleType.MATRIX);
         mImageView.setImageBitmap(oriClearBmp);
+        setProgressImageViewVisible(false);
     }
 
     /**
@@ -294,36 +297,7 @@ public class UrlTouchImageView extends RelativeLayout {
      * @return
      */
     private int getImageResource(long currentProgress) {
-        int result = R.drawable.loading_0;
-        if (currentProgress >= 0 && currentProgress <= 8) {
-            result = R.drawable.loading_0;
-        } else if (currentProgress > 8 && currentProgress <= 16) {
-            result = R.drawable.loading_1;
-        } else if (currentProgress > 16 && currentProgress <= 25) {
-            result = R.drawable.loading_2;
-        } else if (currentProgress > 25 && currentProgress <= 33) {
-            result = R.drawable.loading_3;
-        } else if (currentProgress > 33 && currentProgress <= 41) {
-            result = R.drawable.loading_4;
-        } else if (currentProgress > 41 && currentProgress <= 50) {
-            result = R.drawable.loading_5;
-        } else if (currentProgress > 50 && currentProgress <= 58) {
-            result = R.drawable.loading_6;
-        } else if (currentProgress > 58 && currentProgress <= 66) {
-            result = R.drawable.loading_7;
-        } else if (currentProgress > 66 && currentProgress <= 75) {
-            result = R.drawable.loading_8;
-        } else if (currentProgress > 75 && currentProgress <= 83) {
-            result = R.drawable.loading_9;
-        } else if (currentProgress > 83 && currentProgress <= 91) {
-            result = R.drawable.loading_10;
-        } else if (currentProgress > 91 && currentProgress < 100) {
-            result = R.drawable.loading_11;
-        } else {
-            result = R.drawable.loading_12;
-        }
-
-        return result;
+        return ReflectionUtil.getDrawableId(mContext, "loading_" + (currentProgress / 8));
     }
 
     public void setDefaultType(int defaultType) {
