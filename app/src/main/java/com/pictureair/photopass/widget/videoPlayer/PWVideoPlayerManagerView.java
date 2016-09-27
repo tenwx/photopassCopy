@@ -21,7 +21,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  */
 public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPlayer.OnErrorListener,
         VideoPlayerView.OnVideoSizeChangedListenser, SeekBar.OnSeekBarChangeListener,
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
     private VideoPlayerView videoPlayerView;
     private TextView loadingTV, hasPlayedTV, durationTV;
     private ImageButton playOrStopButton;
@@ -51,13 +51,6 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                     int i = videoPlayerView.getCurrentPosition();
                     PictureAirLog.d(TAG, "change progress----->" + i);
                     seekBar.setProgress(i);
-                    if (isOnline) {
-                        int j = videoPlayerView.getBufferPercentage();
-                        seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
-                    } else {
-                        seekBar.setSecondaryProgress(0);
-                    }
-
                     setPlayedTv(i);
 
                     if (!isPaused && !isPlayFinished && isReady) {
@@ -108,6 +101,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         videoPlayerView.setOnVideoSizeChangedListenser(this);
         videoPlayerView.setOnPreparedListener(this);
         videoPlayerView.setOnCompletionListener(this);
+        videoPlayerView.setOnBufferingUpdateListener(this);
 
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setEnabled(false);
@@ -177,6 +171,15 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         pausedVideo();
         isPlayFinished = true;
         seekBar.setProgress(seekBar.getMax());
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        if (isOnline) {
+            seekBar.setSecondaryProgress(percent * seekBar.getMax() / 100);
+        } else {
+            seekBar.setSecondaryProgress(seekBar.getMax());
+        }
     }
 
     /**

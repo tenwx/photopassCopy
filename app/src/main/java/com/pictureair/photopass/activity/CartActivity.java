@@ -207,9 +207,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 if (cartInfoList.size() == 0) {
                     cancelEdit();
                     ShowNoNetOrNoCountView();
-                }
 
-                dismissPWProgressDialog();
+                } else {
+                    dismissPWProgressDialog();
+
+                }
                 break;
 
             case API1.UPLOAD_PHOTO_SUCCESS:

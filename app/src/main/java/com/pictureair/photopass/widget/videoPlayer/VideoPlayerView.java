@@ -44,6 +44,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     private MediaController mMediaController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
+    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener;
     private int mCurrentBufferPercentage;
     private OnErrorListener mOnErrorListener;
     private boolean mStartWhenPrepared;
@@ -282,11 +283,15 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
 
     private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            PictureAirLog.d(TAG, "===> onBufferingUpdate: ");
-
+            PictureAirLog.d(TAG, "===> onBufferingUpdate: " + percent);
+            mOnBufferingUpdateListener.onBufferingUpdate(mp, percent);
             mCurrentBufferPercentage = percent;
         }
     };
+
+    public void setOnBufferingUpdateListener(MediaPlayer.OnBufferingUpdateListener l) {
+        mOnBufferingUpdateListener = l;
+    }
 
     /**
      * Register a callback to be invoked when the media file

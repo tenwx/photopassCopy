@@ -112,7 +112,11 @@ public class PWProgressDialog extends Dialog {
     public void pwProgressDialogShow(){
         checkContent();
         if (!isShowing()) {
-            show();
+            try {
+                show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (spinner != null) {
             spinner.start();

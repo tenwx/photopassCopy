@@ -137,6 +137,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case SAVE_JSON_DONE:
                 PictureAirLog.out("save json done----> start ");
+                //扫描成功，需要通知story更新页面
+                needNotifyStoryRefresh = true;
                 API1.getPPSByUserId(myPPHandler);
                 break;
 

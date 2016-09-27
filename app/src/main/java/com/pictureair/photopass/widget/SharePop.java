@@ -227,7 +227,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         ShareParams shareParams = new ShareParams();
         shareParams.title = context.getString(R.string.share_app_name);
         if (isVideo) {
-            shareParams.shareType = Platform.SHARE_WEBPAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+            shareParams.shareType = Platform.SHARE_VIDEO;
             shareParams.imageUrl = thumbnailUrl;
             shareParams.url = imageUrl;// share_webpage的时候需要这个参数
         } else {
@@ -258,7 +258,8 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         ShareParams shareParams = new ShareParams();
         shareParams.title = context.getString(R.string.share_app_name);
         if (isVideo) {
-            shareParams.shareType = Platform.SHARE_WEBPAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+            // 如果以网页的形式分享图片，则用SHARE_WEBPAGE
+            shareParams.shareType = Platform.SHARE_VIDEO;
             shareParams.imageUrl = thumbnailUrl;
             shareParams.url = imageUrl;// share_webpage的时候需要这个参数
             shareParams.text = context.getResources().getString(R.string.share_text);
