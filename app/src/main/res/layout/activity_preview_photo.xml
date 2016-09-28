@@ -118,7 +118,7 @@
             android:layout_marginLeft="@dimen/pp_margin_16"
             android:layout_marginRight="@dimen/pp_margin_16"
             android:layout_marginBottom="@dimen/pp_margin_16"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14"
             android:visibility="gone"/>

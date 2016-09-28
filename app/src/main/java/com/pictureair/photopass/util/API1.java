@@ -320,7 +320,7 @@ public class API1 {
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.USERINFO_USERNAME, userName);
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
