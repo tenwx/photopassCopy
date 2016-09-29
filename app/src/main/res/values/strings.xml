@@ -118,6 +118,7 @@
     <string name="download_share_bought_photo">您要下载及分享您已拍的照片吗？</string>
     <string name="story_buy_ppp">购买迪士尼乐拍通一卡通</string>
     <string name="story_scan_ppp">激活您已购买的乐拍通一卡通</string>
+    <string name="story_hot_deal">乐拍通头条</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -621,4 +622,12 @@
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
     <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开通这个魔法吧！</string>
     <!--animated photo end-->
+
+    <!--panic buy start-->
+    <string name="panic_buy_title">抢购活动</string>
+    <string name="panic_buy_count_limit">仅限%1$d张</string>
+    <string name="panic_buy_count_left">仅余%1$d张</string>
+    <string name="panic_buy_not_start">未开始</string>
+    <string name="panic_buy_start">抢购中</string>
+    <!--panic buy end-->
 </resources>

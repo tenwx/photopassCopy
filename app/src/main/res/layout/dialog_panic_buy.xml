@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/me_title_bg">
+
+    <RelativeLayout
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ppp_introduce1">
+
+        <ImageView
+            android:id="@+id/panicbuy_dialog_cancle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/discover_like"
+            />
+
+        <TextView
+            android:id="@+id/panicbuy_dialog_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/panicbuy_dialog_content"
+            android:layout_centerHorizontal="true"
+            android:text="确定"
+            android:background="@drawable/button_blue_enable_gray_disable"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

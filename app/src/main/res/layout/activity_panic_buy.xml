@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/panicbuy_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:background="@color/pp_blue">
+
+        <ImageView
+            android:id="@+id/panicbuy_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/panic_buy_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/pp_light_gray_background"
+        android:layout_below="@id/panicbuy_title">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/panicbuy_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ppp_back"
+                        android:layout_marginTop="30dp"/>
+
+                    <TextView
+                        android:id="@+id/panicbuy_dicsount"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:textSize="@dimen/text_size_14"
+                        android:textColor="@color/pp_dark_blue"
+                        android:gravity="left|center_vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="20dp">
+
+                        <com.pictureair.photopass.widget.CustomTextView
+                            android:id="@+id/panicbuy_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pp_blue"
+                            android:textSize="25sp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <TextView
+                            android:id="@+id/panicbuy_left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            android:textColor="@color/pp_dark_blue"
+                            android:textSize="@dimen/text_size_14"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pp_height_1"
+                    android:background="@color/line_color"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginRight="21dp"
+                    android:layout_marginBottom="30dp">
+
+                    <Button
+                        android:id="@+id/panicbuy_purchase"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:text="@string/panic_buy_not_start"
+                        android:textColor="@color/white"
+                        android:background="@drawable/button_blue_enable_gray_disable"
+                        android:textSize="@dimen/text_size_14"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        />
+                    
+                    <TextView
+                        android:id="@+id/panicbuy_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/text_size_14"
+                        android:text="距离本次开始时间2：00"
+                        android:textColor="@color/gray2"
+                        />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pp_height_1"
+                    android:background="@color/line_color"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    />
+                <TextView
+                    android:id="@+id/panicbuy_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14"
+                    android:textColor="@color/pp_dark_blue"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginRight="21dp"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        android:id="@+id/panicbuy_NoNetWorkView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/panicbuy_title"
+        android:visibility="gone" />
+
+</RelativeLayout>

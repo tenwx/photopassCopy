@@ -40,13 +40,57 @@
                 android:src="@drawable/add_righttop" />
         </RelativeLayout>
     </RelativeLayout>
-
+    
+    <LinearLayout
+        android:id="@+id/story_hot_deal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_40"
+        android:orientation="horizontal"
+        android:layout_below="@id/story_title"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        >
+        <TextView
+            android:id="@+id/story_tv_hotdeal_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/story_hot_deal"
+            android:textColor="@color/pp_orange"
+            android:textSize="@dimen/text_size_14" />
+        
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            />
+        
+        <TextView
+            android:id="@+id/story_tv_hotdeal_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/text_size_12"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:textColor="@color/pp_dark_blue"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/story_lead_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_40"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/story_hot_deal"
         android:orientation="horizontal"
         android:visibility="invisible">
 
@@ -73,7 +117,7 @@
         android:id="@+id/storyNoNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/story_hot_deal"
         android:visibility="gone" />
 
 
@@ -81,8 +125,8 @@
         android:id="@+id/story_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_title"
-        android:visibility="gone">
+        android:layout_below="@id/story_hot_deal"
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"

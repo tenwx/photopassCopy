@@ -118,6 +118,7 @@
     <string name="download_share_bought_photo">Want to download and share your photos?</string>
     <string name="story_buy_ppp">Buy Disney PhotoPass+ Now</string>
     <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
+    <string name="story_hot_deal">Hot Deal</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -621,4 +622,12 @@
     <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
     <string name="animated_photo_introduce_text">Want to see your Disney friends coming alive in your photos? Purchase PhotoPass+ now to unlock this magic today!</string>
     <!--animated photo end-->
+
+    <!--panic buy start-->
+    <string name="panic_buy_title">Event</string>
+    <string name="panic_buy_count_limit">Limited to %1$d pieces</string>
+    <string name="panic_buy_count_left">Only %1$d left</string>
+    <string name="panic_buy_not_start">Begin Soon</string>
+    <string name="panic_buy_start">Purchase</string>
+    <!--panic buy end-->
 </resources>

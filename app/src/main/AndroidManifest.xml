@@ -278,6 +278,12 @@
             android:launchMode="singleTop"/>
         <!-- download photo end -->
 
+        <!-- panic buy begin-->
+        <activity android:name=".activity.PanicBuyActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+        <!-- panic buy end-->
+
         <!-- alipay sdk begin -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"

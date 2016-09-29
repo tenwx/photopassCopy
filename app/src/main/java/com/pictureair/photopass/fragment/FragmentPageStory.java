@@ -3,8 +3,10 @@ package com.pictureair.photopass.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -31,6 +37,7 @@ import com.pictureair.photopass.activity.InputCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
+import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -137,6 +144,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private CustomTextView storyScan;
     private CustomTextView storyDiscover;
     private CustomTextView storyNoPhotoTip;
+    private TextView hotDealMsg;
+    private TextView hotDealTitle;
+    private LinearLayout hotDealLayout;
 
     //申明类
     private MyApplication app;
@@ -161,6 +171,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private PictureAirDbManager pictureAirDbManager;
     private PWDialog pwDialog;
     private boolean getPhotoInfoDone = false;
+    private Dialog animateDialog;
 
     /**
      * 同步已经购买的照片
@@ -687,6 +698,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
         indicator = (TabPageIndicator) view.findViewById(R.id.indicator);
         indicator.setOnPageChangeListener(this);
+
+        hotDealMsg = (TextView) view.findViewById(R.id.story_tv_hotdeal_msg);
+        hotDealTitle = (TextView) view.findViewById(R.id.story_tv_hotdeal_title);
+        hotDealLayout = (LinearLayout) view.findViewById(R.id.story_hot_deal);
+
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
@@ -715,6 +731,20 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyScan.setTypeface(app.getFontBold());
         storyDiscover.setTypeface(app.getFontBold());
         storyNoPhotoTip.setTypeface(app.getFontBold());
+
+        hotDealMsg.setSelected(true);
+        String titleMsg = hotDealTitle.getText().toString();
+        SpannableString ss = new SpannableString(titleMsg);
+        ss.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0,titleMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        hotDealTitle.setText(ss);
+        hotDealLayout.setOnClickListener(this);
+        hotDealLayout.setVisibility(View.VISIBLE);
+
+        animateDialog = new Dialog(context,R.style.CustomProgressDialog);
+        animateDialog.setContentView(R.layout.dialog_panic_buy);
+        animateDialog.setCancelable(true);
+        animateDialog.show();
+
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new PWToast(getActivity());
@@ -1547,6 +1577,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 showPWProgressDialog();
                 //获取商品（以后从缓存中取）
                 getGoods();
+                break;
+
+            case R.id.story_hot_deal:
+                Intent intent = new Intent(context, PanicBuyActivity.class);
+                startActivity(intent);
                 break;
 
             default:
