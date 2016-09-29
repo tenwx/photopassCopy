@@ -41,20 +41,26 @@ import java.util.TimerTask;
 @SuppressLint("NewApi")
 public class TouchImageView extends ImageView {
 
-//    private int positionForTouchImageView = -1;
-
     // private static final String TAG = "Touch";
     // These matrices will be used to move and zoom image
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
 
+    /**
+     * 双击间隔时间
+     */
     static final long DOUBLE_PRESS_INTERVAL = 600;
+    /**
+     * 长按间隔时间
+     */
+    static final long LONG_TOUCH = 300;
     static final float FRICTION = 0.9f;
 
     // We can be in one of these 4 states
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
+    static final int NONE = 0;//无
+    static final int DRAG = 1;//拖拽模式
+    static final int ZOOM = 2;//缩放模式
+    static final int TOUCH_CLEAR = 3;//touch clear 模式
     static final int CLICK = 10;
     int mode = NONE;
 
@@ -85,6 +91,7 @@ public class TouchImageView extends ImageView {
     private Handler mTimerHandler = null;
 
     private boolean zoomEnable = true;
+    private boolean touchClearEnable = false;
 
     // Scale mode on DoubleTap
     private boolean zoomToOriginalSize = false;
@@ -124,6 +131,16 @@ public class TouchImageView extends ImageView {
         if (Build.VERSION.SDK_INT >= 8) {
             mScaleDetector = new ScaleGestureDetector(mContext, new ScaleListener());
         }
+
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mode = TOUCH_CLEAR;
+                PictureAirLog.out("----->touch clear" + last.x + "---> " + last.y);
+                return false;
+            }
+        });
+
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent rawEvent) {
@@ -276,6 +293,17 @@ public class TouchImageView extends ImageView {
         });
     }
 
+    /**
+     * 设置是否开启touch-clear
+     * @param enable
+     */
+    public void enableTouchClearMode(boolean enable) {
+        touchClearEnable = enable;
+    }
+
+    /**
+     * 设置是否允许双指缩放
+     */
     public void disableZoom() {
         zoomEnable = false;
     }

@@ -80,10 +80,8 @@ public class UrlTouchImageView extends RelativeLayout {
                 case LOAD_FROM_NETWORK:
                     //添加模糊
                     if (null != oriClearBmp) {
-                        PictureAirLog.v(TAG, "bitmap 2 not null");
                         initBlur();
                     } else {
-                        PictureAirLog.v(TAG, "oriClearBmp null-->");
                         handler.sendEmptyMessage(LOAD_FILE_FAILED);
                     }
                     break;
@@ -275,6 +273,7 @@ public class UrlTouchImageView extends RelativeLayout {
         mImageView.setVisibility(VISIBLE);
         mImageView.setScaleType(ScaleType.MATRIX);
         mImageView.setImageBitmap(oriClearBmp);
+        mImageView.enableTouchClearMode(true);
         setProgressImageViewVisible(false);
     }
 
