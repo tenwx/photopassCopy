@@ -268,7 +268,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.videoWidth = downLoadInfo.getVideoWidth();
                         photoInfo.isHasPreset = 0;
                         photoInfo.isEncrypted = 1;
-                        photoInfo.onLine = 0;
+                        photoInfo.onLine = 1;//因为都是网络图片，也都有保存photoid，本地图还要压缩，并且上传，因此就以网络图处理
                         photoInfo.isChecked = 0;
                         photoInfo.isSelected = 0;
                         photoInfo.isUploaded = 0;

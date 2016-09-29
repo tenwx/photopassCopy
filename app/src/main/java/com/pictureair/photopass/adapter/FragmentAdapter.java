@@ -1,5 +1,6 @@
 package com.pictureair.photopass.adapter;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -63,4 +64,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		super.finishUpdate(container);
 	}
 
+	@Override
+	public void restoreState(Parcelable state, ClassLoader loader) {
+		//不需要super
+	}
 }

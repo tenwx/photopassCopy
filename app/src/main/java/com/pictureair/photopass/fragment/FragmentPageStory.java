@@ -1056,6 +1056,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //不需要super
+    }
+
     /**
      * 数据组合排序
      * 遍历已经存在了的图片资源，分成四大类，all，photopass，magic，bought

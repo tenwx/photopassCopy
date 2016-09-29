@@ -548,12 +548,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 dismissPWProgressDialog();
                 if (null != oriClearBmp) {
                     PictureAirLog.v(TAG, "bitmap 2 not null");
-                    initBlur();
+                    loadFailed = false;
                 } else {
                     PictureAirLog.v(TAG, "oriClearBmp null-->");
                     loadFailed = true;
-                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 }
+                initBlur();
                 PictureAirLog.out("set enable in network");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
@@ -567,12 +567,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                if (null != arg2)
+                if (null != arg2) {
                     oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                dismissPWProgressDialog();
-                if (null != oriClearBmp) {
-                    initBlur();
+                    loadFailed = false;
+                } else {
+                    oriClearBmp = null;
+                    loadFailed = true;
                 }
+
+                dismissPWProgressDialog();
+                initBlur();
                 PictureAirLog.out("set enable in local");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
@@ -996,6 +1000,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 @Override
                 public void onFailure(int status) {
                     super.onFailure(status);
+                    if (oriClearBmp!= null) {
+                        if (!oriClearBmp.isRecycled()) {
+                            oriClearBmp.recycle();
+                        }
+                        oriClearBmp = null;
+                    }
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                     loadPhotoSuccess = true;
                 }
@@ -1170,6 +1180,65 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                         mode = MODE_UP;
                         PictureAirLog.v(TAG, "up");
+                        if (touchUpTime - touchDownTime < 200){
+                            msg.obj = touchSpeet;
+                        } else {
+                            touchSpeet = "";
+                        }
+                        msg.what = 2;
+                        touchtoclean.setVisibility(View.VISIBLE);
+                        break;
+                }
+                previewPhotoHandler.sendMessage(msg);
+            }
+        } else {//也要可以滑动
+            if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {// 未购买状态
+                if (event.getY() < marginTop || event.getY() > parentPreviewH + marginTop) {
+                        return super.onTouchEvent(event);
+                }
+
+                Message msg = previewPhotoHandler.obtainMessage();
+                msg.arg1 = (int) event.getX();
+                msg.arg2 = (int) event.getY();
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        touchDownTime = System.currentTimeMillis();
+                        touchtoclean.setVisibility(View.INVISIBLE);
+                        /** 测速 */
+                        if(vTracker == null){
+                            vTracker = VelocityTracker.obtain();
+                        }else{
+                            vTracker.clear();
+                        }
+                        vTracker.addMovement(event);
+
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (vTracker != null) {
+                            vTracker.addMovement(event);
+                            vTracker.computeCurrentVelocity(1000);
+                            PictureAirLog.out("vTracker----> the x velocity is "+vTracker.getXVelocity());
+                            PictureAirLog.out("vTracker----> the y velocity is "+vTracker.getYVelocity());
+                            if (vTracker.getXVelocity() > MAX_SPEED){
+                                touchSpeet = "indexLast";
+                                PictureAirLog.out("vTracker----> the -----<");
+                            } else if (vTracker.getXVelocity() < -MAX_SPEED){
+                                touchSpeet = "indexNext";
+                                PictureAirLog.out("vTracker----> the ----->");
+                            }
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        touchUpTime = System.currentTimeMillis();
+
+                        if (vTracker != null) {
+                            vTracker.clear();
+                            vTracker.recycle();
+                            vTracker = null;
+                        }
+
                         if (touchUpTime - touchDownTime < 200){
                             msg.obj = touchSpeet;
                         } else {
@@ -1706,8 +1775,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private void initBlur() {
         PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
+        createOriginalClearBit(true);
         if (!loadFailed) {//加载成功
-            createOriginalClearBit(true);
             PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
             zoomW = (int) (parentPreviewW / 2);
             zoomH = (int) (parentPreviewH / 2);
@@ -1721,13 +1790,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 image01.setImageBitmap(oriBlurBmp);
             }
             image01.setVisibility(View.VISIBLE);
-
+            curShowBmpWidth = oriClearBmp.getWidth();
+            curShowBmpHeight = oriClearBmp.getHeight();
+            PictureAirLog.out("larger bmp h after init---->" + curShowBmpHeight);
+            PictureAirLog.out("larger bmp w after init---->" + curShowBmpWidth);
+            touchtoclean.setText(R.string.touchtoclean);
         } else {
+            image01.setImageResource(R.drawable.ic_failed);
+            image01.setVisibility(View.VISIBLE);
             touchtoclean.setText(R.string.http_error_code_401);
         }
         mViewPager.setVisibility(View.GONE);
-        curShowBmpWidth = oriClearBmp.getWidth();
-        curShowBmpHeight = oriClearBmp.getHeight();
         curRadius = originalRadius;
 
         if (flag) {//放大模式
@@ -1739,8 +1812,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 zoomClearBmp.recycle();
             }
         }
-        PictureAirLog.out("larger bmp h after init---->" + curShowBmpHeight);
-        PictureAirLog.out("larger bmp w after init---->" + curShowBmpWidth);
     }
 
     /**
@@ -1776,9 +1847,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     private void createOriginalClearBit(boolean isInit) {
-        int w = oriClearBmp.getWidth();
-        int h = oriClearBmp.getHeight();
-        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
+        if (isInit) {
+            int[] location = new int[2];
+            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
+            marginTop = location[1];
+            PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
+        }
+
         parentPreviewW = ScreenUtil.getScreenWidth(this);
 
         if (isLandscape) {
@@ -1788,12 +1863,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
 
-        if (isInit) {
-            int[] location = new int[2];
-            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
-            marginTop = location[1];
-            PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
+        if (loadFailed) {
+            return;
         }
+
+        int w = oriClearBmp.getWidth();
+        int h = oriClearBmp.getHeight();
+        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
 
         float sw = 0f;
         if (h / (float) w > parentPreviewH / parentPreviewW) {//左右留白
