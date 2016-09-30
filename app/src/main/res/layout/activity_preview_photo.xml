@@ -120,6 +120,7 @@
             android:layout_marginBottom="@dimen/pp_margin_16"
             android:gravity="center_vertical"
             android:textColor="@color/pp_dark_blue"
+            android:autoLink="web"
             android:textSize="@dimen/text_size_14"
             android:visibility="gone"/>
 
