@@ -3,6 +3,7 @@ package com.pictureair.photopass.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +121,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             @Override
             public void onClick(View v) {
                 //二维码放大
-                if (!isShowCodePic) {
+                if (!isShowCodePic && !TextUtils.isEmpty(userPPCode)) {
                     isShowCodePic = true;
                     showCodePic(container);
                 }
