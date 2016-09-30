@@ -438,7 +438,11 @@ public class DownloadService extends Service {
                                     status.setPosition(i);
                                     PictureAirLog.out("ADD_DOWNLOAD photoid and position " + status.getPhotoId() +" "+status.getPosition());
                                     taskList.put(status.getPhotoId(), status);
-                                    getNewUrl(status);
+                                    if (status.isVideo() == 0) {
+                                        getNewUrl(status);
+                                    }else if (status.isVideo() == 1){
+                                        downLoad(status);
+                                    }
                                     if (adapterHandler != null) {
                                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                                     }
@@ -548,84 +552,10 @@ public class DownloadService extends Service {
     private void downLoad(final DownloadFileStatus fileStatus) {
         // 使用友盟统计点击下载次数
         UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
-        downloadImgOrVideo(fileStatus);
-    }
-
-    /**
-     * 判断下载视频还是 图片
-     */
-    private void downloadImgOrVideo(final DownloadFileStatus fileStatus) {//int isVideo,String photoId,String url
-        if (fileStatus.isVideo() == 0) {//photo
 //            API1.downLoadPhotos(handler, fileStatus,adapterHandler);
-            API1.downLoadPhotosWithUrl(handler, fileStatus,adapterHandler);
-        } else {//video
-            RequestParams params = new RequestParams();
-            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-            params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
-            PictureAirLog.out("downloadurl video----------->" + fileStatus.getUrl());
-            HttpUtil1.asyncDownloadBinaryData(fileStatus.getUrl(), params, new HttpCallback() {
-                long startTime;
-                long lastTime;
-                @Override
-                public void onSuccess(byte[] binaryData) {
-                    super.onSuccess(binaryData);
-                    PictureAirLog.out("downloadImgOrVideo----------->调用下载照片API成功");
-                    Message msg =  handler.obtainMessage();
-                    msg.what = API1.DOWNLOAD_PHOTO_SUCCESS;
-                    Bundle bundle = new Bundle();
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
-                    bundle.putParcelable("url",fileStatus);
-                    bundle.putByteArray("binaryData",binaryData);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onFailure(int status) {
-                    super.onFailure(status);
-                    PictureAirLog.e("downloadImgOrVideo", "调用下载照片API失败：错误代码：" + status);
-                    Message msg =  handler.obtainMessage();
-                    msg.what = API1.DOWNLOAD_PHOTO_FAILED;
-                    Bundle bundle = new Bundle();
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    bundle.putParcelable("url",fileStatus);
-                    bundle.putInt("status",status);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                    double currentSize = bytesWritten/1000d/1000d;
-                    double total = totalSize/1000d/1000d;
-                    String c = AppUtil.formatData(currentSize);
-                    String t = AppUtil.formatData(total);
-                    fileStatus.setCurrentSize(c);
-                    fileStatus.setTotalSize(t);
-                    long currentTime = System.currentTimeMillis();
-                    float usedTime = (currentTime-lastTime)/1000f;
-                    float keepTime = (currentTime-startTime)/1000f;
-                    if (usedTime > 0.2) {
-                        lastTime = currentTime;
-                        double downSpeed = (bytesWritten / 1000d) / keepTime;
-                        String ds = AppUtil.formatData(downSpeed);
-                        fileStatus.setLoadSpeed(ds);
-                        if (adapterHandler != null) {
-                            adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-                        }
-                    }
-                }
-
-                @Override
-                public void onStart() {
-                    super.onStart();
-                    startTime = System.currentTimeMillis();
-                    lastTime = startTime;
-                }
-            });
-        }
+        API1.downLoadPhotosWithUrl(handler, fileStatus,adapterHandler);
     }
+
     /**
      * 保存文件到SDcard
      *

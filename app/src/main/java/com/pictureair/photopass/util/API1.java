@@ -2283,11 +2283,14 @@ public class API1 {
     }
 
     public static void downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
-        RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
         PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
-        HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), params, new HttpCallback() {
+        String url = "";
+        if (fileStatus.isVideo() == 0) {
+            url = fileStatus.getNewUrl();
+        } else {
+            url = fileStatus.getUrl();
+        }
+        HttpUtil1.asyncDownloadBinaryData(url, null, new HttpCallback() {
             long startTime;
             long lastTime;
             @Override
@@ -2314,7 +2317,11 @@ public class API1 {
                 if (status != 404) {
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
                 } else {
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                    if (fileStatus.isVideo() == 0) {
+                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                    } else {
+                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    }
                 }
                 bundle.putParcelable("url",fileStatus);
                 bundle.putInt("status",status);
