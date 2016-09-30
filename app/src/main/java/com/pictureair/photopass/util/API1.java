@@ -2172,7 +2172,11 @@ public class API1 {
                         Message msg =  handler.obtainMessage();
                         msg.what = DOWNLOAD_PHOTO_FAILED;
                         Bundle bundle = new Bundle();
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                        if (fileStatus.isVideo() == 0) {
+                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                        } else {
+                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                        }
                         bundle.putParcelable("url",fileStatus);
                         bundle.putInt("status",404);
                         msg.setData(bundle);
@@ -2182,7 +2186,11 @@ public class API1 {
                     Message msg =  handler.obtainMessage();
                     msg.what = DOWNLOAD_PHOTO_FAILED;
                     Bundle bundle = new Bundle();
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                    if (fileStatus.isVideo() == 0) {
+                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                    } else {
+                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    }
                     bundle.putParcelable("url",fileStatus);
                     bundle.putInt("status",404);
                     msg.setData(bundle);
@@ -2284,13 +2292,7 @@ public class API1 {
 
     public static void downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
         PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
-        String url = "";
-        if (fileStatus.isVideo() == 0) {
-            url = fileStatus.getNewUrl();
-        } else {
-            url = fileStatus.getUrl();
-        }
-        HttpUtil1.asyncDownloadBinaryData(url, null, new HttpCallback() {
+        HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), new HttpCallback() {
             long startTime;
             long lastTime;
             @Override

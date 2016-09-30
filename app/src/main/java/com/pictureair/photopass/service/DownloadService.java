@@ -316,11 +316,7 @@ public class DownloadService extends Service {
                                     fileStatus.setPosition(i);
                                     taskList.put(fileStatus.getPhotoId(), fileStatus);
                                     PictureAirLog.out("START_DOWNLOAD photoid and position " + fileStatus.getPhotoId() +" "+fileStatus.getPosition());
-                                    if (fileStatus.isVideo() == 0) {
-                                        getNewUrl(fileStatus);
-                                    }else if (fileStatus.isVideo() == 1){
-                                        downLoad(fileStatus);
-                                    }
+                                    getNewUrl(fileStatus);
                                 } else {
                                     break;
                                 }
@@ -438,11 +434,7 @@ public class DownloadService extends Service {
                                     status.setPosition(i);
                                     PictureAirLog.out("ADD_DOWNLOAD photoid and position " + status.getPhotoId() +" "+status.getPosition());
                                     taskList.put(status.getPhotoId(), status);
-                                    if (status.isVideo() == 0) {
-                                        getNewUrl(status);
-                                    }else if (status.isVideo() == 1){
-                                        downLoad(status);
-                                    }
+                                    getNewUrl(status);
                                     if (adapterHandler != null) {
                                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                                     }
