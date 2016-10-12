@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -444,5 +445,66 @@ public class BlurUtil {
 			currentCropX = 0;
 		}
 		return currentCropX;
+	}
+
+	/**
+	 * 将资源图片缩放到和imageview一样大小的图片
+	 * @param srcBmp
+	 * @param scale
+	 * @param targetW
+	 * @param targetH
+     * @return
+     */
+	public static Bitmap zoomClearBmp(Bitmap srcBmp, float scale, int targetW, int targetH){
+		if (srcBmp == null || srcBmp.isRecycled()) {
+			return srcBmp;
+		}
+		Bitmap zoomClearBmp = null;
+		Matrix matrix = new Matrix();
+		switch (AppUtil.getOrientationMarginByAspectRatio(srcBmp.getWidth(), srcBmp.getHeight(), targetW, targetH)){
+			case AppUtil.HORIZONTAL_MARGIN://左右留边
+				matrix.postScale(targetH * scale / srcBmp.getHeight(), targetH * scale / srcBmp.getHeight());
+				zoomClearBmp = Bitmap.createBitmap(srcBmp, 0, 0, srcBmp.getWidth(), srcBmp.getHeight(), matrix, false);
+				break;
+
+			case AppUtil.VERTICAL_MARGIN://上下留白
+				matrix.postScale(targetW * scale / srcBmp.getWidth(), targetW * scale / srcBmp.getWidth());
+				zoomClearBmp = Bitmap.createBitmap(srcBmp, 0, 0, srcBmp.getWidth(), srcBmp.getHeight(), matrix, false);
+				break;
+		}
+		return zoomClearBmp;
+	}
+
+	/**
+	 * 获取开始截取的坐标点
+	 * @param positionX
+	 * @param positionY
+	 * @param bmpW
+	 * @param bmpH
+	 * @param r
+	 * @param matrixX 有正负值
+     * @param matrixY 有正负值
+     * @return
+     */
+	public static Point getStartCropPoint(float positionX, float positionY, int bmpW, int bmpH, int r, int matrixX, int matrixY) {
+		int x = (int) (positionX - r);
+		int y = (int) (positionY - 2 * r);//设定起始坐标，要显示在手指上方，所以减直径
+
+		if (x > bmpW + matrixX - 2 * r) {//右边距
+			x = bmpW + matrixX - 2 * r;
+		}
+
+		if (x < matrixX) {//左边距
+			x = matrixX;
+		}
+
+		if (y > bmpH + matrixY - 2 * r) {//下边距
+			y = bmpH + matrixY - 2 * r;
+		}
+
+		if (y < matrixY) {//上边距
+			y = matrixY;
+		}
+		return new Point(x, y);
 	}
 }

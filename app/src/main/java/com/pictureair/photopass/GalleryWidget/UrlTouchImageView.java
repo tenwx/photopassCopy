@@ -20,6 +20,7 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -33,20 +34,45 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AESKeyHelper;
+import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.BlurUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
-public class UrlTouchImageView extends RelativeLayout {
+import java.io.File;
+
+public class UrlTouchImageView extends RelativeLayout implements TouchImageView.OnTouchClearListener {
     protected TouchImageView mImageView;
-    protected ImageView progressImageView, videoPlayImageView;
+    protected ImageView progressImageView, videoPlayImageView, touchClearImageView;
 
     protected Context mContext;
 
     private int defaultType;
 
+    //模糊
+    private File dirFile;
+    private Bitmap oriClearBmp = null;// 原清晰图
+    private Bitmap oriBlurBmp = null;// 原模糊图
+    private Bitmap maskBmp = null;// 遮罩层
+    private Bitmap touchClearBmp = null;// touch clear 圈
+    private int touchClearRadius = 0;//圈的半径
+    private float lastScale = 0;//记录上次的缩放尺寸
+    private Bitmap currentBmp = null;//当前的imageview的清晰图
+
+    private PhotoEventListener photoEventListener;
+
     private static final int LOAD_FILE_FAILED = 1;
+    private static final int LOAD_FROM_LOCAL = 444;
+    private static final int GET_BMP_COMPLTETION = 555;
+    private static final String TAG = UrlTouchImageView.class.getSimpleName();
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -58,6 +84,37 @@ public class UrlTouchImageView extends RelativeLayout {
                     mImageView.setScaleType(ScaleType.CENTER);
                     mImageView.setImageBitmap(bitmap);//如果这里直接用setImageResource，导致没有左右滑动
                     progressImageView.setVisibility(GONE);
+                    break;
+
+                case GET_BMP_COMPLTETION:
+                    //添加模糊
+                    if (null != oriClearBmp) {
+                        showBlurView();
+                    } else {
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);
+                    }
+                    break;
+
+                case LOAD_FROM_LOCAL:
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            byte[] arg2 = null;
+                            try {
+                                arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            if (null != arg2)
+                                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+
+                            createBlurBmp();
+
+                            handler.sendEmptyMessage(GET_BMP_COMPLTETION);
+                            super.run();
+                        }
+                    }.start();
                     break;
 
                 default:
@@ -85,12 +142,14 @@ public class UrlTouchImageView extends RelativeLayout {
     }
 
     protected void init() {
+        //设置图片
         mImageView = new TouchImageView(mContext);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mImageView.setLayoutParams(params);
         this.addView(mImageView);
         mImageView.setVisibility(GONE);
 
+        //设置进度条
         progressImageView = new ImageView(mContext);
 
         int screenW = ScreenUtil.getPortraitScreenWidth(mContext);
@@ -100,6 +159,7 @@ public class UrlTouchImageView extends RelativeLayout {
         progressImageView.setImageResource(R.drawable.loading_0);
         this.addView(progressImageView);
 
+        //设置视频播放按钮
         videoPlayImageView = new ImageView(mContext);
         params = new LayoutParams(screenW / 6, screenW / 6);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -121,6 +181,14 @@ public class UrlTouchImageView extends RelativeLayout {
                 photoEventListener.videoClick(position);
             }
         });
+    }
+
+    /**
+     * 设置监听
+     * @param photoEventListener
+     */
+    public void setOnPhotoEventListener(PhotoEventListener photoEventListener) {
+        this.photoEventListener = photoEventListener;
     }
 
     public void disableZoom() {
@@ -181,6 +249,77 @@ public class UrlTouchImageView extends RelativeLayout {
     }
 
     /**
+     * 设置blur url
+     * @param blurImageUrl
+     */
+    public void setBlurImageUrl(String blurImageUrl, String photoId) {
+        dirFile = new File(getContext().getApplicationContext().getCacheDir() + "/" + photoId + Common.OFFSET);//创建一个以ID为名字的文件，放入到app缓存文件下
+
+        PictureAirLog.v(TAG, dirFile.toString());
+        PictureAirLog.v(TAG, "photo URL ------->" + blurImageUrl);
+        if (dirFile.exists()) {//如果文件存在
+            PictureAirLog.v(TAG, "file exists");
+            handler.sendEmptyMessageDelayed(LOAD_FROM_LOCAL, 200);
+        } else {//如果文件不存在，下载文件到缓存
+            PictureAirLog.v(TAG, "file is not exist");
+            HttpUtil1.asyncDownloadBinaryData(blurImageUrl, new HttpCallback() {
+                @Override
+                public void onSuccess(byte[] binaryData) {
+                    super.onSuccess(binaryData);
+                    byte[] data = AppUtil.getRealByte(binaryData);
+                    if (data == null) {
+                        data = binaryData;
+                    }
+                    try {
+                        AESKeyHelper.encrypt(data, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    createBlurBmp();
+                    handler.sendEmptyMessage(GET_BMP_COMPLTETION);
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    super.onFailure(status);
+                    handler.sendEmptyMessage(GET_BMP_COMPLTETION);
+                }
+            });
+        }
+    }
+
+    /**
+     * 创建模糊图
+     */
+    private void createBlurBmp() {
+        if (oriClearBmp != null) {
+            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+            maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1);
+            oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+        }
+    }
+
+    /**
+     * 根据照片的购买情况确定布局和显示模式
+     */
+    private void showBlurView() {
+        progressImageView.setImageResource(getImageResource(100));
+        mImageView.setVisibility(VISIBLE);
+        mImageView.setScaleType(ScaleType.MATRIX);
+        mImageView.setImageBitmap(oriBlurBmp);
+        mImageView.setOnTouchClearListener(this);
+        mImageView.setDrawingCacheEnabled(true);
+        setProgressImageViewVisible(false);
+
+        touchClearImageView = new ImageView(mContext);
+        this.addView(touchClearImageView);
+        touchClearImageView.setVisibility(GONE);
+        touchClearRadius = ScreenUtil.dip2px(mContext, 45);
+    }
+
+    /**
      * 设置进度条可见
      * @param visible
      */
@@ -199,39 +338,37 @@ public class UrlTouchImageView extends RelativeLayout {
      * @return
      */
     private int getImageResource(long currentProgress) {
-        int result = R.drawable.loading_0;
-        if (currentProgress >= 0 && currentProgress <= 8) {
-            result = R.drawable.loading_0;
-        } else if (currentProgress > 8 && currentProgress <= 16) {
-            result = R.drawable.loading_1;
-        } else if (currentProgress > 16 && currentProgress <= 25) {
-            result = R.drawable.loading_2;
-        } else if (currentProgress > 25 && currentProgress <= 33) {
-            result = R.drawable.loading_3;
-        } else if (currentProgress > 33 && currentProgress <= 41) {
-            result = R.drawable.loading_4;
-        } else if (currentProgress > 41 && currentProgress <= 50) {
-            result = R.drawable.loading_5;
-        } else if (currentProgress > 50 && currentProgress <= 58) {
-            result = R.drawable.loading_6;
-        } else if (currentProgress > 58 && currentProgress <= 66) {
-            result = R.drawable.loading_7;
-        } else if (currentProgress > 66 && currentProgress <= 75) {
-            result = R.drawable.loading_8;
-        } else if (currentProgress > 75 && currentProgress <= 83) {
-            result = R.drawable.loading_9;
-        } else if (currentProgress > 83 && currentProgress <= 91) {
-            result = R.drawable.loading_10;
-        } else if (currentProgress > 91 && currentProgress < 100) {
-            result = R.drawable.loading_11;
-        } else {
-            result = R.drawable.loading_12;
-        }
-
-        return result;
+        return ReflectionUtil.getDrawableId(mContext, "loading_" + (currentProgress / 8));
     }
 
     public void setDefaultType(int defaultType) {
         this.defaultType = defaultType;
+    }
+
+    @Override
+    public void onTouchClear(float positionX, float positionY, int matrixX, int matrixY, float scale, boolean hasReset, boolean visible) {
+        photoEventListener.touchClear(visible);
+        if (visible) {
+            if (lastScale != scale || hasReset) {//缩放尺寸不一样，或者旋转过手机图片被重置过，需要重新获取对应的bitmap
+                PictureAirLog.out("touch need new bmp");
+                lastScale = scale;
+                currentBmp = BlurUtil.zoomClearBmp(oriClearBmp, scale, mImageView.getWidth(), mImageView.getHeight());
+            }
+
+            if (currentBmp == null) return;
+
+            Point point = BlurUtil.getStartCropPoint(positionX, positionY, currentBmp.getWidth(), currentBmp.getHeight(), touchClearRadius, matrixX, matrixY);
+
+            touchClearBmp = Bitmap.createBitmap(currentBmp, (point.x - matrixX), (point.y - matrixY), 2 * touchClearRadius, 2 * touchClearRadius);
+            touchClearBmp = BlurUtil.doMask(touchClearBmp, maskBmp);
+            if (!touchClearImageView.isShown()) {
+                touchClearImageView.setVisibility(VISIBLE);
+            }
+            touchClearImageView.setX(point.x);
+            touchClearImageView.setY(point.y);
+            touchClearImageView.setImageBitmap(touchClearBmp);
+        } else {
+            touchClearImageView.setVisibility(GONE);
+        }
     }
 }

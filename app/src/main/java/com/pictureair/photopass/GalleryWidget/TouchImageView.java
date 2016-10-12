@@ -41,31 +41,42 @@ import java.util.TimerTask;
 @SuppressLint("NewApi")
 public class TouchImageView extends ImageView {
 
-//    private int positionForTouchImageView = -1;
-
     // private static final String TAG = "Touch";
     // These matrices will be used to move and zoom image
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
 
+    /**
+     * 双击间隔时间
+     */
     static final long DOUBLE_PRESS_INTERVAL = 600;
+
+    /**
+     * 长按间隔时间
+     */
+    static final long LONG_TOUCH_INTERVAL = 300;
     static final float FRICTION = 0.9f;
 
     // We can be in one of these 4 states
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
+    static final int NONE = 0;//无
+    static final int DRAG = 1;//拖拽模式
+    static final int ZOOM = 2;//缩放模式
+    static final int TOUCH_CLEAR = 3;//touch clear 模式
     static final int CLICK = 10;
+    static final int DOUBLE_CLICK = 4;
+    static final int LONG_TOUCH = 5;
     int mode = NONE;
 
-    float redundantXSpace, redundantYSpace;
-    float right, bottom, origWidth, origHeight, bmWidth, bmHeight;
-    float width, height;
+    float redundantXSpace, redundantYSpace;//初始多余的左边距和上边距
+    float right, bottom;//缩放之后，在屏幕外侧的总距离（没有区分上下左右的距离）
+    float origWidth, origHeight;//图片在view上显示的宽高
+    float bmWidth, bmHeight;//图片的原始宽高
+    float width, height;//控件宽高
     PointF last = new PointF();
     PointF mid = new PointF();
     PointF start = new PointF();
     float[] m;
-    float matrixX, matrixY;
+    float matrixX, matrixY;//当前显示的区域位于整个图像区域的坐标
 
     float saveScale = 1f;
     float minScale = 1f;
@@ -73,18 +84,20 @@ public class TouchImageView extends ImageView {
     float oldDist = 1f;
 
     PointF lastDelta = new PointF(0, 0);
-    float velocity = 0;
+    float velocity = 0;//速度
 
     long lastPressTime = 0, lastDragTime = 0;
     boolean allowInert = false;
+    private boolean hasReset = false;
 
     private Context mContext;
-    private Timer mClickTimer;
+    private Timer mClickTimer, mLongTouchTimer;
     private OnClickListener mOnClickListener;
     private Object mScaleDetector;
     private Handler mTimerHandler = null;
 
     private boolean zoomEnable = true;
+    private OnTouchClearListener onTouchClearListener;
 
     // Scale mode on DoubleTap
     private boolean zoomToOriginalSize = false;
@@ -124,6 +137,7 @@ public class TouchImageView extends ImageView {
         if (Build.VERSION.SDK_INT >= 8) {
             mScaleDetector = new ScaleGestureDetector(mContext, new ScaleListener());
         }
+
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent rawEvent) {
@@ -144,6 +158,8 @@ public class TouchImageView extends ImageView {
                             start.set(last);
                             mode = DRAG;
 
+                            mLongTouchTimer = new Timer();
+                            mLongTouchTimer.schedule(new Task(LONG_TOUCH), LONG_TOUCH_INTERVAL);
                             break;
                         case MotionEvent.ACTION_POINTER_DOWN:
                             PictureAirLog.out("------------>action pointer down");
@@ -152,20 +168,31 @@ public class TouchImageView extends ImageView {
                             if (oldDist > 10f) {
                                 savedMatrix.set(matrix);
                                 midPoint(mid, event);
+                                if (mode == TOUCH_CLEAR) {//让touch-clear消失
+                                    onTouchClearListener.onTouchClear(curr.x, curr.y, (int)matrixX, (int)matrixY, saveScale, hasReset, false);
+                                }
                                 mode = ZOOM;
+                                if (mLongTouchTimer != null) {
+                                    mLongTouchTimer.cancel();
+                                }
                                 //Log.d(TAG, "mode=ZOOM");
                             }
                             break;
                         case MotionEvent.ACTION_UP:
                             PictureAirLog.out("----------> up");
+                            if (mLongTouchTimer != null) {
+                                mLongTouchTimer.cancel();
+                            }
+                            if (mode == TOUCH_CLEAR) {//让touch-clear消失
+                                onTouchClearListener.onTouchClear(curr.x, curr.y, (int)matrixX, (int)matrixY, saveScale, hasReset, false);
+                            }
                             allowInert = true;
                             mode = NONE;
+
                             int xDiff = (int) Math.abs(event.getX() - start.x);
                             int yDiff = (int) Math.abs(event.getY() - start.y);
 
                             if (xDiff < CLICK && yDiff < CLICK) {
-
-
                                 //Perform scale on double click
                                 long pressTime = System.currentTimeMillis();
                                 if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
@@ -186,7 +213,7 @@ public class TouchImageView extends ImageView {
                                 } else {
                                     lastPressTime = pressTime;
                                     mClickTimer = new Timer();
-                                    mClickTimer.schedule(new Task(), 300);
+                                    mClickTimer.schedule(new Task(DOUBLE_CLICK), 300);
                                 }
                                 if (saveScale == minScale) {
                                     scaleMatrixToBounds();
@@ -198,6 +225,9 @@ public class TouchImageView extends ImageView {
                         case MotionEvent.ACTION_POINTER_UP:
                             PictureAirLog.out("-----------> action pointer up");
                             mode = NONE;
+                            if (mLongTouchTimer != null) {
+                                mLongTouchTimer.cancel();
+                            }
                             velocity = 0;
                             savedMatrix.set(matrix);
                             oldDist = spacing(event);
@@ -207,7 +237,14 @@ public class TouchImageView extends ImageView {
                         case MotionEvent.ACTION_MOVE:
                             PictureAirLog.out("----------> action move");
                             allowInert = false;
-                            if (mode == DRAG) {
+                            if (mLongTouchTimer != null) {
+                                mLongTouchTimer.cancel();
+                            }
+                            if (mode == TOUCH_CLEAR) {
+                                onTouchClearListener.onTouchClear(curr.x, curr.y, (int)matrixX, (int)matrixY, saveScale, hasReset, true);
+                                hasReset = false;
+
+                            } else if (mode == DRAG) {
                                 float deltaX = curr.x - last.x;
                                 float deltaY = curr.y - last.y;
 
@@ -219,6 +256,7 @@ public class TouchImageView extends ImageView {
                                 checkAndSetTranslate(deltaX, deltaY);
                                 lastDelta.set(deltaX, deltaY);
                                 last.set(curr.x, curr.y);
+
                             } else if (mScaleDetector == null && mode == ZOOM) {
                                 float newDist = spacing(event);
                                 if (rawEvent.getPointerCount() < 2) break;
@@ -276,6 +314,17 @@ public class TouchImageView extends ImageView {
         });
     }
 
+    /**
+     * 设置是否开启touch-clear
+     * @param onTouchClearListener
+     */
+    public void setOnTouchClearListener(OnTouchClearListener onTouchClearListener) {
+        this.onTouchClearListener = onTouchClearListener;
+    }
+
+    /**
+     * 设置是否允许双指缩放
+     */
     public void disableZoom() {
         zoomEnable = false;
     }
@@ -295,8 +344,17 @@ public class TouchImageView extends ImageView {
     }
 
     public boolean pagerCanScroll() {
+        PictureAirLog.out("pager can scroll--->");
         if (mode != NONE) return false;
         return saveScale == minScale;
+    }
+
+    public boolean isTouchClearMode() {
+        return mode == TOUCH_CLEAR;
+    }
+
+    public float getSaveScale() {
+        return saveScale;
     }
 
     @Override
@@ -458,8 +516,13 @@ public class TouchImageView extends ImageView {
 
 
     private class Task extends TimerTask {
+        int type;
+        public Task(int type) {
+            this. type = type;
+        }
+
         public void run() {
-            mTimerHandler.sendEmptyMessage(0);
+            mTimerHandler.sendEmptyMessage(type);
         }
     }
 
@@ -525,7 +588,7 @@ public class TouchImageView extends ImageView {
         }
     }
 
-    static class TimeHandler extends Handler {
+    class TimeHandler extends Handler {
         private final WeakReference<TouchImageView> mService;
 
         TimeHandler(TouchImageView view) {
@@ -535,11 +598,59 @@ public class TouchImageView extends ImageView {
 
         @Override
         public void handleMessage(Message msg) {
-            if (null != mService) {
-                mService.get().performClick();
-                if (mService.get().mOnClickListener != null)
-                    mService.get().mOnClickListener.onClick(mService.get());
+            switch (msg.what) {
+                case DOUBLE_CLICK:
+                    if (null != mService) {
+                        mService.get().performClick();
+                        if (mService.get().mOnClickListener != null)
+                            mService.get().mOnClickListener.onClick(mService.get());
+                    }
+                    break;
+
+                case LONG_TOUCH:
+                    if (mLongTouchTimer != null) {
+                        mLongTouchTimer.cancel();
+                    }
+                    if (mode == DRAG && onTouchClearListener != null) {//如果是按下状态，并且是模糊图，才可以转换成touch_clear状态
+                        mode = TOUCH_CLEAR;
+                        onTouchClearListener.onTouchClear(last.x, last.y, (int)matrixX, (int)matrixY, saveScale, hasReset, true);
+                        hasReset = false;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
     }
-};
+
+    public interface OnTouchClearListener{
+        void onTouchClear(float x, float y, int matrixX, int matrixY, float scale, boolean hasReset, boolean visible);
+    }
+
+    /**
+     * 旋转的时候，如果图片有缩放过，需要重置，否则会有再次缩放之后，图片显示位置异常的问题
+     */
+    public void resetImageView(){
+        if (saveScale != 1) {//有缩放过程，需要还原
+            if (mClickTimer != null) mClickTimer.cancel();
+            PictureAirLog.out("----------> saveScale != 1");
+            matrix.postScale(minScale / saveScale, minScale / saveScale, width / 2, height / 2);
+            saveScale = minScale;
+            calcPadding();
+            checkAndSetTranslate(0, 0);
+            lastPressTime = 0;
+            scaleMatrixToBounds();
+        }
+        hasReset = true;
+    }
+
+    /**
+     * 当前显示的区域位于整个图像区域的坐标
+     * @return
+     */
+    public PointF getCurrentPositionPoint() {
+        return new PointF(matrixX, matrixY);
+    }
+
+}

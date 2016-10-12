@@ -95,6 +95,11 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         }
     }
 
+    @Override
+    public void touchClear(boolean visible) {
+
+    }
+
     private static class PreViewHandler extends Handler{
         private final WeakReference<DownloadPhotoPreviewActivity> mActivity;
 
@@ -346,6 +351,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        mViewPager.resetImageView();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             PictureAirLog.out("landscape----->");
             landscapeOrientation();

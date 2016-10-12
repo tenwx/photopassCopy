@@ -157,9 +157,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     goodsInfo = allList.get(0);
                     priceTextView.setText(allList.get(0).getPrice() + "");
                     introduceTextView.setText(allList.get(0).getDescription());
-                    Message message = makeGiftHandler.obtainMessage();
-                    message.what = WAIT_DRAW_FINISH;
-                    makeGiftHandler.sendMessageDelayed(message, 500);
+                    makeGiftHandler.sendEmptyMessageDelayed(WAIT_DRAW_FINISH, 500);
                 } else {
                     currencytextview.setVisibility(View.GONE);
                     addressTextView.setVisibility(View.GONE);
@@ -259,7 +257,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
                 } else {//onCreate还没执行完，需要等待
                     PictureAirLog.out("---------->not ok, waiting.....");
-                    makeGiftHandler.sendMessageDelayed(msg, 500);
+                    makeGiftHandler.sendEmptyMessageDelayed(WAIT_DRAW_FINISH, 500);
                 }
                 break;
 
