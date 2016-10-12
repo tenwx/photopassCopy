@@ -1,25 +1,19 @@
 package com.pictureair.photopass.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -53,7 +47,6 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -80,7 +73,6 @@ import java.util.Locale;
  *
  * @author bauer_bao
  */
-@SuppressLint({"FloatMath", "NewApi"})
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
         PWDialog.OnPWDialogClickListener, PhotoEventListener, IGetLastestVideoInfoView {
     private SettingUtil settingUtil;
@@ -109,26 +101,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private int shareType = 0;
 
-
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
     private ArrayList<PhotoInfo> targetphotolist;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private int currentPosition;//记录当前预览照片的索引值
 
-
     private boolean isEdited = false;
-
-    /**
-     * 是否已经拿到对象
-     */
-    private boolean getPhotoInfoSuccess = false;
-
-    /**
-     * 是否已经获取图片结束
-     */
-    private boolean loadPhotoSuccess = false;
-
     private String tabName;
 
     /**
@@ -143,54 +122,21 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private TextView currentPhotoInfoTextView;
     private TextView currentPhotoADTextView;
 
-    private Bitmap oriBlurBmp = null;// 原图的模糊图
-    private Bitmap oriClearBmp = null;// 原图
-    private Bitmap touchClearBmp = null;// 圆圈图
-    private Bitmap zoomBlurBmp = null;// 放大后的模糊图
-    private Bitmap zoomClearBmp = null;// 放大后的清晰图
-    private Bitmap maskBmp = null;// mask蒙板
-    private ImageView image01;// 模糊图的view
-    private ImageView image02;// 圆圈的view
-
     private RelativeLayout photoFraRelativeLayout;
-    private RelativeLayout blurFraRelativeLayout;
-
-    private int marginTop = 0;//图片上端与屏幕顶部的距离
-    private Matrix matrix;
-    private boolean flag = false;// 是否是放大的
-    private int count = 0;// 点击计数器
-    private long fir = 0;// 第一次点击屏幕的时间
-    private long sec = 0;// 第二次点击屏幕的时间
-    private float downX = 0;// 点击屏幕的X坐标
-    private float downY = 0;// 点击屏幕的Y坐标
-    private boolean out = false;// 是否移动到屏幕边缘
 
     private Dialog dia;
     private TextView buy_ppp, cancel, buynow, use_ppp, touchtoclean;
-    private File dirFile;
 
     private Date date;
     private SimpleDateFormat simpleDateFormat;
     private CartItemInfoJson cartItemInfoJson;//存放意见购买后的购物信息
 
-    /**
-     * 照片已购买情况下
-     */
-    private int mode = 0;// 初始状态
-    private static final int MODE_DOWN = 111;
-    private static final int MODE_MOVE = 222;
-    private static final int MODE_UP = 333;
-
-    private static final int LOAD_FROM_LOCAL = 444;
-    private static final int LOAD_FROM_NETWORK = 555;
     private static final int CHECK_FAVORITE = 666;
     private static final int GET_FAVORITE_DATA_DONE = 1000;
     private static final int GET_LOCATION_AD = 777;
     private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int CREATE_BLUR_DIALOG = 888;
-    private static final int RESIZE_BLUR_IMAGE = 999;
     private static final int NO_PHOTOS_AND_RETURN = 1002;
-    private static final int MAX_SPEED = 6000;
 
     private static final int LOCAL_PHOTO_EDIT_DIALOG = 1003;
     private static final int FRAME_PHOTO_EDIT_DIALOG = 1004;
@@ -201,67 +147,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private PWDialog pictureWorksDialog;
 
-    /**
-     * 双击放大需要的尺寸，为预览容易的一半
-     */
-    private int zoomW = 0;
-    private int zoomH = 0;
-
-    /**
-     * 图片预览容器的宽高
-     */
-    private float parentPreviewH;
-    private float parentPreviewW;
-
-    /**
-     * 标准圆半径
-     */
-    private int originalRadius = 0;
-
-    /**
-     * 当前圆的半径
-     */
-    private int curRadius = 0;
-
-    private RelativeLayout leadView;
-
-    private boolean loadFailed = false;
-
     private List<GoodsInfo> allGoodsList;//全部商品
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
 
-    /**
-     * 当前圆圈的位置
-     */
-    private int x;
-    private int y;
-    /**
-     * 放大的时候底层图片的位置
-     */
-    private int x1;
-    private int y1;
-
-    /**
-     * 当前图片的宽高
-     */
-    private int curShowBmpWidth = 0;
-    private int curShowBmpHeight = 0;
-
-    /**
-     * 超出屏幕的时候，每次移动的距离
-     */
-    private int moveSize = 30;
-
     private Handler previewPhotoHandler;
-
-    /**
-     * 速度监听
-     */
-    private VelocityTracker vTracker = null;
-    private volatile String touchSpeet = "";
-
-    long time = 0;
 
     //点击视频播放的处理对象
     private GetLastestVideoInfoPresenter lastestVideoInfoPresenter;
@@ -274,117 +164,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case 1://移动的时候
-                //计算双击变量
-                previewPhotoHandler.sendEmptyMessageDelayed(6, 500);
-                /**
-                 * 重新计算curRadius
-                 */
-                curRadius = BlurUtil.caculateRadius(curRadius, curShowBmpWidth, curShowBmpHeight);
-
-                PictureAirLog.out("larger bmp h---->" + curShowBmpHeight);
-                PictureAirLog.out("larger bmp w---->" + curShowBmpWidth);
-                PictureAirLog.out("current radius---->" + curRadius);
-
-                x = (int) (msg.arg1 - curRadius - (parentPreviewW - curShowBmpWidth) / 2);
-                y = (int) (msg.arg2 - 2 * curRadius + 20 - (isLandscape ? 0 : marginTop) - (parentPreviewH - curShowBmpHeight) / 2);
-                if (x > curShowBmpWidth - 2 * curRadius) {
-                    x = curShowBmpWidth - 2 * curRadius;
-                    x1 += moveSize;
-                    out = true;
-                }
-                if (x < 0) {
-                    x = 0;
-                    x1 -= moveSize;
-                    out = true;
-                }
-                if (y > curShowBmpHeight - 2 * curRadius) {
-                    y = curShowBmpHeight - 2 * curRadius;
-                    y1 += moveSize;
-                    out = true;
-                }
-                if (y < 0) {
-                    y = 0;
-                    y1 -= moveSize;
-                    out = true;
-                }
-
-                x1 = BlurUtil.caculateStartCropXOrY(x1, curShowBmpWidth, zoomW, oriBlurBmp.getWidth(), true);
-                y1 = BlurUtil.caculateStartCropXOrY(y1, curShowBmpHeight, zoomH, oriBlurBmp.getHeight(), true);
-
-                PictureAirLog.out("oriblur---?" + oriBlurBmp.getWidth() + " ---  " + oriBlurBmp.getHeight());
-                PictureAirLog.out("x1---" + x1 + " y1---  " + y1);
-                PictureAirLog.out("zoomW---" + zoomW);
-
-                if (flag) {//放大
-                    if (out) {//超出屏幕
-                        cropNewBmt();
-                    }
-                    image01.setImageBitmap(zoomBlurBmp);
-                }
-
-                touchClearBmp = Bitmap.createBitmap(flag ? zoomClearBmp : oriClearBmp, x, y, 2 * curRadius, 2 * curRadius);
-                touchClearBmp = BlurUtil.doMask(touchClearBmp, maskBmp);
-                touchClearBmp = BlurUtil.toRoundBitmap(touchClearBmp);
-
-                if (!image02.isShown()) {
-                    image02.setVisibility(View.VISIBLE);
-                }
-                image02.setX(x);
-                image02.setY(y);
-                image02.setImageBitmap(touchClearBmp);
-                out = false;
-                break;
-
-            case 2://取消移动的时候
-                if (image02.isShown()) {
-                    image02.setVisibility(View.GONE);
-                }
-
-                if (null != touchClearBmp) {
-                    touchClearBmp.recycle();
-                    touchClearBmp = null;
-                }
-
-                long thisTime = System.currentTimeMillis();
-                if (null != msg.obj && !msg.obj.equals("") && thisTime - time > 1000){
-                    time = System.currentTimeMillis();
-                    if (msg.obj.equals("indexLast")){
-                        indexLast();
-                    }else{
-                        indexNext();
-                    }
-                    touchSpeet = "";
-                }else{
-                    PictureAirLog.out("the obj : "+msg.obj);
-                }
-                break;
-
-            case 3://双击放大
-                x1 = msg.arg1 - zoomW / 2;
-                y1 = msg.arg2 - zoomH / 2;
-                PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
-                x1 = BlurUtil.caculateStartCropXOrY(x1, curShowBmpWidth, zoomW, oriBlurBmp.getWidth(), false);
-                y1 = BlurUtil.caculateStartCropXOrY(y1, curShowBmpHeight, zoomH, oriBlurBmp.getHeight(), false);
-                PictureAirLog.v(TAG, "after currnet xy = " + x1 + "_" + y1);
-
-                if (!flag) {
-                    cropNewBmt();
-                    image01.setImageBitmap(zoomBlurBmp);
-                    curShowBmpWidth = zoomClearBmp.getWidth();
-                    curShowBmpHeight = zoomClearBmp.getHeight();
-                    flag = true;
-                } else {
-                    image01.setImageBitmap(oriBlurBmp);
-                    flag = false;
-                    curShowBmpWidth = oriClearBmp.getWidth();
-                    curShowBmpHeight = oriClearBmp.getHeight();
-                }
-                curRadius = originalRadius;
-                PictureAirLog.out("larger bmp h after zoom---->" + curShowBmpHeight);
-                PictureAirLog.out("larger bmp w after zoom---->" + curShowBmpWidth);
-                break;
-
             case SharePop.TWITTER:
                 shareType = msg.what;
                 break;
@@ -485,14 +264,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 startActivity(intent1);
                 break;
 
-            case 6://计算双击方法事件
-                if (count > 0) {
-                    count = 0;
-                }
-                break;
-
             case 7://操作比较耗时，会影响oncreate绘制
-                getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
                 pagerAdapter.setOnPhotoEventListener(this);
@@ -501,8 +273,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 mViewPager.setCurrentItem(currentPosition, true);
                 //初始化底部索引按钮
                 updateIndexTools();
-
-                PictureAirLog.v(TAG, "----------------------->initing...3");
 
                 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
@@ -529,8 +299,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                     }
                 });
-
-                PictureAirLog.v(TAG, "----------------------->initing...6");
                 break;
 
             case GET_LOCATION_AD:
@@ -614,18 +382,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 createBlurDialog();
                 break;
 
-            case RESIZE_BLUR_IMAGE:
-                if (getPhotoInfoSuccess && loadPhotoSuccess) {
-                    if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
-                        if (null != oriClearBmp) {
-                            resizeBlurImage();
-                        }
-                    }
-                } else {
-                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
-                }
-                break;
-
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
                     //将 tabname 存入sp
@@ -679,7 +435,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         settingUtil = new SettingUtil(pictureAirDbManager);
         newToast = new PWToast(this);
         sharePop = new SharePop(this);
-        matrix = new Matrix();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
@@ -697,17 +452,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         currentPhotoIndexTextView = (TextView) findViewById(R.id.current_index);
         currentPhotoADTextView = (TextView) findViewById(R.id.preview_photo_ad_intro_tv);
 
-        image01 = (ImageView) findViewById(R.id.img01);
-        leadView = (RelativeLayout) findViewById(R.id.blur_lead_view);
         touchtoclean = (TextView) findViewById(R.id.textview_blur);
-        blurFraRelativeLayout = (RelativeLayout) findViewById(R.id.blur_photo_relativelayout);
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.fra_layout);
 
         titleBar = (RelativeLayout) findViewById(R.id.preview_titlebar);
         toolsBar = (LinearLayout) findViewById(R.id.toolsbar);
         indexBar = (LinearLayout) findViewById(R.id.index_bar);
-
-        image02 = (ImageView) findViewById(R.id.img02);
 
         previewPhotoHandler.sendEmptyMessage(CREATE_BLUR_DIALOG);
 
@@ -722,7 +472,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         lastPhotoImageView.setOnClickListener(this);
         nextPhotoImageView.setOnClickListener(this);
-        PictureAirLog.v(TAG, "----------------------->initing...1");
 
         Configuration cf = getResources().getConfiguration();
         int ori = cf.orientation;
@@ -730,8 +479,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             isLandscape = true;
             landscapeOrientation();
         }
-        originalRadius = ScreenUtil.dip2px(this, 45);
-        curRadius = originalRadius;
+
         showPWProgressDialog();
         getPreviewPhotos();
     }
@@ -921,8 +669,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             nextPhotoImageView.setVisibility(View.VISIBLE);
         }
-        lastPhotoImageView.setEnabled(true);
-        nextPhotoImageView.setEnabled(true);
 
         //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
@@ -930,11 +676,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             touchtoclean.setVisibility(View.VISIBLE);
             currentPhotoADTextView.setVisibility(View.GONE);
             dismissPWProgressDialog();
-//            loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
+            touchtoclean.setVisibility(View.GONE);
             previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
             PictureAirLog.out("set enable in get ad");
         } else {
+            touchtoclean.setVisibility(View.GONE);
             currentPhotoADTextView.setVisibility(View.GONE);
             PictureAirLog.out("set enable in other conditions");
             dismissPWProgressDialog();
@@ -944,11 +691,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             if (mViewPager != null) {
                 mViewPager.setBackgroundColor(Color.BLACK);
             }
-            touchtoclean.setTextColor(getResources().getColor(R.color.white));
-            touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.pp_dark_blue));
+            touchtoclean.setTextColor(ContextCompat.getColor(this, R.color.white));
+            touchtoclean.setShadowLayer(2, 2, 2, ContextCompat.getColor(this, R.color.pp_dark_blue));
         } else {
-            touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-            touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
+            touchtoclean.setTextColor(ContextCompat.getColor(this, R.color.pp_dark_blue));
+            touchtoclean.setShadowLayer(2, 2, 2, ContextCompat.getColor(this, R.color.transparent));
         }
 
         if (photoInfo.isVideo == 1) {
@@ -960,129 +707,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-    private long touchDownTime = 0;
-    private long touchUpTime = 0;
-
-    public boolean onTouchEvent(MotionEvent event) {
-        PictureAirLog.out("the-----onTouchEvent");
-        if (!loadFailed) {
-            if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {// 未购买状态
-                if (event.getY() < marginTop || event.getY() > parentPreviewH + marginTop) {
-                    if (mode != MODE_MOVE) {
-                        Message msg = previewPhotoHandler.obtainMessage();
-                        msg.what = 2;
-                        touchtoclean.setVisibility(View.VISIBLE);
-                        previewPhotoHandler.sendMessage(msg);
-                        return super.onTouchEvent(event);
-                    }
-                }
-
-                Message msg = previewPhotoHandler.obtainMessage();
-                msg.arg1 = (int) event.getX();
-                msg.arg2 = (int) event.getY();
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        touchDownTime = System.currentTimeMillis();
-                        mode = MODE_DOWN;
-                        PictureAirLog.v(TAG, "-------->downY---" + event.getY());
-                        downX = event.getX();
-                        downY = event.getY();
-
-                        count++;
-                        touchtoclean.setVisibility(View.INVISIBLE);
-                        if (count == 1) {
-                            fir = System.currentTimeMillis();
-                            msg.what = 1;
-                        }
-                        if (count == 2) {
-                            sec = System.currentTimeMillis();
-                            if (sec - fir < 500) {// 双击放大
-                                msg.what = 3;
-                                count = 0;
-                                fir = 0;
-                                sec = 0;
-                            } else {
-                                count = 0;
-                            }
-                        }
-
-                        /** 测速 */
-                        if(vTracker == null){
-                            vTracker = VelocityTracker.obtain();
-                        }else{
-                            vTracker.clear();
-                        }
-                        vTracker.addMovement(event);
-
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        mode = MODE_MOVE;
-                        PictureAirLog.v(TAG, "----->move");
-                        float moveX = event.getX() - downX;
-                        float moveY = event.getY() - downY;
-                        if (moveX != 0 | moveY != 0) {
-                            msg.what = 1;
-                            count = 0;
-                            fir = 0;
-                            sec = 0;
-                        }
-
-                        if (vTracker != null) {
-                            vTracker.addMovement(event);
-                            vTracker.computeCurrentVelocity(1000);
-                            PictureAirLog.out("vTracker----> the x velocity is "+vTracker.getXVelocity());
-                            PictureAirLog.out("vTracker----> the y velocity is "+vTracker.getYVelocity());
-                            if (vTracker.getXVelocity() > MAX_SPEED){
-                                touchSpeet = "indexLast";
-                                PictureAirLog.out("vTracker----> the -----<");
-                            } else if (vTracker.getXVelocity() < -MAX_SPEED){
-                                touchSpeet = "indexNext";
-                                PictureAirLog.out("vTracker----> the ----->");
-                            }
-                        }
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        touchUpTime = System.currentTimeMillis();
-
-                        if (vTracker != null) {
-                            vTracker.clear();
-                            vTracker.recycle();
-                            vTracker = null;
-                        }
-
-                        mode = MODE_UP;
-                        PictureAirLog.v(TAG, "up");
-                        if (touchUpTime - touchDownTime < 200){
-                            msg.obj = touchSpeet;
-                        } else {
-                            touchSpeet = "";
-                        }
-                        msg.what = 2;
-                        touchtoclean.setVisibility(View.VISIBLE);
-                        break;
-                }
-                previewPhotoHandler.sendMessage(msg);
-            }
-        }
-        return true;
-    }
-
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
             case R.id.button1_shop_rt:
-                if (leadView.isShown()) {
-                    return;
-                }
                 finish();
                 break;
 
             case R.id.preview_love://收藏按钮的操作
-                if (leadView.isShown()) {
-                    return;
-                }
                 if (isEdited) {
                     photoInfo = targetphotolist.get(mViewPager.getCurrentItem());
                 } else {//编辑前
@@ -1106,9 +738,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.preview_edit://编辑
-                if (leadView.isShown()) {
-                    return;
-                }
                 if (photoInfo == null) {
                     return;
                 }
@@ -1137,19 +766,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 .pwDilogShow();
                     }
                 } else {
-                    if (loadFailed) {
-                        newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
-                    } else {
-                        dia.show();
-                    }
-
+                    dia.show();
                 }
                 break;
 
             case R.id.preview_share:
-                if (leadView.isShown()) {
-                    return;
-                }
                 if (photoInfo == null) {
                     return;
                 }
@@ -1166,19 +787,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
-                    if (loadFailed) {
-                        newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
-                    } else {
-                        dia.show();
-                    }
-
+                    dia.show();
                 }
                 break;
 
             case R.id.preview_download://下载,如果不是pp的照片，提示不需要下载，如果是pp的照片，并且没有支付，提示购买，如果已经购买，如果没有下载，则下载，否则提示已经下载
-                if (leadView.isShown()) {
-                    return;
-                }
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
@@ -1195,25 +808,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         } else {
                             newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
                         }
-
                     }
 
                 } else {
-                    if (loadFailed) {
-                        newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
-                    } else {
-                        dia.show();
-                    }
-
+                    dia.show();
                 }
 
                 break;
 
             case R.id.preview_makegift:
-                if (leadView.isShown()) {
-                    return;
-                }
-
                 if (photoInfo == null) {
                     return;
                 }
@@ -1225,11 +828,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 if (photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
                     newToast.setTextAndShow(R.string.not_support_makegift, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-
-                if (photoInfo.isPayed == 0 && loadFailed) {
-                    newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
                     return;
                 }
 
@@ -1253,7 +851,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.cancel:
-
                 dia.dismiss();
                 break;
 
@@ -1296,48 +893,20 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case R.id.leadknow:
-            case R.id.blur_lead_view:
-                PictureAirLog.v(TAG, "know");
-                leadView.setVisibility(View.GONE);
-                break;
-
             case R.id.index_last://上一张
-                indexLast();
+                changeTab(false);
+                setUmengPhotoSlide();//统计滑动图片次数
                 break;
 
             case R.id.index_next://下一张
-                indexNext();
+                changeTab(true);
+                setUmengPhotoSlide();//统计滑动图片次数
                 break;
 
             default:
                 break;
         }
     }
-
-    /**
-     * 下一张
-     */
-    private void indexNext(){
-        PictureAirLog.v(TAG, "--------->next");
-        lastPhotoImageView.setEnabled(false);
-        nextPhotoImageView.setEnabled(false);
-        changeTab(true);
-        setUmengPhotoSlide();//统计滑动图片次数
-    }
-
-    /**
-     * 上一张
-     */
-    private void indexLast(){
-        PictureAirLog.v(TAG, "--------->last");
-        lastPhotoImageView.setEnabled(false);
-        nextPhotoImageView.setEnabled(false);
-        changeTab(false);
-        setUmengPhotoSlide();//统计滑动图片次数
-    }
-
-
 
     /**
      * 初始化数据
@@ -1356,17 +925,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
             }
         }
-
     }
 
     /**
      * 左右滑动切换图片
      */
     private void changeTab(boolean next) {
-        if (leadView.isShown()) {
-            PictureAirLog.v(TAG, "leadView is shown----->");
-            return;
-        }
         if (next) {
             PictureAirLog.v(TAG, "--------->next");
             if (currentPosition < (isEdited ? targetphotolist.size() - 1 : photolist.size() - 1)) {
@@ -1382,9 +946,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 return;
             }
         }
-        mViewPager.setVisibility(View.VISIBLE);
         touchtoclean.setVisibility(View.GONE);
-        blurFraRelativeLayout.setVisibility(View.GONE);
         mViewPager.setCurrentItem(currentPosition);
     }
 
@@ -1465,34 +1027,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         previewPhotoHandler.removeCallbacksAndMessages(null);
 
-        if (oriBlurBmp != null) {
-            oriBlurBmp.recycle();
-            oriBlurBmp = null;
-        }
-        if (oriClearBmp != null) {
-            oriClearBmp.recycle();
-            oriClearBmp = null;
-        }
-        if (touchClearBmp != null) {
-            touchClearBmp.recycle();
-            touchClearBmp = null;
-        }
-        if (zoomBlurBmp != null) {
-            zoomBlurBmp.recycle();
-            zoomBlurBmp = null;
-        }
-        if (zoomClearBmp != null) {
-            zoomClearBmp.recycle();
-            zoomClearBmp = null;
-        }
-        if (maskBmp != null) {
-            maskBmp.recycle();
-            maskBmp = null;
-        }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        mViewPager.resetImageView();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             PictureAirLog.out("landscape----->");
             landscapeOrientation();
@@ -1500,8 +1039,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             PictureAirLog.out("portrait----->");
             portraitOrientation();
         }
-
-        previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
         if (dia != null) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
@@ -1542,9 +1079,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (mViewPager != null) {
             mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         }
-        blurFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-        image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
         touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
@@ -1561,140 +1096,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (mViewPager != null) {
             mViewPager.setBackgroundColor(Color.BLACK);
         }
-        blurFraRelativeLayout.setBackgroundColor(Color.BLACK);
         photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
-        image01.setBackgroundColor(Color.BLACK);
         titleBar.setVisibility(View.GONE);
         toolsBar.setVisibility(View.GONE);
         indexBar.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         touchtoclean.setTextColor(getResources().getColor(R.color.white));
         touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.pp_dark_blue));
-    }
-
-
-    /**
-     * 根据照片的购买情况确定布局和显示模式
-     */
-    private void initBlur() {
-        PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
-        if (!loadFailed) {//加载成功
-            createOriginalClearBit(true);
-            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
-            zoomW = (int) (parentPreviewW / 2);
-            zoomH = (int) (parentPreviewH / 2);
-            if (photoInfo.isPayed == 0) {// 未购买的照片
-                if (maskBmp != null) {
-                    maskBmp.recycle();
-                }
-                maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
-                oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
-                PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
-                image01.setImageBitmap(oriBlurBmp);
-            }
-            image01.setVisibility(View.VISIBLE);
-
-        } else {
-            touchtoclean.setText(R.string.http_error_code_401);
-        }
-        mViewPager.setVisibility(View.GONE);
-        curShowBmpWidth = oriClearBmp.getWidth();
-        curShowBmpHeight = oriClearBmp.getHeight();
-        curRadius = originalRadius;
-
-        if (flag) {//放大模式
-            flag = false;
-            if (zoomBlurBmp != null) {
-                zoomBlurBmp.recycle();
-            }
-            if (zoomClearBmp != null) {
-                zoomClearBmp.recycle();
-            }
-        }
-        PictureAirLog.out("larger bmp h after init---->" + curShowBmpHeight);
-        PictureAirLog.out("larger bmp w after init---->" + curShowBmpWidth);
-    }
-
-    /**
-     * 根据照片的购买情况确定布局和显示模式
-     */
-    private void resizeBlurImage() {
-        PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
-        createOriginalClearBit(false);
-        PictureAirLog.v(TAG, "oriClearBmp--->" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
-        zoomW = (int) (parentPreviewW / 2);
-        zoomH = (int) (parentPreviewH / 2);
-        PictureAirLog.v(TAG, "size---->" + zoomW + "___" + zoomH);
-
-        oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
-        PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
-
-        image01.setImageBitmap(oriBlurBmp);
-        curShowBmpWidth = oriClearBmp.getWidth();
-        curShowBmpHeight = oriClearBmp.getHeight();
-        if (flag) {//放大模式
-            flag = false;
-            if (zoomBlurBmp != null) {
-                zoomBlurBmp.recycle();
-            }
-
-            if (zoomClearBmp != null) {
-                zoomClearBmp.recycle();
-            }
-        }
-        curRadius = originalRadius;
-        PictureAirLog.out("larger bmp h after resize---->" + curShowBmpHeight);
-        PictureAirLog.out("larger bmp w after resize---->" + curShowBmpWidth);
-    }
-
-    private void createOriginalClearBit(boolean isInit) {
-        int w = oriClearBmp.getWidth();
-        int h = oriClearBmp.getHeight();
-        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
-        parentPreviewW = ScreenUtil.getScreenWidth(this);
-
-        if (isLandscape) {
-            parentPreviewH = ScreenUtil.getScreenHeight(this);
-        } else {
-            parentPreviewH = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - toolsBar.getHeight() - indexBar.getHeight() - titleBar.getHeight();
-        }
-        PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
-
-        if (isInit) {
-            int[] location = new int[2];
-            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
-            marginTop = location[1];
-            PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
-        }
-
-        float sw = 0f;
-        if (h / (float) w > parentPreviewH / parentPreviewW) {//左右留白
-            sw = parentPreviewH / (float) h;
-        } else {//上下留白
-            sw = parentPreviewW / (float) w;
-        }
-
-        matrix.reset();
-        matrix.postScale(sw, sw);
-        if (w > 0 && h > 0) {
-            oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
-        }
-    }
-
-    private void cropNewBmt() {
-        zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
-        zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
-        PictureAirLog.out("crop--->" + Math.min(zoomW, oriBlurBmp.getWidth()) + "--->" + Math.min(zoomH, oriBlurBmp.getHeight()));
-        matrix.reset();
-        float sw;
-        if (zoomBlurBmp.getHeight() / (float)zoomBlurBmp.getWidth() > parentPreviewH / parentPreviewW) {//左右留白
-            sw = parentPreviewH / (float) zoomBlurBmp.getHeight();
-        } else {//上下留白
-            sw = parentPreviewW / (float)zoomBlurBmp.getWidth();
-        }
-        matrix.postScale(sw, sw);
-        zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
-        zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
     }
 
     //直接下载
@@ -1757,7 +1165,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             }
         }
     }
-
 
     private void setUmengPhotoSlide() {
         UmengUtil.onEvent(PreviewPhotoActivity.this, Common.EVENT_PHOTO_SLIDE);
@@ -1825,6 +1232,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         lastestVideoInfoPresenter.videoInfoClick(photolist.get(position).photoId, position);
+    }
+
+    @Override
+    public void touchClear(boolean visible) {
+        touchtoclean.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
     }
 
     @Override

@@ -197,7 +197,7 @@
     <!-- preview photo start -->
     <string name="edit">Edit</string>
     <string name="makegift">Print</string>
-    <string name="touchtoclean">Touch to preview your photo</string>
+    <string name="touchtoclean">Please press and hold to preview your photo</string>
     <string name="know">I know</string>
     <string name="like_and_buy">Touch to preview your photo</string>
     <string name="reloadphoto">Please reload this photo</string>

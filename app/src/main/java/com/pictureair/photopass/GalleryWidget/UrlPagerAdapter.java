@@ -74,12 +74,12 @@ public class UrlPagerAdapter extends BasePagerAdapter {
             }
 
         } else if (mResources.get(position).onLine == 0) {//本地图
-            if (mResources.get(position).isVideo == 0) {
+            if (mResources.get(position).isVideo == 0) {//照片
                 PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
                 PictureAirLog.v("instantiateItem", "local photo : " + position + position);
                 iv.setProgressImageViewVisible(true);
                 iv.setImagePath(mResources.get(position).photoPathOrURL);
-            }else{
+            }else{//视频
                 iv.setUrl(Common.PHOTO_URL + mResources.get(position).photoThumbnail_512, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
                 iv.disableZoom();
                 iv.setVideoType(position, photoEventListener);
@@ -87,6 +87,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
         } else {//模糊图
             iv.setBlurImageUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
+            iv.setOnPhotoEventListener(photoEventListener);
             iv.setProgressImageViewVisible(true);
         }
 

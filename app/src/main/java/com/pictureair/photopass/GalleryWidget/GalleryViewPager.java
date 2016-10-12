@@ -40,6 +40,9 @@ public class GalleryViewPager extends ViewPager {
      */
     protected OnItemClickListener mOnItemClickListener;
 
+    private float startX;
+    private float startY;
+
     public GalleryViewPager(Context context) {
         super(context);
     }
@@ -54,6 +57,7 @@ public class GalleryViewPager extends ViewPager {
             case MotionEvent.ACTION_DOWN:
                 last = new PointF(event.getX(0), event.getY(0));
                 break;
+
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
                 PointF curr = new PointF(event.getX(0), event.getY(0));
@@ -66,9 +70,7 @@ public class GalleryViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         try {
-
             if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                //super.onInterceptTouchEvent(event);
 
                 float endX = event.getX();
                 float endY = event.getY();
@@ -87,16 +89,14 @@ public class GalleryViewPager extends ViewPager {
                 startY = event.getY();
             }
 
-        /*if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP)
-        {
-            super.onTouchEvent(event);
-        }*/
-
             float[] difference = handleMotionEvent(event);
 
             if (mCurrentView.pagerCanScroll()) {
                 return super.onTouchEvent(event);
             } else {
+                if (mCurrentView.isTouchClearMode()) {
+                    return false;
+                }
                 if (difference != null && mCurrentView.onRightSide && difference[0] < 0) //move right
                 {
                     return super.onTouchEvent(event);
@@ -116,37 +116,33 @@ public class GalleryViewPager extends ViewPager {
         return false;
     }
 
-    private float startX;
-    private float startY;
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-            //super.onInterceptTouchEvent(event);
-
-            float endX = event.getX();
-            float endY = event.getY();
-            if (isAClick(startX, endX, startY, endY)) {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClicked(mCurrentView, getCurrentItem());
-                }
-            } else {
-                super.onInterceptTouchEvent(event);
-            }
-        }
-
-        if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-            startX = event.getX();
-            startY = event.getY();
-        }
-
-
-        float[] difference = handleMotionEvent(event);
-
         try {
+            if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                float endX = event.getX();
+                float endY = event.getY();
+                if (isAClick(startX, endX, startY, endY)) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClicked(mCurrentView, getCurrentItem());
+                    }
+                } else {
+                    super.onInterceptTouchEvent(event);
+                }
+            }
+
+            if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                startX = event.getX();
+                startY = event.getY();
+            }
+
+            float[] difference = handleMotionEvent(event);
             if (mCurrentView.pagerCanScroll()) {
                 return super.onInterceptTouchEvent(event);
             } else {
+                if (mCurrentView.isTouchClearMode()) {
+                    return false;
+                }
                 if (difference != null && mCurrentView.onRightSide && difference[0] < 0) //move right
                 {
                     return super.onInterceptTouchEvent(event);
@@ -184,4 +180,11 @@ public class GalleryViewPager extends ViewPager {
     public void setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
-};
+
+    /**
+     * 旋转的时候，如果图片有缩放过，需要重置，否则会有再次缩放之后，图片显示位置异常的问题
+     */
+    public void resetImageView() {
+        mCurrentView.resetImageView();
+    }
+}
