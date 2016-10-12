@@ -197,7 +197,7 @@
     <!-- preview photo start -->
     <string name="edit">编辑</string>
     <string name="makegift">打印</string>
-    <string name="touchtoclean">亲，触摸即可马上预览您的高清图片哦！</string>
+    <string name="touchtoclean">亲，长按触摸即可马上预览您的高清图片哦！</string>
     <string name="know">我知道了</string>
     <string name="like_and_buy">点击查看清晰图，喜欢购买吧！</string>
     <string name="reloadphoto">请重新加载此照片</string>

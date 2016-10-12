@@ -5,4 +5,6 @@ package com.pictureair.photopass.GalleryWidget;
  */
 public interface PhotoEventListener {
     void videoClick(int position);
+
+    void touchClear(boolean visible);
 }
