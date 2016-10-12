@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
@@ -30,6 +29,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 头像选取
@@ -108,6 +112,13 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 finish();
                 break;
+            case API1.UPLOAD_PHOTO_PROGRESS:
+                Bundle bundle = msg.getData();
+                long bytesWritten = bundle.getLong("bytesWritten");
+                long totalSize = bundle.getLong("totalSize");
+                dialog.setProgress(bytesWritten,totalSize);
+                break;
+
             default:
                 break;
         }
@@ -173,11 +184,15 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     }
                     try {
                         // 需要更新服务器中用户头像图片信息
-                        RequestParams params = new RequestParams();
-                        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-                        params.put("updateType", "avatar");
-                        params.put("file", headPhoto);
-                        API1.updateUserImage(params, setHeadPhotoHandler, 0, dialog);
+                        Map<String, RequestBody> params = new HashMap<>();
+                        RequestBody requestParams1 = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                        RequestBody requestParams2 = RequestBody.create(MediaType.parse("text/plain"),"avatar");
+                        RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),headPhoto);
+                        params.put("file\";filename=\""+headPhoto.getName(), fileBody);
+                        params.put(Common.USERINFO_TOKENID,requestParams1);
+                        params.put("updateType",requestParams2);
+
+                        API1.updateUserImage(params, setHeadPhotoHandler, 0);
                     } catch (FileNotFoundException ee) {
                         // TODO Auto-generated catch block
                         ee.printStackTrace();

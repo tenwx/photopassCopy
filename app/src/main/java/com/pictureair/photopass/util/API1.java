@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -20,6 +19,9 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
+import com.pictureair.photopass.http.BasicResultCallTask;
+import com.pictureair.photopass.http.BinaryCallBack;
+import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
 import java.io.File;
@@ -27,6 +29,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.RequestBody;
 
 
 /**
@@ -201,6 +207,7 @@ public class API1 {
 
     public static final int UPLOAD_PHOTO_SUCCESS = 5061;
     public static final int UPLOAD_PHOTO_FAILED = 5060;
+    public static final int UPLOAD_PHOTO_PROGRESS = 5062;
 
     public static final int GET_PPP_SUCCESS = 5071;
     public static final int GET_PPP_FAILED = 5070;
@@ -274,12 +281,15 @@ public class API1 {
      * @param context
      * @param handler
      */
-    public static void getTokenId(final Context context, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getTokenId(final Context context, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.TERMINAL, "android");
-        params.put(Common.UUID, Installation.id(context));
+        String id = Installation.id(context);
+        if (id != null) {
+            params.put(Common.UUID, id);
+        }
         params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -304,6 +314,8 @@ public class API1 {
                 }
             }
         });
+
+        return task;
     }
 
 
@@ -315,13 +327,15 @@ public class API1 {
      * @param password
      * @param handler
      */
-    public static void Login(final Context context, final String userName, String password, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask Login(final Context context, final String userName, String password, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.USERINFO_USERNAME, userName);
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
+        if (userName != null) {
+            params.put(Common.USERINFO_USERNAME, userName);
+        }
+        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -333,12 +347,15 @@ public class API1 {
                 }
             }
 
+
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(LOGIN_FAILED, status, 0).sendToTarget();
             }
         });
+
+        return task;
     }
 
     /**
@@ -346,11 +363,11 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void Logout(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask Logout(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -365,8 +382,7 @@ public class API1 {
                 handler.sendEmptyMessage(LOGOUT_FAILED);
             }
         });
-
-
+        return task;
     }
 
     /**
@@ -376,8 +392,8 @@ public class API1 {
      * @param folderPath
      * @param fileName
      */
-    public static void downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
-        HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
+    public static BinaryCallBack downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
+        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
@@ -401,6 +417,8 @@ public class API1 {
             }
 
         });
+
+        return task;
     }
 
     /**
@@ -410,12 +428,14 @@ public class API1 {
      * @param password pwd
      * @param handler  handler
      */
-    public static void Register(final String userName, final String password, String tokenId, final Handler handler) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask Register(final String userName, final String password, String tokenId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.USERINFO_USERNAME, userName);
+        if (userName != null) {
+            params.put(Common.USERINFO_USERNAME, userName);
+        }
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REGISTER, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REGISTER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -430,6 +450,8 @@ public class API1 {
                 handler.obtainMessage(SIGN_FAILED, status, 0).sendToTarget();
             }
         });
+
+        return task;
     }
 
     /**
@@ -442,15 +464,15 @@ public class API1 {
      * language:string,选填,语言，默认为CN，可填写值：CN或EN，
      * msgType:string,选填，默认为register，可选值（forgotPassword,register）
      */
-    public static void sendSMSValidateCode(final Handler handler, final String tokenId, String phone, String language, boolean isRegister) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask sendSMSValidateCode(final Handler handler, final String tokenId, String phone, String language, boolean isRegister) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.PHONE, "+" + phone);
         params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
         params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
 
         PictureAirLog.v(TAG, "sendSMSValidateCode params：" + params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -466,6 +488,7 @@ public class API1 {
             }
 
         });
+        return task;
     }
 
     /**
@@ -477,15 +500,18 @@ public class API1 {
      * sendTo:string,选填，email或mobile
      * msgType:string,选填，可选值（register,forgotPassword）
      */
-    public static void validateCode(final Handler handler, final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask validateCode(final Handler handler, final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
+
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.VALIDATE_CODE, validateCode);
+        if (validateCode != null) {
+            params.put(Common.VALIDATE_CODE, validateCode);
+        }
         params.put(Common.SEND_TO, "+"+phoneOremail);
         params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
 
         PictureAirLog.v(TAG, "validateCode params：" + params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -501,6 +527,7 @@ public class API1 {
             }
 
         });
+        return task;
     }
 
 
@@ -510,15 +537,10 @@ public class API1 {
      * @param context
      * @param handler
      */
-    public static void getLocationInfo(final Context context, String tokenId, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getLocationInfo(final Context context, String tokenId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, new HttpCallback() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.out("get location start-->");
-            }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -534,6 +556,7 @@ public class API1 {
                 handler.obtainMessage(GET_ALL_LOCATION_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
 
@@ -544,15 +567,17 @@ public class API1 {
      * @param handler
      * @param timeString 根据时间获取图片信息
      */
-    public static void getPhotosByConditions(final String tokenId, final Handler handler, final String timeString, String ppCode) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPhotosByConditions(final String tokenId, final Handler handler, final String timeString, String ppCode) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.LAST_UPDATE_TIME, timeString);
+        if (timeString != null) {
+            params.put(Common.LAST_UPDATE_TIME, timeString);
+        }
         if (!TextUtils.isEmpty(ppCode)) {
             params.put(Common.CUSTOMERID, ppCode);
         }
         PictureAirLog.out("the time of start get photos = " + timeString);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -575,6 +600,7 @@ public class API1 {
                 }
             }
         });
+        return task;
     }
 
     /**
@@ -583,14 +609,16 @@ public class API1 {
      * @param tokenId
      * @param handler
      */
-    public static void getNewPhotosInfo(String tokenId, String photoId, final int id, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getNewPhotosInfo(String tokenId, String photoId, final int id, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         JSONArray ids = new JSONArray();
         ids.add(photoId);
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.EPPP_IDS, ids.toJSONString());
+        if (ids!= null) {
+            params.put(Common.EPPP_IDS, ids.toJSONString());
+        }
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -612,6 +640,7 @@ public class API1 {
                 handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -620,11 +649,13 @@ public class API1 {
      * @param code
      * @param handler
      */
-    public static void checkCodeAvailable(String code, String tokenId, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask checkCodeAvailable(String code, String tokenId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.CODE, code);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
+        if (code != null) {
+            params.put(Common.CODE, code);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -638,6 +669,7 @@ public class API1 {
                 handler.obtainMessage(CHECK_CODE_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -648,8 +680,8 @@ public class API1 {
      * @param type
      * @param handler
      */
-    public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler) {
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+    public static BasicResultCallTask addScanCodeToUser(String url, Map params, final String type, final Handler handler) {
+        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -669,6 +701,7 @@ public class API1 {
                 handler.obtainMessage(ADD_SCANE_CODE_FAIED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -676,13 +709,17 @@ public class API1 {
      * @param tokenId
      * @param handler
      */
-    public static void removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.SHARE_PHOTO_ID, ids.toJSONString());
-        params.put(Common.PP, ppCode);
+        if (ids != null) {
+            params.put(Common.SHARE_PHOTO_ID, ids.toJSONString());
+        }
+        if (ppCode != null) {
+            params.put(Common.PP, ppCode);
+        }
         PictureAirLog.out("param---->" + params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -697,6 +734,7 @@ public class API1 {
                 handler.obtainMessage(DELETE_PHOTOS_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -705,10 +743,10 @@ public class API1 {
      * @param tokenId
      * @param handler
      */
-    public static void getFavoriteLocations(String tokenId, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getFavoriteLocations(String tokenId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -722,6 +760,7 @@ public class API1 {
                 handler.obtainMessage(GET_FAVORITE_LOCATION_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -732,20 +771,19 @@ public class API1 {
      * @param action     必填，操作（可选值：add，remove），收藏或取消收藏
      * @param handler
      */
-    public static void editFavoriteLocations(String tokenId, String locationId,
-                                             String action, final int position, final Handler handler) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask editFavoriteLocations(String tokenId, String locationId,
+                                                            String action, final int position, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.LOCATION_ID, locationId);
-        params.put(Common.ACTION, action);
-        HttpUtil1.asyncPost(
+        if (locationId != null) {
+            params.put(Common.LOCATION_ID, locationId);
+        }
+        if (action != null) {
+            params.put(Common.ACTION, action);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncPost(
                 Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params,
                 new HttpCallback() {
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        PictureAirLog.out("edit favorite location start-->");
-                    }
 
                     @Override
                     public void onSuccess(JSONObject jsonObject) {
@@ -768,6 +806,7 @@ public class API1 {
                                 status, 0).sendToTarget();
                     }
                 });
+        return task;
     }
 
 
@@ -777,15 +816,17 @@ public class API1 {
      * @param lastUpdateTime 上次更新时间
      * @param handler
      */
-    public static void getLastContent(String lastUpdateTime, final Handler handler) {
+    public static BasicResultCallTask getLastContent(String lastUpdateTime, final Handler handler) {
         StringBuffer sBuffer = new StringBuffer();
         sBuffer.append(Common.BASE_URL_TEST);
         sBuffer.append(Common.GET_LASTEST_CONTENT);
 
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LAST_UPDATE_TIME, lastUpdateTime);
-        HttpUtil1.asyncGet(sBuffer.toString(), params, new HttpCallback() {
+        if (lastUpdateTime != null) {
+            params.put(Common.LAST_UPDATE_TIME, lastUpdateTime);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(sBuffer.toString(), params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -798,6 +839,7 @@ public class API1 {
                 handler.obtainMessage(GET_LAST_CONTENT_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -805,10 +847,11 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getADLocations(final int oldPosition, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getADLocations(final int oldPosition, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
+
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -821,6 +864,7 @@ public class API1 {
                 handler.obtainMessage(GET_AD_LOCATIONS_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /***************************************我的模块 start**************************************/
@@ -834,9 +878,9 @@ public class API1 {
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void updateUserImage(RequestParams params, final Handler handler, final int position, final PWProgressBarDialog diaBarPop) throws FileNotFoundException {
+    public static BasicResultCallTask updateUserImage(Map<String,RequestBody> params, final Handler handler, final int position) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncUpload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -855,9 +899,15 @@ public class API1 {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
-                diaBarPop.setProgress(bytesWritten, totalSize);
+                Message msg = handler.obtainMessage(UPLOAD_PHOTO_PROGRESS);
+                Bundle bundle = new Bundle();
+                bundle.putLong("bytesWritten",bytesWritten);
+                bundle.putLong("totalSize",totalSize);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
             }
         });
+        return task;
     }
 
 
@@ -869,9 +919,9 @@ public class API1 {
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void SetPhoto(RequestParams params, final Handler handler, final int position, final PWProgressBarDialog diaBarPop) throws FileNotFoundException {
+    public static BasicResultCallTask SetPhoto(Map<String,RequestBody> params, final Handler handler, final int position) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncUpload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -890,9 +940,15 @@ public class API1 {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
-                diaBarPop.setProgress(bytesWritten, totalSize);
+                Message msg = handler.obtainMessage(UPLOAD_PHOTO_PROGRESS);
+                Bundle bundle = new Bundle();
+                bundle.putLong("bytesWritten",bytesWritten);
+                bundle.putLong("totalSize",totalSize);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
             }
         });
+        return task;
     }
 
     /**
@@ -905,16 +961,26 @@ public class API1 {
      * @param QQ       qq
      * @param handler  handler
      */
-    public static void updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final int modifyType, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final int modifyType, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.USERINFO_NICKNAME, name);
-        params.put(Common.USERINFO_COUNTRY, country);
-        params.put(Common.USERINFO_QQ, QQ);
-        params.put(Common.USERINFO_BIRTHDAY, birthday);
-        params.put(Common.USERINFO_GENDER, gender);
+        if (name != null) {
+            params.put(Common.USERINFO_NICKNAME, name);
+        }
+        if (country != null) {
+            params.put(Common.USERINFO_COUNTRY, country);
+        }
+        if (QQ != null) {
+            params.put(Common.USERINFO_QQ, QQ);
+        }
+        if (birthday != null) {
+            params.put(Common.USERINFO_BIRTHDAY, birthday);
+        }
+        if (gender != null) {
+            params.put(Common.USERINFO_GENDER, gender);
+        }
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -927,6 +993,7 @@ public class API1 {
                 handler.obtainMessage(UPDATE_PROFILE_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -939,10 +1006,10 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void getPPSByUserId(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPPSByUserId(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -956,6 +1023,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -966,10 +1034,10 @@ public class API1 {
      */
     public static ArrayList<PPPinfo> PPPlist = new ArrayList<>();
 
-    public static void getPPPSByUserId(String tokenId, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPPPSByUserId(String tokenId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -985,6 +1053,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -993,8 +1062,8 @@ public class API1 {
      * @param params  参数
      * @param handler handler
      */
-    public static void hidePPs(RequestParams params, final Handler handler) {
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.HIDE_PPS, params, new HttpCallback() {
+    public static BasicResultCallTask hidePPs(Map params, final Handler handler) {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.HIDE_PPS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1008,6 +1077,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1019,14 +1089,18 @@ public class API1 {
      * @param ppp      ppp
      * @param handler  handler
      */
-    public static void bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.PPS, pps);
-        params.put(Common.bindDate, bindDate);
-        params.put(Common.ppp1, ppp);
+        if (bindDate != null) {
+            params.put(Common.bindDate, bindDate);
+        }
+        if (ppp != null) {
+            params.put(Common.ppp1,ppp);
+        }
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1039,17 +1113,19 @@ public class API1 {
                 handler.obtainMessage(BIND_PP_FAILURE, status, 0).sendToTarget();
             }
         });
-
+        return task;
     }
 
     /**
      * 绑定PP卡到用户
      */
-    public static void addCodeToUser(String ppCode, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask addCodeToUser(String ppCode, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.CUSTOMERID, ppCode);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new HttpCallback() {
+        if (ppCode != null) {
+            params.put(Common.CUSTOMERID, ppCode);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1064,6 +1140,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -1073,8 +1150,8 @@ public class API1 {
      * @param params  params
      * @param handler handler
      */
-    public static void bindPPPToUser(RequestParams params, final Handler handler) {
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, new HttpCallback() {
+    public static BasicResultCallTask bindPPPToUser(Map params, final Handler handler) {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1087,6 +1164,7 @@ public class API1 {
                 handler.obtainMessage(SCAN_PPP_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
 
@@ -1095,10 +1173,10 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getHelp(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getHelp(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ME_HELP, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ME_HELP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1111,6 +1189,7 @@ public class API1 {
                 handler.obtainMessage(GET_HELP_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -1120,12 +1199,12 @@ public class API1 {
      * @param newPwd  新密码
      * @param handler
      */
-    public static void modifyPwd(String oldPwd, String newPwd, final Handler handler) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask modifyPwd(String oldPwd, String newPwd, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(newPwd));
         params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1140,6 +1219,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1149,14 +1229,18 @@ public class API1 {
      * @param photoIds 绑定的图片
      * @param handler
      */
-    public static void useExperiencePPP(String pppCode, JSONArray photoIds, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask useExperiencePPP(String pppCode, JSONArray photoIds, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.EPPP, pppCode);
-        params.put(Common.EPPP_IDS, photoIds.toJSONString());
+        if (pppCode != null) {
+            params.put(Common.EPPP,pppCode);
+        }
+        if (photoIds != null) {
+            params.put(Common.EPPP_IDS, photoIds.toJSONString());
+        }
         PictureAirLog.out("photo ids --->" + photoIds);
         PictureAirLog.out("params--->" + params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1169,6 +1253,7 @@ public class API1 {
                 handler.obtainMessage(ADD_PHOTO_TO_PPP_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -1178,11 +1263,13 @@ public class API1 {
      * @param position
      * @param handler
      */
-    public static void removePPFromUser(String ppCode, final int position, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask removePPFromUser(String ppCode, final int position, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.CUSTOMERID, ppCode);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new HttpCallback() {
+        if (ppCode != null) {
+            params.put(Common.CUSTOMERID,ppCode);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1195,6 +1282,7 @@ public class API1 {
                 handler.obtainMessage(REMOVE_PP_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /***************************************我的模块 end**************************************/
@@ -1208,10 +1296,10 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void getStoreId(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getStoreId(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_STORE_BY_IP, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_STORE_BY_IP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1225,6 +1313,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -1233,12 +1322,12 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void getGoods(final Handler handler) {
+    public static BasicResultCallTask getGoods(final Handler handler) {
         PictureAirLog.v(TAG, "getGoods");
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_GOODS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_GOODS, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1254,6 +1343,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -1263,10 +1353,10 @@ public class API1 {
      * @param cartIdsArray
      * @param handler      handler
      */
-    public static void getCarts(JSONArray cartIdsArray, final Handler handler) {
+    public static BasicResultCallTask getCarts(JSONArray cartIdsArray, final Handler handler) {
         PictureAirLog.out("getCarts---》" + MyApplication.getTokenId());
         final int flag;//表示请求类型： 初始化/选中取消选中
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         if (cartIdsArray == null) {
             flag = -1;
         } else {
@@ -1277,7 +1367,7 @@ public class API1 {
         }
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1292,6 +1382,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -1304,17 +1395,19 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void addToCart(String goodsKey, int qty, Boolean isJustBuy, JSONArray embedPhotos, final Handler handler) {
+    public static BasicResultCallTask addToCart(String goodsKey, int qty, Boolean isJustBuy, JSONArray embedPhotos, final Handler handler) {
         PictureAirLog.v(TAG, "addToCart");
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.GOODS_KEY, goodsKey);
+        if (goodsKey != null) {
+            params.put(Common.GOODS_KEY,goodsKey);
+        }
         params.put(Common.IS_JUST_BUY, isJustBuy);
         params.put(Common.QTY, qty);
         if (embedPhotos != null) {
             params.put(Common.EMBEDPHOTOS, embedPhotos.toString());
         }
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1328,6 +1421,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1336,11 +1430,13 @@ public class API1 {
      * @param goods
      * @param handler
      */
-    public static void batchAddToCarts(String tokenId, String goods, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask batchAddToCarts(String tokenId, String goods, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.GOODS, goods);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, new HttpCallback() {
+        if (goods != null) {
+            params.put(Common.GOODS, goods);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1354,6 +1450,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1365,17 +1462,19 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final PWProgressBarDialog diaBarPop) {
+    public static BasicResultCallTask modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final PWProgressBarDialog diaBarPop) {
         PictureAirLog.v(TAG, "modifyCart");
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.GOODS_KEY, goodsKey);
+        if (goodsKey != null) {
+            params.put(Common.GOODS_KEY, goodsKey);
+        }
         if (embedPhotos != null) {
             params.put(Common.EMBEDPHOTOS, embedPhotos.toString());
         }
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
-        HttpUtil1.asyncPut(url, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPut(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1395,6 +1494,7 @@ public class API1 {
                 diaBarPop.setProgress(bytesWritten, totalSize);
             }
         });
+        return task;
     }
 
 
@@ -1404,15 +1504,15 @@ public class API1 {
      * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
      * @param handler      handler
      */
-    public static void removeCartItems(JSONArray cartIdsArray, final Handler handler) {
+    public static BasicResultCallTask removeCartItems(JSONArray cartIdsArray, final Handler handler) {
         String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (cartIdsArray != null && cartIdsArray.size() > 0) {
             params.put("cartIdsArray", cartIdsArray.toString());
         }
         PictureAirLog.v(TAG, "params" + params.toString());
-        HttpUtil1.asyncDelete(url, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1427,7 +1527,7 @@ public class API1 {
 
             }
         });
-
+        return task;
     }
 
     /**
@@ -1439,20 +1539,26 @@ public class API1 {
      * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
      * @param handler      handler
      */
-    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId,
-                                JSONArray couponCodes,JSONObject invoice,
-                                String channelId, String uid, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId,
+                                               JSONArray couponCodes, JSONObject invoice,
+                                               String channelId, String uid, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("cartItemIds", cartItemIds.toString());
+        if (cartItemIds != null) {
+            params.put("cartItemIds", cartItemIds.toString());
+        }
         params.put("deliveryType", deliveryType);
-        params.put("coupons", couponCodes == null ? null : couponCodes.toString());
+        params.put("coupons", couponCodes == null ? "" : couponCodes.toString());
         if (deliveryType == 0) {
             //物流
-            params.put("addressId", addressId);
+            if (addressId != null) {
+                params.put("addressId", addressId);
+            }
         } else if (deliveryType == 1) {
             //自提
-            params.put("outletId", outletId);
+            if (outletId != null) {
+                params.put("outletId", outletId);
+            }
         }
         if(null != invoice)
             params.put("invoiceInfo",invoice);
@@ -1462,7 +1568,7 @@ public class API1 {
             params.put("uId", uid);
         }
         PictureAirLog.out("addorder params ------------>"+params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1477,6 +1583,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -1485,11 +1592,11 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void getOrderInfo(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getOrderInfo(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1508,6 +1615,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1515,12 +1623,14 @@ public class API1 {
      *
      * @param handler
      */
-    public static void removeOrder(String orderId, final OrderInfo groupInfo, final OrderProductInfo childInfo, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask removeOrder(String orderId, final OrderInfo groupInfo, final OrderProductInfo childInfo, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.ORDER_ID, orderId);
+        if (orderId != null) {
+            params.put(Common.ORDER_ID, orderId);
+        }
         PictureAirLog.v(TAG, "removeOrder params：" + params);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1541,6 +1651,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1548,10 +1659,10 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getInvoiceAddressList(final Handler handler ){
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getInvoiceAddressList(final Handler handler ){
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1565,6 +1676,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1573,10 +1685,10 @@ public class API1 {
      * @param cartIdsArray
      * @param handler      handler
      */
-    public static void getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes, final Handler handler) {
+    public static BasicResultCallTask getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes, final Handler handler) {
         PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
         final int flag;//表示请求类型： 初始化/选中取消选中
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         if (cartIdsArray == null) {
             flag = -1;
         } else {
@@ -1590,7 +1702,7 @@ public class API1 {
         params.put("isNeedInvoice", isNeedInvoice);
         params.put("couponCodes", couponCodes.toString());
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1605,6 +1717,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1612,20 +1725,38 @@ public class API1 {
      *
      * @param handler
      */
-    public static void addInvoiceAddress(final Handler handler , SendAddress address){
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask addInvoiceAddress(final Handler handler , SendAddress address){
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("consignee", address.getName());
-        params.put("detailedAddress", address.getDetailAddress());
-        params.put("area", address.getArea());
-        params.put("provinces", address.getProvince());
-        params.put("city", address.getCity());
-        params.put("county", address.getCountry());
-        params.put("zip", address.getZip());
-        params.put("mobileNum", address.getMobilePhone());
-        params.put("telephone", address.getTelePhone());
+        if (address.getName() != null) {
+            params.put("consignee", address.getName());
+        }
+        if (address.getDetailAddress() != null) {
+            params.put("detailedAddress", address.getDetailAddress());
+        }
+        if (address.getArea() != null) {
+            params.put("area",address.getArea());
+        }
+        if (address.getProvince() != null) {
+            params.put("provinces", address.getProvince());
+        }
+        if (address.getCity() != null) {
+            params.put("city", address.getCity());
+        }
+        if (address.getCountry() != null) {
+            params.put("county", address.getCountry());
+        }
+        if (address.getZip() != null) {
+            params.put("zip", address.getZip());
+        }
+        if (address.getMobilePhone() != null) {
+            params.put("mobileNum", address.getMobilePhone());
+        }
+        if (address.getTelePhone() != null) {
+            params.put("telephone", address.getTelePhone());
+        }
         params.put("defaultChose", address.isSelected());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1641,6 +1772,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1648,27 +1780,42 @@ public class API1 {
      *
      * @param handler
      */
-    public static void modifyInvoiceAddress(final Handler handler , SendAddress address){
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask modifyInvoiceAddress(final Handler handler , SendAddress address){
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("addressId", address.getAddressId());
-        params.put("consignee", address.getName());
-        params.put("detailedAddress", address.getDetailAddress());
-        params.put("area", address.getArea());
-        params.put("provinces", address.getProvince());
-        params.put("city", address.getCity());
-        params.put("county", address.getCountry());
-        params.put("zip", address.getZip());
-        params.put("mobileNum", address.getMobilePhone());
-        params.put("telephone", address.getTelePhone());
+        if (address.getAddressId() != null) {
+            params.put("addressId", address.getAddressId());
+        }
+        if (address.getName() != null) {
+            params.put("consignee", address.getName());
+        }
+        if (address.getDetailAddress() != null) {
+            params.put("detailedAddress", address.getDetailAddress());
+        }
+        if (address.getArea() != null) {
+            params.put("area", address.getArea());
+        }
+        if (address.getProvince() != null) {
+            params.put("provinces", address.getProvince());
+        }
+        if (address.getCity() != null) {
+            params.put("city", address.getCity());
+        }
+        if (address.getCountry() != null) {
+            params.put("county",address.getCountry());
+        }
+        if (address.getZip() != null) {
+            params.put("zip", address.getZip());
+        }
+        if (address.getMobilePhone() != null) {
+            params.put("mobileNum",address.getMobilePhone());
+        }
+        if (address.getTelePhone() != null) {
+            params.put("telephone",address.getTelePhone());
+        }
         params.put("defaultChose", address.isSelected());
         PictureAirLog.out("modify address ------>"+params.toString());
-        HttpUtil1.asyncPut(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.out("onstart------->");
-            }
+        BasicResultCallTask task = HttpUtil1.asyncPut(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1685,6 +1832,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1692,11 +1840,11 @@ public class API1 {
      *
      * @param handler
      */
-    public static void deleteInvoiceAddress(final Handler handler , String[] ids){
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask deleteInvoiceAddress(final Handler handler , String[] ids){
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("addressesIds", ids);
-        HttpUtil1.asyncDelete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncDelete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1710,6 +1858,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -1719,12 +1868,14 @@ public class API1 {
      * @param photoId photoId
      * @param handler handler
      */
-    public static void buyPhoto(String photoId, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask buyPhoto(String photoId, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PHOTO_ID, photoId);
+        if (photoId != null) {
+            params.put(Common.PHOTO_ID, photoId);
+        }
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
                 new HttpCallback() {
                     @Override
                     public void onSuccess(JSONObject jsonObject) {
@@ -1741,7 +1892,7 @@ public class API1 {
 
                     }
                 });
-
+        return task;
     }
 
     /**
@@ -1749,11 +1900,11 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static void getOutlets(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getOutlets(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1766,7 +1917,7 @@ public class API1 {
                 handler.obtainMessage(GET_OUTLET_ID_FAILED, status, 0).sendToTarget();
             }
         });
-
+        return task;
     }
 
 
@@ -1779,11 +1930,13 @@ public class API1 {
      * @param photos
      * @param handler
      */
-    public static void uploadPhotoMakeVideo(String photos, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask uploadPhotoMakeVideo(String photos, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PHOTOIDS, photos);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
+        if (photos != null) {
+            params.put(Common.PHOTOIDS, photos);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1797,6 +1950,7 @@ public class API1 {
                 handler.obtainMessage(UPLOAD_PHOTO_MAKE_VIDEO_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
 
@@ -1817,19 +1971,19 @@ public class API1 {
      *
      * @param handler
      */
-    public static void checkUpdate(Context context, final Handler handler) {
+    public static BasicResultCallTask checkUpdate(Context context, final Handler handler) {
         if (context == null) {
             handler.sendEmptyMessage(GET_UPDATE_FAILED);
-            return;
+            return null;
         }
         final Context c = context;
         String verson = c.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
-        RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
         params.put(Common.VERSION, verson);
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1849,6 +2003,7 @@ public class API1 {
                 handler.sendEmptyMessage(GET_UPDATE_FAILED);
             }
         });
+        return task;
     }
 
 //    /**
@@ -1918,11 +2073,11 @@ public class API1 {
     /**
      * socket链接后处理方法
      */
-    public static void noticeSocketConnect() {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask noticeSocketConnect() {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1935,17 +2090,18 @@ public class API1 {
                 PictureAirLog.v(TAG, "noticeSocketConnect 链接失败,状态码：" + status);
             }
         });
+        return task;
     }
 
 
     /**
      * 手机端退出登录前调用
      */
-    public static void noticeSocketDisConnect(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask noticeSocketDisConnect(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1960,6 +2116,7 @@ public class API1 {
                 PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开失败,状态码：" + status);
             }
         });
+        return task;
     }
 
 
@@ -1968,11 +2125,13 @@ public class API1 {
      *
      * @param clearType
      */
-    public static void clearSocketCachePhotoCount(String clearType) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask clearSocketCachePhotoCount(String clearType) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.CLEAR_TYPE, clearType);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, new HttpCallback() {
+        if (clearType != null) {
+            params.put(Common.CLEAR_TYPE, clearType);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1985,17 +2144,18 @@ public class API1 {
                 PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
             }
         });
+        return task;
     }
 
 
     /**
      * 返回用户未接收到的推送消息
      */
-    public static void getSocketData(final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getSocketData(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2010,6 +2170,7 @@ public class API1 {
                 handler.obtainMessage(GET_SOCKET_DATA_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /***************************************
@@ -2024,12 +2185,14 @@ public class API1 {
      * @param pppCode
      * @param handler
      */
-    public static void getPPsByPPPAndDate(String pppCode, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPPsByPPPAndDate(String pppCode, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PPPCode, pppCode);
+        if (pppCode != null) {
+            params.put(Common.PPPCode, pppCode);
+        }
         String url = Common.BASE_URL_TEST + Common.GET_PPS_BY_PPP_AND_DATE;
-        HttpUtil1.asyncGet(url, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2045,6 +2208,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -2055,13 +2219,17 @@ public class API1 {
      * @param pppCode
      * @param handler
      */
-    public static void bindPPsDateToPPP(JSONArray pps, String pppCode, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask bindPPsDateToPPP(JSONArray pps, String pppCode, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PPS, pps.toString());
-        params.put(Common.ppp1, pppCode);
+        if (pps != null) {
+            params.put(Common.PPS,pps.toString());
+        }
+        if (pppCode != null) {
+            params.put(Common.ppp1, pppCode);
+        }
         String url = Common.BASE_URL_TEST + Common.BIND_PPS_DATE_TO_PPP;
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2074,6 +2242,7 @@ public class API1 {
                 handler.obtainMessage(BIND_PPS_DATE_TO_PP_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -2084,8 +2253,8 @@ public class API1 {
      * @param id        点击id
      * @param handler
      */
-    public static void getShareUrl(String photoID, String shareType, final int id, final Handler handler) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getShareUrl(String photoID, String shareType, final int id, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
         JSONObject orgJSONObject = new JSONObject();
         try {
             orgJSONObject.put(Common.SHARE_MODE, shareType);
@@ -2098,7 +2267,7 @@ public class API1 {
         params.put(Common.IS_USE_SHORT_URL, false);
         //BASE_URL_TEST2 测试成功
         PictureAirLog.out("get share url----------------" + params.toString());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -2114,6 +2283,7 @@ public class API1 {
                 handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -2122,15 +2292,19 @@ public class API1 {
      * @param shareId
      * @param platform
      */
-    public static void shareCallBack(String shareId, String platform) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask shareCallBack(String shareId, String platform) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.SHARE_ID, shareId);
-        params.put(Common.SHARE_PLATFORM, platform);
+        if (shareId != null) {
+            params.put(Common.SHARE_ID,shareId);
+        }
+        if (platform != null) {
+            params.put(Common.SHARE_PLATFORM, platform);
+        }
 
         PictureAirLog.e("----shareCallBack:", "" + params.toString());
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2142,6 +2316,8 @@ public class API1 {
                 super.onFailure(status);
             }
         });
+		
+		return task;
     }
 
     /**
@@ -2150,14 +2326,16 @@ public class API1 {
      * @param tokenId
      * @param handler
      */
-    public static void getPhotosInfo(String tokenId, final int id, final Handler handler,final DownloadFileStatus fileStatus) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPhotosInfo(String tokenId, final int id, final Handler handler,final DownloadFileStatus fileStatus) {
+        Map<String,Object> params = new HashMap<>();
         JSONArray ids = new JSONArray();
         ids.add(fileStatus.getPhotoId());
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.EPPP_IDS, ids.toJSONString());
+        if (ids != null) {
+            params.put(Common.EPPP_IDS, ids.toJSONString());
+        }
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2211,9 +2389,9 @@ public class API1 {
                 handler.sendMessage(msg);
             }
         });
+
+        return task;
     }
-
-
 
     /**************************************下载图片 Start**************************************/
     /**
@@ -2222,79 +2400,11 @@ public class API1 {
      * @param handler
      * @param fileStatus
      */
-    public static void downLoadPhotos(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
-        RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
-        params.put("fileType", "jpg");
-        HttpUtil1.asyncDownloadBinaryData(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
-            long startTime;
-            long lastTime;
-            @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                PictureAirLog.e(TAG, "调用下载照片API成功");
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_SUCCESS;
-                Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
-                bundle.putParcelable("url",fileStatus);
-                bundle.putByteArray("binaryData",binaryData);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_FAILED;
-                Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                bundle.putParcelable("url",fileStatus);
-                bundle.putInt("status",status);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                double currentSize = bytesWritten/1000d/1000d;
-                double total = totalSize/1000d/1000d;
-                String c = AppUtil.formatData(currentSize);
-                String t = AppUtil.formatData(total);
-                fileStatus.setCurrentSize(c);
-                fileStatus.setTotalSize(t);
-                long currentTime = System.currentTimeMillis();
-                float usedTime = (currentTime-lastTime)/1000f;
-                float keepTime = (currentTime-startTime)/1000f;
-                if (usedTime > 0.2) {
-                    lastTime = currentTime;
-                    double downSpeed = (bytesWritten / 1000d) / keepTime;
-                    String ds = AppUtil.formatData(downSpeed);
-                    fileStatus.setLoadSpeed(ds);
-                    if (adapterHandler != null) {
-                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-                    }
-                }
-            }
-
-            @Override
-            public void onStart() {
-                super.onStart();
-                startTime = System.currentTimeMillis();
-                lastTime = startTime;
-            }
-        });
-    }
-
-    public static void downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
+    public static BinaryCallBack downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
         PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
-        HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), new HttpCallback() {
-            long startTime;
-            long lastTime;
+        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), new HttpCallback() {
+            long startTime = System.currentTimeMillis();
+            long lastTime = startTime;
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
@@ -2353,14 +2463,8 @@ public class API1 {
                     }
                 }
             }
-
-            @Override
-            public void onStart() {
-                super.onStart();
-                startTime = System.currentTimeMillis();
-                lastTime = startTime;
-            }
         });
+        return task;
     }
     /**************************************下载图片 End**************************************/
 
@@ -2371,13 +2475,15 @@ public class API1 {
      * @param pwd
      * @param mobile
      */
-    public static void findPwd(final Handler handler, String pwd, String mobile) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask findPwd(final Handler handler, String pwd, String mobile) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
-        params.put(Common.USERINFO_USERNAME, mobile);
+        if (mobile != null) {
+            params.put(Common.USERINFO_USERNAME, mobile);
+        }
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2391,6 +2497,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
     /**
@@ -2400,15 +2507,17 @@ public class API1 {
      * @param email
      * @param language
      */
-    public static void findPwdEmail(final Handler handler, String email, String language, String tokenId) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask findPwdEmail(final Handler handler, String email, String language, String tokenId) {
+        Map<String,Object> params = new HashMap<>();
         if (null != language) {
             params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
         }
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.USERINFO_EMAIL, email);
+        if (email != null) {
+            params.put(Common.USERINFO_EMAIL, email);
+        }
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2422,6 +2531,7 @@ public class API1 {
 
             }
         });
+        return task;
     }
 
 
@@ -2430,14 +2540,16 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getUnionPayTN(String orderCode , final Handler handler){
+    public static BasicResultCallTask getUnionPayTN(String orderCode , final Handler handler){
         PictureAirLog.e(TAG, MyApplication.getTokenId());
-        final RequestParams params = new RequestParams();
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.ORDER_CODE, orderCode);
+        if (orderCode != null) {
+            params.put(Common.ORDER_CODE, orderCode);
+        }
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2451,6 +2563,7 @@ public class API1 {
                 handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
 
@@ -2459,15 +2572,15 @@ public class API1 {
      * 1. tokenId
      * 2. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static void getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
+        Map<String,Object> params = new HashMap<>();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
         if (null != MyApplication.getTokenId()){
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         }
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2480,6 +2593,7 @@ public class API1 {
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
 
@@ -2494,16 +2608,18 @@ public class API1 {
      * 2. 优惠code
      * 3. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static void addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
+        Map<String,Object> params = new HashMap<>();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
-        params.put(Common.couponCode, couponsCode);
+        if (couponsCode != null) {
+            params.put(Common.couponCode, couponsCode);
+        }
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2516,6 +2632,7 @@ public class API1 {
                 handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -2525,14 +2642,18 @@ public class API1 {
      * @param couponCodes  优惠码
      * @param cartItemsIds 用户选中的购物项
      */
-    public static void previewCoupon(final Handler handler, JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds) {
-        RequestParams params = new RequestParams();
+    public static BasicResultCallTask previewCoupon(final Handler handler, JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("couponCodes", couponCodes.toString());
-        params.put("cartItemIds", cartItemsIds.toString());
+        if (couponCodes != null) {
+            params.put("couponCodes", couponCodes.toString());
+        }
+        if (cartItemsIds != null) {
+            params.put("cartItemIds", cartItemsIds.toString());
+        }
         params.put("isNeedInvoice", needInvoice);
         PictureAirLog.v(TAG, "previewCoupon params：" + params);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2546,6 +2667,7 @@ public class API1 {
             }
 
         });
+        return task;
     }
 
     /**
@@ -2553,13 +2675,13 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getCoupons(final Handler handler) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask getCoupons(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
 
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
 
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2574,6 +2696,7 @@ public class API1 {
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     /**
@@ -2582,11 +2705,13 @@ public class API1 {
      * @param handler
      * @param shootDate
      */
-    public static void getPPPsByShootDate(final Handler handler, String shootDate) {
-        final RequestParams params = new RequestParams();
+    public static BasicResultCallTask getPPPsByShootDate(final Handler handler, String shootDate) {
+        Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.SHOOTDATE, shootDate);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new HttpCallback() {
+        if (shootDate != null) {
+            params.put(Common.SHOOTDATE,shootDate);
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2602,10 +2727,12 @@ public class API1 {
                 handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
             }
         });
+        return task;
     }
 
     public static void cancelAllRequest() {
-        HttpUtil1.cancelAllRequest();
+        CallTaskManager.getInstance().cancleAllTask();
+        CallTaskManager.getInstance().clearAllTask();
     }
 
 }

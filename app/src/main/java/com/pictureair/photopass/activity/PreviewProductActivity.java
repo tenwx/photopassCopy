@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -43,6 +42,11 @@ import com.pictureair.photopass.widget.PWToast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 产品预览，处理商品的合成
@@ -113,11 +117,14 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 String photourl = list.get(upload_index).photoPathOrURL;
                                 PictureAirLog.v(TAG, "上传的图片URL" + photourl);
                                 // 需要上传选择的图片
-                                RequestParams params = new RequestParams();
+                                File file = new File(photourl);
+                                Map<String,RequestBody> params = new HashMap<>();
                                 try {
-                                    params.put("file", new File(photourl), "application/octet-stream");
-                                    params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-                                    API1.SetPhoto(params, handler, upload_index, dialog);
+                                    RequestBody requestParams = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                                    RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
+                                    params.put("file\";filename=\""+file.getName(), fileBody);
+                                    params.put(Common.USERINFO_TOKENID,requestParams);
+                                    API1.SetPhoto(params, handler, upload_index);
                                 } catch (FileNotFoundException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -187,7 +194,12 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //				Toast.makeText(PreviewproductActivity.this, "Upload photo failed", Common.TOAST_SHORT_TIME).show();
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
-
+                case API1.UPLOAD_PHOTO_PROGRESS:
+                    Bundle bundle = msg.getData();
+                    long bytesWritten = bundle.getLong("bytesWritten");
+                    long totalSize = bundle.getLong("totalSize");
+                    dialog.setProgress(bytesWritten,totalSize);
+                    break;
                 default:
                     break;
             }

@@ -8,7 +8,6 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -19,6 +18,8 @@ import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -326,18 +327,25 @@ public class DealCodeUtil {
 	}
 
 	private void getInfo(String code, final String type){
-		RequestParams params = new RequestParams();
+		Map<String,Object> params = new HashMap<>();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
-		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+		String  decryptStr = AESKeyHelper.decryptString(SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
+		if (decryptStr != null) {
+			params.put(Common.USERINFO_TOKENID, decryptStr);
+		}
 		String urlString;
 		if ("pp".equals(type)) {
 			PictureAirLog.out("pp");
-			params.put(Common.CUSTOMERID, code);
+			if (code != null) {
+				params.put(Common.CUSTOMERID, code);
+			}
 			urlString = Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER;
 
 		}else {
 			PictureAirLog.out("ppp or coupon");
-			params.put(Common.PPPCode, code);
+			if (code != null) {
+				params.put(Common.PPPCode, code);
+			}
 			urlString = Common.BASE_URL_TEST+Common.BIND_PPP_TO_USER;
 
 		}

@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.MakegiftGoodsAdapter;
@@ -57,7 +56,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class MakegiftActivity extends BaseActivity implements OnClickListener {
     //选择商品的horizontalscrollview的popupwindow
@@ -204,11 +208,14 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                             String photourl = photoList.get(upload_index).photoPathOrURL;
                             PictureAirLog.out("上传的图片URL" + photourl);
                             // 需要上传选择的图片
-                            RequestParams params = new RequestParams();
+                            File file = new File(photourl);
+                            Map<String, RequestBody> params = new HashMap<>();
                             try {
-                                params.put("file", new File(photourl), "application/octet-stream");
-                                params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-                                API1.SetPhoto(params, makeGiftHandler, upload_index, progressBarPop);
+                                RequestBody requestParams = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                                RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
+                                params.put("file\";filename=\""+file.getName(), fileBody);
+                                params.put(Common.USERINFO_TOKENID,requestParams);
+                                API1.SetPhoto(params, makeGiftHandler, upload_index);
                             } catch (FileNotFoundException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -304,6 +311,12 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
                     setAnim(buyImg);// 开始执行动画
                 }
+                break;
+            case API1.UPLOAD_PHOTO_PROGRESS:
+                Bundle bundle = msg.getData();
+                long bytesWritten = bundle.getLong("bytesWritten");
+                long totalSize = bundle.getLong("totalSize");
+                progressBarPop.setProgress(bytesWritten,totalSize);
                 break;
 
 

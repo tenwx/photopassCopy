@@ -15,9 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
@@ -29,8 +27,6 @@ import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
@@ -412,7 +408,7 @@ public class DownloadService extends Service {
                                         failStatus.select =0;
                                     }
                                     taskList.remove(failStatus.getPhotoId());
-                                    if (failStatus.isVideo() == 0 && (errCode == 404 || TextUtils.isEmpty(failStatus.getNewUrl()))) {
+                                    if (failStatus.isVideo() == 0 && failStatus.status == DownloadFileStatus.DOWNLOAD_STATE_UPLOADING) {
                                         PictureAirLog.out("downloadService----------->DOWNLOAD_PHOTO_FAILED errCode == 404 or url empty");
                                         pictureAirDbManager.updateLoadPhotos(userId, "upload", "", "", failStatus.getPhotoId(), "");
                                     }else {

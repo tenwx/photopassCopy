@@ -1,439 +1,357 @@
 package com.pictureair.photopass.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
-import com.loopj.android.http.BinaryHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.pictureair.photopass.BuildConfig;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.HttpBaseJson;
+import com.pictureair.photopass.http.ApiFactory;
+import com.pictureair.photopass.http.BasicResultCallTask;
+import com.pictureair.photopass.http.BinaryCallBack;
+import com.pictureair.photopass.http.CallTaskManager;
+import com.pictureair.photopass.http.PhotoPassAuthApi;
+import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
 
-import org.apache.http.Header;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Map;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 /**
- * Created by milo on 15/12/5.
- * Http 帮助类 ：处理数据请求、文件上传、下载
- * 参考官网：https://loopj.com/android-async-http/
+ * Created by pengwu on 16/6/29.
  */
 public class HttpUtil1 {
-    private static AsyncHttpClient asyncHttpClient;//异步处理网络请求
-    private static ExecutorService threadPool;//线程重用，减少线程开销
     private static final String TAG = "HttpUtil1";
-    private static final int HTTP_ERROR = 401;//请求失败的错误代码
-    private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json;charset=utf-8", "text/html;charset=utf-8",
-            "video/mp4", "audio/x-mpegurl", "image/jpeg", "image/png", "application/vnd.android.package-archive"};
-
-    static {
-        if (threadPool == null) {
-            threadPool = Executors.newScheduledThreadPool(6);//线程池最大线程连接数.
-        }
-        if (asyncHttpClient == null) {
-            asyncHttpClient = new AsyncHttpClient();
-            asyncHttpClient.setMaxConnections(10);// 设置最大连接数
-            //设置的重试次数、重试间隔，解决服务器重复处理数据的问题，这里不设置重连次数
-            asyncHttpClient.setMaxRetriesAndTimeout(0, 2 * 1000);
-            asyncHttpClient.setTimeout(10 * 1000);//// 设置从连接池中获取连接的最大等待时间
-            asyncHttpClient.setConnectTimeout(120 * 1000);//设置连接超时时间，指服务器开始返回到结束返回的时间
-            asyncHttpClient.setResponseTimeout(60 * 1000);//设置响应超时时间，指手机开始请求到服务器开始返回的时间
-            asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用
-            if (BuildConfig.LOG_DEBUG) {
-                asyncHttpClient.setLoggingEnabled(true);
-            } else {
-                asyncHttpClient.setLoggingEnabled(false);
-            }
-        }
-    }
 
     /**
-     * 异步get请求
+     * 异步Get请求，无请求参数
      *
-     * @param url          请求url
-     * @param httpCallback 请求回调
-     */
-    public static void asyncGet(final String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+     * @param url       请求url
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncGet(final String url, final HttpCallback callback){
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.get(url, new ProgressListener() {
             @Override
-            public void onStart() {
-                super.onStart();
-                httpCallback.onStart();
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                // called when response HTTP status is "200 OK"
-                getAPISuccess(httpBaseJson, httpCallback);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                return JsonTools.parseObject(rawJsonData);
+                callback.onSuccess(result);
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
+            public void onFailure(int code) {
+                callback.onFailure(code);
             }
         });
+        return task;
     }
 
     /**
-     * 异步get请求
+     * 异步Get请求，有请求参数
      *
-     * @param url          请求url
-     * @param params       请求参数
-     * @param httpCallback 请求回调
-     */
-    public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.out("url--->" + url);
-        asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncGet(final String url, Map params, final HttpCallback callback){
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.get(url, params, new ProgressListener() {
             @Override
-            public void onStart() {
-                PictureAirLog.out("start---> get");
-                super.onStart();
-                httpCallback.onStart();
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                // called when response HTTP status is "200 OK"
-                getAPISuccess(httpBaseJson, httpCallback);
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-
-                return JsonTools.parseObject(rawJsonData);
+                callback.onSuccess(result);
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
+            public void onFailure(int code) {
+                callback.onFailure(code);
             }
         });
+        return task;
     }
 
     /**
-     * 异步post请求
+     * 异步post请求，无请求参数
      *
-     * @param url          请求url
-     * @param httpCallback 请求回调
-     */
-    public static void asyncPost(final String url, final HttpCallback httpCallback) {
-        asyncHttpClient.post(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+     * @param url       请求url
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncPost(final String url, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.post(url, new ProgressListener() {
             @Override
-            public void onStart() {
-                super.onStart();
-                httpCallback.onStart();
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                // called when response HTTP status is "200 OK"
-                getAPISuccess(httpBaseJson, httpCallback);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                return JsonTools.parseObject(rawJsonData);
+                callback.onSuccess(result);
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
-            }
-        });
-    }
-
-    /**
-     * 异步post请求
-     *
-     * @param url          请求url
-     * @param baseJsonHttpResponseHandler 请求回调
-     */
-    public static void post(final String url, BaseJsonHttpResponseHandler<HttpBaseJson> baseJsonHttpResponseHandler) {
-        asyncHttpClient.post(url, baseJsonHttpResponseHandler);
-    }
-
-
-    /**
-     * 异步post请求
-     *
-     * @param url          请求url
-     * @param params       请求参数
-     * @param httpCallback 请求回调
-     */
-    public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.post(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.v(TAG, "onStart");
-                httpCallback.onStart();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                getAPISuccess(httpBaseJson, httpCallback);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                PictureAirLog.v(TAG, "get data from " + url + " finished" + rawJsonData);
-                return JsonTools.parseObject(rawJsonData);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
+            public void onFailure(int code) {
+                callback.onFailure(code);
             }
         });
+        return task;
     }
 
     /**
-     * 异步post请求
+     * 异步post请求，有请求参数
      *
-     * @param url          请求url
-     * @param params       请求参数
-     * @param httpCallback 请求回调
-     */
-    public static void asyncPut(final String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.put(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.v(TAG, "onStart");
-                httpCallback.onStart();
-            }
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncPost(final String url, Map params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.post(url, params, new ProgressListener() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                getAPISuccess(httpBaseJson, httpCallback);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                return JsonTools.parseObject(rawJsonData);
+                callback.onSuccess(result);
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
+            public void onFailure(int code) {
+                callback.onFailure(code);
             }
         });
+        return task;
     }
 
     /**
-     * 异步delete请求
+     * 异步delete请求，有请求参数
      *
-     * @param url          请求url
-     * @param params       请求参数
-     * @param httpCallback 请求回调
-     */
-    public static void asyncDelete(final String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.delete(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.v(TAG, "onStart");
-                httpCallback.onStart();
-            }
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncDelete(final String url, Map params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.delete(url, params, new ProgressListener() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                PictureAirLog.v(TAG, "onSuccess");
-                getAPISuccess(httpBaseJson, httpCallback);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+            public void onSuccess(JSONObject result) {
                 PictureAirLog.v(TAG, "get data from " + url + " finished");
-                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                return JsonTools.parseObject(rawJsonData);
+                callback.onSuccess(result);
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
+            public void onFailure(int code) {
+                callback.onFailure(code);
             }
         });
+        return task;
+    }
+
+    /**
+     * 异步put请求，有请求参数
+     *
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncPut(final String url, Map params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.put(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
+            }
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(int code) {
+                callback.onFailure(code);
+            }
+        });
+        return task;
     }
 
 
     /**
-     * 异步下载文件
+     * 异步put请求，有请求参数
      *
-     * @param url          请求url
-     * @param httpCallback 请求回调
-     */
-    public static void asyncDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+     * @param url       请求url
+     * @param callback  请求回调
+     * */
+    public static BinaryCallBack asyncDownloadBinaryData(final String url, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        final BinaryCallBack task = new BinaryCallBack<ResponseBody>(request.download(url, new ProgressListener() {
             @Override
-            public void onStart() {
-                super.onStart();
-                httpCallback.onStart();
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-
+        }));
+        task.handleResponse(new ResponseCallback<ResponseBody>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-                httpCallback.onSuccess(binaryData);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-                PictureAirLog.e(TAG, error.toString());
-                httpCallback.onFailure(statusCode);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
-
-            }
-        });
-    }
-
-    /**
-     * 异步下载文件
-     *
-     * @param url          请求url
-     * @param params       请求参数
-     * @param httpCallback 请求回调 - byte
-     */
-    public static void asyncDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.get(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
-            @Override
-            public void onStart() {
-                super.onStart();
-                httpCallback.onStart();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-                httpCallback.onSuccess(binaryData);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-                PictureAirLog.e(TAG, error.toString());
-                httpCallback.onFailure(statusCode);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                httpCallback.onProgress(bytesWritten, totalSize);
-
-            }
-        });
-    }
-
-    /**
-     *
-     * @param httpBaseJson
-     * @param httpCallback
-     */
-    private static void getAPISuccess(HttpBaseJson httpBaseJson, HttpCallback httpCallback) {
-        if (httpBaseJson != null) {
-            PictureAirLog.out("status---->" + httpBaseJson.getStatus());
-            if (httpBaseJson.getStatus() == 200) {
-                httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-            } else {
-                //失败返回错误码
-                switch (httpBaseJson.getStatus()) {
-                    case 6035://Current certification has expired, please login again
-                    case 6079://Current certification has expired, please login again
-                    case 6080://token已经过期
-                    case 6074://get token error
-                    case 6075://set token error
-                    case 6151://query token error
-                    case 6153://未授权
-                    case 6034://please login
-                    case 5030://not login
-                    case 5011://not login
-                        boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
-                        if (!isLogin){//没有登录
-                            httpCallback.onFailure(httpBaseJson.getStatus());
-                        } else {//如果在登录状态，需要退出操作
-                            SPUtils.remove(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN);
-                            AppExitUtil.getInstance().AppReLogin();
+            public void onSuccess(ResponseBody result) {
+                super.onSuccess(result);
+                final ResponseBody body = result;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        PictureAirLog.v(TAG, "get data from " + url + " finished");
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        byte[] buff = new byte[1024];
+                        int res = 0;
+                        try {
+                            InputStream is = body.byteStream();
+                            while ((res = is.read(buff)) != -1) {
+                                baos.write(buff, 0, res);
+                            }
+                            byte[] bytes = baos.toByteArray();
+                            is.close();
+                            baos.close();
+                            callback.onSuccess(bytes);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            onFailure(401);
+                        }finally {
+                            if (CallTaskManager.getInstance().containsTask(task)){
+                                CallTaskManager.getInstance().removeTask(task);
+                                PictureAirLog.e("asyncDownloadBinaryData", "remove "+ task.toString());
+                            }
                         }
-                        break;
-                    default:
-                        httpCallback.onFailure(httpBaseJson.getStatus());
-                        break;
-                }
+                    }
+                }.start();
             }
-        }
+
+            @Override
+            public void onFailure(int code) {
+                callback.onFailure(code);
+            }
+        });
+        return task;
     }
 
-    public static void cancelAllRequest() {
-        asyncHttpClient.cancelAllRequests(true);
+    /**
+     * 异步put请求，有请求参数
+     *
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BinaryCallBack asyncDownloadBinaryData(final String url, Map params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        final BinaryCallBack task = new BinaryCallBack<ResponseBody>(request.download(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
+            }
+        }));
+        task.handleResponse(new ResponseCallback<ResponseBody>() {
+            @Override
+            public void onSuccess(ResponseBody result) {
+                super.onSuccess(result);
+                final ResponseBody body = result;
+                   new Thread(){
+                       @Override
+                       public void run() {
+                           PictureAirLog.v(TAG, "get data from " + url + " finished");
+                           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                           byte[] buff = new byte[1024];
+                           int res = 0;
+                           try {
+                               InputStream is = body.byteStream();
+                               while ((res = is.read(buff))!= -1){
+                                   baos.write(buff,0,res);
+                               }
+                               byte[] bytes = baos.toByteArray();
+                               is.close();
+                               baos.close();
+                               callback.onSuccess(bytes);
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                               onFailure(401);
+                           }finally {
+                               if (CallTaskManager.getInstance().containsTask(task)){
+                                   CallTaskManager.getInstance().removeTask(task);
+                               }
+                           }
+                       }
+                   }.start();
+            }
+
+            @Override
+            public void onFailure(int code) {
+                callback.onFailure(code);
+            }
+        });
+        return task;
+    }
+
+    /**
+     * 异步put请求，有请求参数
+     *
+     * @param url       请求url
+     * @param params    请求参数
+     * @param callback  请求回调
+     * */
+    public static BasicResultCallTask asyncUpload(final String url, Map<String,RequestBody> params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+
+        BasicResultCallTask task = new BasicResultCallTask<JSONObject>(request.upload(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
+            }
+        }));
+        task.handleResponse(new ResponseCallback<JSONObject>() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                super.onSuccess(result);
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(int code) {
+                callback.onFailure(code);
+            }
+        });
+        return task;
     }
 }

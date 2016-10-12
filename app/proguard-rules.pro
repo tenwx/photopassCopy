@@ -153,10 +153,6 @@
 }
 # 如果配置了GlideModule，需要加后面的代码  -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
-##异步网络请求避免混淆
--dontwarn android-async-http-1.4.8.jar.**
--keep class com.loopj.android.http.**{*;}
-
 #不混淆org.apache.http.legacy.jar
 -dontwarn android.net.compatibility.**
 -dontwarn android.net.http.**
@@ -216,3 +212,11 @@
 -keep class com.networkbench.** { *; }
 -dontwarn com.networkbench.**
 # End NetworkBench Lens
+
+#retrofit混淆
+-dontwarn okhttp3.**
+-keep class okhttp3.internal.**{*;}
+-dontwarn okio.**
+-dontwarn retrofit2.**
+-keep class retrofit2.**{ *; }
+
