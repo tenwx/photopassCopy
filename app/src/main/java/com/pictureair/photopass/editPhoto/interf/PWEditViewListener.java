@@ -16,7 +16,7 @@ public interface PWEditViewListener {
 
     void leftBackClik();
 
-    void saveTempPhoto(LinkedHashMap<Integer, StickerItem> addItems, Matrix touchMatrix);
+    void saveTempPhoto();
 
     void lastStep();
 
@@ -30,16 +30,20 @@ public interface PWEditViewListener {
 
     void saveReallyPhoto();
 
-    void judgeIsShowDialog();
-
     void frame();
 
     void filter();
 
     void sticker(int mainImageHeight, int mainImageWidth); //显示饰品，为了限定滑动区域，故传参数。
 
-    void inOrOutPlace(String locationIds, boolean in);
-
     Handler getHandler();
+
+    void locationOnResume();
+
+    void locationOnPause();
+
+    void showFrame(String framePath);
+
+    void finishActivity();
 
 }
