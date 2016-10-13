@@ -18,14 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.editPhoto.EditPhotoUtil;
+import com.pictureair.photopass.editPhoto.util.PWEditUtil;
+import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -40,10 +42,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDialogClickListener {
+public class EditActivityAdapter extends BaseAdapter {
+    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
     private Context mContext;
     private List<String> stickerPathList;
-    private int editType = 0;
+    private int editType = PhotoCommon.EditNone;
     private int[] filterText = { R.string.original, R.string.lomo, R.string.earlybird, R.string.natural,
             R.string.hdr, R.string.whitening, R.string.vintage };
     private ArrayList<FrameOrStikerInfo> frameInfos;
@@ -51,14 +54,11 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private boolean firstFileFailOrExist = false;
     private boolean secondFileFailOrExist = false;
     private static final int UPDATE_PROGRESS = 101;//更新进度条
-    private static final int DOWNLOAD_DIALOG = 102;
     private long firstFileProgress = 0;//文件下载的进度
     private long secondFileProgress = 0;//文件下载进度
-    private PWDialog pwDialog;
+    private CustomDialog customDialog;
     private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
-    private HolderView holderView;
-    private int position;
 
 
     private Handler downloadHandler = new Handler() {
@@ -94,7 +94,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 
     @Override
     public int getCount() {
-        if (editType == 1 || editType == 3) {
+        if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
             return frameInfos.size();
         } else {
             return stickerPathList.size();
@@ -104,7 +104,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 
     @Override
     public Object getItem(int position) {
-        if (editType == 1 || editType == 3) {
+        if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
             return frameInfos.get(position);
         } else {
             return stickerPathList.get(position);
@@ -142,16 +142,18 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         holderView.maskImageView.setVisibility(View.GONE);
         holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
         holderView.progressBar.setVisibility(View.INVISIBLE);
-        if (editType == 2) {//滤镜
+        if (editType == PhotoCommon.EditFilter) {//滤镜
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             layoutParams.height = ScreenUtil.dip2px(mContext, 50);
             layoutParams.width = ScreenUtil.dip2px(mContext, 50);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-            GlideUtil.load(mContext, stickerPathList.get(position), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+            ImageLoader.getInstance().displayImage("assets://" + stickerPathList.get(position), holderView.editImageview, options);
+
             holderView.editText.setText(filterText[position]);
             holderView.editText.setVisibility(View.VISIBLE);
+            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
         }
-        if (editType == 3) {//饰品
+        if (editType == PhotoCommon.EditSticker) {//饰品
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             layoutParams.height = ScreenUtil.dip2px(mContext, 60);
             layoutParams.width = ScreenUtil.dip2px(mContext, 60);
@@ -163,14 +165,17 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             holderView.editImageview.setLayoutParams(layoutParams1);
 
             if (frameInfos.get(position).onLine == 1) {//网络图片
-                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+
+                ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
             } else {//本地assets图片
-                GlideUtil.load(mContext, frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+
+                ImageLoader.getInstance().displayImage(frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
             }
             holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
-
+            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
         }
-        if (editType == 1) {//边框
+
+        if (editType == PhotoCommon.EditFrame) {//边框
 //			LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
 //			layoutParams.height = ScreenUtil.dip2px(mContext, 80);
 //			layoutParams.width = ScreenUtil.dip2px(mContext, 60);
@@ -213,16 +218,16 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
             holderView.editImageview.setLayoutParams(layoutParam1);
 
-            EditPhotoUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
+            PWEditUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
             holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
             holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
             if (frameInfos.get(position).onLine == 1) {
                 // 网络边框。 3.0版本
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
                 }else{
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
                 }
 
                 if (frameInfos.get(position).isDownload == 0) {
@@ -235,9 +240,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 				}
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
                 } else {
-                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
                 }
 
             }
@@ -273,27 +278,38 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 
         @Override
         public void onClick(View v) {
-            if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
-				holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
-				holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-				holderView.progressBar.setProgress(0);
-				downloadFrame(position, true, holderView);
-				downloadFrame(position, false, holderView);
+            if(editType == PhotoCommon.EditFrame) {
+                if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
+                    holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
+                    holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+                    holderView.progressBar.setProgress(0);
+                    downloadFrame(position, true, holderView);
+                    downloadFrame(position, false, holderView);
+                    if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
 
-                if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
-                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    } else if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_MOBILE) {//使用流量
+                        showDownloadDialog(holderView, position);
 
-                } else if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_MOBILE) {//使用流量
-                    showDownloadDialog(holderView, position);
+                    } else {//wifi
+                        prepareDownload(holderView, position);
+                    }
 
-                } else {//wifi
-                    prepareDownload(holderView, position);
+                } else {//本地图片，或者网络图片已经下载
+                    //开始加载图片
+                    Message message = handler.obtainMessage();
+                    message.what = PhotoCommon.OnclickFramePosition;
+                    message.arg1 = position;
+                    handler.sendMessage(message);
                 }
-
-            } else {//本地图片，或者网络图片已经下载
-                //开始加载图片
+            }else if(editType == PhotoCommon.EditSticker){
                 Message message = handler.obtainMessage();
-                message.what = 1111;
+                message.what = PhotoCommon.OnclickStickerPosition;
+                message.arg1 = position;
+                handler.sendMessage(message);
+            }else if(editType == PhotoCommon.EditFilter){
+                Message message = handler.obtainMessage();
+                message.what = PhotoCommon.OnclickFilterPosition;
                 message.arg1 = position;
                 handler.sendMessage(message);
             }
@@ -307,29 +323,47 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
      * @param position
      */
     private void showDownloadDialog(HolderView holderView, int position) {
-        this.holderView = holderView;
-        this.position = position;
-
-        if (pwDialog == null) {
-            pwDialog = new PWDialog(mContext, DOWNLOAD_DIALOG)
-                    .setPWDialogMessage(R.string.dialog_download_message)
-                    .setPWDialogNegativeButton(R.string.dialog_cancel)
-                    .setPWDialogPositiveButton(R.string.dialog_ok)
-                    .setOnPWDialogClickListener(this)
-                    .pwDialogCreate();
-        }
-        pwDialog.pwDilogShow();
+        customDialog = new CustomDialog.Builder(mContext)
+                .setMessage(mContext.getResources().getString(R.string.dialog_download_message))
+                .setNegativeButton(mContext.getResources().getString(R.string.dialog_cancel), new DownloadDialogOnClickListener(holderView, position))
+                .setPositiveButton(mContext.getResources().getString(R.string.dialog_ok), new DownloadDialogOnClickListener(holderView, position))
+                .setCancelable(false)
+                .create();
+        customDialog.show();
     }
 
-    @Override
-    public void onPWDialogButtonClicked(int which, int dialogId) {
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE:
-                if (dialogId == DOWNLOAD_DIALOG) {
-                    prepareDownload(holderView, position);
-                }
-                break;
+    /**
+     * 对话框点击事件监听
+     *
+     * @author bauer_bao
+     */
+    private class DownloadDialogOnClickListener implements android.content.DialogInterface.OnClickListener {
+        private HolderView holderView;
+        private int position;
+
+        public DownloadDialogOnClickListener(HolderView holderView, int position) {
+            this.holderView = holderView;
+            this.position = position;
         }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_NEGATIVE://取消按钮
+                    PictureAirLog.out("negative button");
+                    break;
+
+                case DialogInterface.BUTTON_POSITIVE://确定按钮
+                    PictureAirLog.out("positive button");
+                    prepareDownload(holderView, position);
+                    break;
+
+                default:
+                    break;
+            }
+            customDialog.dismiss();
+        }
+
     }
 
     /**
