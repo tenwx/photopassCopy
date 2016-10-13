@@ -11,9 +11,6 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
@@ -33,6 +30,7 @@ import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -53,23 +51,16 @@ public class PWEditUtil implements IPWEditModel{
     private File desFile; //保存文件的目标目录
     private File tempFile; //保存文件的临时目录
 
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
-
     private ArrayList<PhotoEditorInfo> photoEditorList; //纪录编辑照片的步骤
     private ArrayList<PhotoEditorInfo> tempEditPhotoInfoArrayList;
     private SimpleDateFormat dateFormat;
     private boolean loadingFrame = false;
 
-    private String[][] framePathStr = {{"frame/frame_none.png","frame/frame_none.png","frame/frame_none.png","frame/frame_none.png"},
-            {"frame/frame_h_1t.png","frame/frame_v_1t.png","frame/frame_h_1.png","frame/frame_v_1.png"},
-            {"frame/frame_h_2t.png","frame/frame_v_2t.png","frame/frame_h_2.png","frame/frame_v_2.png"},
-            {"frame/frame_h_3t.png","frame/frame_v_3t.png","frame/frame_h_3.png","frame/frame_v_3.png"},
-            {"frame/frame_h_4t.png","frame/frame_v_4t.png","frame/frame_h_4.png","frame/frame_v_4.png"}
-    };
+    public static final String STICKERPATH = "rekcits";
+    public static final String FILTERPATH = "retlif";
+    public static final String FRAMEPATH = "emarf";
 
-
-    public static final int FRAMECOUNT = 4+1;//正常frame的数量+1个frame_none
+    public static final int FRAMECOUNT = 7+1;//正常frame的数量+1个frame_none
     private ArrayList<FrameOrStikerInfo> frameInfos; //保存边框的集合。
     private List<String> filterPathList; // 保存滤镜图片路径的集合
     private ArrayList<FrameOrStikerInfo> stikerInfos;// 饰品图片路径列表
@@ -85,8 +76,6 @@ public class PWEditUtil implements IPWEditModel{
         frameInfos = new ArrayList<FrameOrStikerInfo>();
         filterPathList = new ArrayList<String>();
         stikerInfos = new ArrayList<FrameOrStikerInfo>();
-        imageLoader = ImageLoader.getInstance();
-        options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
         pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
     }
 
@@ -101,30 +90,6 @@ public class PWEditUtil implements IPWEditModel{
         return file;
     }
 
-
-    /**
-     * 获取网络图片的 Bitmap
-     * @param photoPath
-     * @return  如果网络图片链接打不开，就返回为空。上一级判断。
-     */
-    @Override
-    public Bitmap getOnLineBitampFormPath(String photoPath){
-        try {
-            return imageLoader.loadImageSync(photoPath);
-        }catch (Exception e){
-            return null;
-        }
-    }
-
-    /**
-     * 获取本地图片的 Bitmap
-     * @param photoPath
-     * @return
-     */
-    @Override
-    public Bitmap getLocalBitampFormPath(String photoPath){
-        return imageLoader.loadImageSync("file:///" + photoPath);
-    }
 
     /**
      * 图片旋转
@@ -149,7 +114,7 @@ public class PWEditUtil implements IPWEditModel{
      * @return
      */
     @Override
-    public Bitmap getFrameComposeBitmap(Bitmap mMainBitmap, int curFramePosition){
+    public Bitmap getFrameComposeBitmap(Context context, Bitmap mMainBitmap, int curFramePosition){
 
         // 如果照片不是 4:3 。需要裁减
         if ((float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 4 / 3 || (float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 3 / 4) {
@@ -164,15 +129,15 @@ public class PWEditUtil implements IPWEditModel{
         String loadPhotoUrl;
         if (mMainBitmap.getWidth()<mMainBitmap.getHeight()) {
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + MyApplication.getInstance().getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
+                loadPhotoUrl = "file://" + MyApplication.getInstance().getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
             }else{
-                frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+                loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
             }
         }else{
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + MyApplication.getInstance().getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
+                loadPhotoUrl = "file://" + MyApplication.getInstance().getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
             }else{
-                frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+                loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
             }
         }
 
@@ -180,20 +145,22 @@ public class PWEditUtil implements IPWEditModel{
         Paint point = new Paint();
         point.setXfermode(new PorterDuffXfermode(
                 android.graphics.PorterDuff.Mode.SRC_OVER));
-        Matrix matrix2 = new Matrix();
-        matrix2.postScale(
-                (float) mMainBitmap.getWidth() / (frameBitmap.getWidth()),
-                (float) mMainBitmap.getHeight() / (frameBitmap.getHeight()));
-
-        frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-                frameBitmap.getWidth(), frameBitmap.getHeight(),
-                matrix2, true);
-
         canvas.drawBitmap(mMainBitmap, 0, 0, point);
-//				canvas.drawBitmap(frameBitmap, matrix2, point);
-        canvas.drawBitmap(frameBitmap, 0,0, point);
-        matrix2.reset();
-        frameBitmap.recycle();
+        frameBitmap = GlideUtil.load(context, loadPhotoUrl, mMainBitmap.getWidth(), mMainBitmap.getHeight());
+        if (frameBitmap != null) {
+            Matrix matrix2 = new Matrix();
+            matrix2.postScale(
+                    (float) mMainBitmap.getWidth() / (frameBitmap.getWidth()),
+                    (float) mMainBitmap.getHeight() / (frameBitmap.getHeight()));
+
+            frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
+                    frameBitmap.getWidth(), frameBitmap.getHeight(),
+                    matrix2, true);
+
+            canvas.drawBitmap(frameBitmap, 0, 0, point);
+            matrix2.reset();
+            frameBitmap.recycle();
+        }
         return heBitmap;
     }
 
@@ -278,17 +245,30 @@ public class PWEditUtil implements IPWEditModel{
     /**
      * 获取边框代码
      */
-    @Override
-    public void loadFrameList(){
+    //读取 assets 目录下frame目录的图片
+    public void loadFrameList() {
         frameInfos.clear();
 
-        for (int i=0; i<framePathStr.length; i++) {
-            FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-            frameInfo.frameThumbnailPathH160 = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][0]);
-            frameInfo.frameThumbnailPathV160 = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][1]);
-            frameInfo.frameOriginalPathLandscape = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][2]);
-            frameInfo.frameOriginalPathPortrait = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][3]);
-            frameInfos.add(frameInfo);
+        try {
+            String[] files =MyApplication.getInstance().getResources().getAssets().list(FRAMEPATH);
+            for (int i=0; i< FRAMECOUNT; i++){
+                FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
+                if (i == 0){
+                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[i]);
+                }else{
+                    int index = (i - 1) * 4;
+                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[index+1]);
+                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[index+2]);
+                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[index+3]);
+                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(FRAMEPATH + File.separator + files[index+4]);
+                }
+                frameInfos.add(frameInfo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -308,13 +288,15 @@ public class PWEditUtil implements IPWEditModel{
     @Override
     public void loadFilterImgPath(){
         filterPathList.clear();
-        filterPathList.add("filter/original.png");
-        filterPathList.add("filter/filter1.png");
-        filterPathList.add("filter/filter2.png");
-        filterPathList.add("filter/filter3.png");
-        filterPathList.add("filter/filter4.png");
-        filterPathList.add("filter/filter5.png");
-        filterPathList.add("filter/filter6.png");
+
+        try {
+            String[] files =MyApplication.getInstance().getResources().getAssets().list(FILTERPATH);
+            for (String name : files){
+                filterPathList.add(GlideUtil.getAssetUrl(FILTERPATH + File.separator + name));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -333,13 +315,14 @@ public class PWEditUtil implements IPWEditModel{
     @Override
     public void loadStickerList(){
         stikerInfos.clear();
+        stikerInfos.clear();
         FrameOrStikerInfo frameOrStikerInfo;
         try {
             String[] files =MyApplication.getInstance().getResources().getAssets()
-                    .list(PhotoCommon.StickerPath);
+                    .list(STICKERPATH);
             for (String name : files) {
                 frameOrStikerInfo = new FrameOrStikerInfo();
-                frameOrStikerInfo.frameOriginalPathPortrait = "assets://" + PhotoCommon.StickerPath + File.separator + name;
+                frameOrStikerInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(STICKERPATH + File.separator + name);
                 frameOrStikerInfo.locationId = "common";
                 frameOrStikerInfo.isActive = 1;
                 frameOrStikerInfo.onLine = 0;
@@ -359,16 +342,6 @@ public class PWEditUtil implements IPWEditModel{
     @Override
     public void setStikerInfos(ArrayList<FrameOrStikerInfo> stikerInfos) {
         this.stikerInfos = stikerInfos;
-    }
-
-    @Override
-    public ImageLoader getImageLoader() {
-        return imageLoader;
-    }
-
-    @Override
-    public DisplayImageOptions getOptions() {
-        return options;
     }
 
     /**
@@ -456,7 +429,7 @@ public class PWEditUtil implements IPWEditModel{
         } else if (filter instanceof BlurFilter) {
             bitmap = ((BlurFilter) filter).transform(bitmap);
         }
-        bitmap = saveFilterOther(bitmap); //保存其他步骤
+
         return bitmap;
     }
 
@@ -501,13 +474,14 @@ public class PWEditUtil implements IPWEditModel{
      * @param bitmap
      * @return
      */
-    private Bitmap saveFilterOther(Bitmap bitmap) {
+    @Override
+    public Bitmap saveFilterOther(Context context, Bitmap bitmap) {
         if (tempEditPhotoInfoArrayList.size() == 1){
 
         }else {
             for (int i = 0; i < tempEditPhotoInfoArrayList.size(); i++) {
                 if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditFrame) {
-                    bitmap = getFrameComposeBitmap(bitmap, tempEditPhotoInfoArrayList.get(i).getFramePosition());
+                    bitmap = getFrameComposeBitmap(context, bitmap, tempEditPhotoInfoArrayList.get(i).getFramePosition());
                 }
                 if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditSticker) {
                     bitmap = saveStiker(bitmap, tempEditPhotoInfoArrayList.get(i).getStikerInfoList());

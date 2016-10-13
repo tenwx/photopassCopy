@@ -46,4 +46,6 @@ public interface PWEditViewListener {
 
     void finishActivity();
 
+    void onPwDialogClick(int which, int id);
+
 }

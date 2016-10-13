@@ -1,5 +1,7 @@
 package com.pictureair.photopass.entity;
 
+import com.pictureair.photopass.editPhoto.bean.StikerInfo;
+
 import java.util.List;
 
 /**

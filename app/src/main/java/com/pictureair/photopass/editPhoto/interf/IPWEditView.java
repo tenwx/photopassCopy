@@ -2,14 +2,10 @@ package com.pictureair.photopass.editPhoto.interf;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.editPhoto.widget.StickerView;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 /**
  * Created by talon on 16/5/20.

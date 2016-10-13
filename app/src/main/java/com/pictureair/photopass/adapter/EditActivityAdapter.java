@@ -18,16 +18,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -42,8 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditActivityAdapter extends BaseAdapter {
-    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
+public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDialogClickListener {
     private Context mContext;
     private List<String> stickerPathList;
     private int editType = PhotoCommon.EditNone;
@@ -54,11 +52,14 @@ public class EditActivityAdapter extends BaseAdapter {
     private boolean firstFileFailOrExist = false;
     private boolean secondFileFailOrExist = false;
     private static final int UPDATE_PROGRESS = 101;//更新进度条
+    private static final int DOWNLOAD_DIALOG = 102;
     private long firstFileProgress = 0;//文件下载的进度
     private long secondFileProgress = 0;//文件下载进度
-    private CustomDialog customDialog;
+    private PWDialog pwDialog;
     private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
+    private HolderView holderView;
+    private int position;
 
 
     private Handler downloadHandler = new Handler() {
@@ -147,8 +148,7 @@ public class EditActivityAdapter extends BaseAdapter {
             layoutParams.height = ScreenUtil.dip2px(mContext, 50);
             layoutParams.width = ScreenUtil.dip2px(mContext, 50);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-            ImageLoader.getInstance().displayImage("assets://" + stickerPathList.get(position), holderView.editImageview, options);
-
+            GlideUtil.load(mContext, stickerPathList.get(position), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             holderView.editText.setText(filterText[position]);
             holderView.editText.setVisibility(View.VISIBLE);
             holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
@@ -165,11 +165,9 @@ public class EditActivityAdapter extends BaseAdapter {
             holderView.editImageview.setLayoutParams(layoutParams1);
 
             if (frameInfos.get(position).onLine == 1) {//网络图片
-
-                ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
+                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             } else {//本地assets图片
-
-                ImageLoader.getInstance().displayImage(frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
+                GlideUtil.load(mContext, frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             }
             holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
             holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
@@ -225,9 +223,9 @@ public class EditActivityAdapter extends BaseAdapter {
             if (frameInfos.get(position).onLine == 1) {
                 // 网络边框。 3.0版本
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }else{
-                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
                 if (frameInfos.get(position).isDownload == 0) {
@@ -240,9 +238,9 @@ public class EditActivityAdapter extends BaseAdapter {
 				}
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 } else {
-                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
             }
@@ -323,13 +321,18 @@ public class EditActivityAdapter extends BaseAdapter {
      * @param position
      */
     private void showDownloadDialog(HolderView holderView, int position) {
-        customDialog = new CustomDialog.Builder(mContext)
-                .setMessage(mContext.getResources().getString(R.string.dialog_download_message))
-                .setNegativeButton(mContext.getResources().getString(R.string.dialog_cancel), new DownloadDialogOnClickListener(holderView, position))
-                .setPositiveButton(mContext.getResources().getString(R.string.dialog_ok), new DownloadDialogOnClickListener(holderView, position))
-                .setCancelable(false)
-                .create();
-        customDialog.show();
+        this.holderView = holderView;
+        this.position = position;
+
+        if (pwDialog == null) {
+            pwDialog = new PWDialog(mContext, DOWNLOAD_DIALOG)
+                    .setPWDialogMessage(R.string.dialog_download_message)
+                    .setPWDialogNegativeButton(R.string.dialog_cancel)
+                    .setPWDialogPositiveButton(R.string.dialog_ok)
+                    .setOnPWDialogClickListener(this)
+                    .pwDialogCreate();
+        }
+        pwDialog.pwDilogShow();
     }
 
     /**
@@ -337,33 +340,16 @@ public class EditActivityAdapter extends BaseAdapter {
      *
      * @author bauer_bao
      */
-    private class DownloadDialogOnClickListener implements android.content.DialogInterface.OnClickListener {
-        private HolderView holderView;
-        private int position;
-
-        public DownloadDialogOnClickListener(HolderView holderView, int position) {
-            this.holderView = holderView;
-            this.position = position;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_NEGATIVE://取消按钮
-                    PictureAirLog.out("negative button");
-                    break;
-
-                case DialogInterface.BUTTON_POSITIVE://确定按钮
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                if (dialogId == DOWNLOAD_DIALOG) {
                     PictureAirLog.out("positive button");
                     prepareDownload(holderView, position);
-                    break;
-
-                default:
-                    break;
-            }
-            customDialog.dismiss();
+                }
+                break;
         }
-
     }
 
     /**

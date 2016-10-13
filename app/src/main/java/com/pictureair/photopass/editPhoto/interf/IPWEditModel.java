@@ -4,10 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.view.View;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.StikerInfo;
 import com.pictureair.photopass.editPhoto.filter.Filter;
@@ -26,13 +23,9 @@ public interface IPWEditModel {
 
     File getFile(String photoPath);
 
-    Bitmap getOnLineBitampFormPath(String photoPath);
-
-    Bitmap getLocalBitampFormPath(String photoPath);
-
     Bitmap getRotateBitmap(Bitmap bit, int rotateAngle);
 
-    Bitmap getFrameComposeBitmap(Bitmap mMainBitmap, int curFramePosition);
+    Bitmap getFrameComposeBitmap(Context context, Bitmap mMainBitmap, int curFramePosition);
 
     void createFolder();
 
@@ -66,10 +59,6 @@ public interface IPWEditModel {
 
     void setStikerInfos(ArrayList<FrameOrStikerInfo> stikerInfos);
 
-    ImageLoader getImageLoader();
-
-    DisplayImageOptions getOptions();
-
     Rect getStickerRect(int mainBitmapHeight, int mainBitmapWidth, int mainImageHeight, int mainImageWidth, Context context);
 
     Bitmap getStickerComposeBitmap(LinkedHashMap<Integer, StickerItem> addItems, Matrix touchMatrix, Bitmap bitmap);
@@ -91,4 +80,6 @@ public interface IPWEditModel {
     void getLastContentSuccess(String msg);
 
     void inOrOutPlace(final String locationIds, final boolean in);
+
+    Bitmap saveFilterOther(Context context, Bitmap bitmap);
 }

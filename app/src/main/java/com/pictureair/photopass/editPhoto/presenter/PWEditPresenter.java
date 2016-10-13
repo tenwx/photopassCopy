@@ -6,15 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
@@ -26,13 +26,14 @@ import com.pictureair.photopass.editPhoto.util.EditPhotoUtil;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.editPhoto.widget.StickerItem;
-import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -70,6 +71,8 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private LoadImageTask mLoadImageTask;
     private Filter filter;
     private MyHandler mHandler;
+    //对象
+    private PhotoInfo photoInfo;
 
 
     public void onCreate(IPWEditView pwEditViewInterface){
@@ -85,9 +88,10 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         mHandler = new MyHandler(pwEditView.getEditPhotView());
         locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
         locationUtil = new LocationUtil(pwEditView.getEditPhotView());
+        photoInfo = pwEditView.getEditPhotView().getIntent().getParcelableExtra("photo");
         photoPath = pwEditView.getEditPhotView().getIntent().getStringExtra("photoPath");
         isOnLine = pwEditView.getEditPhotView().getIntent().getBooleanExtra("isOnLine",false);
-        loadImageFormPath(photoPath,isOnLine);  //加载图片，用ImageLoader加载，故不用新开线程。
+        loadImageFormPath();  //加载图片，用ImageLoader加载，故不用新开线程。
         // 获取网络饰品与边框
         API1.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""), mHandler);
     }
@@ -97,12 +101,18 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
      * 根据 图片地址加载图片。 仅仅在进入的时候使用一次本方法
      * 如果是网络图片，判断本地是否存在，如果是本地图片，直接加载。
      */
-    private void loadImageFormPath(String photoPath,Boolean isOnLine){
-        if (isOnLine){
+    private void loadImageFormPath(){
+        if (photoInfo.onLine == 1){
+            PictureAirLog.v("====","网络图片");
+            photoPath = photoInfo.photoThumbnail_1024;
+            isOnLine = true;
+            isEncrypted = AppUtil.isEncrypted(photoInfo.isEncrypted);
             loadImageOnLine();
         }else{
             PictureAirLog.v("====","本地图片");
-            loadImageOnLocal(photoPath);
+            photoPath = photoInfo.photoPathOrURL;
+            isOnLine = false;
+            loadImageOnLocal(photoPath, true);
         }
         pwEditUtil.addPhotoEditorInfo(photoPath, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
     }
@@ -114,14 +124,13 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private void loadImageOnLine(){
         if (pwEditUtil.getFile(photoPath).exists()){
             PictureAirLog.d("====","网络图片本地存在");
-            loadImageOnLocal(photoPath);
+            loadImageOnLocal(photoPath, true);
         }else{
             PictureAirLog.d("====","网络图片本地不存在");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     PictureAirLog.d("===","photoPath:"+photoPath);
-                    mMainBitmap = pwEditUtil.getOnLineBitampFormPath(photoPath);
                     mHandler.sendEmptyMessage(PhotoCommon.DOWNLOAD_ONLINE);
                 }
             }).start();
@@ -131,15 +140,20 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     /**
      * 加载本地图片。
      */
-    private void loadImageOnLocal(String photoPath){
+    private void loadImageOnLocal(String photoPath, boolean isInitload){
         if (mLoadImageTask != null) {
             mLoadImageTask.cancel(true);
         }
-        mLoadImageTask = new LoadImageTask();
+        mLoadImageTask = new LoadImageTask(isInitload);
         mLoadImageTask.execute(photoPath);
     }
 
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private boolean isInitLoad;
+        public LoadImageTask(boolean isInitLoad) {
+            this.isInitLoad = isInitLoad;
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth, imageHeight);
@@ -158,12 +172,15 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                 System.gc();
             }
             mMainBitmap = result;
-
-            if (mMainBitmap != null) {
-                pwEditView.showBitmap(mMainBitmap);
-            }
-            if (null != mHandler){
-                mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+            if (isInitLoad) {
+                if (mMainBitmap != null) {
+                    pwEditView.showBitmap(mMainBitmap);
+                }
+                if (null != mHandler) {
+                    mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+                }
+            } else {
+                mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
             }
         }
     }
@@ -181,7 +198,8 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
             if (params[0] == null || params[0].isRecycled()) {
                 return null;
             }
-            filterBitmap = pwEditUtil.getFilterComposeBitmap(mMainBitmap,filter);
+            Bitmap tempBitmap = pwEditUtil.getFilterComposeBitmap(mMainBitmap,filter);
+            filterBitmap = pwEditUtil.saveFilterOther(pwEditView.getEditPhotView(), tempBitmap); //保存其他步骤
             return filterBitmap;
         }
 
@@ -233,10 +251,10 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                 if (isOnLine) {
                     loadImageOnLine();
                 }else{
-                    loadImageOnLocal(photoPath);
+                    loadImageOnLocal(photoPath, true);
                 }
             }else{
-                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size()-1).getPhotoPath());
+                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size()-1).getPhotoPath(), true);
             }
         }
 
@@ -245,10 +263,10 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                 if (isOnLine) {
                     loadImageOnLine();
                 }else{
-                    loadImageOnLocal(photoPath);
+                    loadImageOnLocal(photoPath, true);
                 }
             }else{
-                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size()-1).getPhotoPath());
+                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size()-1).getPhotoPath(), true);
             }
         }
 
@@ -317,7 +335,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                 index = pwEditUtil.getPhotoEditorList().size() - 1;
                 return resultBit;
             }else if(curEditType == PhotoCommon.EditFrame){
-                Bitmap heBitmap = pwEditUtil.getFrameComposeBitmap(params[0],curFramePosition);
+                Bitmap heBitmap = pwEditUtil.getFrameComposeBitmap(pwEditView.getEditPhotView(), params[0],curFramePosition);
                 EditPhotoUtil.saveBitmap(heBitmap, url);
                 pwEditUtil.addPhotoEditorInfo(url, curEditType, curFramePosition, null, "",0);
                 index = pwEditUtil.getPhotoEditorList().size() - 1;
@@ -396,11 +414,11 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                     loadImageOnLine();
                     pwEditUtil.tempEditPhotoListRemoveItem();
                 }else{
-                    loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+                    loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
                     pwEditUtil.tempEditPhotoListRemoveItem();
                 }
             }else{
-                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+                loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
                 pwEditUtil.tempEditPhotoListRemoveItem();
             }
         }
@@ -417,7 +435,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
 
         if (pwEditUtil.getPhotoEditorList().size() > index +1) {
             index++;
-            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
             pwEditUtil.tempEditPhotoListAddItem();
         }
         checkLastNext();
@@ -544,26 +562,32 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
 
     @Override
     public void showFrame(String framePath) {
-        pwEditUtil.getImageLoader().displayImage(framePath, pwEditView.getFrameImageView(), pwEditUtil.getOptions(), new ImageLoadingListener() {
+        GlideUtil.loadWithNoPlaceHolder(pwEditView.getEditPhotView(), framePath, new SimpleTarget<Bitmap>() {
             @Override
-            public void onLoadingStarted(String s, View view) {
-
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
             }
 
             @Override
-            public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+            public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                pwEditView.getFrameImageView().setImageBitmap(bitmap);
                 pwEditView.showPhotoFrame();
                 mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
             }
 
             @Override
-            public void onLoadingCancelled(String s, View view) {
+            public void onLoadCleared(Drawable placeholder) {
+                mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+            }
 
+            @Override
+            public void onStop() {
+                mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+            }
+
+            @Override
+            public void onDestroy() {
+                mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
             }
         });
 
@@ -578,6 +602,20 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
             pwEditView.showIsSaveDialog();
         } else {
             pwEditView.finishActivity();
+        }
+    }
+
+    @Override
+    public void onPwDialogClick(int which, int id) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                saveReallyPhoto();
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                pwEditView.finishActivity();
+                break;
+            default:
+                break;
         }
     }
 
@@ -617,12 +655,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                 return;
             }
             switch (msg.what) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    saveReallyPhoto();
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    pwEditView.finishActivity();
-                    break;
                 case PhotoCommon.OnclickFramePosition: //点击边框Item的回调
                     curEditType = PhotoCommon.EditFrame;
                     if (msg.arg1 == lastEditionPosition){
@@ -665,7 +697,12 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                     }else{
                         stickerUrl = pwEditUtil.getStikerInfos().get(stickerPosition).frameOriginalPathPortrait;
                     }
-                    showPhotoSticker(pwEditView.getStickView(),stickerUrl);
+                    GlideUtil.load(pwEditView.getEditPhotView(), stickerUrl, new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                            pwEditView.getStickView().addBitImage(bitmap);
+                        }
+                    });
                     break;
                 case PhotoCommon.OnclickFilterPosition:
                     curEditType = PhotoCommon.EditFilter;
@@ -683,24 +720,25 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                         lastEditionPosition = filterPosition;
                     }
                     filter = pwEditUtil.getSelectFilter(filterPosition);
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            if (isOnLine){
-                                String fileString = AppUtil.getReallyFileName(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(),0);
-                                File file = new File(Common.PHOTO_DOWNLOAD_PATH+fileString);
-                                if (file.exists()){
-                                    mMainBitmap = BitmapUtils.loadImageByPath(file.toString(), imageWidth, imageHeight);
-                                }else {
-                                    mMainBitmap = pwEditUtil.getOnLineBitampFormPath(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath());
+                    if (isOnLine){
+                        String fileString = AppUtil.getReallyFileName(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(),0);
+                        File file = new File(Common.PHOTO_DOWNLOAD_PATH+fileString);
+                        if (file.exists()){
+                            loadImageOnLocal(file.toString(), false);
+                        }else {
+                            GlideUtil.load(pwEditView.getEditPhotView(), pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                                    mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
                                 }
-                            }else{
-                                mMainBitmap = BitmapUtils.loadImageByPath(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(), imageWidth, imageHeight);
-                            }
-
-                            mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
+                            });
                         }
-                    }.start();
+                    }else{
+                        loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(), false);
+                    }
+
+
 
                     break;
 
@@ -713,13 +751,19 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                     break;
 
                 case PhotoCommon.DOWNLOAD_ONLINE:
-                    if (mMainBitmap != null){
-                        pwEditView.showBitmap(mMainBitmap);
-                        pwEditView.dialogDismiss();
-                    }else{
-                        //加载图片出错，换张图片试试
-                        pwEditView.ToastShow(R.string.load_photo_error);
-                    }
+                    GlideUtil.load(pwEditView.getEditPhotView(), photoPath, isEncrypted, new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                            mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                            if (mMainBitmap != null){
+                                pwEditView.showBitmap(mMainBitmap);
+                                pwEditView.dialogDismiss();
+                            }else{
+                                //加载图片出错，换张图片试试
+                                pwEditView.ToastShow(R.string.load_photo_error);
+                            }
+                        }
+                    });
                     break;
 
                 case PhotoCommon.INIT_DATA_FINISHED:
@@ -741,10 +785,10 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
             if (isOnLine) {
                 loadImageOnLine();
             }else{
-                loadImageOnLocal(photoPath);
+                loadImageOnLocal(photoPath, true);
             }
         }else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
         }
     }
 
@@ -773,29 +817,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         }
     }
 
-    private void showPhotoSticker(final StickerView stickerView,String url){
-        pwEditUtil.getImageLoader().loadImage(url, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String s, View view) {
 
-            }
-
-            @Override
-            public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                stickerView.addBitImage(bitmap);
-            }
-
-            @Override
-            public void onLoadingCancelled(String s, View view) {
-
-            }
-        });
-    }
 
 
 }

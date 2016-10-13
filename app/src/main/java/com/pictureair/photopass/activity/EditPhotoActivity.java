@@ -11,23 +11,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.editPhoto.presenter.PWEditPresenter;
 import com.pictureair.photopass.editPhoto.interf.IPWEditView;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
-public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView {
+public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView, PWDialog.OnPWDialogClickListener {
 	PWEditPresenter pwEditPresenter;
-	private CustomProgressDialog dialog; // Loading
 	private PWToast myToast;
 	private ImageView mLeftBack,back;
 	private ImageView mLastStep,mNextStep, mMainImage, mPhotoFrame;
@@ -35,16 +32,14 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 	private TextView mRotate,mLeft90,mRight90,mTitle,mReallySave,mFrame,mFilter,mSticker;
 	private LinearLayout mRotetaView;
 	private HorizontalListView mHorizontalListView;
-	private PictureWorksDialog pictureWorksDialog;
+	private PWDialog pictureWorksDialog;
 	private StickerView mStickerView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         // 进编辑页即释放掉ImageLoader的缓存，尽量增大可用内存
-		ImageLoader.getInstance().clearMemoryCache();
 		setContentView(R.layout.activity_edit_photo);
-		dialog = CustomProgressDialog.create(this, getString(R.string.dealing), false, null);
 		myToast = new PWToast(this);
 		back = (ImageView) findViewById(R.id.edit_return);
 		mLeftBack = (ImageView) findViewById(R.id.btn_left_back);
@@ -81,8 +76,12 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 		dialogShow();
 		pwEditPresenter = new PWEditPresenter();
 		pwEditPresenter.onCreate(this);
-		pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.exit_hint), getString(R.string.button_cancel), getString(R.string.button_ok), true, pwEditPresenter.getHandler());
-
+		pictureWorksDialog = new PWDialog(this, PhotoCommon.SAVE_PHOTO_DIALOG)
+				.setPWDialogMessage(R.string.exit_hint)
+				.setPWDialogNegativeButton(R.string.button_cancel)
+				.setPWDialogPositiveButton(R.string.button_ok)
+				.setOnPWDialogClickListener(this)
+				.pwDialogCreate();
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 				pwEditPresenter.nextStep();
 				break;
 			case R.id.ib_temp_save:
-				dialog.show();
+				dialogShow();
 				pwEditPresenter.saveTempPhoto();
 				break;
 			case R.id.tv_really_save:
@@ -156,16 +155,12 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
 	@Override
 	public void dialogShow() {
-		if (!dialog.isShowing()){
-			dialog.show();
-		}
+		showPWProgressDialog();
 	}
 
 	@Override
 	public void dialogDismiss() {
-		if (dialog.isShowing()){
-			dialog.dismiss();
-		}
+		dismissPWProgressDialog();
 	}
 
 	@Override
@@ -223,7 +218,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
 	@Override
 	public void showIsSaveDialog() {
-		pictureWorksDialog.show();
+		pictureWorksDialog.pwDilogShow();
 	}
 
 	@Override
@@ -282,9 +277,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
 	@Override
 	public void exitEditStatus() {
-		if (dialog.isShowing()){
-			dialog.dismiss();
-		}
+		dialogDismiss();
 		if (mRotetaView.isShown()){
 			mRotetaView.setVisibility(View.GONE);
 		}
@@ -354,5 +347,10 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 	@Override
 	public void finishActivity() {
 		this.finish();
+	}
+
+	@Override
+	public void onPWDialogButtonClicked(int which, int dialogId) {
+		pwEditPresenter.onPwDialogClick(which,dialogId);
 	}
 }
