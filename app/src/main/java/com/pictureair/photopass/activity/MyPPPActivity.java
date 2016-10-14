@@ -750,6 +750,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         .setPWDialogMessage(R.string.update_ppp_msg)
                         .setPWDialogNegativeButton(R.string.update_ppp_cancel)
                         .setPWDialogPositiveButton(R.string.update_ppp_ok)
+                        .setPWDialogContentCenter(true)
                         .pwDilogShow();
                 break;
 
@@ -822,6 +823,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     .setPWDialogMessage(errorMessage)
                     .setPWDialogNegativeButton(null)
                     .setPWDialogPositiveButton(R.string.dialog_ok1)
+                    .setPWDialogContentCenter(true)
                     .pwDilogShow();
 
         } else if (pppResultStr.equals("notSame")) {//卡片类型不一致
@@ -830,6 +832,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     .setPWDialogMessage(R.string.not_ppp_card)
                     .setPWDialogNegativeButton(null)
                     .setPWDialogPositiveButton(R.string.dialog_ok1)
+                    .setPWDialogContentCenter(true)
                     .pwDilogShow();
 
         } else {//返回pp码，弹框，询问是否绑定，目前已经没有这个流程
@@ -837,6 +840,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     .setPWDialogMessage(R.string.bind_pp_now)
                     .setPWDialogNegativeButton(R.string.dialog_cancel)
                     .setPWDialogPositiveButton(R.string.dialog_ok)
+                    .setPWDialogContentCenter(true)
                     .pwDilogShow();
         }
     }
@@ -914,6 +918,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         .setPWDialogMessage(message)
                         .setPWDialogNegativeButton(null)
                         .setPWDialogPositiveButton(R.string.use_ppp_upgrade_ok)
+                        .setPWDialogContentCenter(false)
                         .pwDilogShow();
 
                 MyApplication.getInstance().clearIsBuyingPhotoList();

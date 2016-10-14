@@ -324,11 +324,18 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             navigationView.setVisibility(View.VISIBLE);
             rlMask.setVisibility(View.GONE);
 
-            tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
-            tvScanQRCode.setTextColor(getResources().getColor(R.color.pp_blue));
+            if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))
+                    && getIntent().getStringExtra("type").equals("coupon")) {
+                tvScanPPPCode.setVisibility(View.GONE);
+                tvScanQRCode.setVisibility(View.GONE);
 
-            tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
-            tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
+            } else {
+                tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
+                tvScanQRCode.setTextColor(getResources().getColor(R.color.pp_blue));
+
+                tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
+                tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
+            }
         } else {
             if (rlp == null) {
                 int height = ((ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
