@@ -124,7 +124,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private void loadImageOnLine(){
         if (pwEditUtil.getFile(photoPath).exists()){
             PictureAirLog.d("====","网络图片本地存在");
-            loadImageOnLocal(photoPath, true);
+            loadImageOnLocal(pwEditUtil.getFile(photoPath).toString(), true);
         }else{
             PictureAirLog.d("====","网络图片本地不存在");
             new Thread(new Runnable() {

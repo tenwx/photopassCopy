@@ -1,12 +1,6 @@
 package com.pictureair.photopass.editPhoto.interf;
 
-
-import android.graphics.Matrix;
 import android.os.Handler;
-
-import com.pictureair.photopass.editPhoto.widget.StickerItem;
-
-import java.util.LinkedHashMap;
 
 /**
  * Created by talon on 16/5/21.
