@@ -17,7 +17,6 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
@@ -29,8 +28,6 @@ import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
@@ -316,7 +313,18 @@ public class DownloadService extends Service {
                                     fileStatus.setPosition(i);
                                     taskList.put(fileStatus.getPhotoId(), fileStatus);
                                     PictureAirLog.out("START_DOWNLOAD photoid and position " + fileStatus.getPhotoId() +" "+fileStatus.getPosition());
-                                    getNewUrl(fileStatus);
+                                    if (fileExists(fileStatus)) {
+                                        Message fileExistMsg =  handler.obtainMessage();
+                                        fileExistMsg.what = API1.DOWNLOAD_PHOTO_SUCCESS;
+                                        Bundle bundle = new Bundle();
+                                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
+                                        bundle.putParcelable("url",fileStatus);
+                                        bundle.putByteArray("binaryData",null);
+                                        fileExistMsg.setData(bundle);
+                                        handler.sendMessage(fileExistMsg);
+                                    } else {
+                                        getNewUrl(fileStatus);
+                                    }
                                 } else {
                                     break;
                                 }
@@ -434,7 +442,18 @@ public class DownloadService extends Service {
                                     status.setPosition(i);
                                     PictureAirLog.out("ADD_DOWNLOAD photoid and position " + status.getPhotoId() +" "+status.getPosition());
                                     taskList.put(status.getPhotoId(), status);
-                                    getNewUrl(status);
+                                    if (fileExists(status)) {
+                                        Message fileExistMsg2 =  handler.obtainMessage();
+                                        fileExistMsg2.what = API1.DOWNLOAD_PHOTO_SUCCESS;
+                                        Bundle bundle2 = new Bundle();
+                                        status.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
+                                        bundle2.putParcelable("url",status);
+                                        bundle2.putByteArray("binaryData",null);
+                                        fileExistMsg2.setData(bundle2);
+                                        handler.sendMessage(fileExistMsg2);
+                                    } else {
+                                        getNewUrl(status);
+                                    }
                                     if (adapterHandler != null) {
                                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                                     }
@@ -521,6 +540,17 @@ public class DownloadService extends Service {
         return file;
     }
 
+    private boolean fileExists(DownloadFileStatus fileStatus) {
+        String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(),fileStatus.isVideo());
+        File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
+        File file = new File(filedir + "/" + fileName);
+        if (file.exists()) {
+            String totalSize = AppUtil.formatData(file.length() / 1000d / 1000d);
+            fileStatus.setTotalSize(totalSize);
+            return true;
+        }
+        return false;
+    }
 
     private void getNewUrl(DownloadFileStatus fileStatus){
         if (AppUtil.isOldVersionOfTheVideo(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
@@ -558,12 +588,14 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         BufferedOutputStream stream = null;
         try {
-            PictureAirLog.out("downloadService-----------> saveFile");
-            file.createNewFile();
-            FileOutputStream fsStream = new FileOutputStream(file);
-            stream = new BufferedOutputStream(fsStream);
-            stream.write(data);
-            fileStatus.setFailedTime("");
+            if (!file.exists()) {
+                PictureAirLog.out("downloadService-----------> saveFile");
+                file.createNewFile();
+                FileOutputStream fsStream = new FileOutputStream(file);
+                stream = new BufferedOutputStream(fsStream);
+                stream.write(data);
+                fileStatus.setFailedTime("");
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             if (e.getMessage().contains("ENAMETOOLONG")){//如果是文件过长错误，需要重新保存
@@ -588,6 +620,11 @@ public class DownloadService extends Service {
                 if (stream != null) {
                     stream.flush();
                     stream.close();
+                    downed_num.incrementAndGet();
+                    // 使用友盟统计下载成功次数
+                    UmengUtil.onEvent(mContext, Common.EVENT_DOWNLOAD_FINISH);
+                    scan(file.toString(),fileStatus);
+                } else if (stream == null && file.exists()) {
                     downed_num.incrementAndGet();
                     // 使用友盟统计下载成功次数
                     UmengUtil.onEvent(mContext, Common.EVENT_DOWNLOAD_FINISH);

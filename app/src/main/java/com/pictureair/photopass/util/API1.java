@@ -89,6 +89,13 @@ public class API1 {
     public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
     public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
 
+    //选择已有PP＋
+    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 2051;
+    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 2050;
+
+    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2060;
+    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2061;
+
     /**
      * 获取视频信息
      */
@@ -105,17 +112,14 @@ public class API1 {
     public static final int DELETE_PHOTOS_SUCCESS = 2101;
     public static final int DELETE_PHOTOS_FAILED = 2100;
 
-    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2110;
-    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2111;
-
     /**
      * 发现
      */
     public static final int GET_FAVORITE_LOCATION_FAILED = 3000;
     public static final int GET_FAVORITE_LOCATION_SUCCESS = 3001;
 
-    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3020;
-    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3021;
+    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3010;
+    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3011;
 
 
     //Shop模块 start
@@ -235,9 +239,7 @@ public class API1 {
     //使用优惠券
     public static final int PREVIEW_COUPON_SUCCESS = 5161;
     public static final int PREVIEW_COUPON_FAILED = 5160;
-
     //我的模块 end
-
 
     public static final int GET_UPDATE_SUCCESS = 6001;
     public static final int GET_UPDATE_FAILED = 6000;
@@ -245,28 +247,31 @@ public class API1 {
     public static final int DOWNLOAD_APK_SUCCESS = 6011;
     public static final int DOWNLOAD_APK_FAILED = 6010;
 
-
     // 推送
     public static final int SOCKET_DISCONNECT_FAILED = 6020;
     public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
 
     //手动拉取推送
-    public static final int GET_SOCKET_DATA_FAILED = 6120;
-    public static final int GET_SOCKET_DATA_SUCCESS = 6121;
-
-    //分享
-    public static final int GET_SHARE_URL_SUCCESS = 6031;
-    public static final int GET_SHARE_URL_FAILED = 6030;
+    public static final int GET_SOCKET_DATA_FAILED = 6030;
+    public static final int GET_SOCKET_DATA_SUCCESS = 6031;
 
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
     public final static int DOWNLOAD_PHOTO_GET_URL_SUCCESS = 6042;
 
+    //下载文件
+    public static final int DOWNLOAD_FILE_FAILED = 6050;
+    public static final int DOWNLOAD_FILE_SUCCESS = 6051;
+    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
 
-    //选择已有PP＋
-    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
-    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 6090;
+    //分享链接
+    public static final int GET_SHARE_URL_SUCCESS = 6061;
+    public static final int GET_SHARE_URL_FAILED = 6060;
+
+    //获取短连接
+    public static final int GET_SHORT_URL_SUCCESS = 6071;
+    public static final int GET_SHORT_URL_FAILED = 6070;
 
     /**
      * 发送设备ID获取tokenId
@@ -376,7 +381,7 @@ public class API1 {
      * @param folderPath
      * @param fileName
      */
-    public static void downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
+    public static void downloadHeadFile(String downloadUrl, final String folderPath, final String fileName, final Handler handler) {
         HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
@@ -398,8 +403,20 @@ public class API1 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                handler.obtainMessage(DOWNLOAD_FILE_SUCCESS, folderPath + fileName).sendToTarget();
             }
 
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(DOWNLOAD_FILE_FAILED, status, 0).sendToTarget();
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                handler.obtainMessage(DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
+            }
         });
     }
 
@@ -2112,6 +2129,36 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "获取分享失败" + status);
                 handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 获取分享的URL
+     *
+     * @param longURL
+     * @param id        点击id
+     * @param handler
+     */
+    public static void getShortUrl(String longURL, final int id, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LONG_URL, longURL);
+        PictureAirLog.out("get share url----------------" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, new HttpCallback() {
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
+                handler.obtainMessage(GET_SHORT_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "获取分享失败" + status);
+                handler.obtainMessage(GET_SHORT_URL_FAILED, status, 0).sendToTarget();
             }
         });
     }

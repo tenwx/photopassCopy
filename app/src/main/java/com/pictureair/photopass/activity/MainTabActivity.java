@@ -28,6 +28,7 @@ import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
 import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AppManager;
@@ -529,6 +530,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             Intent intent = new Intent(MainTabActivity.this, NotificationService.class);
             intent.putExtra("status", "disconnect");
             startService(intent);
+            //关闭下载
+            Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("logout",true);
+            intent1.putExtras(bundle);
+            startService(intent1);
             AppManager.getInstance().killAllActivity();
         }
     }

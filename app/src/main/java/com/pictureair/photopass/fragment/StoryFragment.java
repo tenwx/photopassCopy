@@ -185,6 +185,9 @@ public class StoryFragment extends Fragment {
 	private class PhotoOnItemClickListener implements OnItemClickListener{
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if (photoInfoArrayList.size() == 0) {
+				return;
+			}
 
 			if (position < 0) {
 				position = 0;

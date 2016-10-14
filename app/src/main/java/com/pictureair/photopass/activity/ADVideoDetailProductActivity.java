@@ -241,6 +241,8 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             //从网络获取商品,先检查网络
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
                 API1.getGoods(adVideoHandler);
+            } else {
+                adVideoHandler.sendEmptyMessage(API1.GET_GOODS_FAILED);
             }
         }
     }
@@ -263,7 +265,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 break;
 
             case R.id.animated_photo_buy_ppp_btn://购买ppp
-                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) {
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID || pppGoodsInfo == null) {
                     pwToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
@@ -283,7 +285,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 break;
 
             case R.id.animated_photo_add_cart_btn://把ppp加入购物车
-                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) {
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID || pppGoodsInfo == null) {
                     pwToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
