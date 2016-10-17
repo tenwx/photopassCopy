@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -317,7 +318,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
          * 3.如果不存在，先从网络下载，之后再去播放
          */
 
-        if (!isOnline) {//本地视频，直接播放
+        if (!isOnline || TextUtils.isEmpty(videoPath)) {//本地视频，或者路径为空 直接播放
             videoPlayerView.setVideoPath(videoPath);
         } else if (AppUtil.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             String fileName = AppUtil.getReallyFileName(videoPath, 1);
