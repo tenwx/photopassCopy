@@ -268,6 +268,18 @@ public class API1 {
     public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
     public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 6090;
 
+    //获取所有活动信息
+    public static final int GET_ALL_DEALINGS_SUCCESS = 7001;
+    public static final int GET_ALL_DEALINGS_FAILED = 7000;
+
+    //触发活动订单状态
+    public static final int UPDATE_DEALING_ORDER_SUCCESS = 7011;
+    public static final int UPDATE_DEALING_ORDER_FAILED = 7010;
+
+    //抢购提交订单
+    public static final int ADD_BOOKING_SUCCESS = 7021;
+    public static final int ADD_BOOKING_FAILED = 7020;
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -2591,6 +2603,100 @@ public class API1 {
                 super.onFailure(status);
 //                PictureAirLog.e(TAG, "============" + status);
                 handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+    public static void getAllDealings(final Handler handler) {
+
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+            }
+        });
+    }
+
+    public static void updateDealingOrder(final Handler handler, String orderCode, String dealingKey) {
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.ORDER_CODE, orderCode);
+        params.put(Common.DEALINGKEY, dealingKey);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_DEALING_ORDER, params, new HttpCallback() {
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+            }
+        });
+    }
+
+
+    /**
+     * 提交订单
+     *
+     * @param goods  JSONArray
+     * @param deliveryType 物流方式(必须，送货方式,物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3))
+     * @param outletId     门店编号门店主键(与addressId互斥,但不能都存在,若物流方式为3则无此条约束)
+     * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
+     * @param handler      handler
+     */
+    public static void addBook(JSONArray goods, JSONArray couponCodes, int deliveryType, String outletId, String addressId,
+                                int payType, String channelId, String dealingKey, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        if (goods != null) {
+            params.put(Common.GOODS, goods.toString());
+        }
+        if (couponCodes != null) {
+            params.put("coupons", couponCodes.toString());
+        }
+        params.put(Common.DELIVERY_TYPE, deliveryType);
+
+        if (deliveryType == 0) {
+            //物流
+            params.put(Common.ADDRESS_ID, addressId);
+        } else if (deliveryType == 1) {
+            //自提
+            params.put("outletId", outletId);
+        }
+
+        params.put(Common.PAY_TYPE, payType);
+        if (!TextUtils.isEmpty(channelId)) {
+            params.put("channelId", channelId);
+        }
+
+        if (!TextUtils.isEmpty(dealingKey)) {
+            params.put(Common.DEALINGKEY, dealingKey);
+        }
+        PictureAirLog.out("addorder params ------------>"+params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(ADD_BOOKING_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_BOOKING_FAILED, status, 0).sendToTarget();
+
             }
         });
     }

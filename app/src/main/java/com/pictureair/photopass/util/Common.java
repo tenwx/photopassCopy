@@ -17,20 +17,20 @@ public class Common {
     /**
      * 外网可访问的8.3测试服务器
      */
-    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
-    public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
-    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
+//    public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
+//    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 
     /**
      * 内网8.3测试服务器
      */
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//    public static final String BASE_URL_SOCKET = "http://192.168.8.3:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String BASE_URL_SOCKET = "http://192.168.8.3:3006";
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 
     /**
      * 域名线上服务器
@@ -91,6 +91,7 @@ public class Common {
     public static final String DELETE_TO_CART = "/api/carts";//删除购物车
     public static final String BATCH_ADD_TO_CART = "/api/batchAddToCarts";//批量加入购物车
     public static final String ADD_ORDER = "/api/checkOut";//用户提交订单
+    public static final String ADD_BOOKING = "/api/addBooking";//抢购提交订单
 
     public static final String REMOVE_CART = "/shopping/removeCart";//删除购物车信息
     public static final String MODIFY_CART = "/shopping/modifyCart";//修改购物车信息
@@ -109,6 +110,9 @@ public class Common {
     public static final String ADDRESS_LIST = "/api/addresses";//获取收货地址列表
     public static final String GET_ALL_ORDERS = "/api/getAllOrders";//获取所有订单
     public static final String DELETE_ORDER = "/api/delOrder";//用户删除某个订单
+    public static final String GET_ALL_DEALINGS = "/api/dealings";//获取所有活动数据
+    public static final String UPDATE_DEALING_ORDER = "/api/updateDealingOrder";//触发活动订单状态
+
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
@@ -204,6 +208,7 @@ public class Common {
     public static final String BGPHOTO_PAHT = "bgphoto";
     public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
     public static final String GOODS = "goods";
+    public static final String DEALINGKEY = "dealingKey";
 
     public static final int TOAST_SHORT_TIME = 1000;
     public static final String ppp = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，

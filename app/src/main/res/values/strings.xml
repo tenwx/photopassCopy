@@ -355,6 +355,7 @@
     <string name="want_to_buy">暂无订单历史记录</string>
     <string name="order_pending">处理中</string>
     <string name="order_delete_msg">您将要删除此订单吗？</string>
+    <string name="order_cancled">已取消</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -624,10 +625,12 @@
     <!--animated photo end-->
 
     <!--panic buy start-->
-    <string name="panic_buy_title">抢购活动</string>
-    <string name="panic_buy_count_limit">仅限%1$d张</string>
-    <string name="panic_buy_count_left">仅余%1$d张</string>
+    <string name="panic_buy_title">特惠活动</string>
     <string name="panic_buy_not_start">未开始</string>
     <string name="panic_buy_start">抢购中</string>
+    <string name="panic_buy_start_content">抢购即将开始</string>
+    <string name="panic_buy_end_content">抢购即将结束</string>
+    <string name="panic_buy_begin_soon">即将开场</string>
+    <string name="panic_buy_buy_now">立即购买</string>
     <!--panic buy end-->
 </resources>
