@@ -43,13 +43,14 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     private PWToast myToast;
     private String version;
     private File downloadAPKFile;
+    private CheckUpdateListener checkUpdateListener;
     private static final int INSTALL_APK = 201;
     private static final int GENERATE_APK_FAILED = 202;
     private boolean isRegisterReceiver = false;
     private boolean hasDestroyed = false;
     private final int UPDATE_PB = 203;
-    private static final int APK_NEED_NOT_UPDATE = 204;
-    private static final int APK_NEED_UPDATE = 205;
+    public static final int APK_NEED_NOT_UPDATE = 204;
+    public static final int APK_NEED_UPDATE = 205;
     private static final int UPDATE_DIALOG = 206;
     private PictureAirDbManager dbDAO = null;
 
@@ -86,6 +87,9 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
                     break;
 
                 case API1.GET_TOKEN_ID_FAILED:
+                    if (checkUpdateListener != null) {
+                        checkUpdateListener.checkUpdateCompleted(APK_NEED_NOT_UPDATE);
+                    }
                     break;
 
                 case API1.GET_TOKEN_ID_SUCCESS:
@@ -102,20 +106,32 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
                         PictureAirLog.out("acahe--->" + updateInfo);
                         if (TextUtils.isEmpty(updateInfo)) {//缓存中没有
                             PictureAirLog.out("apk need not update");
+                            if (checkUpdateListener != null) {
+                                checkUpdateListener.checkUpdateCompleted(APK_NEED_NOT_UPDATE);
+                            }
                         } else {//缓存中有数据
                             handler.obtainMessage(API1.GET_UPDATE_SUCCESS, updateInfo).sendToTarget();
                         }
                     } else {
                         PictureAirLog.out("apk need not update");
+                        if (checkUpdateListener != null) {
+                            checkUpdateListener.checkUpdateCompleted(APK_NEED_NOT_UPDATE);
+                        }
                     }
                     break;
 
                 case APK_NEED_NOT_UPDATE://不更新
                     PictureAirLog.out("apk need not update");
+                    if (checkUpdateListener != null) {
+                        checkUpdateListener.checkUpdateCompleted(APK_NEED_NOT_UPDATE);
+                    }
                     break;
 
                 case APK_NEED_UPDATE:
                     PictureAirLog.out("apk need update");
+                    if (checkUpdateListener != null) {
+                        checkUpdateListener.checkUpdateCompleted(APK_NEED_UPDATE);
+                    }
                     //开始显示对话框
                     showUpdateApkDialog(msg);
                     break;
@@ -433,6 +449,14 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     }
 
     /**
+     * 设置监听
+     * @param checkUpdateListener
+     */
+    public void setOnCheckUpdateListener(CheckUpdateListener checkUpdateListener) {
+        this.checkUpdateListener = checkUpdateListener;
+    }
+
+    /**
      * 注销dialog
      */
     private void dismissDialog(){
@@ -451,6 +475,15 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
                         dialogButtonPositive();//确认下载
                     }else{
                         myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                        pictureWorksDialog.pwDilogShow();
+                    }
+                }
+                break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+                if (dialogId == UPDATE_DIALOG) {
+                    if (checkUpdateListener != null) {
+                        checkUpdateListener.checkUpdateCompleted(APK_NEED_NOT_UPDATE);
                     }
                 }
                 break;

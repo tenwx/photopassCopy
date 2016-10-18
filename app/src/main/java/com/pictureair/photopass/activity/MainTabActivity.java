@@ -19,11 +19,12 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
-import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
+import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
 import com.pictureair.photopass.fragment.FragmentPageShop;
@@ -37,6 +38,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.widget.CheckUpdateListener;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
@@ -53,7 +55,8 @@ import de.greenrobot.event.Subscribe;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
-public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback {
+public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback,
+        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener {
     private FragmentPageStory fragmentPageStory;
     private FragmentPageDiscover fragmentPageDiscover;
     private FragmentPageShop fragmentPageShop;
@@ -73,6 +76,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     //story的引导层
     private RelativeLayout leadViewRL;
     private ImageView leadViewIV;
+    private boolean showLeadView = true;
+
+    //对话框
+    private PWDialog pwDialog;
+    private TextView specialDealBuyTV;
+    private ImageView specialDealCloseIV;
 
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
@@ -86,10 +95,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private MyApplication application;
     private CheckUpdateManager checkUpdateManager;
+    private boolean needUpdate = true;
     private String currentLanguage;
 
     private static final String TAG = MainTabActivity.class.getSimpleName();
 
+    private static final int SPECIAL_DIALOG = 99;
     private static final int START_CHECK_UPDATE = 100;
 
     /**
@@ -162,6 +173,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage);
+        checkUpdateManager.setOnCheckUpdateListener(this);
 
         new Thread(new Runnable() {
             @Override
@@ -194,6 +206,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             public void onClick(View v) {
                 SPUtils.put(MainTabActivity.this, Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, Common.STORY_LEAD_VIEW);
                 leadViewRL.setVisibility(View.GONE);
+                showLeadView = false;
+                getSpecialDealGoods();
             }
         });
 
@@ -279,6 +293,24 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.special_dialog_buy_tv:
+                EventBus.getDefault().post(new MainTabOnClickEvent(false, true));
+                pwDialog.pwDialogDismiss();
+                break;
+
+            case R.id.special_dialog_deal_close_iv:
+                EventBus.getDefault().post(new MainTabOnClickEvent(false, true));
+                pwDialog.pwDialogDismiss();
+                break;
+
+            default:
+                break;
+        }
+    }
+
     //tab按钮的点击监听
     private class TabOnClick implements OnClickListener {
         private int currentTab;
@@ -294,7 +326,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     PictureAirLog.out("photo tab on click");
                     if (last_tab == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
-                        EventBus.getDefault().post(new StoryRefreshOnClickEvent(true));
+                        EventBus.getDefault().post(new MainTabOnClickEvent(true, false));
                     } else {
                         PictureAirLog.d(TAG, "need not refresh");
                     }
@@ -548,6 +580,40 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         return super.onKeyDown(keyCode, event);
     }
 
+    private void showSpecialDealDialog() {
+        if (pwDialog == null) {
+            pwDialog = new PWDialog(this, SPECIAL_DIALOG)
+                    .setPWDialogNegativeButton(null)
+                    .setPWDialogPositiveButton(null)
+                    .setPWDialogBackgroundColor(R.color.transparent)
+                    .setPWDialogContentView(R.layout.dialog_special_deal, this)
+                    .pwDialogCreate();
+        }
+        pwDialog.pwDilogShow();
+    }
+
+    private void getSpecialDealGoods() {
+        if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
+            showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
+        }
+    }
+
+    @Override
+    public void initCustomerView(View view, int dialogId) {
+        if (dialogId == SPECIAL_DIALOG) {
+            specialDealBuyTV = (TextView) view.findViewById(R.id.special_dialog_buy_tv);
+            specialDealCloseIV = (ImageView) view.findViewById(R.id.special_dialog_deal_close_iv);
+            specialDealBuyTV.setOnClickListener(this);
+            specialDealCloseIV.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void checkUpdateCompleted(int result) {//抢购的弹框需要在更新框之后
+        needUpdate = result == CheckUpdateManager.APK_NEED_UPDATE;
+        getSpecialDealGoods();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
@@ -627,7 +693,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         } else if (baseBusEvent instanceof StoryLoadCompletedEvent) {//显示引导层
             StoryLoadCompletedEvent storyLoadCompletedEvent = (StoryLoadCompletedEvent) baseBusEvent;
-            initLeadView();
+            showLeadView = storyLoadCompletedEvent.isShowLeadView();
+            if (showLeadView) {
+                initLeadView();
+            } else {
+                getSpecialDealGoods();
+            }
             EventBus.getDefault().removeStickyEvent(storyLoadCompletedEvent);
         }
     }

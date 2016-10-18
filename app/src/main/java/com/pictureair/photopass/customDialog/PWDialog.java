@@ -72,6 +72,7 @@ public class PWDialog extends Dialog {
     private RelativeLayout contentRL;
     private FrameLayout contentViewParent;
     private PWDialogButton btnGroup;
+    private View buttonLine;
 
     private String titleStr;
     private String messageStr;
@@ -117,6 +118,11 @@ public class PWDialog extends Dialog {
      * 取消按钮字体颜色
      */
     private int negativeButtonColorId;
+
+    /**
+     * 背景颜色
+     */
+    private int backgroundColor = 0;
 
     private OnDialogButtonListener dialogButtonListener;
     private OnCustomerViewCallBack customerViewCallBack;
@@ -306,6 +312,11 @@ public class PWDialog extends Dialog {
         return this;
     }
 
+    public PWDialog setPWDialogBackgroundColor(int colorId) {
+        this.backgroundColor = colorId;
+        return this;
+    }
+
     /**
      * 设置自定义布局
      * @param contentView 自定义布局View
@@ -340,6 +351,7 @@ public class PWDialog extends Dialog {
         messageTV = (TextView) view.findViewById(R.id.tv_message);
         contentViewParent = (FrameLayout) view.findViewById(R.id.content_view);
         btnGroup = (PWDialogButton) view.findViewById(R.id.btn_group);
+        buttonLine = view.findViewById(R.id.middle_horizontal_line);
         btnGroup.setOnClickListener(new PWDialogButton.OnPWDialogButtonClickCallBack() {
             @Override
             public void onPositiveButtonClicked() {
@@ -366,6 +378,15 @@ public class PWDialog extends Dialog {
         checkContent();
         if (!isShowing()) {
             show();
+        }
+    }
+
+    /**
+     * 关闭dialog
+     */
+    public void pwDialogDismiss() {
+        if (isShowing()) {
+            dismiss();
         }
     }
 
@@ -399,6 +420,11 @@ public class PWDialog extends Dialog {
 
         if (TextUtils.isEmpty(positiveButtonStr) && TextUtils.isEmpty(negativeButtonStr)) {
             contentRL.setBackgroundResource(R.drawable.bg_dialog_white_content2);
+            buttonLine.setVisibility(View.GONE);
+        }
+
+        if (backgroundColor != 0) {
+            contentRL.setBackgroundColor(ContextCompat.getColor(mContext, backgroundColor));
         }
 
         //检查内容

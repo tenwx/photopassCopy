@@ -621,4 +621,12 @@
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
     <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开通这个魔法吧！</string>
     <!--animated photo end-->
+
+    <!--special deal-->
+    <string name="special_deal_on">抢购进行中</string>
+    <string name="special_deal_detail">快速抢购单人乐拍通一卡通，您的照片立即全部拥有，现在只需169！</string>
+    <string name="special_deal_detail2">只需169元就能获得绑定至同一张迪士尼乐拍通卡内的所有数码照片！</string>
+    <string name="special_deal">优享特惠！</string>
+    <string name="special_deal_buy_now">购买</string>
+    <!--special deal-->
 </resources>

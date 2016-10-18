@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +47,7 @@ import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
-import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
+import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -137,6 +138,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private CustomTextView storyScan;
     private CustomTextView storyDiscover;
     private CustomTextView storyNoPhotoTip;
+    private CustomTextView specialDealOnTV;
+    private LinearLayout specialDealLL;
 
     //申明类
     private MyApplication app;
@@ -681,6 +684,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyTopTip = (CustomTextView) view.findViewById(R.id.story_top_tip);
         storyDiscover = (CustomTextView) view.findViewById(R.id.story_discover);
         storyNoPhotoTip = (CustomTextView) view.findViewById(R.id.story_no_photo_tip);
+        specialDealLL = (LinearLayout) view.findViewById(R.id.special_deal_ll);
+        specialDealOnTV = (CustomTextView) view.findViewById(R.id.special_deal_on);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
@@ -709,12 +714,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyNoPhotoToDiscoverImageView.setOnClickListener(this);
         buyPPP.setOnClickListener(this);
         activatePPP.setOnClickListener(this);
+        specialDealLL.setOnClickListener(this);
         buyPPP.setTypeface(app.getFontBold());
         activatePPP.setTypeface(app.getFontBold());
         storyTopTip.setTypeface(app.getFontBold());
         storyScan.setTypeface(app.getFontBold());
         storyDiscover.setTypeface(app.getFontBold());
         storyNoPhotoTip.setTypeface(app.getFontBold());
+        specialDealOnTV.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new PWToast(getActivity());
@@ -849,7 +856,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             }
         }
         if (TextUtils.isEmpty(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, null))) {
-            EventBus.getDefault().post(new StoryLoadCompletedEvent());
+            EventBus.getDefault().post(new StoryLoadCompletedEvent(true));
+        } else {
+            EventBus.getDefault().post(new StoryLoadCompletedEvent(false));
         }
         isOnCreate = false;
     }
@@ -1554,6 +1563,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getGoods();
                 break;
 
+            case R.id.special_deal_ll:
+                //抢单点击事件，即可进入抢单活动页面
+                break;
+
             default:
                 break;
         }
@@ -1585,10 +1598,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
-        if (baseBusEvent instanceof StoryRefreshOnClickEvent) {
-            StoryRefreshOnClickEvent storyRefreshOnClickEvent = (StoryRefreshOnClickEvent) baseBusEvent;
+        if (baseBusEvent instanceof MainTabOnClickEvent) {
+            MainTabOnClickEvent storyRefreshOnClickEvent = (MainTabOnClickEvent) baseBusEvent;
             if (storyRefreshOnClickEvent.isStoryTabClick()) {//通知页面开始刷新
                 clickToRefresh();
+            }
+            if (storyRefreshOnClickEvent.isShowSpecialDealBar()) {//显示顶部抢购栏
+                specialDealLL.setVisibility(View.VISIBLE);
             }
             EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
         }

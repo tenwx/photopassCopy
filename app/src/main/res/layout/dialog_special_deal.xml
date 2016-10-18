@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/special_dialog_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/special_deal_dialog_bg" />
+
+    <TextView
+        android:id="@+id/special_dialog_buy_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/special_dialog_bg_iv"
+        android:layout_marginBottom="@dimen/pp_margin_32"
+        android:layout_marginLeft="@dimen/pp_padding_16"
+        android:layout_marginRight="@dimen/pp_padding_16"
+        android:layout_marginTop="@dimen/pp_padding_16"
+        android:background="@drawable/button_blue"
+        android:gravity="center"
+        android:padding="@dimen/pp_padding_10"
+        android:text="@string/special_deal_buy_now"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
+
+    <ImageView
+        android:id="@+id/special_dialog_top_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/special_dialog_bg_iv"
+        android:adjustViewBounds="true"
+        android:src="@drawable/special_deal_dialog_top_bg" />
+
+    <ImageView
+        android:id="@+id/special_dialog_deal_close_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/special_dialog_top_bg_iv"
+        android:layout_marginRight="@dimen/pp_padding_16"
+        android:padding="@dimen/pp_padding_5"
+        android:src="@drawable/del1" />
+
+    <TextView
+        android:id="@+id/special_dialog_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/special_dialog_deal_close_iv"
+        android:gravity="center"
+        android:text="@string/special_deal"
+        android:textColor="@color/pp_dark_blue"
+        android:textSize="@dimen/text_size_18" />
+
+    <TextView
+        android:id="@+id/special_dialg_deal_detail_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/special_dialog_buy_tv"
+        android:layout_below="@+id/special_dialog_title_tv"
+        android:paddingRight="@dimen/pp_margin_32"
+        android:paddingLeft="@dimen/pp_margin_32"
+        android:gravity="center"
+        android:text="@string/special_deal_detail2"
+        android:textColor="@color/pp_dark_blue"
+        android:textSize="@dimen/text_size_16" />
+
+</RelativeLayout>

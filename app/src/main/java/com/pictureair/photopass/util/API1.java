@@ -179,6 +179,9 @@ public class API1 {
     public static final int ADDRESS_LIST_FAILED = 4170;
     public static final int ADDRESS_LIST_SUCCESS = 4171;
 
+    public static final int GET_DEALING_GOODS_SUCCESS = 4181;
+    public static final int GET_DEALING_GOODS_FAILED = 4180;
+
     //Shop模块 end
 
     //我的模块 start
@@ -1920,6 +1923,28 @@ public class API1 {
         return task;
     }
 
+    /**
+     * 获取抢单活动信息
+     * @param tokenid
+     * @param handler
+     * @return
+     */
+    public static BasicResultCallTask getDealingGoods(String tokenid, final Handler handler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, tokenid);
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+            }
+        });
+        return task;
+    }
 
     /***************************************Shop模块 end**************************************/
 
