@@ -41,52 +41,52 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/special_deal_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/story_title"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_padding_10"
+        android:paddingRight="@dimen/pp_padding_10"
+        android:paddingTop="@dimen/pp_padding_8"
+        android:visibility="gone">
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/special_deal_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/pp_padding_2"
+            android:paddingRight="@dimen/pp_padding_2"
+            android:text="@string/special_deal_on"
+            android:textColor="@color/pp_red"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="20dp"
+            android:layout_marginLeft="@dimen/pp_padding_5"
+            android:layout_marginRight="@dimen/pp_padding_5"
+            android:background="@color/pp_gray" />
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/special_deal_detail"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/story_lead_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/special_deal_ll"
         android:orientation="vertical"
         android:visibility="invisible">
-
-        <LinearLayout
-            android:id="@+id/special_deal_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/pp_padding_10"
-            android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="@dimen/pp_padding_10"
-            android:paddingTop="@dimen/pp_padding_16"
-            android:visibility="gone">
-
-            <com.pictureair.photopass.widget.CustomTextView
-                android:id="@+id/special_deal_on"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/pp_padding_2"
-                android:paddingRight="@dimen/pp_padding_2"
-                android:text="@string/special_deal_on"
-                android:textColor="@color/pp_red"
-                android:textSize="@dimen/text_size_16"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="1px"
-                android:layout_height="20dp"
-                android:layout_marginLeft="@dimen/pp_padding_5"
-                android:layout_marginRight="@dimen/pp_padding_5"
-                android:background="@color/pp_gray" />
-
-            <com.pictureair.photopass.widget.CustomTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/special_deal_detail"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_14" />
-        </LinearLayout>
 
         <com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator
             android:id="@+id/indicator"
@@ -111,7 +111,7 @@
         android:id="@+id/storyNoNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/special_deal_ll"
         android:visibility="gone" />
 
 
@@ -119,7 +119,7 @@
         android:id="@+id/story_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/special_deal_ll"
         android:visibility="gone">
 
         <RelativeLayout

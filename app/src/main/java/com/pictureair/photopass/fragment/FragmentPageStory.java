@@ -324,11 +324,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                API1.getPhotosByConditions(MyApplication.getTokenId(),
-                        fragmentPageStoryHandler,
+                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler,
                         SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null),
                         null);//获取更新信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
+                showLeadView();
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -550,7 +550,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 needfresh = sharedNeedFresh;
             }
             noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
-
+            showLeadView();
         } else {//刷新失败
             myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_REFRESH));
@@ -855,14 +855,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
+        showLeadView();
+        isOnCreate = false;
+    }
+
+    private void showLeadView(){
         if (TextUtils.isEmpty(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, null))) {
             EventBus.getDefault().post(new StoryLoadCompletedEvent(true));
         } else {
             EventBus.getDefault().post(new StoryLoadCompletedEvent(false));
         }
-        isOnCreate = false;
     }
-
 
     //扫描图片线程类
     private class ScanPhotosThread extends Thread {

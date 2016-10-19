@@ -21,10 +21,10 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
-import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
 import com.pictureair.photopass.fragment.FragmentPageShop;
@@ -32,6 +32,7 @@ import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -594,6 +595,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private void getSpecialDealGoods() {
         if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
+            //如果活动进行中，则不需要重新获取数据
+            API1.getDealingGoods(MyApplication.getTokenId(), handler);
             showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
         }
     }
@@ -656,6 +659,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
             case START_CHECK_UPDATE:
                 checkUpdateManager.startCheck();
+                break;
+
+            case API1.GET_DEALING_GOODS_SUCCESS:
+                break;
+
+            case API1.GET_DEALING_GOODS_FAILED:
                 break;
 
             default:

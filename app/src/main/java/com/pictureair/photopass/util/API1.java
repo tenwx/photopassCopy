@@ -1936,6 +1936,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.out(Common.GET_ALL_DEALINGS + jsonObject.toString());
             }
 
             @Override
