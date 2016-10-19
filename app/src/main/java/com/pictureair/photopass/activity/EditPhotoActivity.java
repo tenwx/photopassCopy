@@ -23,7 +23,7 @@ import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
-public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView, PWDialog.OnPWDialogClickListener {
+public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView, PWDialog.OnPWDialogClickListener, StickerView.OnStickItemDeleteListener {
 	PWEditPresenter pwEditPresenter;
 	private PWToast myToast;
 	private ImageView mLeftBack,back;
@@ -73,6 +73,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 		mFrame.setOnClickListener(this);
 		mFilter.setOnClickListener(this);
 		mSticker.setOnClickListener(this);
+		mStickerView.setOnStickItemDeleteListener(this);
 		dialogShow();
 		pwEditPresenter = new PWEditPresenter();
 		pwEditPresenter.onCreate(this);
@@ -352,5 +353,10 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 	@Override
 	public void onPWDialogButtonClicked(int which, int dialogId) {
 		pwEditPresenter.onPwDialogClick(which,dialogId);
+	}
+
+	@Override
+	public void onStickItemDelete() {
+		pwEditPresenter.onStickItemDelete();
 	}
 }

@@ -42,4 +42,6 @@ public interface PWEditViewListener {
 
     void onPwDialogClick(int which, int id);
 
+    void onStickItemDelete();
+
 }

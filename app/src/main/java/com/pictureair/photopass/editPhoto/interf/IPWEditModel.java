@@ -81,5 +81,11 @@ public interface IPWEditModel {
 
     void inOrOutPlace(final String locationIds, final boolean in);
 
-    Bitmap saveFilterOther(Context context, Bitmap bitmap);
+    Bitmap saveFilterOther(Context context, Bitmap bitmap, int index);
+
+    /**
+     * 删除EditPhotoInfoArrayList末尾几项
+     * @param index 表示删除index后面的几项
+     * */
+    void deleteEditPhotoInfoArrayListLastItems(int index);
 }

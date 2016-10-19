@@ -37,7 +37,7 @@ public enum  RetrofitClient {
                 .retryOnConnectionFailure(false)// 失败重试
                 .build();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Common.BASE_URL_TEST)
+                .baseUrl(Common.BASE_URL_TEST + "/")
                 .addConverterFactory(FastjsonConverterFactory.create())
                 .addConverterFactory(new ProgressConverterFactory(pool))
                 .client(client)

@@ -33,6 +33,7 @@ public class StickerView extends View {
 	private Paint rectPaint = new Paint();
 //	private Paint boxPaint = new Paint();
 	private float leftTopX, leftTopY, rightBottomX, rightBottomY;
+	private OnStickItemDeleteListener listener;
 
 	private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();// 存贮每层贴图数据
 
@@ -151,6 +152,9 @@ public class StickerView extends View {
 			if (deleteId > 0 && currentStatus == STATUS_DELETE) {// 删除选定贴图
 				bank.remove(deleteId);
 				currentStatus = STATUS_IDLE;// 返回空闲状态
+				if (listener != null) {
+					listener.onStickItemDelete();
+				}
 				invalidate();
 			}// end if
 
@@ -209,4 +213,13 @@ public class StickerView extends View {
 		this.rightBottomX = rightBottomX;
 		this.rightBottomY = rightBottomY;
 	}
+
+	public void setOnStickItemDeleteListener(OnStickItemDeleteListener listener) {
+		this.listener = listener;
+	}
+
+	public interface OnStickItemDeleteListener {
+		public void onStickItemDelete();
+	}
+
 }// end class

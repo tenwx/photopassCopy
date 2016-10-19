@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -448,8 +449,8 @@ public class PWEditUtil implements IPWEditModel{
                 filter = new Amaro();
                 break;
             case 3:
-                // 自然美肤效果
-                filter = new BeautifyFilter();
+                // 怀旧效果
+                filter = new OldFilter();
                 break;
             case 4:
                 // HDR 效果
@@ -460,8 +461,8 @@ public class PWEditUtil implements IPWEditModel{
                 filter = new BlurFilter();
                 break;
             case 6:
-                // 怀旧效果
-                filter = new OldFilter();
+                // 自然美肤效果
+                filter = new BeautifyFilter();
                 break;
             default:
                 break;
@@ -475,11 +476,11 @@ public class PWEditUtil implements IPWEditModel{
      * @return
      */
     @Override
-    public Bitmap saveFilterOther(Context context, Bitmap bitmap) {
-        if (tempEditPhotoInfoArrayList.size() == 1){
+    public Bitmap saveFilterOther(Context context, Bitmap bitmap, int index) {
+        if (index == 0){
 
         }else {
-            for (int i = 0; i < tempEditPhotoInfoArrayList.size(); i++) {
+            for (int i = 0; i <= index; i++) {
                 if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditFrame) {
                     bitmap = getFrameComposeBitmap(context, bitmap, tempEditPhotoInfoArrayList.get(i).getFramePosition());
                 }
@@ -492,6 +493,22 @@ public class PWEditUtil implements IPWEditModel{
             }
         }
         return bitmap;
+    }
+
+    @Override
+    public void deleteEditPhotoInfoArrayListLastItems(int index) {
+        if (photoEditorList == null || photoEditorList.size() == 0 || index < 0) return;
+        if (index >= photoEditorList.size()-1) return;
+        int i = -1;
+        Iterator<PhotoEditorInfo> iterator = photoEditorList.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            ++ i;
+            if (i > index) {
+                iterator.remove();
+            }
+        }
+
     }
 
     @Override
