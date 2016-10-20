@@ -650,7 +650,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {//编辑前
             photoInfo = photolist.get(currentPosition);
         }
-        previewPhotoHandler.obtainMessage(CHECK_FAVORITE, currentPosition, 0).sendToTarget();
+
+        previewPhotoHandler.sendMessageDelayed(previewPhotoHandler.obtainMessage(CHECK_FAVORITE, currentPosition, 0), 200);
 
         //更新title地点名称
         locationTextView.setText(photoInfo.locationName);
