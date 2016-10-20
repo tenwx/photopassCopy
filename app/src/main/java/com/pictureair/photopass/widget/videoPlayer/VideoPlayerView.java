@@ -129,6 +129,8 @@ public class VideoPlayerView extends SurfaceView {
         mSeekWhenPrepared = 0;
         requestLayout();
         invalidate();
+        //防止surface先准备好，导致uri设置之后不会播放的问题
+        openVideo();
     }
 
     public void stopPlayback() {
@@ -144,6 +146,7 @@ public class VideoPlayerView extends SurfaceView {
         if (mUri == null || mSurfaceHolder == null) {
             return;
         }
+        PictureAirLog.out("start play video");
         //暂停其他音乐
         Intent i = new Intent("com.android.music.musicservicecommand");
         i.putExtra("command", "pause");
