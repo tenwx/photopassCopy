@@ -596,7 +596,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private void getSpecialDealGoods() {
         if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
             //如果活动进行中，则不需要重新获取数据
-            API1.getDealingGoods(MyApplication.getTokenId(), handler);
+            API1.getDealingGoods(MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType(), handler);
             showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
         }
     }

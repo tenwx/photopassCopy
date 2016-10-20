@@ -1925,13 +1925,15 @@ public class API1 {
 
     /**
      * 获取抢单活动信息
-     * @param tokenid
+     * @param tokenId
+     * @param language
      * @param handler
      * @return
      */
-    public static BasicResultCallTask getDealingGoods(String tokenid, final Handler handler) {
+    public static BasicResultCallTask getDealingGoods(String tokenId, String language, final Handler handler) {
         Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenid);
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.LANGUAGE, language);
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
