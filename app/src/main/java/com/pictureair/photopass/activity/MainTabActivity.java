@@ -196,7 +196,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
-    }
+    } 
 
     private void initLeadView() {
         leadViewRL = (RelativeLayout) findViewById(R.id.story_lead_view_rl);
