@@ -50,7 +50,7 @@ public class FragmentPageMe extends BaseLazyFragment implements OnClickListener 
     private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, downLoadTV, couponTV,opinionsTV;
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private LinearLayout layout;
-    private ImageView headPhoto, code_pic;
+    private ImageView headPhoto, code_pic;     
     private View view;
     private ViewGroup container;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
