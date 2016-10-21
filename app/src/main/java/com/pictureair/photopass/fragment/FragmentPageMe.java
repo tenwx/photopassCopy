@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.BaseLazyFragment;
 import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.HelpActivity;
 import com.pictureair.photopass.activity.LoadManageActivity;
@@ -45,12 +45,14 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  *
  * @author bauer_bao
  */
-public class FragmentPageMe extends BaseFragment implements OnClickListener {
+public class FragmentPageMe extends BaseLazyFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
     private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, downLoadTV, couponTV,opinionsTV;
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private LinearLayout layout;
-    private ImageView headPhoto, icon2, code_pic;
+    private ImageView headPhoto, code_pic;
+    private View view;
+    private ViewGroup container;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String userPPCode = "";//用户PP号
     private String qrCodeUrl = "";
@@ -58,7 +60,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private boolean isCodePic = false;//是否已经生成二维码
     private boolean isShowCodePic = false;//二维码是否已经放大
 
-    private boolean hasHidden = false;
+    private boolean isPrepared, isInited;
 
     private PullToZoomScrollViewEx scrollView;
 
@@ -68,9 +70,23 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private Activity activity;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        activity = getActivity();
-        View view = inflater.inflate(R.layout.fragment_me, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (view == null) {
+            activity = getActivity();
+            view = inflater.inflate(R.layout.fragment_me, null);
+            this.container = container;
+            isPrepared = true;
+            onLazyLoad();
+        }
+        return view;
+    }
+
+    @Override
+    protected void onLazyLoad() {
+        if (!isPrepared || !isVisible || isInited) {
+            return;
+        }
+        isInited = true;
         scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
         View headView = LayoutInflater.from(activity).inflate(R.layout.profile_head_view, null, false);
         View zoomView = LayoutInflater.from(activity).inflate(R.layout.profile_zoom_view, null, false);
@@ -106,7 +122,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
         params3.height = ScreenUtil.getScreenHeight(activity) * 186 / 1136;
         linearLayout3.setLayoutParams(params3);
-//        headPhoto.setOnClickListener(this);
         profileTV.setOnClickListener(this);
         orderTV.setOnClickListener(this);
         ppTV.setOnClickListener(this);
@@ -120,6 +135,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         code_pic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                PictureAirLog.out("qrcode on click" + userPPCode + " " + isShowCodePic);
                 //二维码放大
                 if (!isShowCodePic && !TextUtils.isEmpty(userPPCode)) {
                     isShowCodePic = true;
@@ -136,19 +152,52 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 (int) (4.0F * (ScreenUtil.getScreenHeight(activity) / 16.0F)) + ScreenUtil.dip2px(activity, 35));
         scrollView.setHeaderLayoutParams(localObject);
 
-        return view;
+        onResume();//第一次resume在activity运行的时候就执行了，导致真正到了me页面之后，第一次的resume不会执行
     }
 
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (!hasHidden) {
+        if (isPrepared && isVisible) {
             PictureAirLog.out("truely resume----->me");
             // 初始化数据
             initData();
         } else {
             PictureAirLog.out("fake resume----->me");
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isPrepared && isVisible) {
+            PictureAirLog.out("FragmentPageMe" + "  ==onPause");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+        if (isPrepared && isVisible) {
+            PictureAirLog.out("FragmentPageMe" + "  ==onVisible");
+        }
+    }
+
+    @Override
+    protected void onInvisible() {
+        super.onInvisible();
+        if (isPrepared && !isVisible) {//隐藏发现页面
+            PictureAirLog.out("FragmentPageMe" + "  ==onInVisible");
+            PictureAirLog.out("hide me---->");
+            if (layout != null) {//如果二维码框现实中，则关闭
+                layout.performClick();
+            }
         }
     }
 
@@ -193,18 +242,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         // TODO Auto-generated method stub
         Intent i = new Intent();
         switch (v.getId()) {
-//		case R.id.backgroud_img:
-//			Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
-//			getAlbum.setType("image/*");
-//			startActivityForResult(getAlbum, 1);
-//			break;
-
-//            case R.id.user_photo:
-//                // 跳转到图片选择返回一张图片更新头像
-//                i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
-//                startActivity(i);
-//                break;
-
             case R.id.me_profile:
                 i.setClass(MyApplication.getInstance(), ProfileActivity.class);
                 startActivity(i);
@@ -252,7 +289,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             case R.id.me_opinions:
                 //意见反馈弹出框
                 PictureAirLog.v(TAG, "me_opinions");
-//                UmengUtil.startFeedbackActivity(context);
                 i.setClass(MyApplication.getInstance(), WebViewActivity.class);
                 i.putExtra("key",3);
                 startActivity(i);
@@ -271,6 +307,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      * @param viewGroup
      */
     private void showCodePic(ViewGroup viewGroup) {
+        PictureAirLog.out("showCodePic");
         //半透明背景
         if (layout == null) {
             initPicCodeView(viewGroup);
@@ -283,6 +320,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     }
 
     private void initPicCodeView(final ViewGroup viewGroup) {
+        PictureAirLog.out("initPicCodeView");
         layout = new LinearLayout(activity);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
@@ -334,28 +372,5 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 isShowCodePic = false;
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        hasHidden = hidden;
-        PictureAirLog.out("onHiddenChanged---->me" + hidden);
-        if (hidden) {//隐藏发现页面
-            PictureAirLog.out("hide me---->");
-            if (layout != null) {//如果二维码框现实中，则关闭
-                layout.performClick();
-            }
-        }
     }
 }

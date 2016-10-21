@@ -17,23 +17,17 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.BaseLazyFragment;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
@@ -44,7 +38,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -58,17 +51,12 @@ import java.util.HashMap;
  *
  * @author bauer_bao
  */
-public class FragmentPageDiscover extends BaseFragment implements DiscoverLocationAdapter.OnUpdateLocationListener,
-        OnClickListener, LocationUtil.OnLocationNotificationListener {
-
+public class FragmentPageDiscover extends BaseLazyFragment implements DiscoverLocationAdapter.OnUpdateLocationListener,
+        LocationUtil.OnLocationNotificationListener {
     //声明控件
-    private LinearLayout discoverPopularityLinearLayout, discoverDistanceLinearLayout, discoverSelectionLinearLayout, discoverCollectionLinearLayout, discoverTopLinearLayout;
-    private ImageView cursorImageView;
     private ListView discoverListView;
-    private ImageView moreImageView;
-    private ImageView popularityIconImageView, distanceIconImageView, selectionIconImageView, collectionIconImageView;
-    private TextView popularityTextView, distanceTextView, selectionTextView, collectionTextView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
+    private View view;
 
     //申明类
     private PWToast myToast;
@@ -87,8 +75,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private static final int STOP_LOCATION = 222;
     private static final int FINISH_LOADING = 333;
     private static final int WAIT_LOCATION = 444;
-    private int currentIndex;//当前选择的tab索引值
-    private int offset;//动画条的偏移量
     private float rotate_degree = 0;// x轴的旋转角度
     private ArrayList<DiscoverLocationItemInfo> locationList;
     private ArrayList<String> favoriteList;
@@ -97,7 +83,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private boolean locationStart = false; //开启实时定位标记
     private int activateLocationCount = 0;//记录总共激活定位的数量
     private int locationActivatedIndex = -1;//记录激活定位的索引值
-    private boolean showTab = false;
+    // 标志fragment是否初始化完成
+    private boolean isPrepared;
+    private boolean isInited;
     private int id = 0;
 
     private static final int REQUEST_LOCATION_PERMISSION = 2;
@@ -107,10 +95,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
-    private static class FragmentPageDiscoverHandler extends Handler{
+    private static class FragmentPageDiscoverHandler extends Handler {
         private final WeakReference<FragmentPageDiscover> mActivity;
 
-        public FragmentPageDiscoverHandler(FragmentPageDiscover activity){
+        public FragmentPageDiscoverHandler(FragmentPageDiscover activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -126,6 +114,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -273,44 +262,34 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        activity = getActivity();
-        View view = inflater.inflate(R.layout.fragment_discover, null);
-        PictureAirLog.out("discover on create");
+        if (view == null) {
+            activity = getActivity();
+            view = inflater.inflate(R.layout.fragment_discover, null);
+            PictureAirLog.out("discover on create");
+            isPrepared = true;
+            onLazyLoad();
+        }
 
+        return view;
+    }
+
+    @Override
+    protected void onLazyLoad() {
+        if (!isPrepared || !isVisible || isInited) {
+            return;
+        }
+        isInited = true;
+        PictureAirLog.out("onLazyLoad");
         //初始化控件
-        discoverPopularityLinearLayout = (LinearLayout) view.findViewById(R.id.discover_linearlayout_popularity);
-        discoverDistanceLinearLayout = (LinearLayout) view.findViewById(R.id.discover_linearlayout_distance);
-        discoverSelectionLinearLayout = (LinearLayout) view.findViewById(R.id.discover_linearlayout_selection);
-        discoverCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.discover_linearlayout_collection);
-        discoverTopLinearLayout = (LinearLayout) view.findViewById(R.id.discover_top);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.discoverNoNetWorkView);
-        cursorImageView = (ImageView) view.findViewById(R.id.discover_cursor);
         discoverListView = (ListView) view.findViewById(R.id.discover_listView);
-        moreImageView = (ImageView) view.findViewById(R.id.discover_more);
-        popularityIconImageView = (ImageView) view.findViewById(R.id.discover_imageview_popularity);
-        distanceIconImageView = (ImageView) view.findViewById(R.id.discover_imageview_distance);
-        selectionIconImageView = (ImageView) view.findViewById(R.id.discover_imageview_selection);
-        collectionIconImageView = (ImageView) view.findViewById(R.id.discover_imageview_collection);
-        popularityTextView = (TextView) view.findViewById(R.id.discover_textview_popularity);
-        distanceTextView = (TextView) view.findViewById(R.id.discover_textview_distance);
-        selectionTextView = (TextView) view.findViewById(R.id.discover_textview_selection);
-        collectionTextView = (TextView) view.findViewById(R.id.discover_textview_collection);
 
         //声明方向传感器
         mySensorEventListener = new MySensorEventListener();
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensor_orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-        //绑定监听
-        discoverPopularityLinearLayout.setOnClickListener(new LeadingTabOnClickListener(0));
-        discoverDistanceLinearLayout.setOnClickListener(new LeadingTabOnClickListener(1));
-        discoverSelectionLinearLayout.setOnClickListener(new LeadingTabOnClickListener(2));
-        discoverCollectionLinearLayout.setOnClickListener(new LeadingTabOnClickListener(3));
-        moreImageView.setOnClickListener(this);
-
         //初始化数据
-        changeClickEffect(0);
-        offset = ScreenUtil.getScreenWidth(activity) / 4;//偏移量
         myToast = new PWToast(activity);
         locationUtil = new LocationUtil(activity);
         app = (MyApplication) activity.getApplication();
@@ -323,12 +302,13 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         //获取数据
         showPWProgressDialog();
         getLocationInfo();
-        return view;
+
+        onResume();//第一次resume在activity运行的时候就执行了，导致真正到了发现页面之后，第一次的resume不会执行
     }
 
     @Override
     public void onStop() {
-        if (isVisible()) {
+        if (isPrepared && isVisible) {
             PictureAirLog.d(TAG, "stop============");
             stopService();
         } else {
@@ -341,8 +321,8 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible()) {
-            PictureAirLog.out(TAG+ " truly ==onResume--->discover");
+        if (isPrepared && isVisible) {
+            PictureAirLog.out(TAG + " truly ==onResume--->discover");
             if (mIsAskLocationPermission) {
                 mIsAskLocationPermission = false;
                 return;
@@ -355,7 +335,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void onPause() {
-        if (isVisible()) {
+        if (isPrepared && isVisible) {
             PictureAirLog.out("truly pause---->discover");
             locationStart = false;
         }
@@ -364,15 +344,16 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void onDestroyView() {
-        PictureAirLog.d(TAG, "ondestroy===========");
+        PictureAirLog.d("ondestroy===========");
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
         super.onDestroyView();
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {//显示发现页面，需要获取location信息与当前的坐标
+    protected void onVisible() {
+        super.onVisible();
+        if (isPrepared && isVisible) {
+            //显示发现页面，需要获取location信息与当前的坐标
             PictureAirLog.out("show discover---->");
             //获取数据
             isLoading = false;
@@ -380,13 +361,18 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             showPWProgressDialog();
             getLocationInfo();
             requesLocationPermission();
+        }
+    }
 
-        } else {//隐藏发现页面
+    @Override
+    protected void onInvisible() {
+        super.onInvisible();
+        if (isPrepared && !isVisible) {
+            //隐藏发现页面
             PictureAirLog.out("hide discover---->");
             locationStart = false;
             isLoading = false;
             stopService();
-
         }
     }
 
@@ -404,76 +390,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             PictureAirLog.out("not get lcoation info");
             //直接获取缓存内容
             fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
-        }
-    }
-
-    //顶部导航栏的点击事件类
-    private class LeadingTabOnClickListener implements OnClickListener {
-        private int currentTab;
-
-        public LeadingTabOnClickListener(int cur) {
-            currentTab = cur;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Animation animation = new TranslateAnimation(offset * currentIndex, offset * currentTab, 0, 0);
-            currentIndex = currentTab;
-            animation.setFillAfter(true);
-            animation.setDuration(300);
-            cursorImageView.startAnimation(animation);
-            changeClickEffect(currentTab);
-        }
-    }
-
-    private void changeClickEffect(int cur) {
-        switch (cur) {
-            case 0:
-                popularityIconImageView.setImageResource(R.drawable.discover_collection_sele);
-                distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 1:
-                popularityIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                distanceIconImageView.setImageResource(R.drawable.discover_collection_sele);
-                selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                distanceTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 2:
-                popularityIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                selectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
-                collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                selectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 3:
-                popularityIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                collectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
-                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                collectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -598,25 +514,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             }
         });
         locationThread.start();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.discover_more:
-                if (!showTab) {
-                    discoverTopLinearLayout.setVisibility(View.VISIBLE);
-                    showTab = true;
-                } else {
-                    discoverTopLinearLayout.setVisibility(View.GONE);
-                    showTab = false;
-                }
-                break;
-
-            default:
-                break;
-        }
-
     }
 
     @Override
