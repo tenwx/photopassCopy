@@ -64,7 +64,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
     private ScaleAnimation scaleAnimation;
     private AnimationSet set;
-
+ 
     private Activity activity;
 
     @Override
