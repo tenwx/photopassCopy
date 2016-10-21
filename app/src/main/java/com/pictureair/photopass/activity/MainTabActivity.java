@@ -197,7 +197,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 checkUpdateManager.init();
                 handler.sendEmptyMessage(START_CHECK_UPDATE);
             }
-        }).start();
+        }).start(); 
 
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
