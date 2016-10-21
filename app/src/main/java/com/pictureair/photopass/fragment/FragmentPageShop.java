@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseLazyFragment;
+import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CartActivity;
 import com.pictureair.photopass.activity.DetailProductActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
@@ -38,6 +38,7 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +48,9 @@ import java.util.List;
  *
  * @author bauer_bao
  */
-public class FragmentPageShop extends BaseLazyFragment implements OnClickListener {
+public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageShop";
     //申明控件
-    private View view;
     private ImageView shoppingBag;
     private TextView cartCountTextView;
     private SwipeRefreshLayout refreshLayout;
@@ -60,7 +60,6 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
     //申明变量
     private int cartCount = 0; // 记录数据库中有几条记录
     private String currency = "";//货币种类
-    private boolean isPrepared, isInited;
 
     //申明实例类
     private List<GoodsInfo> allGoodsList;//全部商品
@@ -69,102 +68,108 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
     //申明其他
     private PWToast newToast;
 
+    private boolean hasHidden = false;
+
     private Activity activity;
 
-    private Handler fragmentPageShopHandler = new Handler(new Handler.Callback() {
+    private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
+
+    private static class FragmentPageShopHandler extends Handler {
+        private final WeakReference<FragmentPageShop> mActivity;
+
+        public FragmentPageShopHandler(FragmentPageShop activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.GET_GOODS_SUCCESS://成功获取商品
-                    dismissPWProgressDialog();
-                    if (refreshLayout.isRefreshing()) {
-                        refreshLayout.setRefreshing(false);
-                    }
-                    allGoodsList.clear();
-                    PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                        refreshLayout.setVisibility(View.VISIBLE);
-                        noNetWorkOrNoCountView.setVisibility(View.GONE);
-                        //更新界面
-                        shopGoodListViewAdapter.refresh(allGoodsList);
-                    }
-
-                    //获取收货地址列表
-                    String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
-                    PictureAirLog.i(TAG, "initData: addressByACache: " + addressByACache);
-                    if (addressByACache == null || addressByACache.equals("")) {
-                        API1.getOutlets(fragmentPageShopHandler);
-                    }
-                    break;
-
-                case API1.GET_GOODS_FAILED://获取商品失败
-                    //显示重新加载界面
-                    if (refreshLayout.isRefreshing()) {
-                        refreshLayout.setRefreshing(false);
-                    }
-                    dismissPWProgressDialog();
-                    showNetWorkView();
-                    break;
-
-                case API1.GET_OUTLET_ID_SUCCESS:
-                    //获取自提地址成功
-                    dismissPWProgressDialog();
-                    AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
-                    if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                        //存入缓存
-                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
-                        }
-                    }
-                    break;
-
-                case API1.GET_OUTLET_ID_FAILED:
-                    //获取自提地址失败
-                    dismissPWProgressDialog();
-                    break;
-
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                    //重新加载购物车数据
-                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-                        newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                        break;
-                    }
-                    PictureAirLog.v(TAG, "onclick with reload");
-                    showPWProgressDialog();
-                    //重新加载数据
-                    initData(true);
-                    break;
-
-                default:
-                    break;
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
             }
-            return false;
+            mActivity.get().dealHandler(msg);
         }
-    });
+    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (view == null) {
-            activity = getActivity();
-            view = inflater.inflate(R.layout.fragment_shop, null);
-            isPrepared = true;
-            onLazyLoad();
+    /**
+     * 处理Message
+     *
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.GET_GOODS_SUCCESS://成功获取商品
+                dismissPWProgressDialog();
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                }
+                allGoodsList.clear();
+                PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    allGoodsList = goodsInfoJson.getGoods();
+                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                    refreshLayout.setVisibility(View.VISIBLE);
+                    noNetWorkOrNoCountView.setVisibility(View.GONE);
+                    //更新界面
+                    shopGoodListViewAdapter.refresh(allGoodsList);
+                }
+
+                //获取收货地址列表
+                String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
+                PictureAirLog.i(TAG, "initData: addressByACache: " + addressByACache);
+                if (addressByACache == null || addressByACache.equals("")) {
+                    API1.getOutlets(fragmentPageShopHandler);
+                }
+                break;
+
+            case API1.GET_GOODS_FAILED://获取商品失败
+                //显示重新加载界面
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                }
+                dismissPWProgressDialog();
+                showNetWorkView();
+                break;
+
+            case API1.GET_OUTLET_ID_SUCCESS:
+                //获取自提地址成功
+                dismissPWProgressDialog();
+                AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
+                if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                    //存入缓存
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
+                    }
+                }
+                break;
+
+            case API1.GET_OUTLET_ID_FAILED:
+                //获取自提地址失败
+                dismissPWProgressDialog();
+                break;
+
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+                //重新加载购物车数据
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                PictureAirLog.v(TAG, "onclick with reload");
+                showPWProgressDialog();
+                //重新加载数据
+                initData(true);
+                break;
+
+            default:
+                break;
         }
-
-        return view;
     }
 
     @Override
-    protected void onLazyLoad() {
-        if (!isPrepared || !isVisible || isInited) {
-            return;
-        }
-
-        isInited = true;
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        activity = getActivity();
+        View view = inflater.inflate(R.layout.fragment_shop, null);
         newToast = new PWToast(MyApplication.getInstance());
         //找控件
         shoppingBag = (ImageView) view.findViewById(R.id.frag3_cart);
@@ -225,8 +230,7 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
         xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, null));
 
         initData(false);//初始化数据
-
-        onResume();//第一次resume在activity运行的时候就执行了，导致真正到了shop页面之后，第一次的resume不会执行
+        return view;
     }
 
     /**
@@ -280,7 +284,6 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
                 Intent intent = new Intent(activity, CartActivity.class);
                 startActivity(intent);
                 break;
-
             default:
                 break;
         }
@@ -289,7 +292,7 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        if (isPrepared && isVisible) {
+        if (!hasHidden) {
             PictureAirLog.out("truely resume----->shop");
             cartCount = SPUtils.getInt(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
             if (cartCount > 0) {
@@ -308,33 +311,6 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
     public void onDestroyView() {
         super.onDestroyView();
         fragmentPageShopHandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (isPrepared && isVisible) {
-            PictureAirLog.out("FragmentPageShop" + "  ==onPause");
-
-        }
-    }
-
-    @Override
-    protected void onVisible() {
-        super.onVisible();
-        if (isPrepared && isVisible) {
-            PictureAirLog.out("FragmentPageShop" + "  ==onvisible");
-
-        }
-    }
-
-    @Override
-    protected void onInvisible() {
-        super.onInvisible();
-        if (isPrepared && !isVisible) {
-            PictureAirLog.out("FragmentPageShop" + "  ==oninvisible");
-
-        }
     }
 
     /**
@@ -370,5 +346,11 @@ public class FragmentPageShop extends BaseLazyFragment implements OnClickListene
                 mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
             }
         }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        hasHidden = hidden;
     }
 }

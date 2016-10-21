@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +19,6 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
@@ -45,7 +46,6 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -63,16 +63,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private FragmentPageShop fragmentPageShop;
     private FragmentPageMe fragmentPageMe;
 
-    private ViewPager mainViewPager;
-    private FragmentAdapter fragmentAdapter;
-    private LinearLayout storyTabTrue, discoverTabTrue, shopTabTrue, meTabTrue;
-    private ImageView storyTrueIV, discoverTrueIV, shopTrueIV, meTrueIV;
-    private TextView storyTrueTV, discoverTrueTV, shopTrueTV, meTrueTV;
-    private TextView storyFalseTV, discoverFalseTV, shopFalseTV, meFalseTV;
-    private List<Fragment> mainActivityFragmentList = new ArrayList<>();
-    private List<ImageView> mainActivityIVList = new ArrayList<>();
-    private List<TextView> mainActivityTVList = new ArrayList<>();
-    private String[] titleStrings = new String[]{"story", "discover", "shop", "me"};
+    private FragmentManager fragmentManager;
+
+    private LinearLayout storyTab, discoverTab, shopTab, meTab;
+    private ImageView storyIV, discoverIV, shopIV, meIV;
+    private TextView storyTV, discoverTV, shopTV, meTV;
 
     private RelativeLayout parentLayout;
     private WaterDrop waterDropView;
@@ -134,8 +129,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         handler = new Handler(this);
         hasCreated = true;
         initView();
-        setTabSelection(0);
-        changAlpha(0);
+        setTabSelection(0, false);
     }
 
     //清除acahe框架的缓存数据
@@ -148,36 +142,27 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      * 初始化组件
      */
     private void initView() {
-        mainViewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        fragmentManager = getSupportFragmentManager();
 
-        storyTabTrue = (LinearLayout) findViewById(R.id.main_photo_tab_ll_true);
-        discoverTabTrue = (LinearLayout) findViewById(R.id.main_discover_tab_ll_true);
-        shopTabTrue = (LinearLayout) findViewById(R.id.main_shop_tab_ll_true);
-        meTabTrue = (LinearLayout) findViewById(R.id.main_me_tab_ll_true);
+        storyTab = (LinearLayout) findViewById(R.id.main_photo_tab);
+        discoverTab = (LinearLayout) findViewById(R.id.main_discover_tab);
+        shopTab = (LinearLayout) findViewById(R.id.main_shop_tab);
+        meTab = (LinearLayout) findViewById(R.id.main_me_tab);
 
-        storyTrueIV = (ImageView) findViewById(R.id.main_photo_iv_true);
-        discoverTrueIV = (ImageView) findViewById(R.id.main_discover_iv_true);
-        shopTrueIV = (ImageView) findViewById(R.id.main_shop_iv_true);
-        meTrueIV = (ImageView) findViewById(R.id.main_me_iv_true);
+        storyIV = (ImageView) findViewById(R.id.main_photo_iv);
+        discoverIV = (ImageView) findViewById(R.id.main_discover_iv);
+        shopIV = (ImageView) findViewById(R.id.main_shop_iv);
+        meIV = (ImageView) findViewById(R.id.main_me_iv);
 
-        storyTrueTV = (TextView) findViewById(R.id.main_photo_tv_true);
-        discoverTrueTV = (TextView) findViewById(R.id.main_discover_tv_true);
-        shopTrueTV = (TextView) findViewById(R.id.main_shop_tv_true);
-        meTrueTV = (TextView) findViewById(R.id.main_me_tv_true);
+        storyTV = (TextView) findViewById(R.id.main_photo_tv);
+        discoverTV = (TextView) findViewById(R.id.main_discover_tv);
+        shopTV = (TextView) findViewById(R.id.main_shop_tv);
+        meTV = (TextView) findViewById(R.id.main_me_tv);
 
-        storyFalseTV = (TextView) findViewById(R.id.main_photo_tv_false);
-        discoverFalseTV = (TextView) findViewById(R.id.main_discover_tv_false);
-        shopFalseTV = (TextView) findViewById(R.id.main_shop_tv_false);
-        meFalseTV = (TextView) findViewById(R.id.main_me_tv_false);
-
-        initFragment();
-
-        initViewPager();
-
-        storyTabTrue.setOnClickListener(new TabOnClick(0));
-        discoverTabTrue.setOnClickListener(new TabOnClick(1));
-        shopTabTrue.setOnClickListener(new TabOnClick(2));
-        meTabTrue.setOnClickListener(new TabOnClick(3));
+        storyTab.setOnClickListener(new TabOnClick(0));
+        discoverTab.setOnClickListener(new TabOnClick(1));
+        shopTab.setOnClickListener(new TabOnClick(3));
+        meTab.setOnClickListener(new TabOnClick(4));
 
         waterDropView = (WaterDrop) findViewById(R.id.waterdrop);
         waterDropView.setOnDragCompeteListener(this);
@@ -197,7 +182,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 checkUpdateManager.init();
                 handler.sendEmptyMessage(START_CHECK_UPDATE);
             }
-        }).start(); 
+        }).start();
 
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -211,53 +196,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
-    }
-
-    private void initFragment() {
-        fragmentPageStory = new FragmentPageStory();
-        fragmentPageDiscover = new FragmentPageDiscover();
-        fragmentPageShop = new FragmentPageShop();
-        fragmentPageMe = new FragmentPageMe();
-        mainActivityFragmentList.clear();
-        mainActivityFragmentList.add(fragmentPageStory);
-        mainActivityFragmentList.add(fragmentPageDiscover);
-        mainActivityFragmentList.add(fragmentPageShop);
-        mainActivityFragmentList.add(fragmentPageMe);
-
-        fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), mainActivityFragmentList, titleStrings);
-        mainViewPager.setAdapter(fragmentAdapter);
-    }
-
-    private void initViewPager() {
-        mainActivityTVList.add(storyTrueTV);
-        mainActivityTVList.add(discoverTrueTV);
-        mainActivityTVList.add(shopTrueTV);
-        mainActivityTVList.add(meTrueTV);
-
-        mainActivityIVList.add(storyTrueIV);
-        mainActivityIVList.add(discoverTrueIV);
-        mainActivityIVList.add(shopTrueIV);
-        mainActivityIVList.add(meTrueIV);
-
-        mainViewPager.setOffscreenPageLimit(3);
-        mainViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                changAlpha(position, positionOffset);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                last_tab = position;
-                changAlpha(position);
-                clickTab(position, false);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
     private void initLeadView() {
@@ -297,22 +235,22 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             hasCreated = false;
             return;
         }
-        if (application.getMainTabIndex() == 2) {
+        if (application.getMainTabIndex() == 3) {
             PictureAirLog.out("skip to shop tab");
-            setTabSelection(2);
+            setTabSelection(3, true);
             application.setMainTabIndex(-1);
             application.setIsStoryTab(false);
-            last_tab = 2;
+            last_tab = 3;
         } else if (application.getMainTabIndex() == 0) {
             PictureAirLog.out("skip to story tab");
-            setTabSelection(0);
+            setTabSelection(0, true);
             application.setMainTabIndex(-1);
             application.setIsStoryTab(true);
             last_tab = 0;
         } else {
             PictureAirLog.out("skip to last tab");
             //设置成为上次的tab页面
-            setTabSelection(last_tab);
+            setTabSelection(last_tab, true);
             if (last_tab == 0) {
                 application.setIsStoryTab(true);
             }
@@ -320,17 +258,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         PictureAirLog.out("currenagLanguage--->" + currentLanguage + "___" + MyApplication.getInstance().getLanguageType());
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             PictureAirLog.out("maintab ==== currentLanguage");
+            removeFragment();
             //修改底部tab语言
-            storyTrueTV.setText(R.string.tab_story);
-            discoverTrueTV.setText(R.string.tab_discover);
-            shopTrueTV.setText(R.string.tab_shops);
-            meTrueTV.setText(R.string.tab_me);
-            storyFalseTV.setText(R.string.tab_story);
-            discoverFalseTV.setText(R.string.tab_discover);
-            shopFalseTV.setText(R.string.tab_shops);
-            meFalseTV.setText(R.string.tab_me);
-            initFragment();
-            setTabSelection(3);
+            storyTV.setText(R.string.tab_story);
+            discoverTV.setText(R.string.tab_discover);
+            shopTV.setText(R.string.tab_shops);
+            meTV.setText(R.string.tab_me);
+            setTabSelection(4, false);
             currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
@@ -388,41 +322,72 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         @Override
         public void onClick(View v) {
-            clickTab(currentTab, true);
+            switch (currentTab) {
+                case 0:
+                    PictureAirLog.out("photo tab on click");
+                    if (last_tab == 0) {//获取最新数据
+                        PictureAirLog.d(TAG, "need refresh");
+                        EventBus.getDefault().post(new MainTabOnClickEvent(true, false));
+                    } else {
+                        PictureAirLog.d(TAG, "need not refresh");
+                    }
+                    setTabSelection(0, true);
+                    last_tab = 0;
+                    application.setIsStoryTab(true);
+                    break;
+
+                case 2:
+                    PictureAirLog.out("camera tab on click");
+                    setTabSelection(2, true);
+                    application.setIsStoryTab(false);
+                    break;
+
+                case 1:
+                case 3:
+                case 4:
+                    PictureAirLog.out(currentTab + " tab on click");
+                    last_tab = currentTab;
+                    setTabSelection(currentTab, true);
+                    application.setIsStoryTab(false);
+                    break;
+
+                default:
+                    break;
+            }
         }
+
     }
 
-    private void clickTab(int currentTab, boolean isClick) {
-        switch (currentTab) {
-            case 0:
-                PictureAirLog.out("photo tab on click");
-                if (last_tab == 0 && isClick) {//获取最新数据
-                    PictureAirLog.d(TAG, "need refresh");
-                    EventBus.getDefault().post(new MainTabOnClickEvent(true, false));
-                } else {
-                    PictureAirLog.d(TAG, "need not refresh");
-                }
-                setTabSelection(currentTab);
-                last_tab = currentTab;
-                application.setIsStoryTab(true);
-                break;
-
-            case 1:
-            case 2:
-            case 3:
-                PictureAirLog.out(currentTab + " tab on click");
-                last_tab = currentTab;
-                setTabSelection(currentTab);
-                application.setIsStoryTab(false);
-                break;
-
-            default:
-                break;
+    /**
+     * 清除fragment
+     */
+    private void removeFragment(){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        fragmentPageStory = (FragmentPageStory) fragmentManager.findFragmentByTag("tag1");
+        fragmentPageDiscover = (FragmentPageDiscover) fragmentManager.findFragmentByTag("tag2");
+        fragmentPageShop = (FragmentPageShop) fragmentManager.findFragmentByTag("tag4");
+        fragmentPageMe = (FragmentPageMe) fragmentManager.findFragmentByTag("tag5");
+        if (fragmentPageStory != null) {
+            transaction.remove(fragmentPageStory);
+            fragmentPageStory = null;
         }
-
+        if (fragmentPageDiscover != null) {
+            transaction.remove(fragmentPageDiscover);
+            fragmentPageDiscover = null;
+        }
+        if (fragmentPageShop != null) {
+            transaction.remove(fragmentPageShop);
+            fragmentPageShop = null;
+        }
+        if (fragmentPageMe != null) {
+            transaction.remove(fragmentPageMe);
+            fragmentPageMe = null;
+        }
+        transaction.commitAllowingStateLoss();
     }
 
-    private void setTabSelection(int index) {
+    private void setTabSelection(int index, boolean needHide) {
+
         if (checkCurrentSelection(index)) {//如果正在显示，不需要做任何处理
             PictureAirLog.out("current showing tab is ---> " + index);
             return;
@@ -430,7 +395,77 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             PictureAirLog.out("current tab not showing--->" + index);
         }
 
-        mainViewPager.setCurrentItem(index);
+        // 每次选中之前先清楚掉上次的选中状态
+        clearSelection();
+        // 开启一个Fragment事务
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (needHide) {
+            // 先隐藏掉所有的Fragment，以防止有多个Fragment显示在界面上的情况
+            hideFragments(transaction);
+        }
+        switch (index) {
+            case 0:
+                // 当点击了照片tab时，改变控件的图片和文字颜色
+                storyIV.setImageResource(R.drawable.icon_photos_sel);
+                storyTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                if (fragmentPageStory == null) {
+                    // 如果MessageFragment为空，则创建一个并添加到界面上
+                    fragmentPageStory = new FragmentPageStory();
+                    transaction.add(R.id.main_content, fragmentPageStory, "tag1");
+                } else {
+                    // 如果MessageFragment不为空，则直接将它显示出来
+                    transaction.show(fragmentPageStory);
+                }
+                break;
+
+            case 1:
+                // 当点击了发现tab时，改变控件的图片和文字颜色
+                discoverIV.setImageResource(R.drawable.icon_discover_sel);
+                discoverTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                if (fragmentPageDiscover == null) {
+                    // 如果ContactsFragment为空，则创建一个并添加到界面上
+                    fragmentPageDiscover = new FragmentPageDiscover();
+                    transaction.add(R.id.main_content, fragmentPageDiscover, "tag2");
+                } else {
+                    // 如果ContactsFragment不为空，则直接将它显示出来
+                    transaction.show(fragmentPageDiscover);
+                }
+                break;
+
+            case 3:
+                // 当点击了商店tab时，改变控件的图片和文字颜色
+                shopIV.setImageResource(R.drawable.icon_shop_sel);
+                shopTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                if (fragmentPageShop == null) {
+                    // 如果NewsFragment为空，则创建一个并添加到界面上
+                    fragmentPageShop = new FragmentPageShop();
+                    transaction.add(R.id.main_content, fragmentPageShop, "tag4");
+                } else {
+                    // 如果NewsFragment不为空，则直接将它显示出来
+                    transaction.show(fragmentPageShop);
+                }
+                break;
+
+            case 4:
+                // 当点击了我的tab时，改变控件的图片和文字颜色
+                meIV.setImageResource(R.drawable.icon_me_sel);
+                meTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                if (fragmentPageMe == null) {
+                    PictureAirLog.out("fragment me is null");
+                    // 如果SettingFragment为空，则创建一个并添加到界面上
+                    fragmentPageMe = new FragmentPageMe();
+                    transaction.add(R.id.main_content, fragmentPageMe, "tag5");
+                } else {
+                    // 如果SettingFragment不为空，则直接将它显示出来
+                    PictureAirLog.out("fragment me is not null");
+                    transaction.show(fragmentPageMe);
+                }
+                break;
+
+            default:
+                break;
+        }
+        transaction.commitAllowingStateLoss();
         PictureAirLog.out("maintab---->commit");
     }
 
@@ -440,35 +475,78 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      * @return
      */
     private boolean checkCurrentSelection(int index) {
-        return index == mainViewPager.getCurrentItem();
-    }
+        boolean isShowing = false;
+        switch (index) {
+            case 0:
+                if (fragmentPageStory != null)
+                    isShowing = fragmentPageStory.isVisible();
+                break;
 
-    /**
-     * 一开始运行、滑动和点击tab结束后设置tab的透明度，fragment的透明度和大小
-     */
-    private void changAlpha(int postion) {
-        for (int i = 0; i < mainActivityTVList.size(); i++) {
-            if (i == postion) {
-                mainActivityTVList.get(i).setAlpha(1.0f);
-                mainActivityIVList.get(i).setAlpha(1.0f);
-            } else {
-                mainActivityTVList.get(i).setAlpha(0.0f);
-                mainActivityIVList.get(i).setAlpha(0.0f);
-            }
+            case 1:
+                if (fragmentPageDiscover != null)
+                    isShowing = fragmentPageDiscover.isVisible();
+                break;
+
+            case 2://camera
+
+                break;
+
+            case 3:
+                if (fragmentPageShop != null)
+                    isShowing = fragmentPageShop.isVisible();
+                break;
+
+            case 4:
+                if (fragmentPageMe != null)
+                    isShowing = fragmentPageMe.isVisible();
+                break;
+
+            default:
+                break;
         }
+        return isShowing;
     }
 
     /**
-     * 根据滑动设置透明度
+     * 清除掉所有的选中状态。
      */
-    private void changAlpha(int pos, float posOffset) {
-        int nextIndex = pos + 1;
-        if (posOffset > 0) {
-            //设置tab的颜色渐变效果
-            mainActivityTVList.get(nextIndex).setAlpha(posOffset);
-            mainActivityIVList.get(nextIndex).setAlpha(posOffset);
-            mainActivityTVList.get(pos).setAlpha(1 - posOffset);
-            mainActivityIVList.get(pos).setAlpha(1 - posOffset);
+    private void clearSelection() {
+        storyIV.setImageResource(R.drawable.icon_photos_nor);
+        storyTV.setTextColor(ContextCompat.getColor(this, R.color.pp_gray));
+        discoverIV.setImageResource(R.drawable.icon_discover_nor);
+        discoverTV.setTextColor(ContextCompat.getColor(this, R.color.pp_gray));
+        shopIV.setImageResource(R.drawable.icon_shop_nor);
+        shopTV.setTextColor(ContextCompat.getColor(this, R.color.pp_gray));
+        meIV.setImageResource(R.drawable.icon_me_nor);
+        meTV.setTextColor(ContextCompat.getColor(this, R.color.pp_gray));
+    }
+
+    /**
+     * 将所有的Fragment都置为隐藏状态。
+     *
+     * @param transaction 用于对Fragment执行操作的事务
+     */
+    private void hideFragments(FragmentTransaction transaction) {
+        fragmentPageStory = (FragmentPageStory) fragmentManager.findFragmentByTag("tag1");
+        fragmentPageDiscover = (FragmentPageDiscover) fragmentManager.findFragmentByTag("tag2");
+        fragmentPageShop = (FragmentPageShop) fragmentManager.findFragmentByTag("tag4");
+        fragmentPageMe = (FragmentPageMe) fragmentManager.findFragmentByTag("tag5");
+
+        if (fragmentPageStory != null) {
+            transaction.hide(fragmentPageStory);
+        }
+        if (fragmentPageDiscover != null) {
+            transaction.hide(fragmentPageDiscover);
+        }
+        if (fragmentPageShop != null) {
+            transaction.hide(fragmentPageShop);
+        }
+        if (fragmentPageMe != null) {
+            PictureAirLog.out("me ----> not null");
+            transaction.hide(fragmentPageMe);
+        } else {
+
+            PictureAirLog.out("me ----> null");
         }
     }
 
@@ -617,7 +695,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             EventBus.getDefault().removeStickyEvent(redPointControlEvent);
         } else if (baseBusEvent instanceof MainTabSwitchEvent) {//切换到对应的tab
             MainTabSwitchEvent mainTabSwitchEvent = (MainTabSwitchEvent) baseBusEvent;
-            setTabSelection(mainTabSwitchEvent.getMainTabSwitchIndex());
+            setTabSelection(mainTabSwitchEvent.getMainTabSwitchIndex(), true);
             application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
             last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
