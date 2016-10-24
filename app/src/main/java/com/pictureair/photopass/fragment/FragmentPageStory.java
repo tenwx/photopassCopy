@@ -35,6 +35,7 @@ import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
@@ -159,10 +160,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private SimpleDateFormat sdf;
     private String userId;
     private PWToast myToast;
-    private PhotoInfo selectPhotoItemInfo;
     private ScanPhotosThread scanPhotosThread;
     private PictureAirDbManager pictureAirDbManager;
     private PWDialog pwDialog;
+    private DealingInfo dealingInfo;
     private boolean getPhotoInfoDone = false;
 
     /**
@@ -1568,6 +1569,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case R.id.special_deal_ll:
                 //抢单点击事件，即可进入抢单活动页面
+                PictureAirLog.d("deal url---> " + dealingInfo.getDealingUrl() + "tokenid-->" + MyApplication.getTokenId());
                 break;
 
             default:
@@ -1607,7 +1609,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 clickToRefresh();
             }
             if (storyRefreshOnClickEvent.isShowSpecialDealBar()) {//显示顶部抢购栏
+                dealingInfo = storyRefreshOnClickEvent.getDealingInfo();
                 specialDealLL.setVisibility(View.VISIBLE);
+                if (storyRefreshOnClickEvent.isSpecialDealBuyClick()) {//如果是点了购买按钮，需要执行购买流程
+                    specialDealLL.performClick();
+                }
             }
             EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
         }

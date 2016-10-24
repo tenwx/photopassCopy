@@ -15,6 +15,7 @@ import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.HelpInfo;
@@ -1108,6 +1109,21 @@ public class JsonUtil {
             e.printStackTrace();
         }
         return isdonePayOrder;
+    }
+
+    /**
+     * 获取活动对象
+     * @param jsonObject
+     * @return
+     */
+    public static DealingInfo getDealingInfo(JSONObject jsonObject) {
+        if (jsonObject.containsKey("dealings")) {
+            JSONArray jsonArray = jsonObject.getJSONArray("dealings");
+            if (jsonArray.size() > 0) {
+                return JsonTools.parseObject(jsonArray.getJSONObject(0).toJSONString(), DealingInfo.class);
+            }
+        }
+        return null;
     }
 
 }

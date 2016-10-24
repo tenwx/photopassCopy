@@ -21,7 +21,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PhotoDownLoadInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.Collections;
 import java.util.List;

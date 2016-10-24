@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
@@ -1938,12 +1939,21 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                long localTime = System.currentTimeMillis();
                 PictureAirLog.json(jsonObject.toString());
+                DealingInfo dealingInfo = JsonUtil.getDealingInfo(jsonObject);
+                if (dealingInfo != null) {
+                    handler.obtainMessage(GET_DEALING_GOODS_SUCCESS, dealingInfo).sendToTarget();
+
+                } else {
+                    handler.obtainMessage(GET_DEALING_GOODS_FAILED, 401, 0).sendToTarget();
+                }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                handler.obtainMessage(GET_DEALING_GOODS_FAILED, status, 0).sendToTarget();
             }
         });
         return task;

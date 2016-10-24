@@ -626,11 +626,11 @@ public class AppUtil {
         long result_time = 0;
 
         try {
-            format.setTimeZone(TimeZone.getTimeZone("GMT00:00"));
+            format.setTimeZone(TimeZone.getTimeZone("GMT00:00"));//设置0时区
             result_date = format.parse(convertString);
-            result_time = result_date.getTime();
-            format.setTimeZone(TimeZone.getDefault());
-            return format.format(result_time);
+            result_time = result_date.getTime();//得到0时区的毫秒数
+            format.setTimeZone(TimeZone.getDefault());//设置当前时区
+            return format.format(result_time);//转换成当前时区的时间
         } catch (Exception e) {
             e.printStackTrace();
         }

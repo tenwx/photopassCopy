@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
@@ -83,6 +84,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private PWDialog pwDialog;
     private TextView specialDealBuyTV;
     private ImageView specialDealCloseIV;
+    private DealingInfo dealingInfo;
 
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
@@ -298,12 +300,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.special_dialog_buy_tv:
-                EventBus.getDefault().post(new MainTabOnClickEvent(false, true));
+                EventBus.getDefault().post(new MainTabOnClickEvent(false, dealingInfo, true, true));
                 pwDialog.pwDialogDismiss();
                 break;
 
             case R.id.special_dialog_deal_close_iv:
-                EventBus.getDefault().post(new MainTabOnClickEvent(false, true));
+                EventBus.getDefault().post(new MainTabOnClickEvent(false, dealingInfo, true, false));
                 pwDialog.pwDialogDismiss();
                 break;
 
@@ -327,7 +329,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     PictureAirLog.out("photo tab on click");
                     if (last_tab == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
-                        EventBus.getDefault().post(new MainTabOnClickEvent(true, false));
+                        EventBus.getDefault().post(new MainTabOnClickEvent(true, null, false, false));
                     } else {
                         PictureAirLog.d(TAG, "need not refresh");
                     }
@@ -597,7 +599,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
             //如果活动进行中，则不需要重新获取数据
             API1.getDealingGoods(MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType(), handler);
-            showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
         }
     }
 
@@ -662,9 +663,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 break;
 
             case API1.GET_DEALING_GOODS_SUCCESS:
+                PictureAirLog.d(msg.obj.toString());
+                dealingInfo = (DealingInfo) msg.obj;
+                showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
                 break;
 
             case API1.GET_DEALING_GOODS_FAILED:
+                newToast.setTextAndShow(ReflectionUtil.getStringId(this, msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             default:
