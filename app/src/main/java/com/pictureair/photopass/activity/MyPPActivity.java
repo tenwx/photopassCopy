@@ -28,6 +28,7 @@ import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -302,14 +303,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 dismissPWProgressDialog();
                 break;
 
-            case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
+            case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功，需要回到story页面
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-                ((MyApplication) getApplication()).setNeedRefreshPPPList(true);
-
-                Intent intent0 = new Intent(MyPPActivity.this, MyPPPActivity.class);
-                API1.PPPlist.clear();
+                if (AppManager.getInstance().checkActivity(MyPPPActivity.class)) {
+                    AppManager.getInstance().killActivity(MyPPPActivity.class);
+                }
+                myApplication.setMainTabIndex(0);
                 dismissPWProgressDialog();
-                startActivity(intent0);
                 finish();
                 break;
 

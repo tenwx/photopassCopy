@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * 编辑story中的相册页面
+ * pp详情页面
  * @author bauer_bao
  *
  */

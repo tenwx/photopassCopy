@@ -439,14 +439,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
 
                 } else {//照片通过ppp升级的流程
-                    intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putInt("position", -2);  //代表从 pp＋绑定PP
-                    bundle1.putString("tab", SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName",""));
-                    bundle1.putString("ppsStr",ppsStr);
-                    intent.putExtra("bundle", bundle1);
-                    startActivity(intent);
-
+                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){
+                        AppManager.getInstance().killActivity(MyPPActivity.class);
+                    }
+                    if (AppManager.getInstance().checkActivity(EditStoryAlbumActivity.class)) {
+                        AppManager.getInstance().killActivity(EditStoryAlbumActivity.class);
+                    }
                 }
                 finish();
                 break;
