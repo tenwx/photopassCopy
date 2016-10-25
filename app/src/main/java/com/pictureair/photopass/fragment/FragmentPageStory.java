@@ -32,6 +32,7 @@ import com.pictureair.photopass.activity.InputCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
+import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -42,13 +43,13 @@ import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
-import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -1570,6 +1571,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case R.id.special_deal_ll:
                 //抢单点击事件，即可进入抢单活动页面
                 PictureAirLog.d("deal url---> " + dealingInfo.getDealingUrl() + "tokenid-->" + MyApplication.getTokenId());
+                Intent intent = new Intent(context, PanicBuyActivity.class);
+                startActivity(intent);
                 break;
 
             default:

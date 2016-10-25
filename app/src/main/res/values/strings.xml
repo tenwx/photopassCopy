@@ -354,6 +354,7 @@
     <string name="want_to_buy">暂无订单历史记录</string>
     <string name="order_pending">处理中</string>
     <string name="order_delete_msg">您将要删除此订单吗？</string>
+    <string name="order_cancled">已取消</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -628,5 +629,12 @@
     <string name="special_deal_detail2">只需169元就能获得绑定至同一张迪士尼乐拍通卡内的所有数码照片！</string>
     <string name="special_deal">优享特惠！</string>
     <string name="special_deal_buy_now">购买</string>
+    <string name="panic_buy_title">特惠活动</string>
+    <string name="panic_buy_not_start">未开始</string>
+    <string name="panic_buy_start">抢购中</string>
+    <string name="panic_buy_start_content">抢购即将开始</string>
+    <string name="panic_buy_end_content">抢购即将结束</string>
+    <string name="panic_buy_begin_soon">即将开场</string>
+    <string name="panic_buy_buy_now">立即购买</string>
     <!--special deal-->
 </resources>

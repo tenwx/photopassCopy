@@ -31,6 +31,7 @@ import com.pictureair.photopass.adapter.SubmitOrderListViewAdapter;
 import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.InvoiceInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
@@ -100,6 +101,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     private ImageView btn_agreement;//条款按钮
     private boolean isSelecteAgreement = false;//是否选中条款
+
+    private int fromPanicBuy = 0;
+    private JSONArray goods;
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
@@ -257,6 +261,23 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
                 break;
 
+            case API1.ADD_BOOKING_SUCCESS:
+                PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
+                JSONObject orderObject = (JSONObject) msg.obj;
+                orderId = orderObject.getString("orderCode");
+                dismissPWProgressDialog();
+                if (!TextUtils.isEmpty(orderId)) {
+                    goToPayActivity(true);
+                }
+                break;
+            case API1.ADD_BOOKING_FAILED:
+                //参照ADDORDER写的可能要修改
+                PictureAirLog.e(TAG, "ADD_BOOKING_FAILED cade: " + msg.arg1);
+                dismissPWProgressDialog();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                orderId = "123456789";
+                goToPayActivity(true);
+                break;
             default:
                 break;
         }
@@ -282,6 +303,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         allGoodsTextView = (TextView) findViewById(R.id.good_count);
         submitButton.setOnClickListener(this);
         list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
+        fromPanicBuy = getIntent().getIntExtra("fromPanicBuy", 0);
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency);
@@ -296,14 +318,33 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         PictureAirLog.v(TAG, "initView" + list.size());
         //封装购物车ID，提交订单使用
         cartItemIds = new JSONArray();
-
+        goods = new JSONArray();
         for (int i = 0; i < list.size(); i++) {
             //获取总价格
             totalprice += list.get(i).getUnitPrice() * list.get(i).getQty();
             //获取购物车商品数
             cartCount += list.get(i).getQty();
-            //获取购物车ID
-            cartItemIds.add(list.get(i).getCartId());
+            if (fromPanicBuy == 0) {
+                //获取购物车ID
+                cartItemIds.add(list.get(i).getCartId());
+            } else {
+                JSONObject goodsObject = new JSONObject();
+                goodsObject.put(Common.GOODS_KEY, list.get(i).getGoodsKey());
+                goodsObject.put(Common.QTY, list.get(i).getGoodsKey());
+                List<CartPhotosInfo> photoList = list.get(i).getEmbedPhotos();
+                JSONArray embedPhotos = new JSONArray();
+                if (photoList != null && photoList.size() > 0) {
+                    for (int j = 0; j< photoList.size(); j++) {
+                        JSONObject photoInfo = new JSONObject();
+                        photoInfo.put(Common.PHOTO_ID, photoList.get(j).getPhotoId());
+//                        photoInfo.put("ppCodes", photoList.get(j).)
+                        //还需添加ppCodes,和photoIp
+                        embedPhotos.add(photoInfo);
+                    }
+                }
+                goodsObject.put(Common.EMBEDPHOTOS, embedPhotos);
+                goods.add(goodsObject);
+            }
             //根据商品名称，判断收货类型 0 -虚拟商品 1-实体商品（需要地址）
             if (list.get(i).getEntityType() == 0) {
                 deliveryType += 3 + ",";
@@ -313,11 +354,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         Intent intent = getIntent();
         disPrice = intent.getFloatExtra("discountPrice", disPrice);
+
         PictureAirLog.v(TAG, "discountPrice：" + disPrice);
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
         payPrice = totalprice - disPrice;//实际支付等于默认价格减去优惠立减价格
         //获取优惠码数量
-        getCoupons();
+        if (fromPanicBuy == 0) {
+            getCoupons();
+        }
         if (deliveryType.contains("1")) {
             //需要显示自提地址列表
             addressList = new ArrayList<>();
@@ -371,6 +415,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         RelativeLayout invoiceRl = (RelativeLayout) view.findViewById(R.id.invoice_rl);
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shop_coupon_ll);
         View lineView = view.findViewById(R.id.coupon_line);
+        View lineBelowCoupon = view.findViewById(R.id.line_below_coupon);
+        View lineBelowInvoice = view.findViewById(R.id.line_below_invoice);
+        LinearLayout couponTitlelayout = (LinearLayout) view.findViewById(R.id.coupon_title_ll);
         couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -481,6 +528,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 transLinearLayout.setVisibility(View.GONE);
             }
 
+            if (fromPanicBuy == 1) {
+                invoiceRl.setVisibility(View.GONE);
+                couponTitlelayout.setVisibility(View.GONE);
+                couponCountRl.setVisibility(View.GONE);
+                lineBelowCoupon.setVisibility(View.GONE);
+                lineBelowInvoice.setVisibility(View.GONE);
+            }
+
             //显示商品优惠价格
             layout.setVisibility(View.VISIBLE);
         }
@@ -495,21 +550,23 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         shopPriceUnitTv.setText(currency);
         payPriceUnitTv.setText(currency);
         discountPriceUnitTv.setText(currency);
-        if (isCount) {
-            if (couponCount == 0) {
-                couponCountTv.setText(R.string.no_coupon1);
+        if (fromPanicBuy == 0) {
+            if (isCount) {
+                if (couponCount == 0) {
+                    couponCountTv.setText(R.string.no_coupon1);
+                } else {
+                    couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+                }
             } else {
-                couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+                couponCountTv.setText("-" + currency + (int) straightwayPreferentialPrice);
             }
-        } else {
-            couponCountTv.setText("-" + currency + (int) straightwayPreferentialPrice);
-        }
 
-        PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice);
-        if ((int) straightwayPreferentialPrice == 0) {
-            couponSubtractTv.setVisibility(View.GONE);
-        } else {
-            couponSubtractTv.setVisibility(View.VISIBLE);
+            PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice);
+            if ((int) straightwayPreferentialPrice == 0) {
+                couponSubtractTv.setVisibility(View.GONE);
+            } else {
+                couponSubtractTv.setVisibility(View.VISIBLE);
+            }
         }
 
         PictureAirLog.out("(int) disPrice " + (int) disPrice);
@@ -519,8 +576,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         } else {
             discountSubtractTv.setVisibility(View.VISIBLE);
         }
-
-        couponPriceTv.setText((int) straightwayPreferentialPrice + "");
+        if (fromPanicBuy == 0) {
+            couponPriceTv.setText((int) straightwayPreferentialPrice + "");
+        }
         shopPriceTv.setText((int) totalprice + "");
         payPriceTv.setText(((int) payPrice + ""));
         discountPriceTv.setText((int) disPrice + "");
@@ -630,6 +688,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             intent2.putExtra("productType", 2);
             PictureAirLog.v(TAG, "productType: " + 2);
         }
+        if (fromPanicBuy == 1) {
+            intent2.putExtra("fromPanicBuy",1);
+        }
         PictureAirLog.v(TAG, "isBack: " + getIntent().getStringExtra("isBack"));
         intent2.putExtra("isBack", getIntent().getStringExtra("isBack"));
         SubmitOrderActivity.this.startActivity(intent2);
@@ -669,9 +730,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             showPWProgressDialog();
-
-                            invoice = assembleInvoiceJson();
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, null, null, submitOrderHandler);
+                            if (fromPanicBuy == 0) {
+                                invoice = assembleInvoiceJson();
+                                API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, invoice, null, null, submitOrderHandler);
+                            } else if (fromPanicBuy == 1) {
+                                API1.addBook(goods, null, 1, "", "", 0, "", "",submitOrderHandler);
+                            }
                         }
                     } else {
                         //PP+/数码商品不需要地址，需要检查channelId和uid字段
@@ -685,7 +749,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         }
                         invoice = assembleInvoiceJson();
                         showPWProgressDialog();
-                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, channelId, uid, submitOrderHandler);
+                        if (fromPanicBuy == 0) {
+                            API1.addOrder(cartItemIds, 3, "", "", couponCodes, invoice, channelId, uid, submitOrderHandler);
+                        } else if (fromPanicBuy == 1){
+                            API1.addBook(goods, null, 3, "", "", 0, "", "",submitOrderHandler);
+                        }
                     }
                 } else {
                     JSONObject invoice=null;

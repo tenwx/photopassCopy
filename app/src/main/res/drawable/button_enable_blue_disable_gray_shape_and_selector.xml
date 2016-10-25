@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/pp_blue" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:state_enabled="true" android:state_focused="false" android:state_pressed="false">
+        <shape>
+            <solid android:color="@color/transparent" />
+
+            <stroke android:width="1px" android:color="@color/pp_blue" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:state_enabled="true" android:state_focused="true">
+        <shape>
+            <solid android:color="@color/pp_blue" />
+
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:state_enabled="true" android:state_focused="false">
+        <shape>
+            <solid android:color="@color/transparent" />
+            <stroke android:width="1px" android:color="@color/pp_blue" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape>
+            <solid android:color="@color/pp_light_gray_normal" />
+
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+</selector>

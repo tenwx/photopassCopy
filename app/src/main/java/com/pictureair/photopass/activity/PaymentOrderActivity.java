@@ -100,6 +100,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private int cartCount = 0;//购物车数量
 
     private boolean asyncTimeOut = false;
+    private int fromPanicBuy;
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -314,6 +315,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             String couponCodesStr = getIntent().getStringExtra("couponCodes");
             couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
             cartCount = getIntent().getIntExtra("cartCount", 0);
+            fromPanicBuy = getIntent().getIntExtra("fromPanicBuy", 0);
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -557,8 +559,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
             AppManager.getInstance().killActivity(DetailProductActivity.class);
             AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
-            Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-            startActivity(intent2);
+            if (fromPanicBuy == 1) {
+                AppManager.getInstance().killActivity(PanicBuyActivity.class);
+                API1.updateDealingOrder(paymentOrderHandler, orderid, "");
+            } else {
+                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(intent2);
+            }
         }
         finish();
     }
@@ -576,6 +583,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(OrderActivity.class);
         AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
+        AppManager.getInstance().killActivity(PanicBuyActivity.class);
 
     }
 

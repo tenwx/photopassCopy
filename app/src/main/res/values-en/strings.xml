@@ -354,6 +354,7 @@
     <string name="want_to_buy">There is no order history here.</string>
     <string name="order_pending">Pending</string>
     <string name="order_delete_msg">Confirm to delete order?</string>
+    <string name="order_cancled">已取消</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -628,5 +629,12 @@
     <string name="special_deal_detail2">Unlock and download all your digital photos from ONE Disney PhotoPass card for just RMB 169!</string>
     <string name="special_deal">Special Deal!</string>
     <string name="special_deal_buy_now">Buy Now</string>
+    <string name="panic_buy_title">Special Deal</string>
+    <string name="panic_buy_not_start">Begin Soon</string>
+    <string name="panic_buy_start">Purchase</string>
+    <string name="panic_buy_start_content">Time left to start of deal</string>
+    <string name="panic_buy_end_content">Time left to end of deal</string>
+    <string name="panic_buy_begin_soon">Will Begin Soon</string>
+    <string name="panic_buy_buy_now">Buy Now</string>
     <!--special deal-->
 </resources>

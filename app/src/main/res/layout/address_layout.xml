@@ -67,6 +67,7 @@
                 android:layout_marginLeft="@dimen/pp_padding_16"/>
 
             <LinearLayout
+                android:id="@+id/coupon_title_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -139,10 +140,11 @@
 
                 </RelativeLayout>
                 <View
+                    android:id="@+id/line_below_coupon"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:background="@color/pp_light_gray_normal" />
+                    android:background="@color/pp_light_gray_normal"/>
                 <RelativeLayout
                     android:id="@+id/invoice_rl"
                     android:layout_width="match_parent"
@@ -181,6 +183,7 @@
 
                 </RelativeLayout>
                 <View
+                    android:id="@+id/line_below_invoice"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_height_1dp"
                     android:background="@color/pp_light_gray_normal" />
