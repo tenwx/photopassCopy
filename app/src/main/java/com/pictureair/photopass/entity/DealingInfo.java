@@ -1,9 +1,11 @@
 package com.pictureair.photopass.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by bauer_bao on 16/10/24.
  */
-public class DealingInfo {
+public class DealingInfo implements Serializable {
 
     /**
      * currTimeIntervalStart : 2016/01/01 12:00:00

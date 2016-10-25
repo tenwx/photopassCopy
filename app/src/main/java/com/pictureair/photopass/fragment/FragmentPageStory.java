@@ -1572,6 +1572,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //抢单点击事件，即可进入抢单活动页面
                 PictureAirLog.d("deal url---> " + dealingInfo.getDealingUrl() + "tokenid-->" + MyApplication.getTokenId());
                 Intent intent = new Intent(context, PanicBuyActivity.class);
+                intent.putExtra("dealingInfo", dealingInfo);
                 startActivity(intent);
                 break;
 

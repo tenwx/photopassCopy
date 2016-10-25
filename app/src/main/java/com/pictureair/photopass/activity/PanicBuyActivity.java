@@ -1,17 +1,10 @@
 package com.pictureair.photopass.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,8 +15,8 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -65,6 +58,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     private static final String TIME_ZERO = "00";
     private Date startDate;
     private Date endDate;
+    private DealingInfo dealingInfo;
     private static final int COUNT_DOWN_TIME_FINISH = 1111;
     private String startTime ;
     private String endTime;
@@ -147,6 +141,8 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initData() {
+        dealingInfo = (DealingInfo) getIntent().getSerializableExtra("dealingInfo");
+        PictureAirLog.d(dealingInfo.toString());
         price = 169;
         goodsKey = "1234556778";
         currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
