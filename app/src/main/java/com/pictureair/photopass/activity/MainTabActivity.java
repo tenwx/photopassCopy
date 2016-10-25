@@ -85,6 +85,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private TextView specialDealBuyTV;
     private ImageView specialDealCloseIV;
     private DealingInfo dealingInfo;
+    private boolean isDealing = false;
 
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
@@ -283,7 +284,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         super.onPause();
     }
 
-
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
@@ -300,12 +300,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.special_dialog_buy_tv:
-                EventBus.getDefault().post(new MainTabOnClickEvent(false, dealingInfo, true, true));
+                EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, true, true));
                 pwDialog.pwDialogDismiss();
                 break;
 
             case R.id.special_dialog_deal_close_iv:
-                EventBus.getDefault().post(new MainTabOnClickEvent(false, dealingInfo, true, false));
+                EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, true, false));
                 pwDialog.pwDialogDismiss();
                 break;
 
@@ -329,9 +329,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     PictureAirLog.out("photo tab on click");
                     if (last_tab == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
-                        EventBus.getDefault().post(new MainTabOnClickEvent(true, null, false, false));
+                        EventBus.getDefault().post(new MainTabOnClickEvent(true));
                     } else {
-                        PictureAirLog.d(TAG, "need not refresh");
+                        PictureAirLog.d(TAG, "need not refresh, need get new special deal goods");
+                        getSpecialDealGoods();
                     }
                     setTabSelection(0, true);
                     last_tab = 0;
@@ -592,7 +593,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     .setPWDialogContentView(R.layout.dialog_special_deal, this)
                     .pwDialogCreate();
         }
-        pwDialog.pwDilogShow();
+        if (!isDealing) {
+            pwDialog.pwDilogShow();
+        }
+        isDealing = true;
     }
 
     private void getSpecialDealGoods() {
@@ -665,7 +669,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case API1.GET_DEALING_GOODS_SUCCESS:
                 PictureAirLog.d(msg.obj.toString());
                 dealingInfo = (DealingInfo) msg.obj;
-                showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
+                if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2) {
+                    showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
+                } else {//活动结束
+                    isDealing = false;
+                    EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, false, false));
+                }
                 break;
 
             case API1.GET_DEALING_GOODS_FAILED:

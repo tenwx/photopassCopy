@@ -15,6 +15,7 @@ public class DealingInfo implements Serializable {
      * title : ppp拼单活动
      * dealingUrl : /api/stores/54b4a700155da2bf0e141bbe/goods/57fa14ae079a90d84b5065d5
      * currTimeIntervalEnd : 2016/12/31 12:00:00
+     * currTime : 2016/10/25 01:16:44
      */
 
     private String currTimeIntervalStart;
@@ -23,6 +24,7 @@ public class DealingInfo implements Serializable {
     private String content;
     private String details;
     private String dealingUrl;
+    private String currTime;
     private int state;
     /**
      * 本地时间和服务器时间的时间差
@@ -93,6 +95,14 @@ public class DealingInfo implements Serializable {
         this.timeOffset = timeOffset;
     }
 
+    public String getCurrTime() {
+        return currTime;
+    }
+
+    public void setCurrTime(String currTime) {
+        this.currTime = currTime;
+    }
+
     @Override
     public String toString() {
         return "DealingInfo{" +
@@ -102,6 +112,7 @@ public class DealingInfo implements Serializable {
                 ", content='" + content + '\'' +
                 ", details='" + details + '\'' +
                 ", dealingUrl='" + dealingUrl + '\'' +
+                ", currTime='" + currTime + '\'' +
                 ", state=" + state +
                 ", timeOffset=" + timeOffset +
                 '}';

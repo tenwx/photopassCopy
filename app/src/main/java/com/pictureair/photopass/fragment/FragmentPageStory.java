@@ -1609,12 +1609,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     public void onUserEvent(BaseBusEvent baseBusEvent) {
         if (baseBusEvent instanceof MainTabOnClickEvent) {
             MainTabOnClickEvent storyRefreshOnClickEvent = (MainTabOnClickEvent) baseBusEvent;
-            if (storyRefreshOnClickEvent.isStoryTabClick()) {//通知页面开始刷新
+            if (storyRefreshOnClickEvent.getEventType() == MainTabOnClickEvent.STORY_TAB_CLICK_EVENT) {//通知页面开始刷新
                 clickToRefresh();
-            }
-            if (storyRefreshOnClickEvent.isShowSpecialDealBar()) {//显示顶部抢购栏
+
+            } else if (storyRefreshOnClickEvent.getEventType() == MainTabOnClickEvent.SPECIAL_DEAL_EVENT) {//抢单流程
                 dealingInfo = storyRefreshOnClickEvent.getDealingInfo();
-                specialDealLL.setVisibility(View.VISIBLE);
+
+                if (storyRefreshOnClickEvent.isShowSpecialDealBar()) {
+                    specialDealLL.setVisibility(View.VISIBLE);
+                } else {
+                    specialDealLL.setVisibility(View.GONE);
+                }
+
                 if (storyRefreshOnClickEvent.isSpecialDealBuyClick()) {//如果是点了购买按钮，需要执行购买流程
                     specialDealLL.performClick();
                 }

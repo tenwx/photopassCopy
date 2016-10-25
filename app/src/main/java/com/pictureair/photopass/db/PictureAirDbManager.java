@@ -116,8 +116,8 @@ public class PictureAirDbManager {
             if (photoInfo.onLine == 1) {
 
                 cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
-                                " where photoId = ? and userId = ? and originalUrl = ?",
-                        new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
+                                " where photoId = ? and userId = ?",
+                        new String[]{photoInfo.photoId, userId});
             } else {
                 cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
                                 " where userId = ? and originalUrl = ?",

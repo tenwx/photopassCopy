@@ -29,7 +29,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -1951,6 +1954,14 @@ public class API1 {
                 PictureAirLog.json(jsonObject.toString());
                 DealingInfo dealingInfo = JsonUtil.getDealingInfo(jsonObject);
                 if (dealingInfo != null) {
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(dealingInfo.getCurrTime()));
+                        dealingInfo.setTimeOffset(localTime - c.getTimeInMillis());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    dealingInfo.setState(1);
                     handler.obtainMessage(GET_DEALING_GOODS_SUCCESS, dealingInfo).sendToTarget();
 
                 } else {
