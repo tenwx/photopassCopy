@@ -28,7 +28,7 @@
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_5"
+            android:layout_height="@dimen/pp_dp_5"
             android:layout_alignBottom="@id/editImageview"
             android:layout_alignParentBottom="true"
             android:layout_alignRight="@id/editImageview"

@@ -18,18 +18,18 @@
 
     <com.pictureair.photopass.widget.CircleImageView
         android:id="@+id/user_photo_bg"
-        android:layout_width="@dimen/pp_height_80"
-        android:layout_height="@dimen/pp_height_80"
-        android:layout_marginLeft="@dimen/pp_margin_20"
-        android:layout_marginTop="@dimen/pp_margin_20_"
+        android:layout_width="@dimen/pp_dp_80"
+        android:layout_height="@dimen/pp_dp_80"
+        android:layout_marginLeft="@dimen/pp_dp_20"
+        android:layout_marginTop="@dimen/pp_dp_20_"
         android:src="@drawable/user_photo_bg" />
 
     <com.pictureair.photopass.widget.CircleImageView
         android:id="@+id/user_photo"
-        android:layout_width="@dimen/pp_height_60"
-        android:layout_height="@dimen/pp_height_60"
-        android:layout_marginLeft="@dimen/pp_margin_30"
-        android:layout_marginTop="@dimen/pp_margin_10_"
+        android:layout_width="@dimen/pp_dp_60"
+        android:layout_height="@dimen/pp_dp_60"
+        android:layout_marginLeft="@dimen/pp_dp_30"
+        android:layout_marginTop="@dimen/pp_dp_10_"
         android:src="@drawable/default_photo" />
 
 </RelativeLayout>

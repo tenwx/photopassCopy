@@ -13,13 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/head"
-        android:layout_marginTop="@dimen/pp_margin_16"
+        android:layout_marginTop="@dimen/pp_dp_16"
         android:background="@color/white"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -28,13 +28,13 @@
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
             android:gravity="center_vertical"
-            android:padding="@dimen/pp_padding_16">
+            android:padding="@dimen/pp_dp_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/nn"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
+                android:layout_marginRight="@dimen/pp_dp_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -52,9 +52,9 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/pp_height_1"
-            android:layout_marginLeft="@dimen/pp_margin_10"
-            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_marginLeft="@dimen/pp_dp_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -62,13 +62,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16">
+            android:padding="@dimen/pp_dp_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/gender"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
+                android:layout_marginRight="@dimen/pp_dp_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -86,7 +86,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
     </LinearLayout>
 
@@ -95,13 +95,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll1"
-        android:layout_marginTop="@dimen/pp_margin_16"
+        android:layout_marginTop="@dimen/pp_dp_16"
         android:background="@color/white"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -109,13 +109,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16">
+            android:padding="@dimen/pp_dp_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/date_of_birth"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
+                android:layout_marginRight="@dimen/pp_dp_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -133,9 +133,9 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
-            android:layout_marginLeft="@dimen/pp_margin_10"
-            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_marginLeft="@dimen/pp_dp_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
             android:background="@color/line_color"
             android:visibility="gone"/>
 
@@ -144,14 +144,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16"
+            android:padding="@dimen/pp_dp_16"
             android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/country"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
+                android:layout_marginRight="@dimen/pp_dp_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -170,9 +170,9 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/pp_height_1"
-            android:layout_marginLeft="@dimen/pp_margin_10"
-            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_marginLeft="@dimen/pp_dp_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -180,13 +180,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16">
+            android:padding="@dimen/pp_dp_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/account"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -196,8 +196,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
-                android:maxWidth="@dimen/pp_height_150"
+                android:layout_marginRight="@dimen/pp_dp_2"
+                android:maxWidth="@dimen/pp_dp_150"
                 android:singleLine="true"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
@@ -206,7 +206,7 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -214,14 +214,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16"
+            android:padding="@dimen/pp_dp_16"
             android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/qq"
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -231,8 +231,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/pp_margin_2"
-                android:maxWidth="@dimen/pp_height_150"
+                android:layout_marginRight="@dimen/pp_dp_2"
+                android:maxWidth="@dimen/pp_dp_150"
                 android:singleLine="true"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -244,13 +244,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll2"
-        android:layout_marginTop="@dimen/pp_margin_16"
+        android:layout_marginTop="@dimen/pp_dp_16"
         android:background="@color/white"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
 
         <RelativeLayout
@@ -258,13 +258,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/user_item_select"
-            android:padding="@dimen/pp_padding_16">
+            android:padding="@dimen/pp_dp_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_2"
+                android:layout_marginLeft="@dimen/pp_dp_2"
                 android:text="@string/modify"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_14" />
@@ -272,7 +272,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1"
+            android:layout_height="@dimen/pp_px_1"
             android:background="@color/line_color" />
     </LinearLayout>
 

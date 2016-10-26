@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -39,10 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_margin_8"
-            android:paddingRight="@dimen/pp_padding_8"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_8"
+            android:paddingRight="@dimen/pp_dp_8"
+            android:paddingTop="@dimen/pp_dp_15"
             android:visibility="gone">
 
             <ImageView
@@ -60,10 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_padding_14"
+            android:layout_marginRight="@dimen/pp_dp_14"
             android:text="@string/pp_ok"
             android:textColor="@color/white"
-            android:padding="@dimen/pp_padding_5"
+            android:padding="@dimen/pp_dp_5"
             android:visibility="gone"
             android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
@@ -75,7 +75,7 @@
         android:layout_below="@id/head"
         android:scrollbars="none"
         android:divider="@color/gray_light"
-        android:dividerHeight="@dimen/pp_height_5" />
+        android:dividerHeight="@dimen/pp_dp_5" />
     
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"
@@ -105,7 +105,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_height="@dimen/pp_dp_1"
                     android:layout_weight="3" />
 
                 <ImageView
@@ -118,7 +118,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_height="@dimen/pp_dp_1"
                     android:layout_weight="3" />
             </LinearLayout>
 
@@ -127,10 +127,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/no_photo_img"
-                android:layout_marginTop="@dimen/pp_margin_5"
+                android:layout_marginTop="@dimen/pp_dp_5"
                 android:gravity="center"
-                android:paddingLeft="@dimen/pp_padding_20"
-                android:paddingRight="@dimen/pp_padding_20"
+                android:paddingLeft="@dimen/pp_dp_20"
+                android:paddingRight="@dimen/pp_dp_20"
                 android:text="@string/no_photopass_update"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />

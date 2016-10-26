@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_gravity="center"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/no_coupon"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />

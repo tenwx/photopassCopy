@@ -35,7 +35,7 @@
         android:layout_above="@+id/bottom_status_bar_view"
         android:background="@color/pp_light_gray_background"
         android:gravity="center"
-        android:padding="@dimen/pp_margin_16"
+        android:padding="@dimen/pp_dp_16"
         android:text="@string/scan_intro"
         android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
@@ -131,7 +131,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/scan_qrcode_sel"
             android:gravity="center"
-            android:padding="@dimen/pp_margin_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/scan_qr_code"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
@@ -143,7 +143,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/scan_pppcode_nor"
             android:gravity="center"
-            android:padding="@dimen/pp_margin_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/scan_ppp_code"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />

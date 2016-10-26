@@ -98,7 +98,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_5"
+                    android:layout_marginTop="@dimen/pp_dp_5"
                     android:text="@string/copyright1"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_14" />
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_5"
+                    android:layout_marginTop="@dimen/pp_dp_5"
                     android:text="@string/copyright2"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_14" />
@@ -115,7 +115,7 @@
                     android:id="@+id/develop_version_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:layout_marginTop="@dimen/pp_dp_16"
                     android:textColor="@color/pp_gray"
                     android:text="dddd"
                     android:textSize="@dimen/text_size_16"/>
@@ -125,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:layout_marginTop="@dimen/pp_dp_16"
                     android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_14"
                     android:lineSpacingMultiplier="1.5"

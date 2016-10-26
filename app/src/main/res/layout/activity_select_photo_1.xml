@@ -17,10 +17,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_margin_5"
-            android:padding="@dimen/pp_padding_5"
+            android:layout_marginRight="@dimen/pp_dp_5"
+            android:padding="@dimen/pp_dp_5"
             android:text="@string/selected"
             android:textColor="@color/gray_light5"
             android:textSize="@dimen/text_size_16" />
@@ -99,7 +99,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_height="@dimen/pp_dp_1"
                     android:layout_weight="3" />
 
                 <ImageView
@@ -113,7 +113,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_height="@dimen/pp_dp_1"
                     android:layout_weight="3" />
             </LinearLayout>
 
@@ -122,10 +122,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/no_photo_img"
-                android:layout_marginTop="@dimen/pp_margin_16"
+                android:layout_marginTop="@dimen/pp_dp_16"
                 android:gravity="center"
-                android:paddingLeft="@dimen/pp_padding_20"
-                android:paddingRight="@dimen/pp_padding_20"
+                android:paddingLeft="@dimen/pp_dp_20"
+                android:paddingRight="@dimen/pp_dp_20"
                 android:text="@string/no_photo_in_airpass"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
@@ -137,7 +137,7 @@
     <LinearLayout
         android:id="@+id/ll_disney_video_foot"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_bar_65"
+        android:layout_height="@dimen/pp_bottom_bar_height"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="horizontal"
@@ -197,7 +197,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/pp_margin_10"
+        android:layout_marginBottom="@dimen/pp_dp_10"
         android:drawableTop="@drawable/icon_disneyvideo_ok"
         android:gravity="center"
         android:text="@string/disney_video_edit_photo_null"
@@ -216,7 +216,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:visibility="gone"
-        android:paddingBottom="@dimen/pp_padding_10"
+        android:paddingBottom="@dimen/pp_dp_10"
         android:layout_above="@+id/tv_select_photo_ok"/>
 
     <!-- Disney foot end-->

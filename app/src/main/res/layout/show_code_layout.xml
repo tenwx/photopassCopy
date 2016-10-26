@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/pp_margin_64"
-    android:layout_marginRight="@dimen/pp_margin_64"
+    android:layout_marginLeft="@dimen/pp_dp_64"
+    android:layout_marginRight="@dimen/pp_dp_64"
     android:background="@color/transparent"
     android:gravity="center"
     android:orientation="vertical">
@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/pp_padding_20"
+        android:paddingBottom="@dimen/pp_dp_20"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="@dimen/pp_padding_20">
+        android:paddingTop="@dimen/pp_dp_20">
 
         <ImageView
             android:id="@+id/code_pic_iv"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="@dimen/text_size_14"
-            android:layout_marginTop="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:textColor="@color/pp_blue"/>
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginTop="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:text="@string/code_tips"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />

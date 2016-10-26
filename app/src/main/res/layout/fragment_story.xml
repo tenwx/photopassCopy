@@ -26,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_margin_8"
-            android:paddingRight="@dimen/pp_padding_8"
-            android:paddingTop="@dimen/pp_padding_15">
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_8"
+            android:paddingRight="@dimen/pp_dp_8"
+            android:paddingTop="@dimen/pp_dp_15">
 
             <ImageView
                 android:id="@+id/story_menu_iv"
@@ -48,18 +48,18 @@
         android:layout_below="@id/story_title"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/pp_padding_8"
-        android:paddingLeft="@dimen/pp_padding_10"
-        android:paddingRight="@dimen/pp_padding_10"
-        android:paddingTop="@dimen/pp_padding_8"
+        android:paddingBottom="@dimen/pp_dp_8"
+        android:paddingLeft="@dimen/pp_dp_10"
+        android:paddingRight="@dimen/pp_dp_10"
+        android:paddingTop="@dimen/pp_dp_8"
         android:visibility="gone">
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/special_deal_on"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/pp_padding_2"
-            android:paddingRight="@dimen/pp_padding_2"
+            android:paddingLeft="@dimen/pp_dp_2"
+            android:paddingRight="@dimen/pp_dp_2"
             android:text="@string/special_deal_on"
             android:textColor="@color/pp_red"
             android:textSize="@dimen/text_size_16"
@@ -68,8 +68,8 @@
         <View
             android:layout_width="1px"
             android:layout_height="20dp"
-            android:layout_marginLeft="@dimen/pp_padding_5"
-            android:layout_marginRight="@dimen/pp_padding_5"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_marginRight="@dimen/pp_dp_5"
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -91,7 +91,7 @@
         <com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_40"
+            android:layout_height="@dimen/pp_dp_40"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/pp_margin_16"
+                android:paddingBottom="@dimen/pp_dp_16"
                 android:visibility="gone">
 
                 <ImageView
@@ -147,9 +147,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/story_top_bg"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/pp_margin_16"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:layout_marginTop="@dimen/pp_dp_16"
+                    android:layout_marginLeft="@dimen/pp_dp_16"
+                    android:layout_marginRight="@dimen/pp_dp_16"
                     android:gravity="center"
                     android:text="@string/storypage_no_pp"
                     android:textColor="@color/pp_dark_blue"
@@ -170,7 +170,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/story_scan_tip"
-                    android:layout_marginBottom="@dimen/pp_margin_16"
+                    android:layout_marginBottom="@dimen/pp_dp_16"
                     android:gravity="center"
                     android:text="@string/story_scan"
                     android:textColor="@color/pp_blue"
@@ -182,9 +182,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/story_tip"
-                    android:layout_marginBottom="@dimen/pp_margin_16"
-                    android:layout_marginLeft="@dimen/pp_margin_20"
-                    android:layout_marginRight="@dimen/pp_margin_20"
+                    android:layout_marginBottom="@dimen/pp_dp_16"
+                    android:layout_marginLeft="@dimen/pp_dp_20"
+                    android:layout_marginRight="@dimen/pp_dp_20"
                     android:gravity="center"
                     android:text="@string/story_no_pp"
                     android:textColor="@color/pp_blue"
@@ -195,9 +195,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/story_buy_ppp"
-                    android:layout_marginBottom="@dimen/pp_margin_16"
-                    android:layout_marginLeft="@dimen/pp_margin_20"
-                    android:layout_marginRight="@dimen/pp_margin_20"
+                    android:layout_marginBottom="@dimen/pp_dp_16"
+                    android:layout_marginLeft="@dimen/pp_dp_20"
+                    android:layout_marginRight="@dimen/pp_dp_20"
                     android:gravity="center"
                     android:text="@string/download_share_bought_photo"
                     android:textColor="@color/pp_dark_blue"
@@ -208,12 +208,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/story_activate_ppp"
-                    android:layout_marginBottom="@dimen/pp_margin_16"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:layout_marginBottom="@dimen/pp_dp_16"
+                    android:layout_marginLeft="@dimen/pp_dp_16"
+                    android:layout_marginRight="@dimen/pp_dp_16"
                     android:background="@drawable/button_blue_shape_and_selector"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_10"
+                    android:padding="@dimen/pp_dp_10"
                     android:text="@string/story_buy_ppp"
                     android:textColor="@drawable/textview_selector_blue_white"
                     android:textSize="@dimen/text_size_14" />
@@ -223,11 +223,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:layout_marginLeft="@dimen/pp_dp_16"
+                    android:layout_marginRight="@dimen/pp_dp_16"
                     android:background="@drawable/button_blue_shape_and_selector"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_10"
+                    android:padding="@dimen/pp_dp_10"
                     android:text="@string/story_scan_ppp"
                     android:textColor="@drawable/textview_selector_blue_white"
                     android:textSize="@dimen/text_size_14" />
@@ -239,7 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/pp_margin_64"
+                android:paddingBottom="@dimen/pp_dp_64"
                 android:visibility="gone">
 
                 <ImageView
@@ -253,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pp_margin_20"
+                    android:layout_margin="@dimen/pp_dp_20"
                     android:gravity="center"
                     android:text="@string/storypage_no_photo"
                     android:textColor="@color/pp_dark_blue"
@@ -273,7 +273,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/pp_margin_10"
+                    android:layout_marginTop="@dimen/pp_dp_10"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/tab_discover"
@@ -284,8 +284,8 @@
                 <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_margin_20"
-                    android:layout_marginRight="@dimen/pp_margin_20"
+                    android:layout_marginLeft="@dimen/pp_dp_20"
+                    android:layout_marginRight="@dimen/pp_dp_20"
                     android:gravity="center"
                     android:text="@string/story_no_photo"
                     android:textColor="@color/pp_blue"

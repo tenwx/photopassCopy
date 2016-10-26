@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingLeft="@dimen/pp_padding_8"
-        android:paddingRight="@dimen/pp_padding_8"
-        android:paddingTop="@dimen/pp_padding_8">
+        android:paddingLeft="@dimen/pp_dp_8"
+        android:paddingRight="@dimen/pp_dp_8"
+        android:paddingTop="@dimen/pp_dp_8">
 
         <ImageView
             android:id="@+id/address_icon"
@@ -40,10 +40,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1dp"
-        android:layout_marginBottom="@dimen/pp_margin_8"
-        android:layout_marginTop="@dimen/pp_margin_16"
-        android:layout_marginLeft="@dimen/pp_margin_8"
+        android:layout_height="@dimen/pp_dp_1"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_16"
+        android:layout_marginLeft="@dimen/pp_dp_8"
         android:background="@color/pp_light_gray_normal" />
 
 

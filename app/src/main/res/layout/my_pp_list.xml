@@ -34,31 +34,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_toRightOf="@+id/my_pp_miqi"
                 android:layout_toLeftOf="@+id/tv_shoot_date"
-                android:layout_marginRight="@dimen/pp_margin_5"
+                android:layout_marginRight="@dimen/pp_dp_5"
                 android:text="PP12345678"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
 
             <ImageView
                 android:id="@+id/delete_my_pp"
-                android:layout_width="@dimen/pp_height_40"
-                android:layout_height="@dimen/pp_height_40"
+                android:layout_width="@dimen/pp_dp_40"
+                android:layout_height="@dimen/pp_dp_40"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:padding="@dimen/pp_margin_8"
+                android:padding="@dimen/pp_dp_8"
                 android:scaleType="centerInside"
                 android:src="@drawable/delete_my_pp_btn" />
 
             <ImageView
-                android:layout_width="@dimen/pp_height_40"
-                android:layout_height="@dimen/pp_height_40"
+                android:layout_width="@dimen/pp_dp_40"
+                android:layout_height="@dimen/pp_dp_40"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:padding="@dimen/pp_margin_8"
+                android:padding="@dimen/pp_dp_8"
                 android:scaleType="centerInside"
                 android:src="@drawable/delete_my_pp_btn"
                 android:visibility="invisible"/>
@@ -69,7 +69,7 @@
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/pp_padding_10"
+                android:layout_marginRight="@dimen/pp_dp_10"
                 android:adjustViewBounds="true"
                 android:clickable="true"
                 android:scaleType="centerInside"
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/pp_margin_20"
+                android:layout_marginRight="@dimen/pp_dp_20"
                 android:layout_toLeftOf="@+id/img"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12"
@@ -101,22 +101,22 @@
                 android:id="@+id/pp_img1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
-                android:layout_marginRight="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginRight="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
@@ -129,29 +129,29 @@
                 android:id="@+id/pp_img5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
-                android:layout_marginRight="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginRight="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
         </LinearLayout>
 
         <View
             android:id="@+id/divider_line"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_margin_5"
+            android:layout_height="@dimen/pp_dp_5"
             android:background="@color/white"/>
 
         <LinearLayout
             android:id="@+id/pp_image_layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/pp_margin_5"
+            android:layout_marginBottom="@dimen/pp_dp_5"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -160,22 +160,22 @@
                 android:id="@+id/pp_img7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img8"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
                 android:id="@+id/pp_img9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
-                android:layout_marginRight="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginRight="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView
@@ -188,7 +188,7 @@
                 android:id="@+id/pp_img11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginLeft="@dimen/pp_dp_5"
                 android:layout_weight="1"/>
 
             <com.pictureair.photopass.widget.PWPhotoPassPhotoView

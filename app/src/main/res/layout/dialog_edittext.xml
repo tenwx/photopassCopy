@@ -9,8 +9,8 @@
     android:hint="@string/conpon_input_hint"
     android:singleLine="true"
     android:digits="@string/input_content"
-    android:padding="@dimen/pp_padding_10"
-    android:layout_margin="@dimen/pp_padding_10"
+    android:padding="@dimen/pp_dp_10"
+    android:layout_margin="@dimen/pp_dp_10"
     android:maxLength="200"
     android:textColor="@color/pp_dark_blue"
     android:textSize="@dimen/text_size_14" />

@@ -4,9 +4,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/pp_padding_8"
-    android:paddingLeft="@dimen/pp_padding_8"
-    android:paddingBottom="@dimen/pp_padding_8"
+    android:paddingTop="@dimen/pp_dp_8"
+    android:paddingLeft="@dimen/pp_dp_8"
+    android:paddingBottom="@dimen/pp_dp_8"
     android:background="@color/pp_light_gray_background">
     <RelativeLayout
         android:id="@+id/rl_photo_loading"
@@ -50,7 +50,7 @@
             android:layout_gravity="center"
             app:borderColor="@color/pp_blue"
             android:src="@drawable/photo_status_load"
-            android:layout_marginTop="@dimen/pp_margin_8"
+            android:layout_marginTop="@dimen/pp_dp_8"
             />
 
             <TextView
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:text="等待中"
                 android:textColor="@color/gray2"
-                android:layout_marginTop="@dimen/pp_margin_5"
+                android:layout_marginTop="@dimen/pp_dp_5"
                 />
         </LinearLayout>
 
@@ -71,8 +71,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/loading_image_layout"
             android:layout_toLeftOf="@id/photo_loading_status"
-            android:layout_marginLeft="@dimen/pp_margin_5"
-            android:layout_marginRight="@dimen/pp_margin_5"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_marginRight="@dimen/pp_dp_5"
             android:orientation="vertical"
             >
             <TextView
@@ -82,7 +82,7 @@
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12"
                 android:text="2016-11-20 17:40"
-                android:layout_marginTop="@dimen/pp_margin_16"
+                android:layout_marginTop="@dimen/pp_dp_16"
                 android:gravity="center_vertical|left"/>
             <LinearLayout
                 android:layout_width="match_parent"

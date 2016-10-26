@@ -17,10 +17,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/pp_padding_8"
+            android:layout_marginLeft="@dimen/pp_dp_8"
             android:layout_toLeftOf="@+id/button_bag"
             android:layout_toRightOf="@+id/rt"
             android:gravity="center"
@@ -44,10 +44,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -56,11 +56,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/pp_margin_8"
-            android:layout_marginTop="@dimen/pp_padding_4"
+            android:layout_marginRight="@dimen/pp_dp_8"
+            android:layout_marginTop="@dimen/pp_dp_4"
             android:background="@drawable/bg1"
             android:gravity="center"
-            android:padding="@dimen/pp_padding_1"
+            android:padding="@dimen/pp_dp_1"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
@@ -78,7 +78,7 @@
         android:layout_weight="6"
         android:background="@color/pp_light_gray_background"
         android:gravity="center_vertical"
-        android:padding="@dimen/pp_margin_16"
+        android:padding="@dimen/pp_dp_16"
         android:text="@string/animated_photo_introduce_text"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_14" />
@@ -92,14 +92,14 @@
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/pp_margin_16">
+        android:padding="@dimen/pp_dp_16">
 
         <Button
             android:id="@+id/animated_photo_buy_ppp_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/animated_photo_buy_ppp"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/text_size_16" />
@@ -108,9 +108,9 @@
             android:id="@+id/animated_photo_upgrade_ppp_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_dp_16"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/animated_photo_upgrade_exist_ppp"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/text_size_16" />
@@ -119,9 +119,9 @@
             android:id="@+id/animated_photo_add_cart_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_dp_16"
             android:background="@drawable/button_sign_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/animated_photo_add_cart"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/text_size_16" />

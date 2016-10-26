@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:adjustViewBounds="true"
-            android:padding="@dimen/pp_height_20"
+            android:padding="@dimen/pp_dp_20"
             android:src="@drawable/story_no_photo" />
 
     </RelativeLayout>
@@ -34,7 +34,7 @@
             android:src="@drawable/story_no_photo_2"/>
 
         <TextView
-            android:padding="@dimen/pp_height_10"
+            android:padding="@dimen/pp_dp_10"
             android:layout_toRightOf="@+id/iv_mickey"
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"

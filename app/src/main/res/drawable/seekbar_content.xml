@@ -4,7 +4,7 @@
 
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="@dimen/pp_radius_5" />
+            <corners android:radius="@dimen/pp_dp_5" />
 
             <solid android:color="@color/white" />
         </shape>
@@ -14,7 +14,7 @@
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
-                <corners android:radius="@dimen/pp_radius_5" />
+                <corners android:radius="@dimen/pp_dp_5" />
                 <solid android:color="@color/gray_cover" />
             </shape>
         </clip>
@@ -23,7 +23,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="@dimen/pp_radius_5" />
+                <corners android:radius="@dimen/pp_dp_5" />
 
                 <solid android:color="@color/seekbar_progress" />
             </shape>

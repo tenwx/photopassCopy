@@ -6,10 +6,10 @@
     android:clickable="false"
     android:focusable="false"
     android:focusableInTouchMode="false"
-    android:paddingBottom="@dimen/pp_margin_8"
-    android:paddingLeft="@dimen/pp_padding_16"
-    android:paddingRight="@dimen/pp_padding_16"
-    android:paddingTop="@dimen/pp_margin_8">
+    android:paddingBottom="@dimen/pp_dp_8"
+    android:paddingLeft="@dimen/pp_dp_16"
+    android:paddingRight="@dimen/pp_dp_16"
+    android:paddingTop="@dimen/pp_dp_8">
 
     <RelativeLayout
         android:id="@+id/order_detail"
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/order_imageView_pd"
-            android:layout_width="@dimen/pp_height_60"
-            android:layout_height="@dimen/pp_height_60"
+            android:layout_width="@dimen/pp_dp_60"
+            android:layout_height="@dimen/pp_dp_60"
             android:layout_alignParentLeft="true"
             android:background="@color/transparent"
             android:focusable="false"
@@ -32,8 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/pp_margin_16"
-            android:layout_marginRight="@dimen/pp_margin_16"
+            android:layout_marginLeft="@dimen/pp_dp_16"
+            android:layout_marginRight="@dimen/pp_dp_16"
             android:layout_toLeftOf="@+id/right_rl"
             android:layout_toRightOf="@+id/order_imageView_pd"
             android:focusable="false"
@@ -73,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_2"
+                    android:layout_marginLeft="@dimen/pp_dp_2"
                     android:focusable="false"
                     android:gravity="left"
                     android:singleLine="true"
@@ -87,13 +87,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/pp_padding_10">
+                android:paddingTop="@dimen/pp_dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_5"
+                    android:layout_marginLeft="@dimen/pp_dp_5"
                     android:focusable="false"
                     android:text="x"
                     android:textColor="@color/pp_dark_blue"
@@ -117,14 +117,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/order_detail"
-        android:layout_marginTop="@dimen/pp_margin_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
         android:background="@drawable/bg_border_stroke"
         android:columnCount="4"
         android:focusable="false"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/pp_padding_20"
-        android:paddingTop="@dimen/pp_padding_10"
-        android:paddingBottom="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingTop="@dimen/pp_dp_10"
+        android:paddingBottom="@dimen/pp_dp_10"
         android:useDefaultMargins="true"
         android:visibility="gone" />
 

@@ -28,8 +28,8 @@
             android:textSize="@dimen/text_size_16" />
 
         <ImageView
-            android:layout_width="@dimen/pp_height_1"
-            android:layout_height="@dimen/pp_height_20"
+            android:layout_width="@dimen/pp_px_1"
+            android:layout_height="@dimen/pp_dp_20"
             android:layout_gravity="center_vertical"
             android:background="@color/gray_light3" />
 
@@ -44,8 +44,8 @@
             android:textSize="@dimen/text_size_16" />
 
         <ImageView
-            android:layout_width="@dimen/pp_height_1"
-            android:layout_height="@dimen/pp_height_20"
+            android:layout_width="@dimen/pp_px_1"
+            android:layout_height="@dimen/pp_dp_20"
             android:layout_gravity="center_vertical"
             android:background="@color/gray_light3" />
 
@@ -73,19 +73,19 @@
         <ImageView
             android:id="@+id/cursor"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_2"
+            android:layout_height="@dimen/pp_dp_2"
             android:layout_weight="1"
             android:background="@color/pp_blue" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_2"
+            android:layout_height="@dimen/pp_dp_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_2"
+            android:layout_height="@dimen/pp_dp_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
     </LinearLayout>

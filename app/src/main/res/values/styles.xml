@@ -142,7 +142,7 @@
 
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@drawable/vpi__dark_theme</item>
+        <item name="android:textColor">@color/pp_dark_blue</item>
     </style>
 
     <style name="Widget.IconPageIndicator" parent="Widget">

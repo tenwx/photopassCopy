@@ -13,14 +13,14 @@
     <ImageView
         android:id="@+id/main_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
+        android:layout_height="@dimen/pp_px_1"
         android:layout_above="@+id/main_bottom_bar"
         android:background="@color/pp_gray" />
 
     <LinearLayout
         android:id="@+id/main_bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_bar_65"
+        android:layout_height="@dimen/pp_bottom_bar_height"
         android:layout_alignParentBottom="true"
         android:background="@color/gray_light4"
         android:orientation="horizontal">
@@ -32,8 +32,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_padding_4"
-            android:paddingTop="@dimen/pp_padding_4">
+            android:paddingBottom="@dimen/pp_dp_4"
+            android:paddingTop="@dimen/pp_dp_4">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
 
                 <com.pictureair.photopass.widget.dropview.WaterDrop
                     android:id="@+id/waterdrop"
-                    android:layout_width="@dimen/pp_height_10"
-                    android:layout_height="@dimen/pp_height_10"
+                    android:layout_width="@dimen/pp_dp_10"
+                    android:layout_height="@dimen/pp_dp_10"
                     android:layout_alignRight="@+id/main_photo_iv"
                     android:visibility="gone" />
             </RelativeLayout>
@@ -73,8 +73,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_padding_4"
-            android:paddingTop="@dimen/pp_padding_4">
+            android:paddingBottom="@dimen/pp_dp_4"
+            android:paddingTop="@dimen/pp_dp_4">
 
             <ImageView
                 android:id="@+id/main_discover_iv"
@@ -102,8 +102,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_padding_4"
-            android:paddingTop="@dimen/pp_padding_4">
+            android:paddingBottom="@dimen/pp_dp_4"
+            android:paddingTop="@dimen/pp_dp_4">
 
             <ImageView
                 android:id="@+id/main_shop_iv"
@@ -131,8 +131,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_padding_4"
-            android:paddingTop="@dimen/pp_padding_4">
+            android:paddingBottom="@dimen/pp_dp_4"
+            android:paddingTop="@dimen/pp_dp_4">
 
             <ImageView
                 android:id="@+id/main_me_iv"
@@ -166,10 +166,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/pp_margin_10"
-            android:layout_marginLeft="@dimen/pp_margin_5"
-            android:layout_marginRight="@dimen/pp_width_3"
-            android:layout_marginTop="@dimen/pp_padding_4"
+            android:layout_marginBottom="@dimen/pp_dp_10"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_marginRight="@dimen/pp_dp_3"
+            android:layout_marginTop="@dimen/pp_dp_4"
             android:adjustViewBounds="true"
             android:src="@drawable/story_lead_zh" />
 
