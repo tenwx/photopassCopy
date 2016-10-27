@@ -172,7 +172,13 @@ public class OrderActivity extends BaseFragmentActivity {
                     orderProductInfo.setOrderTime(orderInfo.orderTime);
                     orderProductInfo.setCartItemInfos(cartItemInfo);
                     PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderNumber);
-                    if (orderInfo.orderStatus == 1) {//1等待买家付款
+                    if (orderInfo.orderStatus == -3) {
+                        downOrderArrayList.add(orderInfo);
+                        downOrderChildArrayList.add(orderProductInfo);
+                    } else if (orderInfo.orderStatus > -3 && orderInfo.orderStatus < 1) {
+                        paymentOrderArrayList.add(orderInfo);
+                        paymentOrderChildArrayList.add(orderProductInfo);
+                    } else if (orderInfo.orderStatus == 1) {//1等待买家付款
                         if (orderIds != null && orderIds.size() > 0) {
                             for (String orderId : orderIds) {
                                 //判断orderId是否相同，且状态是否为1（未付款）
@@ -184,7 +190,7 @@ public class OrderActivity extends BaseFragmentActivity {
                         }
                         paymentOrderArrayList.add(orderInfo);
                         paymentOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
+                    } else if (orderInfo.orderStatus == 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                         if (orderInfo.productEntityType == 0) {
                             //0为虚拟商品
                             downOrderArrayList.add(orderInfo);

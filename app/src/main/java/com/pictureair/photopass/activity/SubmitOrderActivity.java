@@ -103,6 +103,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private boolean isSelecteAgreement = false;//是否选中条款
 
     private int fromPanicBuy = 0;
+    private String dealingKey;
     private JSONArray goods;
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
@@ -304,6 +305,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         submitButton.setOnClickListener(this);
         list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         fromPanicBuy = getIntent().getIntExtra("fromPanicBuy", 0);
+        dealingKey = getIntent().getStringExtra("dealingKey");
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency);
@@ -330,7 +332,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             } else {
                 JSONObject goodsObject = new JSONObject();
                 goodsObject.put(Common.GOODS_KEY, list.get(i).getGoodsKey());
-                goodsObject.put(Common.QTY, list.get(i).getGoodsKey());
+                goodsObject.put(Common.QTY, list.get(i).getQty());
                 List<CartPhotosInfo> photoList = list.get(i).getEmbedPhotos();
                 JSONArray embedPhotos = new JSONArray();
                 if (photoList != null && photoList.size() > 0) {
@@ -690,6 +692,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         if (fromPanicBuy == 1) {
             intent2.putExtra("fromPanicBuy",1);
+            intent2.putExtra("dealingKey",dealingKey);
         }
         PictureAirLog.v(TAG, "isBack: " + getIntent().getStringExtra("isBack"));
         intent2.putExtra("isBack", getIntent().getStringExtra("isBack"));
@@ -734,7 +737,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                                 invoice = assembleInvoiceJson();
                                 API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, invoice, null, null, submitOrderHandler);
                             } else if (fromPanicBuy == 1) {
-                                API1.addBook(goods, null, 1, "", "", 0, "", "",submitOrderHandler);
+                                API1.addBook(goods, null, 1, "", "", 0, "", dealingKey,submitOrderHandler);
                             }
                         }
                     } else {
@@ -752,7 +755,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         if (fromPanicBuy == 0) {
                             API1.addOrder(cartItemIds, 3, "", "", couponCodes, invoice, channelId, uid, submitOrderHandler);
                         } else if (fromPanicBuy == 1){
-                            API1.addBook(goods, null, 3, "", "", 0, "", "",submitOrderHandler);
+                            API1.addBook(goods, null, 3, "", "", 0, "", dealingKey,submitOrderHandler);
                         }
                     }
                 } else {

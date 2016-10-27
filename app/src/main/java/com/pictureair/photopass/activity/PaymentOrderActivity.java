@@ -101,6 +101,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private boolean asyncTimeOut = false;
     private int fromPanicBuy;
+    private String dealingKey;
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -243,6 +244,18 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 ErrorInPayment();
                 break;
 
+            case API1.UPDATE_DEALING_ORDER_SUCCESS:
+                Intent intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(intent);
+                finish();
+                dismissPWProgressDialog();
+                break;
+
+            case API1.UPDATE_DEALING_ORDER_FAILED:
+
+                dismissPWProgressDialog();
+                break;
+
             default:
                 break;
         }
@@ -316,6 +329,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
             cartCount = getIntent().getIntExtra("cartCount", 0);
             fromPanicBuy = getIntent().getIntExtra("fromPanicBuy", 0);
+            dealingKey = getIntent().getStringExtra("dealingKey");
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -549,6 +563,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
             //返回到上一个界面
             AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+            finish();
         } else {
             //进入订单界面
             AppManager.getInstance().killActivity(SubmitOrderActivity.class);
@@ -561,13 +576,15 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
             if (fromPanicBuy == 1) {
                 AppManager.getInstance().killActivity(PanicBuyActivity.class);
-                API1.updateDealingOrder(paymentOrderHandler, orderid, "");
+                showPWProgressDialog();
+                API1.updateDealingOrder(paymentOrderHandler, orderid, dealingKey);
             } else {
                 Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 startActivity(intent2);
+                finish();
             }
         }
-        finish();
+
     }
 
     // 成功支付之后的操作
@@ -775,7 +792,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         backToLastActivity();
     }
 

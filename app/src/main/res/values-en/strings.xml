@@ -340,6 +340,7 @@
     <string name="my_order">Orders</string>
     <string name="order_unpaid">Unpaid</string>
     <string name="order_paid">Paid</string>
+    <string name="order_refund">已退款</string>
     <string name="all_order">Fulfilled</string>
     <string name="order_completed">Fulfilled</string>
     <string name="order_status">Order Status:</string>
@@ -629,12 +630,14 @@
     <string name="special_deal_detail2">Unlock and download all your digital photos from ONE Disney PhotoPass card for just RMB 169!</string>
     <string name="special_deal">Special Deal!</string>
     <string name="special_deal_buy_now">Buy Now</string>
-    <string name="panic_buy_title">Special Deal</string>
-    <string name="panic_buy_not_start">Begin Soon</string>
-    <string name="panic_buy_start">Purchase</string>
-    <string name="panic_buy_start_content">Time left to start of deal</string>
-    <string name="panic_buy_end_content">Time left to end of deal</string>
-    <string name="panic_buy_begin_soon">Will Begin Soon</string>
-    <string name="panic_buy_buy_now">Buy Now</string>
+    <string name="special_deal_not_start">Begin Soon</string>
+    <string name="special_deal_start">Purchase</string>
+    <string name="special_deal_start_content">Time left to start of deal</string>
+    <string name="special_deal_end_content">Time left to end of deal</string>
+    <string name="special_deal_already_end_content">抢购已结束开始</string>
+    <string name="special_deal_begin_soon">Will Begin Soon</string>
+    <string name="special_deal_buy">Buy Now</string>
+    <string name="special_deal_end">已结束</string>
+    <string name="special_deal_count_enough">购买次数达到上限</string>
     <!--special deal-->
 </resources>

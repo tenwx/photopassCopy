@@ -1,6 +1,7 @@
 package com.pictureair.photopass.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +24,10 @@ public class GoodsInfo implements Serializable {
     private int sequence = 0;//int,商品序号
     private String good_SVG_Info = "";//SVG信息
     private boolean isAllowBuy;//true：所有照片都可以选择（除了纪念照和视频）；false：只能选择未购买图片
+    private DealingInfo dealing;
 
-    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info, boolean isAllowBuy) {
+
+    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info, boolean isAllowBuy, DealingInfo dealing) {
         this.goodsKey = goodsKey;
         this.productId = productId;
         this.storeId = storeId;
@@ -40,6 +43,7 @@ public class GoodsInfo implements Serializable {
         this.sequence = sequence;
         this.good_SVG_Info = good_SVG_Info;
         this.isAllowBuy = isAllowBuy;
+        this.dealing = dealing;
     }
 
     public GoodsInfo() {
@@ -163,6 +167,14 @@ public class GoodsInfo implements Serializable {
 
     public void setIsAllowBuy(boolean allowBuy) {
         isAllowBuy = allowBuy;
+    }
+
+    public DealingInfo getDealing() {
+        return dealing;
+    }
+
+    public void setDealing(DealingInfo dealing) {
+        this.dealing = dealing;
     }
 
     @Override

@@ -128,6 +128,23 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         groupHolderView.orderNumberTextView.setText(grouplist.get(groupPosition).orderNumber);
         groupHolderView.totalPriceTextView.setText((int) grouplist.get(groupPosition).orderTotalPrice + "");
         switch (grouplist.get(groupPosition).orderStatus) {
+            case -3:
+                groupHolderView.orderStatesTextView.setText(R.string.order_refund);
+                groupHolderView.paymentButton.setVisibility(View.GONE);
+                groupHolderView.deleteButton.setVisibility(View.VISIBLE);
+                groupHolderView.paymentButton.setEnabled(true);
+                groupHolderView.deleteButton.setEnabled(true);
+                break;
+
+            case -1:
+                groupHolderView.paymentButton.setVisibility(View.GONE);
+                groupHolderView.orderCancled.setVisibility(View.VISIBLE);
+                groupHolderView.deleteButton.setVisibility(View.VISIBLE);
+                groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
+                groupHolderView.deleteButton.setEnabled(true);
+                break;
+
+            case -2:
             case 1:
                 //1等待买家付款
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
@@ -138,9 +155,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 break;
 
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-            case 3:
-            case 4://4交易成功，5交易关闭,订单冻结
-            case 5:
                 if (grouplist.get(groupPosition).productEntityType == 0) {
                     //3为虚拟类商品无须快递
                     groupHolderView.orderStatesTextView.setText(R.string.order_completed);
@@ -154,6 +168,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 groupHolderView.paymentButton.setEnabled(true);
                 groupHolderView.deleteButton.setEnabled(true);
                 break;
+            case 0:
             case 6:
                 //已付款，服务器未返回推送
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);

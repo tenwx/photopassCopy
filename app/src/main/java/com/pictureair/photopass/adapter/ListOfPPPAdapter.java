@@ -339,9 +339,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			}
 		} else {//普通ppp
 //			holder.pppName.setText(R.string.mypage_ppp);
-			holder.pp1_img.setVisibility(View.VISIBLE);
-			holder.pp2_img.setVisibility(View.VISIBLE);
-			holder.pp3_img.setVisibility(View.VISIBLE);
+			holder.pp1_img.setVisibility(dpp.capacity >= 1 ? View.VISIBLE : View.GONE );
+			holder.pp2_img.setVisibility(dpp.capacity >= 2 ? View.VISIBLE : View.GONE);
+			holder.pp3_img.setVisibility(dpp.capacity == 3 ? View.VISIBLE : View.GONE);
 			holder.tv_ppp_no_pp.setVisibility(View.INVISIBLE);
 			holder.ll_ppp_with_pp.setVisibility(View.INVISIBLE);
 			switch (dpp.bindInfo.size()) {

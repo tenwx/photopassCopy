@@ -61,10 +61,4 @@ public interface HttpInterface {
      * @param totalSize    long
      */
     void onProgress(long bytesWritten, long totalSize);
-
-    /**
-     * 开始
-     */
-    void onStart();
-
 }

@@ -186,6 +186,15 @@ public class API1 {
     public static final int GET_DEALING_GOODS_SUCCESS = 4181;
     public static final int GET_DEALING_GOODS_FAILED = 4180;
 
+    public static final int UPDATE_DEALING_ORDER_SUCCESS = 4191;
+    public static final int UPDATE_DEALING_ORDER_FAILED = 4190;
+
+    public static final int ADD_BOOKING_SUCCESS = 4201;
+    public static final int ADD_BOOKING_FAILED = 4200;
+
+    public static final int GET_SINGLE_GOODS_SUCCESS = 4201;
+    public static final int GET_SINGLE_GOODS_FAILED = 4200;
+
     //Shop模块 end
 
     //我的模块 start
@@ -281,14 +290,6 @@ public class API1 {
     //选择已有PP＋
     public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
     public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 6090;
-
-    //触发活动订单状态
-    public static final int UPDATE_DEALING_ORDER_SUCCESS = 7011;
-    public static final int UPDATE_DEALING_ORDER_FAILED = 7010;
-
-    //抢购提交订单
-    public static final int ADD_BOOKING_SUCCESS = 7021;
-    public static final int ADD_BOOKING_FAILED = 7020;
 
     /**
      * 发送设备ID获取tokenId
@@ -2805,11 +2806,14 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.json(jsonObject.toString());
+                handler.obtainMessage(UPDATE_DEALING_ORDER_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                handler.obtainMessage(UPDATE_DEALING_ORDER_FAILED, status, 0).sendToTarget();
             }
         });
         return task;
@@ -2870,6 +2874,29 @@ public class API1 {
             }
         });
         return task;
+    }
+
+    public static void getSingleGoods(String dealingUrl, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + dealingUrl, params, new HttpCallback() {
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.json(jsonObject.toString());
+                handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_SINGLE_GOODS_FAILED, status, 0).sendToTarget();
+            }
+
+        });
+
     }
 
     public static void cancelAllRequest() {

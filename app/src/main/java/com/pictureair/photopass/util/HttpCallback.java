@@ -21,11 +21,6 @@ public abstract class HttpCallback implements HttpInterface{
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void onSuccess(JSONObject jsonObject) {
 
     }
