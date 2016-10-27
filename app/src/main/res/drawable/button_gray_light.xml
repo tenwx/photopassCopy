@@ -3,6 +3,6 @@
 
     <solid android:color="@color/pp_light_gray_normal" />
 
-    <corners android:radius="@dimen/pp_radius_5" />
+    <corners android:radius="@dimen/pp_dp_5" />
 
 </shape>

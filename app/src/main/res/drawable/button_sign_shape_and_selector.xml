@@ -5,28 +5,28 @@
         <shape>
             <solid android:color="@color/pp_light_gray_press" />
 
-            <corners android:radius="@dimen/pp_radius_5" />
+            <corners android:radius="@dimen/pp_dp_5" />
         </shape>
     </item>
     <item android:state_focused="false" android:state_pressed="false">
         <shape>
             <solid android:color="@color/pp_light_gray_normal" />
 
-            <corners android:radius="@dimen/pp_radius_5" />
+            <corners android:radius="@dimen/pp_dp_5" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape>
             <solid android:color="@color/pp_light_gray_press" />
 
-            <corners android:radius="@dimen/pp_radius_5" />
+            <corners android:radius="@dimen/pp_dp_5" />
         </shape>
     </item>
     <item android:state_focused="false">
         <shape>
             <solid android:color="@color/pp_light_gray_normal" />
 
-            <corners android:radius="@dimen/pp_radius_5" />
+            <corners android:radius="@dimen/pp_dp_5" />
         </shape>
     </item>
 

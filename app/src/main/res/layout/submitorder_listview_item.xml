@@ -5,17 +5,17 @@
     android:background="@color/white"
     android:orientation="vertical">
     <RelativeLayout
-        android:layout_marginTop="@dimen/pp_margin_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
         android:id="@+id/submitOrderRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/pp_padding_16"
-        android:paddingRight="@dimen/pp_padding_16">
+        android:paddingLeft="@dimen/pp_dp_16"
+        android:paddingRight="@dimen/pp_dp_16">
 
         <ImageView
             android:id="@+id/imageView_pd"
-            android:layout_width="@dimen/pp_height_60"
-            android:layout_height="@dimen/pp_height_60"
+            android:layout_width="@dimen/pp_dp_60"
+            android:layout_height="@dimen/pp_dp_60"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
             android:scaleType="centerInside"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/pp_margin_10"
+            android:layout_marginLeft="@dimen/pp_dp_10"
             android:layout_toRightOf="@id/imageView_pd"
             android:ellipsize="end"
             android:lines="1"
@@ -37,7 +37,7 @@
             android:id="@+id/textView_pr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_padding_10"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:layout_alignTop="@+id/imageView_pd"
             android:layout_alignParentRight="true"
             android:textColor="@color/pp_gray"
@@ -47,9 +47,9 @@
             android:id="@+id/textView_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_padding_10"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:layout_alignTop="@+id/imageView_pd"
-            android:layout_marginRight="@dimen/pp_margin_2"
+            android:layout_marginRight="@dimen/pp_dp_2"
             android:layout_toLeftOf="@id/textView_pr"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/imageView_pd"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/pp_padding_10"
+            android:layout_marginBottom="@dimen/pp_dp_10"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -79,22 +79,22 @@
         android:id="@+id/gridView_cartphoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pp_margin_16"
-        android:layout_marginRight="@dimen/pp_margin_16"
-        android:layout_marginTop="@dimen/pp_margin_8"
+        android:layout_marginLeft="@dimen/pp_dp_16"
+        android:layout_marginRight="@dimen/pp_dp_16"
+        android:layout_marginTop="@dimen/pp_dp_8"
         android:background="@drawable/bg_border_stroke"
         android:columnCount="4"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/pp_padding_20"
-        android:paddingTop="@dimen/pp_padding_10"
-        android:paddingBottom="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingTop="@dimen/pp_dp_10"
+        android:paddingBottom="@dimen/pp_dp_10"
         android:useDefaultMargins="true"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1dp"
-        android:layout_marginLeft="@dimen/pp_margin_16"
-        android:layout_marginTop="@dimen/pp_margin_8"
+        android:layout_height="@dimen/pp_dp_1"
+        android:layout_marginLeft="@dimen/pp_dp_16"
+        android:layout_marginTop="@dimen/pp_dp_8"
         android:background="@color/pp_light_gray_normal" />
 
 </LinearLayout>

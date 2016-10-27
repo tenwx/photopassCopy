@@ -11,7 +11,7 @@
     <View
         android:id="@+id/head_line"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
+        android:layout_height="@dimen/pp_px_1"
         android:layout_below="@+id/head"
         android:background="@color/pp_light_gray_press" />
 
@@ -25,7 +25,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
+        android:layout_height="@dimen/pp_px_1"
         android:layout_below="@+id/lv_helps"
         android:background="@color/pp_light_gray_normal" />
 

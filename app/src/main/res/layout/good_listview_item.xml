@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/pp_margin_20"
+    android:layout_marginTop="@dimen/pp_dp_20"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="@dimen/pp_padding_8">
+    android:padding="@dimen/pp_dp_8">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pp_margin_10"
-        android:layout_marginRight="@dimen/pp_margin_10">
+        android:layout_marginLeft="@dimen/pp_dp_10"
+        android:layout_marginRight="@dimen/pp_dp_10">
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_name"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/good_price"
-            android:layout_marginRight="@dimen/pp_margin_2"
+            android:layout_marginRight="@dimen/pp_dp_2"
             android:layout_toLeftOf="@id/good_price"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
@@ -48,10 +48,10 @@
         android:id="@+id/goodDetailIntroduce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_margin_10"
-        android:layout_marginLeft="@dimen/pp_margin_10"
-        android:layout_marginRight="@dimen/pp_margin_10"
-        android:layout_marginTop="@dimen/pp_margin_5"
+        android:layout_marginBottom="@dimen/pp_dp_10"
+        android:layout_marginLeft="@dimen/pp_dp_10"
+        android:layout_marginRight="@dimen/pp_dp_10"
+        android:layout_marginTop="@dimen/pp_dp_5"
         android:textColor="@color/pp_light_gray_press" />
 
 

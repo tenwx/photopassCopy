@@ -6,8 +6,8 @@
     <!-- <corners android:bottomLeftRadius="5dp" android:bottomRightRadius="5dp" /> -->
 
     <corners
-        android:bottomLeftRadius="@dimen/pp_radius_10_px"
-        android:bottomRightRadius="@dimen/pp_radius_10_px"
+        android:bottomLeftRadius="@dimen/pp_px_10"
+        android:bottomRightRadius="@dimen/pp_px_10"
         android:topLeftRadius="0px"
         android:topRightRadius="0px" />
     <!--

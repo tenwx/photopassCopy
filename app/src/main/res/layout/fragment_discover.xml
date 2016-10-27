@@ -29,7 +29,7 @@
         android:layout_below="@id/discover_title"
         android:background="@color/transparent"
         android:divider="@color/transparent"
-        android:dividerHeight="@dimen/pp_height_5"
+        android:dividerHeight="@dimen/pp_dp_5"
         android:scrollbars="none" />
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView

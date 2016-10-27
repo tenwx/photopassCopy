@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -39,10 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_margin_8"
-            android:paddingRight="@dimen/pp_padding_8"
-            android:paddingTop="@dimen/pp_padding_15">
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_8"
+            android:paddingRight="@dimen/pp_dp_8"
+            android:paddingTop="@dimen/pp_dp_15">
 
             <ImageView
                 android:id="@+id/ppp_setting"
@@ -60,10 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_padding_14"
+            android:layout_marginRight="@dimen/pp_dp_14"
             android:text="@string/pp_ok"
             android:textColor="@color/white"
-            android:padding="@dimen/pp_padding_5"
+            android:padding="@dimen/pp_dp_5"
             android:visibility="gone"
             android:textSize="@dimen/text_size_14" />
 
@@ -119,7 +119,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="@dimen/pp_margin_16">
+        android:padding="@dimen/pp_dp_16">
 
         <Button
             android:id="@+id/button_buy_ppp"
@@ -127,22 +127,22 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/buy_ppp_text"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/pp_margin_16" />
+            android:textSize="@dimen/pp_dp_16" />
 
         <Button
             android:id="@+id/button_scan_ppp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_dp_16"
             android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/scan_ppp_text"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/pp_margin_16" />
+            android:textSize="@dimen/pp_dp_16" />
 
     </LinearLayout>
 
@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
 
                 android:divider="@color/gray_light"
-                android:dividerHeight="@dimen/pp_height_5"
+                android:dividerHeight="@dimen/pp_dp_5"
                 android:scrollbars="none" />
     </com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout>
 

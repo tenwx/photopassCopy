@@ -15,33 +15,33 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/pp_margin_5"
+        android:layout_marginBottom="@dimen/pp_dp_5"
         android:orientation="horizontal"
         android:visibility="visible" >
 
         <ImageView
-            android:layout_width="@dimen/pp_height_10"
-            android:layout_height="@dimen/pp_height_10"
+            android:layout_width="@dimen/pp_dp_10"
+            android:layout_height="@dimen/pp_dp_10"
             android:src="@drawable/page_indicator_bg" />
 
         <ImageView
-            android:layout_width="@dimen/pp_height_10"
-            android:layout_height="@dimen/pp_height_10"
+            android:layout_width="@dimen/pp_dp_10"
+            android:layout_height="@dimen/pp_dp_10"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/pp_margin_10"
-            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_marginLeft="@dimen/pp_dp_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
             android:src="@drawable/page_indicator_bg" />
 
         <ImageView
-            android:layout_width="@dimen/pp_height_10"
-            android:layout_height="@dimen/pp_height_10"
+            android:layout_width="@dimen/pp_dp_10"
+            android:layout_height="@dimen/pp_dp_10"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
             android:src="@drawable/page_indicator_bg" />
 
         <!--<ImageView-->
-            <!--android:layout_width="@dimen/pp_height_10"-->
-            <!--android:layout_height="@dimen/pp_height_10"-->
+            <!--android:layout_width="@dimen/pp_dp_10"-->
+            <!--android:layout_height="@dimen/pp_dp_10"-->
             <!--android:layout_gravity="center_vertical"-->
             <!--android:src="@drawable/page_indicator_bg" />-->
     </LinearLayout>

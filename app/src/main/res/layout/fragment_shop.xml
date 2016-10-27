@@ -25,10 +25,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -37,11 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/pp_margin_8"
-            android:layout_marginTop="@dimen/pp_padding_4"
+            android:layout_marginRight="@dimen/pp_dp_8"
+            android:layout_marginTop="@dimen/pp_dp_4"
             android:background="@drawable/bg1"
             android:gravity="center"
-            android:padding="@dimen/pp_padding_1"
+            android:padding="@dimen/pp_dp_1"
             android:text="0"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12" />
@@ -64,7 +64,7 @@
                 android:layout_height="match_parent"
                 android:cacheColorHint="@color/white"
                 android:divider="@color/gray_light"
-                android:dividerHeight="@dimen/pp_height_5"
+                android:dividerHeight="@dimen/pp_dp_5"
                 android:scrollbars="none" />
         </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/view_pager_content"
-        android:layout_marginBottom="@dimen/pp_margin_10"
-        android:layout_marginRight="@dimen/pp_margin_5"
-        android:layout_marginTop="@dimen/pp_margin_5"
+        android:layout_marginBottom="@dimen/pp_dp_10"
+        android:layout_marginRight="@dimen/pp_dp_5"
+        android:layout_marginTop="@dimen/pp_dp_5"
         android:gravity="center"
         android:orientation="horizontal" />
 

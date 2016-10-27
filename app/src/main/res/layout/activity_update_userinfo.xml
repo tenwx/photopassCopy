@@ -19,30 +19,30 @@
         android:layout_below="@+id/head"
         android:background="@color/pp_light_gray_background"
         android:orientation="vertical"
-        android:padding="@dimen/pp_padding_16">
+        android:padding="@dimen/pp_dp_16">
 
         <com.pictureair.photopass.widget.EditTextWithClear
             android:id="@+id/et_userinfo_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="@dimen/pp_padding_5"
+            android:paddingLeft="@dimen/pp_dp_10"
+            android:paddingRight="@dimen/pp_dp_5"
             android:background="@null"
             android:hint="@string/nn"
             android:singleLine="true"
             android:maxLength="200"
             android:imeOptions="actionDone"
-            android:paddingTop="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_dp_16"
             android:textColor="@color/pp_dark_blue"
             android:textColorHint="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_1dp"
+            android:layout_height="@dimen/pp_dp_1"
             android:layout_below="@+id/et_userinfo_text"
-            android:layout_marginTop="@dimen/pp_padding_8"
+            android:layout_marginTop="@dimen/pp_dp_8"
             android:background="@color/pp_blue" />
     </LinearLayout>
 
@@ -56,9 +56,9 @@
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/pp_margin_16"
+            android:layout_margin="@dimen/pp_dp_16"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_dp_10"
             android:text="@string/ok"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/text_size_16" />

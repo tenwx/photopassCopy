@@ -14,7 +14,7 @@
         <RelativeLayout
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="@dimen/pp_margin_100"
+            android:layout_marginLeft="@dimen/pp_dp_100"
             >
             <ImageView 
                 android:id="@+id/arrow"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="vertical"
-            android:layout_marginRight="@dimen/pp_margin_60">
+            android:layout_marginRight="@dimen/pp_dp_60">
 
             <TextView
                 android:id="@+id/description"

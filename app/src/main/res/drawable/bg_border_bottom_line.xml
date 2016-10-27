@@ -13,10 +13,10 @@
             <solid android:color="@color/white" />
 
             <padding
-                android:bottom="@dimen/pp_padding_8"
-                android:left="@dimen/pp_padding_8"
-                android:right="@dimen/pp_padding_8"
-                android:top="@dimen/pp_padding_8" />
+                android:bottom="@dimen/pp_dp_8"
+                android:left="@dimen/pp_dp_8"
+                android:right="@dimen/pp_dp_8"
+                android:top="@dimen/pp_dp_8" />
         </shape>
     </item>
 
