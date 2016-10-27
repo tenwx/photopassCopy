@@ -50,14 +50,12 @@ public class StoryFragment extends Fragment {
 	private SwipeRefreshLayout refreshLayout;
 	private static Handler handler;
 	
-	private static StoryFragment storyFragment;
-
 	private static final int REFRESH = 666;
 	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
 	
 	public static StoryFragment getInstance(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int tab, Handler h){
 		handler = h;
-		storyFragment = new StoryFragment();
+		StoryFragment storyFragment = new StoryFragment();
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("photo", photoInfoArrayList);
 		bundle.putParcelableArrayList("target", targetArrayList);

@@ -19,6 +19,11 @@ public class DealingInfo implements Serializable {
      */
 
     /**
+     * 活动最早开始时间
+     * */
+    private String participateTimeIntervalStart;
+
+    /**
      *  活动最晚结束时间
      * */
 
@@ -30,9 +35,9 @@ public class DealingInfo implements Serializable {
     private String currTimeIntervalStart;
 
     /**
-     * 是否可参加
+     * 当前最接近的活动结束时间
      * */
-    private boolean isPossible;
+    private String currTimeIntervalEnd;
 
     /**
      * 活动状态  1 活动正常开启;   0 活动已关闭;   -1 活动已过期; -2活动未开始;
@@ -40,15 +45,13 @@ public class DealingInfo implements Serializable {
      * */
     private int state;
 
+    /**活动标题*/
+    private String title;
+
     /**
      * 活动副标题
      * */
     private String content;
-
-    /**
-     * 剩余次数,-1为限
-     * */
-    private int lave;
 
     /**
      * 活动内容详情
@@ -56,12 +59,9 @@ public class DealingInfo implements Serializable {
     private String details;
 
     /**
-     * 活动最早开始时间
+     * 多动内容详情链接
      * */
-    private String participateTimeIntervalStart;
-
-    /**活动标题*/
-    private String title;
+    private String dealingUrl;
 
     /**
      * 唯一id
@@ -69,9 +69,14 @@ public class DealingInfo implements Serializable {
     private String key;
 
     /**
-     *
+     * 是否参加过
      * */
-    private String currTime;
+    private boolean participated;
+
+    /**
+     * 是否可参加
+     * */
+    private boolean isPossible;
 
     /**
      * 总参加活动次数
@@ -79,21 +84,17 @@ public class DealingInfo implements Serializable {
     private int totalCount;
 
     /**
-     * 多动内容详情链接
+     * 剩余次数,-1为限
      * */
-    private String dealingUrl;
+    private int lave;
 
     /**
-     * 当前最接近的活动结束时间
+     * 服务器当前时间
      * */
-    private String currTimeIntervalEnd;
-    /**
-     * 是否参加过
-     * */
-    private boolean participated;
+    private String currTime;
 
     /**
-     * 本地时间和服务器时间的时间差
+     * 本地时间和服务器时间的时间差 ： timeOffset = 本地时间 - 服务器时间
      */
     private long timeOffset;
 

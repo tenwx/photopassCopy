@@ -668,7 +668,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
             case API1.GET_DEALING_GOODS_SUCCESS:
                 PictureAirLog.d(msg.obj.toString());
-                dealingInfo = (DealingInfo) msg.obj;
+                DealingInfo curDealingInfo = (DealingInfo) msg.obj;
+                if (dealingInfo != null) {//比较误差，取误差最小值
+                    if (Math.abs(dealingInfo.getTimeOffset()) < Math.abs(curDealingInfo.getTimeOffset())) {
+                        curDealingInfo.setTimeOffset(dealingInfo.getTimeOffset());
+
+                    }
+                }
+                dealingInfo = curDealingInfo;
+
                 if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2) {
                     showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
                 } else {//活动结束

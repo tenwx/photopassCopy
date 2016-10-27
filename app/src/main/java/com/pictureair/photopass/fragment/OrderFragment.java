@@ -46,7 +46,6 @@ import de.greenrobot.event.Subscribe;
  */
 public class OrderFragment extends Fragment {
     private final String TAG = "OrderFragment";
-    private static OrderFragment orderFragment;
     private View view;
     private ExpandableListView orderListView;
 
@@ -115,7 +114,7 @@ public class OrderFragment extends Fragment {
                                             List<OrderProductInfo> orderChildlist3, String currency, int tab
     ) {
         mHandler = handler;
-        orderFragment = new OrderFragment();
+        OrderFragment orderFragment = new OrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("orderList", orderInfos3);
         bundle.putSerializable("orderChildList", (Serializable) orderChildlist3);

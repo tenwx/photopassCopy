@@ -68,17 +68,35 @@ public class PictureAirDbManager {
     public void setPictureLove(PhotoInfo photoInfo, String userId, boolean setLove) {
         database = DBManager.getInstance().writData();
         database.beginTransaction();
+        Cursor cursor = null;
         try {
-            if (setLove) {//添加收藏
+            if (setLove) {//添加收藏，因为收藏按钮是异步执行，所以添加前需要检查是否已经收藏过
                 PictureAirLog.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
-                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
-                                photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
-                                photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
-                                photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
-                                photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
-                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "",
-                                photoInfo.isHasPreset + "", photoInfo.isEncrypted + "", photoInfo.adURL});
+
+                PictureAirLog.out("cursor open---> checklovephoto");
+                if (photoInfo.onLine == 1) {
+                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
+                                    " where photoId = ? and userId = ?",
+                            new String[]{photoInfo.photoId, userId});
+
+                } else {
+                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
+                                    " where userId = ? and originalUrl = ?",
+                            new String[]{userId, photoInfo.photoPathOrURL});
+
+                }
+
+                if (cursor.getCount() == 0) {//之前没有添加过
+                    database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
+                                    photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
+                                    photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
+                                    photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
+                                    photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
+                                    photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "",
+                                    photoInfo.isHasPreset + "", photoInfo.isEncrypted + "", photoInfo.adURL});
+                }
+
             } else {//取消收藏
 
                 if (photoInfo.onLine == 1) {
@@ -96,6 +114,9 @@ public class PictureAirDbManager {
             // TODO: handle exception
             e.printStackTrace();
         } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
             database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
