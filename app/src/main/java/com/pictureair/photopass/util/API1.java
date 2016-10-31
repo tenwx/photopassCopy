@@ -2192,70 +2192,86 @@ public class API1 {
     }
 
     /**
-     * 获取照片的最新数据
+     * 获取照片的最新数据,并后台统计图片的下载数量
      *
      * @param tokenId
+     * @param id photoId
+     * @param isDownload 后台要统计图片
+     * @param downloadPhotoIds 有原图链接时,该对象存储photoId,后台用于过滤,没有原图链接时为null
      * @param handler
      */
-    public static void getPhotosInfo(String tokenId, final int id, final Handler handler,final DownloadFileStatus fileStatus) {
+    public static void getPhotosInfo(String tokenId, final int id, final Handler handler,final boolean isDownload, final JSONArray downloadPhotoIds, final DownloadFileStatus fileStatus) {
         RequestParams params = new RequestParams();
         JSONArray ids = new JSONArray();
         ids.add(fileStatus.getPhotoId());
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.EPPP_IDS, ids.toJSONString());
+        params.put(Common.ISDOWNLOAD, isDownload);
+        if (downloadPhotoIds != null) {
+            params.put(Common.DOWNLOAD_PHOTO_IDS, downloadPhotoIds.toString());
+        }
 
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+
+            private void sendNoDataMsg () {
+                Message msg = handler.obtainMessage();
+                msg.what = DOWNLOAD_PHOTO_FAILED;
+                Bundle bundle = new Bundle();
+                if (fileStatus.isVideo() == 0) {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                } else {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                }
+                bundle.putParcelable("url", fileStatus);
+                bundle.putInt("status", 404);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
+            private void sendMsg() {
+                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
+                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                } else {
+                    sendNoDataMsg();
+                }
+            }
+
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PictureAirLog.out("jsonobject---->" + jsonObject.toString());
                 JSONArray photos = jsonObject.getJSONArray("photos");
+
                 if (photos.size() > 0) {
                     PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
                     fileStatus.setNewUrl(photoInfo.photoPathOrURL);
                     if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
                         handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
                     } else {
-                        Message msg =  handler.obtainMessage();
-                        msg.what = DOWNLOAD_PHOTO_FAILED;
-                        Bundle bundle = new Bundle();
-                        if (fileStatus.isVideo() == 0) {
-                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                        } else {
-                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                        }
-                        bundle.putParcelable("url",fileStatus);
-                        bundle.putInt("status",404);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+                        sendMsg();
                     }
                 } else {
-                    Message msg =  handler.obtainMessage();
-                    msg.what = DOWNLOAD_PHOTO_FAILED;
-                    Bundle bundle = new Bundle();
-                    if (fileStatus.isVideo() == 0) {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                    } else {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    }
-                    bundle.putParcelable("url",fileStatus);
-                    bundle.putInt("status",404);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    sendMsg();
                 }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_FAILED;
-                Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                bundle.putParcelable("url",fileStatus);
-                bundle.putInt("status",401);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
+                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                } else {
+                    Message msg = handler.obtainMessage();
+                    msg.what = DOWNLOAD_PHOTO_FAILED;
+                    Bundle bundle = new Bundle();
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    bundle.putParcelable("url", fileStatus);
+                    bundle.putInt("status", 401);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
             }
         });
     }
