@@ -3,7 +3,7 @@
     android:id="@+id/animated_photo_backtground_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/pp_light_gray_background"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -73,7 +73,6 @@
         android:layout_weight="1"
         android:src="@drawable/animated_ad_zh"
         android:adjustViewBounds="true"
-        android:paddingBottom="@dimen/pp_padding_16"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
@@ -83,6 +82,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/pp_margin_16"
         android:paddingRight="@dimen/pp_margin_16"
+        android:paddingBottom="@dimen/pp_margin_16"
         android:text="@string/animated_photo_introduce_text"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_14" />
@@ -93,6 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"
         android:layout_gravity="bottom"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/pp_margin_16">
