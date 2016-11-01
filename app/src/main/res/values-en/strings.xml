@@ -626,8 +626,8 @@
 
     <!--special deal-->
     <string name="special_deal_on">Deal is ON!</string>
-    <string name="special_deal_detail">Unlock and download all your digital photos from ONE Disney PhotoPass card for just RMB 169!</string>
-    <string name="special_deal_detail2">Unlock and download all your digital photos from ONE Disney PhotoPass card for just RMB 169!</string>
+    <string name="special_deal_detail">Unlock and download all your digital photos for just RMB 169!</string>
+    <string name="special_deal_detail2">Unlock and download all your digital photos from ONE Disney Park Ticket/PhotoPass card for just RMB 169!</string>
     <string name="special_deal">Special Deal!</string>
     <string name="special_deal_buy_now">Buy Now</string>
     <string name="special_deal_not_start">Begin Soon</string>
