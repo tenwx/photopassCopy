@@ -276,8 +276,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 PictureAirLog.e(TAG, "ADD_BOOKING_FAILED cade: " + msg.arg1);
                 dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                orderId = "123456789";
-                goToPayActivity(true);
                 break;
             default:
                 break;

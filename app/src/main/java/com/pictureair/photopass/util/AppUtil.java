@@ -1804,4 +1804,17 @@ public class AppUtil {
         }
         return resultPosition;
     }
+
+    /**
+     * 把服务器日期转换成手机当前时区时间
+     * */
+    public static Date getDateLocalFromStr(String date) throws ParseException{
+        SimpleDateFormat localFromat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        localFromat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        Date oldDate = localFromat.parse(date);
+        Calendar oldCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8:00"));
+        oldCalendar.setTime(oldDate);
+        localFromat.setTimeZone(TimeZone.getDefault());
+        return localFromat.parse(localFromat.format(oldCalendar.getTime()));
+    }
 }

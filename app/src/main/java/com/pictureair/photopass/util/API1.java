@@ -30,9 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -1952,13 +1951,15 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 long localTime = System.currentTimeMillis();
+                PictureAirLog.d("getDealingGoods localTime",new Date(localTime).toString());
                 PictureAirLog.json(jsonObject.toString());
                 DealingInfo dealingInfo = JsonUtil.getDealingInfo(jsonObject);
                 if (dealingInfo != null) {
-                    Calendar c = Calendar.getInstance();
                     try {
-                        c.setTime(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(dealingInfo.getCurrTime()));
-                        dealingInfo.setTimeOffset(localTime - c.getTimeInMillis());
+                        PictureAirLog.d("getDealingGoods getCurrTime",dealingInfo.getCurrTime());
+                        Date currentSystemServerDate = AppUtil.getDateLocalFromStr(dealingInfo.getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
+                        PictureAirLog.d("getDealingGoods format",currentSystemServerDate.toString());
+                        dealingInfo.setTimeOffset(localTime - currentSystemServerDate.getTime());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

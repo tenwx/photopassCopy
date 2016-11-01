@@ -81,7 +81,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         imageViews = new ArrayList<>();
 
         //初始化数据
-        if (Common.ppp.equals(arrayList.get(position).getProductName())) {//ppp产品
+        if (Common.ppp.equals(arrayList.get(position).getProductName()) || Common.SINGLE_PPP.equals(arrayList.get(position).getProductName())) {//ppp产品 或 拼单
             PictureAirLog.v(TAG, "ppp product");
             viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.showOrHidePhotoImageView.setVisibility(View.GONE);

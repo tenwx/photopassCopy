@@ -252,8 +252,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.UPDATE_DEALING_ORDER_FAILED:
-
                 dismissPWProgressDialog();
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             default:

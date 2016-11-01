@@ -30,7 +30,8 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:text="@string/special_deal_title"/>
 
     </RelativeLayout>
 

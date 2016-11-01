@@ -212,6 +212,7 @@ public class Common {
 
     public static final int TOAST_SHORT_TIME = 1000;
     public static final String ppp = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
+    public static final String SINGLE_PPP = "SinglePhotoPass+";//拼单区别照片和PP+
     public static final String PPPCode = "PPPCode";
     public static final String bindDate = "bindDate";
     public static final String PPS = "pps";

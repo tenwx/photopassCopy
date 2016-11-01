@@ -21,6 +21,7 @@ import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -32,11 +33,9 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by pengwu on 16/9/28.
@@ -134,13 +133,15 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                     }
 
                     showDealsDetails();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss", Locale.getDefault());
                     try {
                         PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalStart());
                         PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalEnd());
 
-                        startDate = simpleDateFormat.parse(goodsInfo.getDealing().getCurrTimeIntervalStart());//"2016/10/27 18:50:00");//
-                        endDate = simpleDateFormat.parse(goodsInfo.getDealing().getCurrTimeIntervalEnd());//"2016/10/27 18:51:00");//
+                        startDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalStart());
+                        endDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalEnd());
+                        PictureAirLog.d(TAG, "formatStartDate " + startDate.toString());
+                        PictureAirLog.d(TAG, "formatEndDate " + endDate.toString());
+
                         Date currentData = getCurrentDate();
 
                         if (goodsInfo.getDealing().getState() == -2) {
@@ -156,23 +157,6 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                                 mStartDeal = NO_DEALS;
                             }
                         }
-
-
-
-//                        if (startDate.getTime()  > currentData.getTime() - dealingInfo.getTimeOffset() && goodsInfo.getDealing().getState() == -2) {//未开始
-//                            mStartDeal = DEAL_NOT_START;
-//                        } else if (currentData.getTime() - dealingInfo.getTimeOffset() >= startDate.getTime() && currentData.getTime() - dealingInfo.getTimeOffset() <= endDate.getTime() && goodsInfo.getDealing().getState() == 1) {
-//                            mStartDeal = DEALING;
-//                        } else {
-//                            if (currentData.getTime() - dealingInfo.getTimeOffset() < startDate.getTime() ) {
-//                                mStartDeal = DEAL_NOT_START;
-//                            }else if ( currentData.getTime() - dealingInfo.getTimeOffset() >= startDate.getTime() && currentData.getTime() - dealingInfo.getTimeOffset() <= endDate.getTime()) {
-//                                mStartDeal = DEALING;
-//                            } else {
-//                                mStartDeal = NO_DEALS;
-//                            }
-//                        }
-
                         if (mStartDeal == DEAL_NOT_START) {
                             countDownTimer = new MyCountDownTimer(startDate.getTime() - (currentData.getTime() - dealingInfo.getTimeOffset()), 1000);
                             countDownTimer.start();
@@ -248,11 +232,6 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         dealingInfo = (DealingInfo) getIntent().getSerializableExtra("dealingInfo");
         PictureAirLog.d(dealingInfo.toString());
 
-        /**
-         * 活动状态  1 活动正常开启;   0 活动已关闭;   -1 活动已过期; -2活动未开始;
-         * -3非活动时间;  -4活动暂停;  -5用户已参加过;
-         * */
-
         if (dealingInfo != null) {
             API1.getSingleGoods(dealingInfo.getDealingUrl(), panciBuyHandler);
         }
@@ -286,13 +265,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private Date getCurrentDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss",Locale.getDefault());
-        Date currentData = null;
-        try {
-            currentData = sdf.parse(sdf.format(new Date()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date currentData = new Date(System.currentTimeMillis());
         return currentData;
     }
 

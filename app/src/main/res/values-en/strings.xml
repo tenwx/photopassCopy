@@ -639,5 +639,6 @@
     <string name="special_deal_buy">Buy Now</string>
     <string name="special_deal_end">已结束</string>
     <string name="special_deal_count_enough">购买次数达到上限</string>
+    <string name="special_deal_title">Special Deal</string>
     <!--special deal-->
 </resources>
