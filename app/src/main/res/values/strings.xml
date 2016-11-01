@@ -407,7 +407,7 @@
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
-    <string name="select_pp_right_date">您选择激活以下迪士尼门票／乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通能让您激活同一天三张门票／乐拍通卡，或者连续三天的同一张门票／乐拍通卡。\n\n是否确认继续选择激活此门票／乐拍通卡？</string>
+    <string name="select_pp_right_date">您选择激活以下迪士尼乐园门票／乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通能让您激活同一天三张乐园门票／乐拍通卡，或者连续三天的同一张乐园门票／乐拍通卡。\n\n是否确认继续选择激活此乐园门票／乐拍通卡？</string>
     <string name="pp_tip">以下是您未激活的迪士尼门票／乐拍通卡。在激活前，请注意卡的日期。</string>
     <string name="select_pp">%1$s在%2$s的照片\n</string>
     <string name="outofrange">超出范围</string>
@@ -626,8 +626,8 @@
 
     <!--special deal-->
     <string name="special_deal_on">抢购进行中</string>
-    <string name="special_deal_detail">快速抢购单人乐拍通一卡通，您的照片立即全部拥有，现在只需169！</string>
-    <string name="special_deal_detail2">只需169元就能获得绑定至同一张迪士尼乐拍通卡内的所有数码照片！</string>
+    <string name="special_deal_detail">快速抢购单拼乐拍通一卡通，即可获得所有数码照片，仅需169元！</string>
+    <string name="special_deal_detail2">只需169元就能获得任意一张迪士尼乐园门票／乐拍通卡内的所有数码照片！</string>
     <string name="special_deal">优享特惠！</string>
     <string name="special_deal_buy_now">购买</string>
     <string name="special_deal_not_start">未开始</string>
