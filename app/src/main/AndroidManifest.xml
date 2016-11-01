@@ -238,7 +238,8 @@
 
         <activity
             android:name=".activity.ADVideoDetailProductActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/>
 
         <!-- 忘记密码 -->
         <activity

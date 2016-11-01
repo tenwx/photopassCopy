@@ -1,15 +1,12 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -19,7 +16,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -39,23 +35,19 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.videoPlayer.OnVideoPlayerViewEventListener;
-import com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by bauer_bao on 16/9/2.
  */
-public class ADVideoDetailProductActivity extends BaseActivity implements View.OnClickListener, OnVideoPlayerViewEventListener {
+public class ADVideoDetailProductActivity extends BaseActivity implements View.OnClickListener {
 
-    private LinearLayout animatedPhotoBackgroundLL, animatedPhotoBottomBtnsLL;
-    private RelativeLayout animatedPhotoTopBarRl;
     private ImageView backImageView;
     private ImageView cartImageView;
-    private TextView cartCountTextView, animatedPhotoIntroduce;
+    private ImageView adImageView;
+    private TextView cartCountTextView;
     private Button buyPPPBtn, upgradePPP, addPPPToCart;
 
     private PWToast pwToast;
@@ -64,19 +56,11 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private String tabName;
     private int currentPosition;//记录当前预览照片的索引值
 
-    //视频组件
-    private PWVideoPlayerManagerView pwVideoPlayerManagerView;
-
     //加入购物车组件
     private ViewGroup animMaskLayout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
 
     private final static String TAG = ADVideoDetailProductActivity.class.getSimpleName();
-
-    private int screenWidth = 0;
-    private int screenHeight = 0;
-    private boolean isOnline ;//网络true || 本地false
-    private String videoPath;//视频本地路径 || 视频网络地址
 
     //商品数据
     private List<GoodsInfo> allGoodsList;//全部商品
@@ -183,16 +167,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
         initView();
         initData();
-
-        Configuration cf = getResources().getConfiguration();
-        int ori = cf.orientation;
-        adjustScreenUI(ori == cf.ORIENTATION_LANDSCAPE);
-
-        if (isOnline && AppUtil.getNetWorkType(this) == AppUtil.NETWORKTYPE_INVALID) {
-            pwVideoPlayerManagerView.setLoadingText(R.string.no_network);
-        } else {
-            pwVideoPlayerManagerView.startPlayVideo(videoPath, isOnline);// 开始播放视频
-        }
     }
 
     private void initView() {
@@ -202,11 +176,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         buyPPPBtn = (Button) findViewById(R.id.animated_photo_buy_ppp_btn);
         upgradePPP = (Button) findViewById(R.id.animated_photo_upgrade_ppp_btn);
         addPPPToCart = (Button) findViewById(R.id.animated_photo_add_cart_btn);
-        animatedPhotoTopBarRl = (RelativeLayout) findViewById(R.id.animated_photo_top_rl);
-        animatedPhotoIntroduce = (TextView) findViewById(R.id.animated_photo_product_detail);
-        animatedPhotoBottomBtnsLL = (LinearLayout) findViewById(R.id.animated_photo_bottom_btns_ll);
-        animatedPhotoBackgroundLL = (LinearLayout) findViewById(R.id.animated_photo_backtground_ll);
-        pwVideoPlayerManagerView = (PWVideoPlayerManagerView) findViewById(R.id.animated_photo_pwvideo_pmv);
+        adImageView = (ImageView) findViewById(R.id.animated_photo_iv);
 
         backImageView.setOnClickListener(this);
         cartImageView.setOnClickListener(this);
@@ -214,8 +184,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         buyPPPBtn.setOnClickListener(this);
         upgradePPP.setOnClickListener(this);
         addPPPToCart.setOnClickListener(this);
-        pwVideoPlayerManagerView.setOnClickListener(this);
-        pwVideoPlayerManagerView.setOnVideoPlayerViewEventListener(this);
     }
 
     private void initData() {
@@ -225,9 +193,12 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         currentPosition = bundle.getInt("position", 0);
         tabName = bundle.getString("tab");
 
-        getScreenSize();
-        getReallyVideoUrl();
-        setVideoResolution(true);
+        if (MyApplication.getInstance().getLanguageType().equals(Common.ENGLISH)) {
+            adImageView.setImageResource(R.drawable.animated_ad_en);
+        } else {
+            adImageView.setImageResource(R.drawable.animated_ad_zh);
+        }
+
         showPWProgressDialog(true);
         getGoods();
     }
@@ -294,33 +265,14 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 addtocart();
                 break;
 
-            case R.id.animated_photo_pwvideo_pmv:
-                PictureAirLog.out("click video");
-                // 单次处理
-                if (pwVideoPlayerManagerView.isPaused()) {
-                    pwVideoPlayerManagerView.resumeVideo();
-                } else {
-                    pwVideoPlayerManagerView.pausedVideo();
-                }
-                break;
-
             default:
                 break;
         }
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        getScreenSize();
-        adjustScreenUI(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);//调整UI
-        setPausedOrPlay();
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
-        pwVideoPlayerManagerView.pausedVideo();
     }
 
     @Override
@@ -331,7 +283,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
     @Override
     protected void onDestroy() {
-        pwVideoPlayerManagerView.stopVideo();
         adVideoHandler.removeCallbacksAndMessages(null);
 
         if (!MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY_PAYED)) {//如果已经购买完成，则不需要清除数据，否则才会清除
@@ -353,110 +304,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         } else {
             cartCountTextView.setVisibility(View.VISIBLE);
             cartCountTextView.setText(recordcount + "");
-        }
-    }
-
-    private void getReallyVideoUrl(){
-        String fileName = AppUtil.getReallyFileName(videoInfo.photoPathOrURL, 1);
-        PictureAirLog.e(TAG, "filename=" + fileName);
-        File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
-        filedir.mkdirs();
-        final File file = new File(filedir + "/" + fileName);
-        if (!file.exists()) {
-            videoPath = videoInfo.adURL;
-            PictureAirLog.v(TAG, " 网络播放:"+videoPath);
-            isOnline = true;
-        } else {
-            PictureAirLog.v(TAG, " 本地播放");
-            videoPath = file.getPath();
-            isOnline = false;
-        }
-        if (videoInfo.videoHeight == 0) {
-            videoInfo.videoHeight = 300;
-        }
-        if (videoInfo.videoWidth == 0) {
-            videoInfo.videoWidth = 400;
-        }
-    }
-
-    /**
-     * 获取屏幕宽高
-     */
-    private void getScreenSize() {
-        screenHeight = ScreenUtil.getScreenHeight(this);
-        screenWidth = ScreenUtil.getScreenWidth(this);
-    }
-
-
-    @Override
-    public void setVideoScale(int flag) {
-        switch (flag) {
-            case PWVideoPlayerManagerView.SCREEN_FULL:
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                break;
-
-            case PWVideoPlayerManagerView.SCREEN_DEFAULT:
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                break;
-        }
-    }
-
-    @Override
-    public void setControllerVisible(boolean visible) {
-
-    }
-
-    @Override
-    public void onError() {
-        pwVideoPlayerManagerView.setLoadingText(R.string.http_error_code_401);
-    }
-
-    /**
-     * 调整ui
-     * @param isLandscape 是不是横屏模式
-     */
-    private void adjustScreenUI(boolean isLandscape) {
-        animatedPhotoTopBarRl.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
-        animatedPhotoIntroduce.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
-        animatedPhotoBottomBtnsLL.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
-        animatedPhotoBackgroundLL.setBackgroundColor(ContextCompat.getColor(this, isLandscape ? R.color.black : R.color.gray_light));
-        setVideoResolution(!isLandscape);
-        setVideoScale(isLandscape ? PWVideoPlayerManagerView.SCREEN_FULL : PWVideoPlayerManagerView.SCREEN_DEFAULT);
-    }
-
-    /**
-     * 设置视频显示尺寸
-     *
-     * @param isVertical  竖屏？横屏
-     */
-    private void setVideoResolution(boolean isVertical) {
-        ViewGroup.LayoutParams layoutParams = pwVideoPlayerManagerView.getLayoutParams();
-        int videoHeight;
-        if (isVertical) {//竖屏
-            layoutParams.width = ScreenUtil.getScreenWidth(this);
-            layoutParams.height = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
-            videoHeight = layoutParams.height;
-        } else {//横屏
-            if (AppUtil.getOrientationMarginByAspectRatio(videoInfo.videoWidth,
-                    videoInfo.videoHeight, screenWidth, screenHeight) == AppUtil.HORIZONTAL_MARGIN) {//水平留白
-                layoutParams.height = screenHeight;
-                layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
-                videoHeight = layoutParams.height;
-            } else {//上下留白
-                layoutParams.width = screenWidth;
-                layoutParams.height = screenHeight;
-                videoHeight = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
-            }
-        }
-        pwVideoPlayerManagerView.setVideoScale(layoutParams.width, videoHeight);
-        pwVideoPlayerManagerView.setLayoutParams(layoutParams);
-    }
-
-    private void setPausedOrPlay() {
-        if (pwVideoPlayerManagerView.isPaused()) {
-            pwVideoPlayerManagerView.pausedVideo();
-        } else {
-            pwVideoPlayerManagerView.resumeVideo();
         }
     }
 

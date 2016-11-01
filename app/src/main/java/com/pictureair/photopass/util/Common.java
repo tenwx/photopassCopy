@@ -137,10 +137,6 @@ public class Common {
     public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
 
-    //下载数目统计
-    public static final String ISDOWNLOAD = "isDownload";
-    public static final String DOWNLOAD_PHOTO_IDS = "DownloadPhotoIds";
-
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
@@ -240,6 +236,10 @@ public class Common {
     public static final String SHOOTDATE = "shootDate";
     public static final String PP = "pp";
     public static final String LONG_URL = "longUrl";
+
+    //下载数目统计
+    public static final String ISDOWNLOAD = "isDownload";
+    public static final String DOWNLOAD_PHOTO_IDS = "DownloadPhotoIds";
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
