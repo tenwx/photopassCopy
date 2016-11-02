@@ -83,10 +83,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             isOnline = false;
         }
         if (videoInfo.videoHeight == 0) {
-            videoInfo.videoHeight = 480;
+            videoInfo.videoHeight = 300;
         }
         if (videoInfo.videoWidth == 0) {
-            videoInfo.videoWidth = 480;
+            videoInfo.videoWidth = 400;
         }
     }
 

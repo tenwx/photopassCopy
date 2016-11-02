@@ -622,6 +622,7 @@
     <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
     <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
     <string name="animated_photo_introduce_text">Want to see your Disney friends coming alive in your photos? Purchase PhotoPass+ now to unlock this magic today!</string>
+    <string name="animated_photo_loading">Loading%1$d%%</string>
     <!--animated photo end-->
 
     <!--special deal-->

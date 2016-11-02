@@ -127,6 +127,7 @@ public class Common {
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
+    public static final String GET_SHORT_URL = "/api/convertShortUrl";//获取短链接
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
@@ -240,6 +241,11 @@ public class Common {
     public static final String MSG_TYPE = "msgType";
     public static final String SHOOTDATE = "shootDate";
     public static final String PP = "pp";
+    public static final String LONG_URL = "longUrl";
+
+    //下载数目统计
+    public static final String ISDOWNLOAD = "isDownload";
+    public static final String DOWNLOAD_PHOTO_IDS = "DownloadPhotoIds";
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";

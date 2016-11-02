@@ -196,6 +196,7 @@ public class ACache {
      * @return String 数据
      */
     public String getAsString(String key) {
+        if (mCache == null) return null;
         File file = mCache.get(key);
         if (!file.exists())
             return null;
@@ -362,6 +363,7 @@ public class ACache {
      * @throws FileNotFoundException if the file can not be opened
      */
     public InputStream get(String key) throws FileNotFoundException {
+        if (mCache == null) return null;
         File file = mCache.get(key);
         if (!file.exists())
             return null;
@@ -389,6 +391,7 @@ public class ACache {
         RandomAccessFile RAFile = null;
         boolean removeFile = false;
         try {
+            if (mCache == null) return null;
             File file = mCache.get(key);
             if (!file.exists())
                 return null;

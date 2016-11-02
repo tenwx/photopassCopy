@@ -102,7 +102,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     PictureAirLog.d(TAG, "tokenid----->" + MyApplication.getTokenId());
                     PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
 
-                    if (isOnline && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
+                    if (isOnline && !isVideo && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
                         API1.getNewPhotosInfo(MyApplication.getTokenId(), photoId, msg.arg1, mHandler);
 
                     } else {
@@ -111,12 +111,22 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     }
                     break;
 
+                case API1.GET_SHORT_URL_SUCCESS://拿到了短链接
+                    JSONObject shortUrlInfo = (JSONObject)msg.obj;
+                    if (shortUrlInfo.containsKey("shortUrl")) {
+                        shareUrl = shortUrlInfo.getString("shortUrl");
+                    }
+                    PictureAirLog.out("result--->" + shareUrl);
+                    startShare(msg.arg1);
+                    break;
+
                 case API1.GET_NEW_PHOTOS_INFO_SUCCESS:
                     PhotoInfo photoInfo = (PhotoInfo) msg.obj;
                     imageUrl = photoInfo.photoThumbnail_1024;
                     startShare(msg.arg1);
                     break;
 
+                case API1.GET_SHORT_URL_FAILED:
                 case API1.GET_NEW_PHOTOS_INFO_FAILED:
                 case API1.GET_SHARE_URL_FAILED:
                     PictureAirLog.d(TAG, "error--" + msg.arg1);
@@ -371,7 +381,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         cn.sharesdk.sina.weibo.SinaWeibo.ShareParams shareParams = new cn.sharesdk.sina.weibo.SinaWeibo.ShareParams();
 
         if (isVideo) {
-            shareParams.text = context.getString(R.string.share_text) + imageUrl;
+            shareParams.text = context.getString(R.string.share_text) + shareUrl;
             shareParams.setImageUrl(thumbnailUrl);
         } else {
             if (!isOnline) {// 本地图片
@@ -512,7 +522,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
             case R.id.sina:
                 shareType = Common.EVENT_ONCLICK_SHARE_SINA_WEIBO;
                 sharePlatform = "sina";
-                if (!isOnline && !isVideo) {// 本地
+                if (!isOnline && !isVideo) {// 本地图片
                     createThumbNail(id);
                 } else {
                     sinaShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
@@ -558,16 +568,31 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
             case R.id.wechat:
             case R.id.qq:
             case R.id.qqzone:
-            case R.id.sina:
             case R.id.facebook:
             case R.id.twitter:
                 PictureAirLog.d(TAG, "share on click--->");
                 if (!isOnline || isVideo) {//本地图片或者视频，都直接开始分享
                     PictureAirLog.d(TAG, "local or video");
                     startShare(v.getId());
-                } else {//网络，需要获取shareURL
+                } else {//网络图片，需要获取shareURL
                     PictureAirLog.d(TAG, "online get share url");
                     API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+                }
+                break;
+
+            case R.id.sina:
+                PictureAirLog.d(TAG, "share on click--->");
+                if (isVideo) {//视频需要直接获取短连接
+                    API1.getShortUrl(imageUrl, v.getId(), mHandler);
+
+                } else if (!isOnline) {//本地图片，直接开始分享
+                    PictureAirLog.d(TAG, "local");
+                    startShare(v.getId());
+
+                } else {//网络图片，需要获取shareURL
+                    PictureAirLog.d(TAG, "online get share url");
+                    API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+
                 }
                 break;
 

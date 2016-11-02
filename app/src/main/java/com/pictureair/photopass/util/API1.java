@@ -24,6 +24,7 @@ import com.pictureair.photopass.http.BasicResultCallTask;
 import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
+import com.unionpay.tsmservice.request.RequestParams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,6 +99,13 @@ public class API1 {
     public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
     public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
 
+    //选择已有PP＋
+    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 2051;
+    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 2050;
+
+    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2060;
+    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2061;
+
     /**
      * 获取视频信息
      */
@@ -114,17 +122,14 @@ public class API1 {
     public static final int DELETE_PHOTOS_SUCCESS = 2101;
     public static final int DELETE_PHOTOS_FAILED = 2100;
 
-    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2110;
-    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2111;
-
     /**
      * 发现
      */
     public static final int GET_FAVORITE_LOCATION_FAILED = 3000;
     public static final int GET_FAVORITE_LOCATION_SUCCESS = 3001;
 
-    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3020;
-    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3021;
+    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3010;
+    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3011;
 
 
     //Shop模块 start
@@ -257,9 +262,7 @@ public class API1 {
     //使用优惠券
     public static final int PREVIEW_COUPON_SUCCESS = 5161;
     public static final int PREVIEW_COUPON_FAILED = 5160;
-
     //我的模块 end
-
 
     public static final int GET_UPDATE_SUCCESS = 6001;
     public static final int GET_UPDATE_FAILED = 6000;
@@ -267,28 +270,31 @@ public class API1 {
     public static final int DOWNLOAD_APK_SUCCESS = 6011;
     public static final int DOWNLOAD_APK_FAILED = 6010;
 
-
     // 推送
     public static final int SOCKET_DISCONNECT_FAILED = 6020;
     public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
 
     //手动拉取推送
-    public static final int GET_SOCKET_DATA_FAILED = 6120;
-    public static final int GET_SOCKET_DATA_SUCCESS = 6121;
-
-    //分享
-    public static final int GET_SHARE_URL_SUCCESS = 6031;
-    public static final int GET_SHARE_URL_FAILED = 6030;
+    public static final int GET_SOCKET_DATA_FAILED = 6030;
+    public static final int GET_SOCKET_DATA_SUCCESS = 6031;
 
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
     public final static int DOWNLOAD_PHOTO_GET_URL_SUCCESS = 6042;
 
+    //下载文件
+    public static final int DOWNLOAD_FILE_FAILED = 6050;
+    public static final int DOWNLOAD_FILE_SUCCESS = 6051;
+    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
 
-    //选择已有PP＋
-    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
-    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 6090;
+    //分享链接
+    public static final int GET_SHARE_URL_SUCCESS = 6061;
+    public static final int GET_SHARE_URL_FAILED = 6060;
+
+    //获取短连接
+    public static final int GET_SHORT_URL_SUCCESS = 6071;
+    public static final int GET_SHORT_URL_FAILED = 6070;
 
     /**
      * 发送设备ID获取tokenId
@@ -407,7 +413,7 @@ public class API1 {
      * @param folderPath
      * @param fileName
      */
-    public static BinaryCallBack downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
+    public static BinaryCallBack downloadHeadFile(String downloadUrl, final String folderPath, final String fileName, final Handler handler) {
         BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
@@ -429,8 +435,20 @@ public class API1 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                handler.obtainMessage(DOWNLOAD_FILE_SUCCESS, folderPath + fileName).sendToTarget();
             }
 
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(DOWNLOAD_FILE_FAILED, status, 0).sendToTarget();
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                handler.obtainMessage(DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
+            }
         });
 
         return task;
@@ -2346,6 +2364,37 @@ public class API1 {
     }
 
     /**
+     * 获取分享的URL
+     *
+     * @param longURL
+     * @param id        点击id
+     * @param handler
+     */
+    public static BasicResultCallTask getShortUrl(String longURL, final int id, final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LONG_URL, longURL);
+        PictureAirLog.out("get share url----------------" + params.toString());
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, new HttpCallback() {
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
+                handler.obtainMessage(GET_SHORT_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "获取分享失败" + status);
+                handler.obtainMessage(GET_SHORT_URL_FAILED, status, 0).sendToTarget();
+            }
+        });
+        return task;
+    }
+
+    /**
      * 分享成功的回调，通知服务器已经成功分享
      *
      * @param shareId
@@ -2380,12 +2429,15 @@ public class API1 {
     }
 
     /**
-     * 获取照片的最新数据
+     * 获取照片的最新数据,并后台统计图片的下载数量
      *
      * @param tokenId
+     * @param id photoId
+     * @param isDownload 后台要统计图片
+     * @param downloadPhotoIds 有原图链接时,该对象存储photoId,后台用于过滤,没有原图链接时为null
      * @param handler
      */
-    public static BasicResultCallTask getPhotosInfo(String tokenId, final int id, final Handler handler,final DownloadFileStatus fileStatus) {
+    public static BasicResultCallTask getPhotosInfo(String tokenId, final int id, final Handler handler,final boolean isDownload, final JSONArray downloadPhotoIds,final DownloadFileStatus fileStatus) {
         Map<String,Object> params = new HashMap<>();
         JSONArray ids = new JSONArray();
         ids.add(fileStatus.getPhotoId());
@@ -2393,8 +2445,37 @@ public class API1 {
         if (ids != null) {
             params.put(Common.EPPP_IDS, ids.toJSONString());
         }
+        params.put(Common.ISDOWNLOAD, isDownload);
+        if (downloadPhotoIds != null) {
+            params.put(Common.DOWNLOAD_PHOTO_IDS, downloadPhotoIds.toString());
+        }
 
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+
+            private void sendNoDataMsg () {
+                Message msg = handler.obtainMessage();
+                msg.what = DOWNLOAD_PHOTO_FAILED;
+                Bundle bundle = new Bundle();
+                if (fileStatus.isVideo() == 0) {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
+                } else {
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                }
+                bundle.putParcelable("url", fileStatus);
+                bundle.putInt("status", 404);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
+            private void sendMsg() {
+                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
+                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                } else {
+                    sendNoDataMsg();
+                }
+            }
+
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -2406,46 +2487,29 @@ public class API1 {
                     if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
                         handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
                     } else {
-                        Message msg =  handler.obtainMessage();
-                        msg.what = DOWNLOAD_PHOTO_FAILED;
-                        Bundle bundle = new Bundle();
-                        if (fileStatus.isVideo() == 0) {
-                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                        } else {
-                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                        }
-                        bundle.putParcelable("url",fileStatus);
-                        bundle.putInt("status",404);
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
+                        sendMsg();
                     }
                 } else {
-                    Message msg =  handler.obtainMessage();
-                    msg.what = DOWNLOAD_PHOTO_FAILED;
-                    Bundle bundle = new Bundle();
-                    if (fileStatus.isVideo() == 0) {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                    } else {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    }
-                    bundle.putParcelable("url",fileStatus);
-                    bundle.putInt("status",404);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    sendMsg();
                 }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_FAILED;
-                Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                bundle.putParcelable("url",fileStatus);
-                bundle.putInt("status",401);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
+                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                } else {
+                    Message msg = handler.obtainMessage();
+                    msg.what = DOWNLOAD_PHOTO_FAILED;
+                    Bundle bundle = new Bundle();
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    bundle.putParcelable("url", fileStatus);
+                    bundle.putInt("status", 401);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
             }
         });
 

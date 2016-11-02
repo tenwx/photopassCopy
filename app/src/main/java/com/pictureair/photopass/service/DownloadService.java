@@ -16,6 +16,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
@@ -554,11 +556,15 @@ public class DownloadService extends Service {
     private void getNewUrl(DownloadFileStatus fileStatus){
         if (AppUtil.isOldVersionOfTheVideo(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
             PictureAirLog.out("getNewUrl----------->  requestNewUrl");
-            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, fileStatus);
+            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, null, fileStatus);
         }else{
             PictureAirLog.out("getNewUrl----------->  original Url");
-            fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-            handler.obtainMessage(API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
+//            fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+//            handler.obtainMessage(API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
+            JSONArray downloadPhotoIds = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("_id", fileStatus.getPhotoId());
+            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, downloadPhotoIds, fileStatus);
         }
     }
 

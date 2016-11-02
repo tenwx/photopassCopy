@@ -621,7 +621,8 @@
     <string name="animated_photo_add_cart">把迪士尼乐拍通一卡通加入购物车</string>
     <string name="animated_photo_buy_ppp">我要购买迪士尼乐拍通一卡通</string>
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
-    <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开通这个魔法吧！</string>
+    <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开启这个魔法吧！</string>
+    <string name="animated_photo_loading">正在加载%1$d%%</string>
     <!--animated photo end-->
 
     <!--special deal-->

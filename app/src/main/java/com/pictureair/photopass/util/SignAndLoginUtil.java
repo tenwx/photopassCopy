@@ -90,11 +90,11 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.LOGIN_SUCCESS://登录成功
                 String headUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
                 if (headUrl != null) {//头像不为空，下载头像文件
-                    API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH);
+                    API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH, handler);
                 }
                 String bgUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BGPHOTO, null);
                 if (bgUrl != null) {//背景不为空，下载背景文件
-                    API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT);
+                    API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT, handler);
                 }
 
                 if (needModifyInfo) {//需要修改个人信息

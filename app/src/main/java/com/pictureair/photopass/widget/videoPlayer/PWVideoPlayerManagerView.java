@@ -4,29 +4,37 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
+
+import java.io.File;
 
 /**
  * Created by bauer_bao on 16/9/7.
  * 视频播放控件
  */
 public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPlayer.OnErrorListener,
-        VideoPlayerView.OnVideoSizeChangedListenser, SeekBar.OnSeekBarChangeListener,
+        VideoPlayerView.OnVideoEventListenser, SeekBar.OnSeekBarChangeListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
     private VideoPlayerView videoPlayerView;
     private TextView loadingTV, hasPlayedTV, durationTV;
     private ImageButton playOrStopButton;
     private LinearLayout controllerBarLL;
     private SeekBar seekBar;
+    private ImageView loadingIV;
 
     private Context context;
     private OnVideoPlayerViewEventListener videoPlayerViewEventListener;
@@ -68,6 +76,30 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                     }
                     break;
 
+                case API1.DOWNLOAD_FILE_SUCCESS:
+                    PictureAirLog.out("file path-->" + msg.obj.toString());
+                    videoPlayerView.setVideoPath(msg.obj.toString());
+                    break;
+
+                case API1.DOWNLOAD_FILE_FAILED:
+                    loadingIV.setVisibility(GONE);
+                    loadingTV.setText(R.string.http_error_code_401);
+                    break;
+
+                case API1.DOWNLOAD_FILE_PROGRESS:
+                    int progress = msg.arg1;
+                    int total = msg.arg2;
+                    int currentProgress = 0;
+                    if (total != 0) {
+                        currentProgress = progress * 100 / total;
+                    }
+
+                    int result = ReflectionUtil.getDrawableId(context, "loading_" + (currentProgress / 8));
+
+                    loadingIV.setImageResource(result);
+                    loadingTV.setText(String.format(context.getString(R.string.animated_photo_loading), currentProgress));
+                    break;
+
                 default:
                     break;
             }
@@ -91,6 +123,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         inflate(context, R.layout.surfaceview_mediaplaer, this);
         videoPlayerView = (VideoPlayerView) findViewById(R.id.vv);
         loadingTV = (TextView) findViewById(R.id.tv_loding);
+        loadingIV = (ImageView) findViewById(R.id.iv_loading);
         playOrStopButton = (ImageButton) findViewById(R.id.btn_play_or_stop);
         controllerBarLL = (LinearLayout) findViewById(R.id.ll_controler);
         hasPlayedTV = (TextView) findViewById(R.id.has_played);
@@ -98,7 +131,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         durationTV = (TextView) findViewById(R.id.duration);
 
         videoPlayerView.setOnErrorListener(this);
-        videoPlayerView.setOnVideoSizeChangedListenser(this);
+        videoPlayerView.setOnVideoEventListenser(this);
         videoPlayerView.setOnPreparedListener(this);
         videoPlayerView.setOnCompletionListener(this);
         videoPlayerView.setOnBufferingUpdateListener(this);
@@ -124,6 +157,12 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     }
 
     @Override
+    public void needResumePlayVideo() {
+        PictureAirLog.d(TAG, "need resume video");
+        resumeVideo();
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         PictureAirLog.d(TAG, "===> onProgressChanged" + progress);
         if (fromUser) {
@@ -145,6 +184,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     @Override
     public void onPrepared(MediaPlayer mp) {
         PictureAirLog.d(TAG, "===> onPrepared");
+        loadingIV.setVisibility(GONE);
         loadingTV.setVisibility(View.GONE);
         isReady = true;
         seekBar.setEnabled(true);
@@ -204,6 +244,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
      * @param strId
      */
     public void setLoadingText(int strId) {
+        loadingIV.setVisibility(GONE);
         loadingTV.setText(strId);
     }
 
@@ -264,13 +305,35 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
     }
 
     /**
-     * 开始播放视频
+     * 开始播放视频，目前的需求是，先下载完成之后再去播放
      * @param videoPath
      */
     public void startPlayVideo(String videoPath, boolean isOnline) {
-        PictureAirLog.d(TAG, "start play video");
+        PictureAirLog.d(TAG, "start play video" + videoPath + isOnline);
         this.isOnline = isOnline;
-        videoPlayerView.setVideoPath(videoPath);
+        /**
+         * 0.检查文件权限是否同意
+         * 1.判断文件是否已经存在，
+         * 2.如果存在，直接播放
+         * 3.如果不存在，先从网络下载，之后再去播放
+         */
+
+        if (!isOnline || TextUtils.isEmpty(videoPath)) {//本地视频，或者路径为空 直接播放
+            videoPlayerView.setVideoPath(videoPath);
+        } else if (AppUtil.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            String fileName = AppUtil.getReallyFileName(videoPath, 1);
+            File file = new File(context.getCacheDir() + File.separator + "video" + File.separator + fileName);
+            if (file.exists()) {//文件存在
+                PictureAirLog.out("file path-->" + file.toString());
+                videoPlayerView.setVideoPath(file.toString());
+            } else {//文件不存在，需要从网络下载
+                API1.downloadHeadFile(videoPath, context.getCacheDir() + File.separator + "video" + File.separator, fileName, handler);
+            }
+
+        }else{
+            loadingIV.setVisibility(GONE);
+            loadingTV.setText(R.string.permission_storage_message);
+        }
     }
 
     /**

@@ -3,6 +3,7 @@
     android:id="@+id/animated_photo_backtground_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pp_light_gray_background"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -65,20 +66,23 @@
             android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView
-        android:id="@+id/animated_photo_pwvideo_pmv"
+    <ImageView
+        android:id="@+id/animated_photo_iv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/animated_ad_zh"
+        android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/animated_photo_product_detail"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:background="@color/pp_light_gray_background"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/pp_dp_16"
+        android:paddingLeft="@dimen/pp_dp_16"
+        android:paddingRight="@dimen/pp_dp_16"
+        android:paddingBottom="@dimen/pp_dp_16"
         android:text="@string/animated_photo_introduce_text"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_14" />
