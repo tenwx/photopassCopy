@@ -686,7 +686,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 break;
 
             case API1.GET_DEALING_GOODS_FAILED:
-                newToast.setTextAndShow(ReflectionUtil.getStringId(this, msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             default:

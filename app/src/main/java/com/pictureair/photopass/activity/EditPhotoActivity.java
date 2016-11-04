@@ -12,8 +12,6 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,6 +59,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.LocationUtil;
+import com.pictureair.photopass.util.PWMediaScanner;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -887,20 +886,19 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	// 扫描SD卡
 	private void scan(final String file) {
 		// TODO Auto-generated method stub
-		MediaScannerConnection.scanFile(this, new String[] { file }, null,
-				new MediaScannerConnection.OnScanCompletedListener() {
-					@Override
-					public void onScanCompleted(String arg0, Uri arg1) {
-						// TODO Auto-generated method stub
-						SPUtils.put(EditPhotoActivity.this, Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
-						// 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
-						Intent intent = new Intent();
-						intent.putExtra("photoUrl", file);
-						setResult(11, intent);
-						PictureAirLog.out("set result--------->");
-						finish();
-					}
-				});
+		new PWMediaScanner(this, file, null, new PWMediaScanner.ScannerListener() {
+			@Override
+			public void OnScannerFinish() {
+				// TODO Auto-generated method stub
+				SPUtils.put(EditPhotoActivity.this, Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
+				// 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
+				Intent intent = new Intent();
+				intent.putExtra("photoUrl", file);
+				setResult(11, intent);
+				PictureAirLog.out("set result--------->");
+				finish();
+			}
+		});
 	}
 
 

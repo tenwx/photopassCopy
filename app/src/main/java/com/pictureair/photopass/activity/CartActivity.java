@@ -145,7 +145,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
 
                     if (isEdit) {
-                        paymentButton.setBackgroundResource(R.color.red);
+                        paymentButton.setBackgroundResource(R.color.pp_red);
                     } else {
 
                         if (disSelectedCount < cartItemInfoJson.getItems().size()) {
@@ -410,7 +410,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             cartSelectAllImageView.setImageResource(R.drawable.cart_select);
             if (isEdit) {
                 //编辑
-                paymentButton.setBackgroundResource(R.color.red);
+                paymentButton.setBackgroundResource(R.color.pp_red);
                 discountPriceLinearLayout.setVisibility(View.GONE);
             } else {
                 paymentButton.setBackgroundResource(R.color.pp_blue);
@@ -424,7 +424,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
             if (isEdit) {
                 discountPriceLinearLayout.setVisibility(View.GONE);
-                paymentButton.setBackgroundResource(R.color.red);
+                paymentButton.setBackgroundResource(R.color.pp_red);
             } else {
                 paymentButton.setBackgroundResource(R.color.pp_blue);
             }
@@ -551,7 +551,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     if (cartInfoList == null || cartInfoList.size() == 0 || disSelectedCount == cartItemInfoJson.getItems().size()) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
                     } else {
-                        paymentButton.setBackgroundResource(R.color.red);
+                        paymentButton.setBackgroundResource(R.color.pp_red);
                     }
                     paymentButton.setText(R.string.delete);
 //                    rtButton.setVisibility(View.INVISIBLE);
@@ -587,7 +587,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     cartSelectAllImageView.setImageResource(R.drawable.cart_select);
                     disSelectedCount = 0;
                     if (isEdit) {
-                        paymentButton.setBackgroundResource(R.color.red);
+                        paymentButton.setBackgroundResource(R.color.pp_red);
                         paymentButton.setText(R.string.delete);
                     } else {
                         paymentButton.setBackgroundResource(R.color.pp_blue);

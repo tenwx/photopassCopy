@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuffXfermode;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 
 import com.pictureair.photopass.activity.EditPhotoActivity;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
@@ -16,6 +14,7 @@ import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.photopass.util.PWMediaScanner;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.io.File;
@@ -294,22 +293,13 @@ public class PWEditUtil {
      */
     public void scanSDcard(final String photoPath, final Context context) {
         // TODO Auto-generated method stub
-        MediaScannerConnection.scanFile(context, new String[] { photoPath }, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(String arg0, Uri arg1) {
-                        // TODO Auto-generated method stub
-//                        editor = sharedPreferences.edit();
-//                        editor.putString(Common.LAST_PHOTO_URL, file);
-//                        editor.commit();
-                        // 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
-//                        Intent intent = new Intent();
-//                        intent.putExtra("photoUrl", photoPath);
-//                        context.setResult(11, intent);
-//                        PictureAirLog.out("set result--------->");
-//                        finish();
-                    }
-                });
+        new PWMediaScanner(context, photoPath, null, new PWMediaScanner.ScannerListener() {
+            @Override
+            public void OnScannerFinish() {
+                // 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
+
+            }
+        });
     }
 
     public ArrayList<PhotoEditorInfo> getPhotoEditorList() {

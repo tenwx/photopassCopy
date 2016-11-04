@@ -86,7 +86,7 @@ public class BasicResultCallTask<T> extends ACallTask{
 
     @Override
     public void cancle(){
-        if (mCall != null){
+        if (mCall != null && !mCall.isCanceled() && mCall.isExecuted()){
             mCall.cancel();
         }
     }

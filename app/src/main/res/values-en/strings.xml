@@ -621,13 +621,13 @@
     <string name="animated_photo_add_cart">Add PhotoPass+ to Cart</string>
     <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
     <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
-    <string name="animated_photo_introduce_text">Want to see your Disney friends coming alive in your photos? Purchase PhotoPass+ now to unlock this magic today!</string>
+    <string name="animated_photo_introduce_text">Do you want to unlock the magic within your photos? Purchase PhotoPass+ to experience now!</string>
     <string name="animated_photo_loading">Loading%1$d%%</string>
     <!--animated photo end-->
 
     <!--special deal-->
     <string name="special_deal_on">Deal is ON!</string>
-    <string name="special_deal_detail">Unlock and download all your digital photos for just RMB 169!</string>
+    <string name="special_deal_detail">Get all your digital photos from ONE Disney Park Ticket/PhotoPass card for just RMB 169!</string>
     <string name="special_deal_detail2">Unlock and download all your digital photos from ONE Disney Park Ticket/PhotoPass card for just RMB 169!</string>
     <string name="special_deal">Special Deal!</string>
     <string name="special_deal_buy_now">Buy Now</string>

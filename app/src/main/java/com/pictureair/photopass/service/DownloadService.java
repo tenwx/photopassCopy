@@ -7,8 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +27,7 @@ import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PWMediaScanner;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
@@ -647,14 +646,15 @@ public class DownloadService extends Service {
      *
      * @param file
      */
-    private void scan(final String file,final DownloadFileStatus fileStatus) {
+    private void scan(String file,final DownloadFileStatus fileStatus) {
         // TODO Auto-generated method stub
-        MediaScannerConnection.scanFile(this, new String[]{file}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        saveFileToDb(fileStatus);
-                    }
-                });
+        new PWMediaScanner(this, file, null, new PWMediaScanner.ScannerListener() {
+            @Override
+            public void OnScannerFinish() {
+                saveFileToDb(fileStatus);
+
+            }
+        });
     }
 
     private synchronized void saveFileToDb(final DownloadFileStatus fileStatus){

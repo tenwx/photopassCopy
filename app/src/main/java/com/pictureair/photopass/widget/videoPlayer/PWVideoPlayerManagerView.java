@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -38,6 +39,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
     private Context context;
     private OnVideoPlayerViewEventListener videoPlayerViewEventListener;
+    private BinaryCallBack task;
 
     private static final String TAG = PWVideoPlayerManagerView.class.getSimpleName();
     private final static int TIME = 3000;
@@ -95,6 +97,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                     }
 
                     int result = ReflectionUtil.getDrawableId(context, "loading_" + (currentProgress / 8));
+
+                    PictureAirLog.d("downloading---> " + currentProgress);
 
                     loadingIV.setImageResource(result);
                     loadingTV.setText(String.format(context.getString(R.string.animated_photo_loading), currentProgress));
@@ -302,6 +306,11 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         }
         isPaused = true;
         handler.removeMessages(PROGRESS_CHANGED);
+
+        if (task != null) {
+            task.cancle();
+
+        }
     }
 
     /**
@@ -327,7 +336,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                 PictureAirLog.out("file path-->" + file.toString());
                 videoPlayerView.setVideoPath(file.toString());
             } else {//文件不存在，需要从网络下载
-                API1.downloadHeadFile(videoPath, context.getCacheDir() + File.separator + "video" + File.separator, fileName, handler);
+                task = API1.downloadHeadFile(videoPath, context.getCacheDir() + File.separator + "video" + File.separator, fileName, handler);
             }
 
         }else{

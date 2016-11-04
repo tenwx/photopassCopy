@@ -24,7 +24,6 @@ import com.pictureair.photopass.http.BasicResultCallTask;
 import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
-import com.unionpay.tsmservice.request.RequestParams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1981,7 +1980,6 @@ public class API1 {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    dealingInfo.setState(1);
                     handler.obtainMessage(GET_DEALING_GOODS_SUCCESS, dealingInfo).sendToTarget();
 
                 } else {

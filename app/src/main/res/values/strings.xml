@@ -621,13 +621,13 @@
     <string name="animated_photo_add_cart">把迪士尼乐拍通一卡通加入购物车</string>
     <string name="animated_photo_buy_ppp">我要购买迪士尼乐拍通一卡通</string>
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
-    <string name="animated_photo_introduce_text">想要看到迪士尼朋友出现在您的照片中吗？现在就购买迪士尼乐拍通一卡通开启这个魔法吧！</string>
+    <string name="animated_photo_introduce_text">想要开启照片中的神奇魔法吗？现在就购买迪士尼乐拍通一卡通吧！</string>
     <string name="animated_photo_loading">正在加载%1$d%%</string>
     <!--animated photo end-->
 
     <!--special deal-->
     <string name="special_deal_on">抢购进行中</string>
-    <string name="special_deal_detail">快速抢购单拼乐拍通一卡通，即可获得所有数码照片，仅需169元！</string>
+    <string name="special_deal_detail">仅需169元即可获得同一天内任意一张乐园门票／乐拍通卡里的所有数码照片！</string>
     <string name="special_deal_detail2">只需169元就能获得任意一张迪士尼乐园门票／乐拍通卡内的所有数码照片！</string>
     <string name="special_deal">优享特惠！</string>
     <string name="special_deal_buy_now">购买</string>

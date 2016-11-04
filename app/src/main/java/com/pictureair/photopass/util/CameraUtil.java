@@ -1,5 +1,13 @@
 package com.pictureair.photopass.util;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.hardware.Camera;
+import android.view.MotionEvent;
+import android.view.View;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,16 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.hardware.Camera;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.view.MotionEvent;
-import android.view.View;
 
 public class CameraUtil {
 	public static final int DELAY_TIME_0S = 0;
@@ -178,15 +176,13 @@ public class CameraUtil {
 		/**
 		 * //主动让媒体库去更新最新文件
 		 * 
-		 * @param file
-		 *            需要扫描的文件
+		 * @param file 需要扫描的文件
 		 */
 		public static void scan(String file,Context context) {
-			MediaScannerConnection.scanFile(context, new String[] { file },
-					new String[] { "image/*" },
-					new MediaScannerConnection.OnScanCompletedListener() {
-				public void onScanCompleted(String path, Uri uri) {
-//					System.out.println("okfads");
+			new PWMediaScanner(context, file, "image/*", new PWMediaScanner.ScannerListener() {
+				@Override
+				public void OnScannerFinish() {
+
 				}
 			});
 		}
@@ -211,7 +207,6 @@ public class CameraUtil {
 		/**
 		 * 保存 Bitmap 到本地。
 		 * @param photoFile
-		 * @param picData
 		 */
 		public static void outputPhotoForBimap(Bitmap bitmap,File photoFile){
 			if (null != bitmap) {
