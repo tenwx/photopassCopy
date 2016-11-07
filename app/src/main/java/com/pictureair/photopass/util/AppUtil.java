@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -21,6 +22,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -1816,5 +1818,40 @@ public class AppUtil {
         oldCalendar.setTime(oldDate);
         localFromat.setTimeZone(TimeZone.getDefault());
         return localFromat.parse(localFromat.format(oldCalendar.getTime()));
+    }
+
+    /**
+     * 初始化语言
+     * @param context
+     */
+    public static void initLanguage(Context context) {
+        Configuration config = context.getResources().getConfiguration();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        //获取手机设置的语言
+        String languageType = SPUtils.getString(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
+        PictureAirLog.d("apputil language --->" + languageType + ";locallanguage-->" + config.locale.getLanguage());
+        if (languageType.equals(config.locale.getLanguage())) {//语言一致，跳过
+            return;
+        }
+        if (!languageType.equals("")) {//语言不为空
+            if (languageType.equals(Common.ENGLISH)) {
+                config.locale = Locale.US;
+            } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            }
+        } else {//语言为空，说明第一次进入
+            PictureAirLog.out("apputil language is null---->" + config.locale.getLanguage());
+            PictureAirLog.out("apputil language is null---->" + config.locale);
+            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
+                languageType = Common.SIMPLE_CHINESE;
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            } else {
+                languageType = Common.ENGLISH;
+                config.locale = Locale.US;
+            }
+        }
+        context.getResources().updateConfiguration(config, displayMetrics);
+        SPUtils.put(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
+        PictureAirLog.d("apputil language ---> init language completed");
     }
 }

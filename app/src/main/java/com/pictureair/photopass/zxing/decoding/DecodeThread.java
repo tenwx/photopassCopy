@@ -67,8 +67,8 @@ final class DecodeThread extends Thread {
             decodeFormats.addAll(DecodeFormatManager.INDUSTRIAL_FORMATS);
             decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
             decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.AZTEC_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.PDF417_FORMATS);
+//            decodeFormats.addAll(DecodeFormatManager.AZTEC_FORMATS);
+//            decodeFormats.addAll(DecodeFormatManager.PDF417_FORMATS);
         }
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);

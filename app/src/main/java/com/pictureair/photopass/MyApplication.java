@@ -1,9 +1,7 @@
 package com.pictureair.photopass;
 
 import android.app.Application;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.util.DisplayMetrics;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.util.AESKeyHelper;
@@ -14,8 +12,6 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.FontResource;
-
-import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -57,9 +53,6 @@ public class MyApplication extends Application {
 
     private boolean isStoryTab = true;//记录是否是处于storyTab
 
-    private Configuration config;
-    private DisplayMetrics displayMetrics;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -74,36 +67,9 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
-        initLanguage();
         // 初始化友盟
         UmengUtil.initUmeng();
         PictureAirLog.out("application on create--->");
-    }
-
-    private void initLanguage(){
-        config = getResources().getConfiguration();
-        displayMetrics = getResources().getDisplayMetrics();
-        //获取手机设置的语言
-        languageType = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
-        if (!languageType.equals("")) {//语言不为空
-            if (languageType.equals(Common.ENGLISH)) {
-                config.locale = Locale.US;
-            } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
-                config.locale = Locale.SIMPLIFIED_CHINESE;
-            }
-        } else {//语言为空，说明第一次进入
-            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
-            PictureAirLog.out("langeuange is null---->" + config.locale);
-            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
-                languageType = Common.SIMPLE_CHINESE;
-                config.locale = Locale.SIMPLIFIED_CHINESE;
-            } else {
-                languageType = Common.ENGLISH;
-                config.locale = Locale.US;
-            }
-        }
-        getResources().updateConfiguration(config, displayMetrics);
-        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
     }
 
     /**

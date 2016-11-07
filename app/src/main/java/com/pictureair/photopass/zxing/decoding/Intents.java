@@ -28,7 +28,7 @@ public final class Intents {
         /**
          * By default, sending Scan.ACTION will decode all barcodes that we understand. However it
          * may be useful to limit scanning to certain formats. Use Intent.putExtra(MODE, value) with
-         * one of the values below ({@link #PRODUCT_MODE}, {@link #ONE_D_MODE}, {@link #QR_CODE_MODE}).
+         * one of the values below ({@link #ONE_D_MODE}, {@link #QR_CODE_MODE}).
          * Optional.
          * <p/>
          * Setting this is effectively shorthnad for setting explicit formats with {@link #FORMATS}.
@@ -40,7 +40,7 @@ public final class Intents {
          * Decode only UPC and EAN barcodes. This is the right choice for shopping apps which get
          * prices, reviews, etc. for products.
          */
-        public static final String PRODUCT_MODE = "PRODUCT_MODE";
+//        public static final String PRODUCT_MODE = "PRODUCT_MODE";
 
         /**
          * Decode only 1D barcodes (currently UPC, EAN, Code 39, and Code 128).
@@ -60,12 +60,12 @@ public final class Intents {
         /**
          * Decode only Aztec.
          */
-        public static final String AZTEC_MODE = "AZTEC_MODE";
+//        public static final String AZTEC_MODE = "AZTEC_MODE";
 
         /**
          * Decode only PDF417.
          */
-        public static final String PDF417_MODE = "PDF417_MODE";
+//        public static final String PDF417_MODE = "PDF417_MODE";
 
         /**
          * Comma-separated list of formats to scan for. The values must match the names of

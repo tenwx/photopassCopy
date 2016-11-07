@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 import com.pictureair.photopass.util.AppManager;
@@ -32,6 +33,7 @@ public class BaseFragmentActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         AppManager.getInstance().addActivity(this);
         this.context = this;
+        AppUtil.initLanguage(context);
     }
 
     @Override
