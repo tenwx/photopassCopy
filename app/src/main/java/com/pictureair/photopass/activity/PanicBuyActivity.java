@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -43,7 +44,7 @@ import java.util.List;
  */
 public class PanicBuyActivity extends BaseActivity implements View.OnClickListener{
 
-    private ScrollView layout_content;
+    private RelativeLayout layout_content;
     private BannerView_Detail bannerViewDetail;
     private CustomTextView tv_price;
     private Button btn_purchase;
@@ -202,7 +203,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initView() {
-        layout_content = (ScrollView) findViewById(R.id.special_deal_content_layout);
+        layout_content = (RelativeLayout) findViewById(R.id.special_deal_content_layout);
         bannerViewDetail = (BannerView_Detail) findViewById(R.id.special_deal_image);
         tv_price = (CustomTextView) findViewById(R.id.special_deal_price);
         tv_price.setTypeface(MyApplication.getInstance().getFontBold());
