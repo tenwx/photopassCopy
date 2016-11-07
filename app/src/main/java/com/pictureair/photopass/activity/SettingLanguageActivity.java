@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -156,13 +157,21 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             }
             updateUI(currentLanguage);
             if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-                config.locale = Locale.SIMPLIFIED_CHINESE;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.SIMPLIFIED_CHINESE;
+                } else {
+                    config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                }
                 MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
             } else if (currentLanguage.equals(Common.ENGLISH)) {
-                config.locale = Locale.US;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.US;
+                } else {
+                    config.setLocale(Locale.US);
+                }
                 MyApplication.getInstance().setLanguageType(Common.ENGLISH);
             }
-            getResources().updateConfiguration(config, dm);
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
             //把语言写入数据库
             SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, currentLanguage);
             //清除商品

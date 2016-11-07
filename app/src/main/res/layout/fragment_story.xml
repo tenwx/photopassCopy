@@ -122,10 +122,16 @@
         android:layout_below="@id/special_deal_ll"
         android:visibility="gone">
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none"
+                >
             <RelativeLayout
                 android:id="@+id/story_no_pp_to_scan"
                 android:layout_width="match_parent"
@@ -158,8 +164,7 @@
                 <ImageView
                     android:id="@+id/story_no_pp_scan"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/story_scan"
+                    android:layout_height="170dp"
                     android:layout_below="@+id/story_top_tip"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
@@ -169,7 +174,7 @@
                     android:id="@+id/story_scan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/story_scan_tip"
+                    android:layout_below="@id/story_no_pp_scan"
                     android:layout_marginBottom="@dimen/pp_dp_16"
                     android:gravity="center"
                     android:text="@string/story_scan"
@@ -181,7 +186,7 @@
                     android:id="@+id/story_scan_tip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/story_tip"
+                    android:layout_below="@id/story_scan"
                     android:layout_marginBottom="@dimen/pp_dp_16"
                     android:layout_marginLeft="@dimen/pp_dp_20"
                     android:layout_marginRight="@dimen/pp_dp_20"
@@ -194,7 +199,7 @@
                     android:id="@+id/story_tip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/story_buy_ppp"
+                    android:layout_below="@id/story_scan_tip"
                     android:layout_marginBottom="@dimen/pp_dp_16"
                     android:layout_marginLeft="@dimen/pp_dp_20"
                     android:layout_marginRight="@dimen/pp_dp_20"
@@ -207,7 +212,7 @@
                     android:id="@+id/story_buy_ppp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/story_activate_ppp"
+                    android:layout_below="@id/story_tip"
                     android:layout_marginBottom="@dimen/pp_dp_16"
                     android:layout_marginLeft="@dimen/pp_dp_16"
                     android:layout_marginRight="@dimen/pp_dp_16"
@@ -222,7 +227,7 @@
                     android:id="@+id/story_activate_ppp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/story_buy_ppp"
                     android:layout_marginLeft="@dimen/pp_dp_16"
                     android:layout_marginRight="@dimen/pp_dp_16"
                     android:background="@drawable/button_blue_shape_and_selector"
@@ -233,7 +238,7 @@
                     android:textSize="@dimen/text_size_14" />
 
             </RelativeLayout>
-
+        </ScrollView>
             <LinearLayout
                 android:id="@+id/no_photo_view_relativelayout"
                 android:layout_width="match_parent"
@@ -293,7 +298,6 @@
 
             </LinearLayout>
         </RelativeLayout>
-
     </android.support.v4.widget.SwipeRefreshLayout>
 
 

@@ -77,7 +77,7 @@ public class WXPayUtil {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return MD5.getMessageDigest(String.valueOf(secureRandom.nextInt(10000)).getBytes());
+        return MD5.getMessageDigest(String.valueOf(AESKeyHelper.secureIntRandom(10000)).getBytes());
     }
 
     // 生成支付订单

@@ -85,47 +85,56 @@
             android:layout_below="@id/dash_line"
             android:layout_above="@id/poplayout_load_success"/>
     </RelativeLayout>
-    <RelativeLayout
+
+    <ScrollView
         android:id="@+id/rl_load_success"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none"
         android:visibility="gone"
-        android:paddingTop="80dp"
-        android:background="@color/pp_light_gray_background"
         >
-        <ImageView
-            android:id="@+id/load_success_show_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/download_manager_download"
-            android:layout_centerHorizontal="true"
-            />
-
-        <TextView
-            android:id="@+id/load_success_show_text2"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/load_success_show_img"
-            android:textSize="@dimen/text_size_14"
-            android:textColor="@color/gray2"
-            android:text="@string/photo_download_success_tips"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            />
-        <Button
-            android:id="@+id/load_success_btn_toload"
-            android:layout_width="180dp"
-            android:layout_height="40dp"
-            android:text="@string/photo_download_to_load"
-            android:layout_below="@id/load_success_show_text2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:textColor="@color/gray2"
-            android:gravity="center"
-            android:background="@drawable/button_translate_with_gray_line"
-            />
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:paddingTop="80dp"
+            android:background="@color/pp_light_gray_background"
+            >
+            <ImageView
+                android:id="@+id/load_success_show_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/download_manager_download"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/load_success_show_text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/load_success_show_img"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/gray2"
+                android:text="@string/photo_download_success_tips"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"
+                />
+            <Button
+                android:id="@+id/load_success_btn_toload"
+                android:layout_width="180dp"
+                android:layout_height="40dp"
+                android:text="@string/photo_download_to_load"
+                android:layout_below="@id/load_success_show_text2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="60dp"
+                android:textColor="@color/gray2"
+                android:gravity="center"
+                android:background="@drawable/button_translate_with_gray_line"
+                />
+        </RelativeLayout>
+    </ScrollView>
 
 </LinearLayout>

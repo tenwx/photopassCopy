@@ -1,11 +1,24 @@
 package com.pictureair.photopass;
 
+import android.annotation.TargetApi;
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.os.Build;
+import android.os.LocaleList;
 import android.util.DisplayMetrics;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
+import com.pictureair.photopass.receiver.NetBroadCastReciver;
+import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
@@ -59,6 +72,9 @@ public class MyApplication extends Application {
 
     private Configuration config;
     private DisplayMetrics displayMetrics;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private NetBroadCastReciver netBroadCastReciver;
 
     @Override
     public void onCreate() {
@@ -74,37 +90,55 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
-        initLanguage();
+//        initLanguage();
+        registerConnectDector();
         // 初始化友盟
         UmengUtil.initUmeng();
         PictureAirLog.out("application on create--->");
     }
 
-    private void initLanguage(){
-        config = getResources().getConfiguration();
-        displayMetrics = getResources().getDisplayMetrics();
-        //获取手机设置的语言
-        languageType = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
-        if (!languageType.equals("")) {//语言不为空
-            if (languageType.equals(Common.ENGLISH)) {
-                config.locale = Locale.US;
-            } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
-                config.locale = Locale.SIMPLIFIED_CHINESE;
-            }
-        } else {//语言为空，说明第一次进入
-            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
-            PictureAirLog.out("langeuange is null---->" + config.locale);
-            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
-                languageType = Common.SIMPLE_CHINESE;
-                config.locale = Locale.SIMPLIFIED_CHINESE;
-            } else {
-                languageType = Common.ENGLISH;
-                config.locale = Locale.US;
-            }
-        }
-        getResources().updateConfiguration(config, displayMetrics);
-        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
-    }
+//    @TargetApi(Build.VERSION_CODES.N)
+//    public void initLanguage(){
+//        config = getResources().getConfiguration();
+////        displayMetrics = getResources().getDisplayMetrics();
+//        //获取手机设置的语言
+//        languageType = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
+//        if (!languageType.equals("")) {//语言不为空
+//            if (languageType.equals(Common.ENGLISH)) {
+//                if (Build.VERSION.SDK_INT < 24) {
+//                    config.locale = Locale.US;
+//                } else {
+//                    config.setLocale(Locale.US);
+//                }
+//            } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
+//                if (Build.VERSION.SDK_INT < 24) {
+//                    config.locale = Locale.SIMPLIFIED_CHINESE;
+//                } else {
+//                    config.setLocale(Locale.SIMPLIFIED_CHINESE);
+//                }
+//            }
+//        } else {//语言为空，说明第一次进入
+//            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
+//            PictureAirLog.out("langeuange is null---->" + config.locale);
+//            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
+//                languageType = Common.SIMPLE_CHINESE;
+//                if (Build.VERSION.SDK_INT < 24) {
+//                    config.locale = Locale.SIMPLIFIED_CHINESE;
+//                } else {
+//                    config.setLocale(Locale.SIMPLIFIED_CHINESE);
+//                }
+//            } else {
+//                languageType = Common.ENGLISH;
+//                if (Build.VERSION.SDK_INT < 24) {
+//                    config.locale = Locale.US;
+//                } else {
+//                    config.setLocale(Locale.US);
+//                }
+//            }
+//        }
+//        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+//        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
+//    }
 
     /**
      * 获取用户标识
@@ -406,5 +440,90 @@ public class MyApplication extends Application {
             typefaceBold = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
         }
         return typefaceBold;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void registerNetWorkRequest() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest.Builder builder = new NetworkRequest.Builder();
+
+        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED);
+        builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+
+        NetworkRequest networkRequest = builder.build();
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
+                Intent intent = new Intent(MyApplication.getInstance(),
+                        com.pictureair.photopass.service.NotificationService.class);
+                MyApplication.getInstance().startService(intent);
+            }
+
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                PictureAirLog.d(" ＝＝＝＝＝ ", "无网络连接");
+                Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
+                intent.putExtra("status", "disconnect");
+                MyApplication.getInstance().startService(intent);
+            }
+        };
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void unRegisterNetWorkRequest() {
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
+    }
+
+    private void registerConnectivityReceiver() {
+        netBroadCastReciver = new NetBroadCastReciver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netBroadCastReciver, filter);
+    }
+
+    private void unRegisterConnectivityReceiver() {
+        if (netBroadCastReciver != null) {
+            unregisterReceiver(netBroadCastReciver);
+        }
+    }
+
+    private void registerConnectDector() {
+        if (Build.VERSION.SDK_INT > 21) {
+            registerNetWorkRequest();
+        } else {
+            registerConnectivityReceiver();
+        }
+    }
+
+    private void unregisterConnectDector() {
+        if (Build.VERSION.SDK_INT > 21) {
+            unRegisterNetWorkRequest();
+        } else {
+            unRegisterConnectivityReceiver();
+        }
+    }
+
+    @Override
+    public void onTerminate() {
+        unregisterConnectDector();
+        super.onTerminate();
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources =  super.getResources();
+        Configuration oriCOnfig = resources.getConfiguration();
+        oriCOnfig.fontScale = 1f;
+        resources.updateConfiguration(oriCOnfig, resources.getDisplayMetrics());
+        return resources;
     }
 }

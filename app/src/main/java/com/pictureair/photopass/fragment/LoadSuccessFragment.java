@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -60,7 +61,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     public static final int GET_PHOTO_BACKGROUND = 3344;
     public static final int RELOAD_DATABASE = 4455;
     private List<PhotoDownLoadInfo> photos;
-    private RelativeLayout rl_load_success;
+    private ScrollView rl_load_success;
     private RelativeLayout ll_load_success;
     private Button button_toload;
     private PhotoLoadSuccessAdapter adapter;
@@ -237,7 +238,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
 
         View view = inflater.inflate(R.layout.fragment_loadsuccess,null);
         lv_success = (ListView) view.findViewById(R.id.lv_load_success);
-        rl_load_success = (RelativeLayout) view.findViewById(R.id.rl_load_success);
+        rl_load_success = (ScrollView) view.findViewById(R.id.rl_load_success);
         ll_load_success = (RelativeLayout) view.findViewById(R.id.ll_load_success);
         button_toload = (Button) view.findViewById(R.id.load_success_btn_toload);
         rl_load_success.setVisibility(View.GONE);

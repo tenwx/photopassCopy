@@ -17,11 +17,11 @@ public class Common {
     /**
      * 外网可访问的8.3测试服务器
      */
-    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
-    public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
-    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
+//    public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
+//    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 
     /**
      * 内网8.3测试服务器
@@ -35,11 +35,11 @@ public class Common {
     /**
      * 域名线上服务器
      */
-//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
-//    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
-//    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/weChatNotify";//wechat的异步通知URL
+    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
+    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
+    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/weChatNotify";//wechat的异步通知URL
 
 
     public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
@@ -372,5 +372,10 @@ public class Common {
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
     public static final int OFFSET = 1;
+
+    //加密
+    public static final String USERINFO_SALT = "salt";//加密必须参数
+    public static final String PBKDF2WITHHMANSHA1 = "PBKDF2WithHmacSHA1";
+
 
 }

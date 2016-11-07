@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -62,7 +63,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public static final int REMOVE_FAILED_PHOTOS = 6666;
     public static final int PHOTO_ALL_SELECT = 7777;
     public static final int BIND_INIT = 8888;
-    private RelativeLayout rl_loading;
+    private ScrollView rl_loading;
     private RelativeLayout ll_loading;
     private Button button;
     private PhotoDownloadingAdapter adapter;
@@ -335,7 +336,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloading,null);
         lv_loading = (ListView) view.findViewById(R.id.lv_downloading);
-        rl_loading = (RelativeLayout) view.findViewById(R.id.rl_downloading);
+        rl_loading = (ScrollView) view.findViewById(R.id.rl_downloading);
         button = (Button) view.findViewById(R.id.downloading_btn_toload);
         ll_loading = (RelativeLayout) view.findViewById(R.id.rl_list_downloading);
         ll_popup = (LinearLayout) view.findViewById(R.id.poplayout_downloading);

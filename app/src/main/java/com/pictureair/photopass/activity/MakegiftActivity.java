@@ -412,7 +412,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         });
         //选择商品的popupwindow
         selproductView_popwindow = getLayoutInflater().inflate(R.layout.popupwindow_selectproduct, null);
-        selproductPopupWindow = new PopupWindow(selproductView_popwindow, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        selproductPopupWindow = new PopupWindow(selproductView_popwindow, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         selproductPopupWindow.setFocusable(false);//设置能够获得焦点
         selproductPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//此代码和上一条代码两者结合，实现能够点击popupwindow外面将popupwindow关闭
         goodsGridView = (ListView) selproductView_popwindow.findViewById(R.id.id_horizontalScrollView);

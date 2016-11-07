@@ -75,34 +75,39 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:layout_below="@id/head"-->
         <!--android:visibility="visible" />-->
-
-    <LinearLayout
+    <ScrollView
         android:id="@+id/nopppinfo"
-        android:background="@color/pp_light_gray_background"
-        android:layout_below="@id/head"
-        android:layout_above="@+id/ll_button_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_below="@id/head"
+        android:layout_above="@+id/ll_button_area"
+        android:scrollbars="none"
+        android:fillViewport="true">
+        <LinearLayout
+            android:background="@color/pp_light_gray_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
 
-        <ImageView
-            android:layout_weight="5"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:src="@drawable/ppp_introduce1"/>
+            <ImageView
+                android:layout_weight="5"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/ppp_introduce1"/>
 
 
-        <TextView
-            android:layout_weight="2"
-            android:layout_margin="20dp"
-            android:text="@string/instruction"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:textColor="@color/pp_dark_blue"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_margin="20dp"
+                android:text="@string/instruction"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textColor="@color/pp_dark_blue"/>
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
@@ -169,6 +174,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/guide_background"
+        android:visibility="gone"
         >
         <ImageView
             android:id="@+id/ppp_img_guide_view"

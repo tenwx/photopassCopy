@@ -1,5 +1,7 @@
 package com.pictureair.photopass.util;
 
+import com.pictureair.photopass.MyApplication;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +9,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -14,6 +17,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -43,7 +48,7 @@ public class AESKeyHelper {
 
         // Length is 16 byte
         // Careful when taking user input!!! http://stackoverflow.com/a/3452620/1188357
-        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey.getBytes()), "AES");
+        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey), "AES");
         // Create cipher
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, sks);
@@ -80,7 +85,7 @@ public class AESKeyHelper {
         FileInputStream fis = new FileInputStream(sourceFilePath);
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream(1000);
-        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey.getBytes()), "AES");
+        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, sks);
         CipherInputStream cis = new CipherInputStream(fis, cipher);
@@ -115,7 +120,7 @@ public class AESKeyHelper {
 
         // Length is 16 byte
         // Careful when taking user input!!! http://stackoverflow.com/a/3452620/1188357
-        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey.getBytes()), "AES");
+        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey), "AES");
         // Create cipher
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, sks);
@@ -148,7 +153,7 @@ public class AESKeyHelper {
         FileInputStream fis = new FileInputStream(sourceFilePath);
 
         FileOutputStream fos = new FileOutputStream(decryptedFilePath);
-        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey.getBytes()), "AES");
+        SecretKeySpec sks = new SecretKeySpec(getRawKey(aesKey), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, sks);
         CipherInputStream cis = new CipherInputStream(fis, cipher);
@@ -169,16 +174,42 @@ public class AESKeyHelper {
      * @return
      * @throws Exception
      */
-    private static byte[] getRawKey(byte[] seed) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-//      SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        sr.setSeed(seed);
-        kgen.init(128, sr); // 192 and 256 bits may not be available
-        SecretKey skey = kgen.generateKey();
-        byte[] raw = skey.getEncoded();
-        return raw;
+    private static byte[] getRawKey(String seed) throws Exception {
+//        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+////      SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+//        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
+//        sr.setSeed(seed);
+//        kgen.init(128, sr); // 192 and 256 bits may not be available
+//        SecretKey skey = kgen.generateKey();
+//        byte[] raw = skey.getEncoded();
+//        return raw;
+
+        byte[] keyBytes = null;
+        try {
+            KeySpec keySpec = new PBEKeySpec(seed.toCharArray(), ACache.get(MyApplication.getInstance()).getAsBinary(Common.USERINFO_SALT),
+                    100 /* iterationCount */, 128 /* key size in bits */);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Common.PBKDF2WITHHMANSHA1);
+            keyBytes = keyFactory.generateSecret(keySpec).getEncoded();
+        } catch (Exception e) {
+            throw new RuntimeException("Deal with exceptions properly!", e);
+        }finally {
+            return keyBytes;
+        }
+
     }
+
+    public static byte[] secureByteRandom() {
+        byte[] random = new byte[128];
+        SecureRandom sr = new SecureRandom();
+        sr.nextBytes(random);
+        return random;
+    }
+
+    public static int secureIntRandom(int num) {
+        SecureRandom sr = new SecureRandom();
+        return sr.nextInt(num);
+    }
+
 
     /**
      * 结合密钥生成加密后的密文
@@ -224,7 +255,7 @@ public class AESKeyHelper {
     public static String encryptString(String source, String seed) {
         byte[] result = null;
         try {
-            byte[] rawKey = getRawKey(seed.getBytes());
+            byte[] rawKey = getRawKey(seed);
             result = encrypt(rawKey, source.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
@@ -245,7 +276,7 @@ public class AESKeyHelper {
             return null;
         byte[] result = null;
         try {
-            byte[] rawKey = getRawKey(seed.getBytes());
+            byte[] rawKey = getRawKey(seed);
             byte[] enc = toByte(encrypted);
             result = decrypt(rawKey, enc);
         } catch (Exception e) {
