@@ -1109,9 +1109,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
                         for (int j = 0; j < photoPassItemInfoList.size(); j++) {
 //                                    PictureAirLog.d(TAG, "weather already exists:" + j);
-                            if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
-                                    && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) ||
-                                        photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                            if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
 //                                        PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
 //                                        PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
 //                                        PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);

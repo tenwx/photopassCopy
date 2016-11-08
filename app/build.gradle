@@ -1,17 +1,18 @@
 apply plugin: 'com.android.application'
 apply plugin: 'newlens'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 9
-        versionName "2.0.1"
-
+        versionCode 8
+        versionName "2.0.0"
+        multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
     }
 
     packagingOptions {
@@ -73,17 +74,27 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    //支付宝
     compile files('libs/alipaySdk-20160825.jar')
+    //高德地图
     compile files('libs/AMap2DMap_2.8.1_AMapLocation_2.4.1_20160425.jar')
+    //百度统计
     compile files('libs/Baidu_Mtj_3.7.3.1.jar')
+    //统一字体
     compile files('libs/calligraphy-1.1.0.jar')
+    //eventbus
     compile files('libs/eventbus-3.0.0-beta1.jar')
+    //glide
     compile files('libs/glide-3.7.0.jar')
+    //微信支付
     compile files('libs/libammsdk.jar')
+    //动画
+    compile files('libs/nineoldandroids-2.4.0.jar')
+    //apache网络库
+    compile files('libs/org.apache.http.legacy.jar')
+    //sharesdk分享
     compile files('libs/MobCommons-2016.0623.1641.jar')
     compile files('libs/MobTools-2016.0623.1641.jar')
-    compile files('libs/nineoldandroids-2.4.0.jar')
-    compile files('libs/org.apache.http.legacy.jar')
     compile files('libs/ShareSDK-Core-2.7.2.jar')
     compile files('libs/ShareSDK-Facebook-2.7.2.jar')
     compile files('libs/ShareSDK-Instagram-2.7.2.jar')
@@ -95,17 +106,34 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Core-2.7.2.jar')
     compile files('libs/ShareSDK-Wechat-Favorite-2.7.2.jar')
     compile files('libs/ShareSDK-Wechat-Moments-2.7.2.jar')
+    //socketio
     compile files('libs/socketio.jar')
+    //数据库
     compile files('libs/sqlcipher.jar')
+    //ocr文字扫码
     compile files('libs/tess-two-6.0.0-sources.jar')
+    //友盟统计
     compile files('libs/umeng-analytics-v5.6.1.jar')
+    //银联
     compile files('libs/UPPayAssistEx.jar')
     compile files('libs/UPPayPluginExPro.jar')
+    //zxing扫码
     compile files('libs/zxing-4.7.5.jar')
+    //json
     compile 'com.alibaba:fastjson:1.2.7'
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    //系统 + material design
+    compile 'com.android.support:appcompat-v7:23.0.3'
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
+    //听云
     compile "com.networkbench.newlens.agent.android:nbs.newlens.agent:2.4.4"
+    //retrofit + rxjava + rxlifecycle
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'io.reactivex:rxjava:1.2.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.trello:rxlifecycle-components:0.8.0'
+    //butterknife
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }

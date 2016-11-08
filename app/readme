@@ -6,9 +6,6 @@ versionCode 9     versionName "2.x.x"
 更新要点：
 1.
 
-
-
-
 -------16/9/30--------
 versionCode 8     versionName "2.0.0"
 更新要点：
@@ -22,6 +19,13 @@ versionCode 8     versionName "2.0.0"
 8.修复退出账号之后，下载服务没有停止的问题
 9.登录多加一层加密
 10.新浪分享视频，使用短连接
+
+
+
+
+
+
+
 
 -------16/9/9--------
 versionCode 7     versionName "1.2.1"

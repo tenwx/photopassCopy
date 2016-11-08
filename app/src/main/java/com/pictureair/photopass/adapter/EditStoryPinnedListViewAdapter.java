@@ -82,6 +82,9 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		params.height = params.width;
 		viewHolder.imageView.setLayoutParams(params);
 		viewHolder.maskImageView.setLayoutParams(params);
+		if (photoList.size() == 0) {
+			return convertView;
+		}
 		String photoUrl;
 		if (photoList.get(position).onLine == 1) {
 			if (photoList.get(position).isPayed == 1) {
@@ -134,33 +137,14 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 			viewHolder = new HeaderViewHolder();
 			convertView = layoutInflater.inflate(R.layout.story_pinned_listview_section, null);
 			viewHolder.storyTimeTextView = (TextView) convertView.findViewById(R.id.section_time);
-			viewHolder.storyAddressNameTextView = (TextView) convertView.findViewById(R.id.section_location_place);
-			viewHolder.storyCountryTextView = (TextView) convertView.findViewById(R.id.section_location_country);
-			viewHolder.storyCountryTextView.setTypeface(MyApplication.getInstance().getFontBold());
-			viewHolder.storyAddressNameTextView.setTypeface(MyApplication.getInstance().getFontBold());
+			viewHolder.storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
 			convertView.setTag(viewHolder);
 		}else {
 			viewHolder = (HeaderViewHolder) convertView.getTag();
 		}
 
-		if (photoList.get(position).onLine == 0) {
-			viewHolder.storyAddressNameTextView.setText(R.string.story_tab_magic);
-		}else {
-			String place = photoList.get(position).locationName;
-			if (place == null || place.equals("null")) {
-				place = "";
-			}
-			viewHolder.storyAddressNameTextView.setText(place);
-		}
-
-		String country = photoList.get(position).locationCountry;
-
-		if (country != null && !country.equals("") && !country.equals("null")) {
-
-			viewHolder.storyCountryTextView.setText(country);
-			viewHolder.storyCountryTextView.setVisibility(View.VISIBLE);
-		}else {
-			viewHolder.storyCountryTextView.setVisibility(View.GONE);
+		if (photoList.size() == 0) {
+			return convertView;
 		}
 
 		try {
@@ -188,8 +172,6 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	private class HeaderViewHolder {
 		private TextView storyTimeTextView;
-		private TextView storyAddressNameTextView;
-		private TextView storyCountryTextView;
 	}
 
 }

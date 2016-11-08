@@ -106,17 +106,13 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
     }
 
     @Override
-    public View getHeaderView(int position, View convertView,
-                              ViewGroup parent) {
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
         HeaderViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new HeaderViewHolder();
             convertView = layoutInflater.inflate(R.layout.story_pinned_listview_section, null);
             viewHolder.storyTimeTextView = (TextView) convertView.findViewById(R.id.section_time);
-            viewHolder.storyAddressNameTextView = (TextView) convertView.findViewById(R.id.section_location_place);
-            viewHolder.storyCountryTextView = (TextView) convertView.findViewById(R.id.section_location_country);
-            viewHolder.storyCountryTextView.setTypeface(MyApplication.getInstance().getFontBold());
-            viewHolder.storyAddressNameTextView.setTypeface(MyApplication.getInstance().getFontBold());
+            viewHolder.storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
 
             convertView.setTag(viewHolder);
         } else {
@@ -141,28 +137,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        if (list.get(position).onLine == 0) {
-//            PictureAirLog.out("getview---->local photo");
-            viewHolder.storyAddressNameTextView.setText(R.string.story_tab_magic);
-        } else {
-//                PictureAirLog.out("getview---->photo online");
-            String place = list.get(position).locationName;
-            if (place == null || place.equals("null")) {
-                place = "";
-            }
-            viewHolder.storyAddressNameTextView.setText(place);
-        }
-
-        String country = list.get(position).locationCountry;
-
-        if (country != null && !country.equals("") && !country.equals("null")) {
-
-            viewHolder.storyCountryTextView.setText(country);
-            viewHolder.storyCountryTextView.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.storyCountryTextView.setVisibility(View.GONE);
-        }
         return convertView;
     }
 
@@ -173,8 +147,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
     private class HeaderViewHolder {
         public TextView storyTimeTextView;
-        public TextView storyAddressNameTextView;
-        public TextView storyCountryTextView;
 
     }
 
