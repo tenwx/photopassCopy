@@ -258,7 +258,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void showDealsDetails() {
-        tv_title.setText(goodsInfo.getDealing().getTitle());
+//        tv_title.setText(goodsInfo.getDealing().getTitle());
         tv_detail_title.setText(goodsInfo.getNameAlias());
         tv_detail1.setText(goodsInfo.getDescription());
         tv_detail2.setText(goodsInfo.getCopywriter());
