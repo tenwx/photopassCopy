@@ -139,28 +139,29 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
      * 加载本地图片。
      */
     private void loadImageOnLocal(String photoPath, final boolean isInitload){
-        GlideUtil.load(pwEditView.getEditPhotView(), photoPath, new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                if (mMainBitmap != null) {
-                    mMainBitmap.recycle();
-                    mMainBitmap = null;
-                    System.gc();
-                }
-
-                mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);;
-                if (isInitload) {
+            GlideUtil.loadTarget(pwEditView.getEditPhotView(), photoPath, imageWidth, imageHeight, new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                     if (mMainBitmap != null) {
-                        pwEditView.showBitmap(mMainBitmap);
+                        mMainBitmap.recycle();
+                        mMainBitmap = null;
+                        System.gc();
                     }
-                    if (null != mHandler) {
-                        mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+
+                    mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);;
+                    if (isInitload) {
+                        if (mMainBitmap != null) {
+                            pwEditView.showBitmap(mMainBitmap);
+                        }
+                        if (null != mHandler) {
+                            mHandler.sendEmptyMessage(PhotoCommon.INIT_DATA_FINISHED);
+                        }
+                    } else {
+                        mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
                     }
-                } else {
-                    mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
                 }
-            }
-        });
+            });
+
     }
 
     /**

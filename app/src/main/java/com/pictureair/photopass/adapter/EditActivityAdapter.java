@@ -181,7 +181,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         if (editType == PhotoCommon.EditFrame) {//边框
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             LayoutParams layoutParam1 = holderView.editImageview.getLayoutParams();
-            GlideUtil.load(mContext, mPhotoPath, new FrameListTarget(holderView, position));
+            GlideUtil.loadTarget(mContext, mPhotoPath, bmpWidth, bmpHeight, new FrameListTarget(holderView, position));
 
             if (bmpWidth > bmpHeight) {
                 layoutParams.height = LayoutParams.MATCH_PARENT;
