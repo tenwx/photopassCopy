@@ -1,9 +1,22 @@
 package com.pictureair.photopass;
 
+import android.annotation.TargetApi;
 import android.app.Application;
 import android.graphics.Typeface;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.os.Build;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
+import com.pictureair.photopass.receiver.NetBroadCastReciver;
+import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
@@ -53,6 +66,10 @@ public class MyApplication extends Application {
 
     private boolean isStoryTab = true;//记录是否是处于storyTab
 
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private NetBroadCastReciver netBroadCastReciver;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -67,6 +84,7 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
+        registerConnectDector();
         // 初始化友盟
         UmengUtil.initUmeng();
         PictureAirLog.out("application on create--->");
@@ -372,5 +390,90 @@ public class MyApplication extends Application {
             typefaceBold = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
         }
         return typefaceBold;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void registerNetWorkRequest() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest.Builder builder = new NetworkRequest.Builder();
+
+        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED);
+        builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+
+        NetworkRequest networkRequest = builder.build();
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
+                Intent intent = new Intent(MyApplication.getInstance(),
+                        com.pictureair.photopass.service.NotificationService.class);
+                MyApplication.getInstance().startService(intent);
+            }
+
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                PictureAirLog.d(" ＝＝＝＝＝ ", "无网络连接");
+                Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
+                intent.putExtra("status", "disconnect");
+                MyApplication.getInstance().startService(intent);
+            }
+        };
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void unRegisterNetWorkRequest() {
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
+    }
+
+    private void registerConnectivityReceiver() {
+        netBroadCastReciver = new NetBroadCastReciver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netBroadCastReciver, filter);
+    }
+
+    private void unRegisterConnectivityReceiver() {
+        if (netBroadCastReciver != null) {
+            unregisterReceiver(netBroadCastReciver);
+        }
+    }
+
+    private void registerConnectDector() {
+        if (Build.VERSION.SDK_INT > 21) {
+            registerNetWorkRequest();
+        } else {
+            registerConnectivityReceiver();
+        }
+    }
+
+    private void unregisterConnectDector() {
+        if (Build.VERSION.SDK_INT > 21) {
+            unRegisterNetWorkRequest();
+        } else {
+            unRegisterConnectivityReceiver();
+        }
+    }
+
+    @Override
+    public void onTerminate() {
+        unregisterConnectDector();
+        super.onTerminate();
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources =  super.getResources();
+        Configuration oriCOnfig = resources.getConfiguration();
+        oriCOnfig.fontScale = 1f;
+        resources.updateConfiguration(oriCOnfig, resources.getDisplayMetrics());
+        return resources;
     }
 }

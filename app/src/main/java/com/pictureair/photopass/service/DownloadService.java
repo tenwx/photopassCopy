@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 下载网络图片服务类
  * 下载网络视频服务类
+ *  7.0适配 Notification 显示不正确
  */
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();

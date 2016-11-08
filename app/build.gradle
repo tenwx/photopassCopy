@@ -3,13 +3,13 @@ apply plugin: 'newlens'
 apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 8
         versionName "2.0.0"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制

@@ -425,16 +425,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-
-        <!-- 广播 不需要在 配置文件中注册，否则无法取消。 -->
-        <receiver android:name=".receiver.NetBroadCastReciver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-                <action android:name="android.net.wifi.STATE_CHANGE" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>

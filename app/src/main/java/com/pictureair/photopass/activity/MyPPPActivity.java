@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -64,7 +65,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
     private LinearLayout ll_button_area, ll_guide_layout;//无PP＋时 底部的两个按钮的区域。
-    private LinearLayout nopppLayout;
+    private ScrollView nopppLayout;
 
     private PWToast newToast;
 
@@ -567,7 +568,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         back = (ImageView) findViewById(R.id.back);
         menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         setting = (ImageView) findViewById(R.id.ppp_setting);
-        nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
+        nopppLayout = (ScrollView) findViewById(R.id.nopppinfo);
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);

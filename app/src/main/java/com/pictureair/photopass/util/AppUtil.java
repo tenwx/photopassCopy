@@ -1835,19 +1835,35 @@ public class AppUtil {
         }
         if (!languageType.equals("")) {//语言不为空
             if (languageType.equals(Common.ENGLISH)) {
-                config.locale = Locale.US;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.US;
+                } else {
+                    config.setLocale(Locale.US);
+                }
             } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
-                config.locale = Locale.SIMPLIFIED_CHINESE;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.SIMPLIFIED_CHINESE;
+                } else {
+                    config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                }
             }
         } else {//语言为空，说明第一次进入
             PictureAirLog.out("apputil language is null---->" + config.locale.getLanguage());
             PictureAirLog.out("apputil language is null---->" + config.locale);
             if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
                 languageType = Common.SIMPLE_CHINESE;
-                config.locale = Locale.SIMPLIFIED_CHINESE;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.SIMPLIFIED_CHINESE;
+                } else {
+                    config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                }
             } else {
                 languageType = Common.ENGLISH;
-                config.locale = Locale.US;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.US;
+                } else {
+                    config.setLocale(Locale.US);
+                }
             }
         }
         context.getResources().updateConfiguration(config, displayMetrics);

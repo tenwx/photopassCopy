@@ -373,4 +373,9 @@ public class Common {
     public static final int CART_WIDTH = 174;
     public static final int OFFSET = 1;
 
+    //加密
+    public static final String USERINFO_SALT = "salt";//加密必须参数
+    public static final String PBKDF2WITHHMANSHA1 = "PBKDF2WithHmacSHA1";
+
+
 }
