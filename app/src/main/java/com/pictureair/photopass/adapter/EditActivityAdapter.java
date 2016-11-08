@@ -199,6 +199,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
             holderView.editImageview.setLayoutParams(layoutParam1);
+            PWEditUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
             holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
         }
         return convertView;
@@ -508,7 +509,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
             if (bitmap == null || bitmap.isRecycled()) return;
-            PWEditUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
             holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
             holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
