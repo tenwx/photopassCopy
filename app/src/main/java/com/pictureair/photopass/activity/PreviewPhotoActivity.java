@@ -1035,7 +1035,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        mViewPager.resetImageView();
+        if (mViewPager != null) {
+            mViewPager.resetImageView();
+        }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             PictureAirLog.out("landscape----->");
             landscapeOrientation();
