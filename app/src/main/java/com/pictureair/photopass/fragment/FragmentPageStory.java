@@ -1234,8 +1234,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             for (int j = 0; j < boughtItemInfoList.size(); j++) {
 //                PictureAirLog.d(TAG, "检查之前的是否存在");
 
-                if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime) &&
-                        (info.locationId.equals(boughtItemInfoList.get(j).locationId) || boughtItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime)) {
 //                    PictureAirLog.d(TAG, "已经存在于bought列表");
 //                    info.locationName = boughtItemInfoList.get(j).place;
                     boughtItemInfoList.get(j).list.add(info);
