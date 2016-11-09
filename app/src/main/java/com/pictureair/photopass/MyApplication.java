@@ -70,8 +70,6 @@ public class MyApplication extends Application {
 
     private boolean isStoryTab = true;//记录是否是处于storyTab
 
-    private Configuration config;
-    private DisplayMetrics displayMetrics;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private NetBroadCastReciver netBroadCastReciver;
