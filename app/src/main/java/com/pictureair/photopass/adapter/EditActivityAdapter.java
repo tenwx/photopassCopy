@@ -66,6 +66,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private int bmpHeight;
     //图片路径
     private String mPhotoPath;
+    private boolean mLocal;
 
 
     private Handler downloadHandler = new Handler() {
@@ -85,7 +86,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         ;
     };
 
-    public EditActivityAdapter(Context context, String photoPath, List<String> stickerPathList, int editType, ArrayList<FrameOrStikerInfo> frameInfos, int width, int height, Handler handler) {
+    public EditActivityAdapter(Context context, String photoPath, List<String> stickerPathList, int editType, ArrayList<FrameOrStikerInfo> frameInfos, int width, int height, boolean local,Handler handler) {
         this.mContext = context;
         this.editType = editType;
         mPhotoPath = photoPath;
@@ -94,6 +95,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         this.handler = handler;
         this.bmpWidth = width;
         this.bmpHeight = height;
+        this.mLocal = local;
         myToast = new PWToast(context);
         pictureAirDbManager = new PictureAirDbManager(context);
     }
@@ -181,7 +183,11 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         if (editType == PhotoCommon.EditFrame) {//边框
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             LayoutParams layoutParam1 = holderView.editImageview.getLayoutParams();
-            GlideUtil.loadTarget(mContext, mPhotoPath, bmpWidth, bmpHeight, new FrameListTarget(holderView, position));
+            if (mLocal) {
+                GlideUtil.loadTarget(mContext, mPhotoPath, bmpWidth, bmpHeight, new FrameListTarget(holderView, position));
+            } else {
+                GlideUtil.load(mContext, mPhotoPath, new FrameListTarget(holderView, position));
+            }
 
             if (bmpWidth > bmpHeight) {
                 layoutParams.height = LayoutParams.MATCH_PARENT;

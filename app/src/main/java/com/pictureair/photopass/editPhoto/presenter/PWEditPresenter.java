@@ -497,27 +497,30 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     public void frame() {
         lastEditionPosition = 0;
         String path;
-        File file;
+        boolean local = false;
         if (mMainBitmap != null) {
             curEditType = PhotoCommon.EditFrame;
 
             if (index < 0) index = 0;
             if (index == 0) {
-                file = pwEditUtil.getFile(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+                File file = pwEditUtil.getFile(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
                 if (isOnLine) {
                     if (file.exists()) {
                         path = file.getAbsolutePath();
+                        local = true;
                     } else {
                         path = pwEditUtil.getPhotoEditorList().get(index).getPhotoPath();
                     }
                 } else {
                     path = file.getAbsolutePath();
+                    local = true;
                 }
             } else {
                 path = pwEditUtil.getPhotoEditorList().get(index).getPhotoPath();
+                local = true;
             }
 
-            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), path, new ArrayList<String>(), curEditType, pwEditUtil.getFrameInfos(), mMainBitmap.getWidth(), mMainBitmap.getHeight(), mHandler);
+            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), path, new ArrayList<String>(), curEditType, pwEditUtil.getFrameInfos(), mMainBitmap.getWidth(), mMainBitmap.getHeight(), local, mHandler);
             pwEditView.showEditView(curEditType, eidtAdapter);
             pwEditView.onEditStatus();
         }
@@ -528,7 +531,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         if (mMainBitmap != null) {
             lastEditionPosition = 0;
             curEditType = PhotoCommon.EditFilter;
-            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), "", pwEditUtil.getFilterPathList(), curEditType, new ArrayList<FrameOrStikerInfo>(), 0, 0, mHandler);
+            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), "", pwEditUtil.getFilterPathList(), curEditType, new ArrayList<FrameOrStikerInfo>(), 0, 0, false, mHandler);
             pwEditView.showEditView(curEditType, eidtAdapter);
             pwEditView.onEditStatus();
         }
@@ -540,7 +543,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
             curEditType = PhotoCommon.EditSticker;
             pwEditView.getStickView().setRec(pwEditUtil.getStickerRect(mMainBitmap.getHeight(), mMainBitmap.getWidth(), mainImageHeight, mainImageWidth, MyApplication.getInstance()));
             pwEditView.showPhotoStickerView();//事先让StickerView显示
-            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), "", new ArrayList<String>(), curEditType, pwEditUtil.getStikerInfos(), 0, 0, mHandler);
+            eidtAdapter = new EditActivityAdapter(MyApplication.getInstance(), "", new ArrayList<String>(), curEditType, pwEditUtil.getStikerInfos(), 0, 0, false, mHandler);
             pwEditView.showEditView(curEditType, eidtAdapter);
             pwEditView.onEditStatus();
         }
