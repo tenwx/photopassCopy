@@ -26,8 +26,7 @@ import android.widget.ListAdapter;
  * method for generating the header data set.
  * 
  * The is a second interface
- * {@link com.pictureAir.widget.stickygridheaders.StickyGridHeadersBaseAdapter}.
- * 
+ *
  * @author Tonic Artos
  */
 public interface StickyGridHeadersSimpleAdapter extends ListAdapter {

@@ -13,6 +13,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
+import android.support.multidex.MultiDex;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.receiver.NetBroadCastReciver;
@@ -69,6 +70,13 @@ public class MyApplication extends Application {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private NetBroadCastReciver netBroadCastReciver;
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);//让app支持dex多文件
+    }
 
     @Override
     public void onCreate() {
