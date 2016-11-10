@@ -122,7 +122,7 @@ dependencies {
     //json
     compile 'com.alibaba:fastjson:1.2.7'
     //系统 + material design
-    compile 'com.android.support:appcompat-v7:23.0.3'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     //听云
