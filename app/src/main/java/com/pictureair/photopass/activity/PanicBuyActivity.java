@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -20,6 +20,7 @@ import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo;
+import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -37,6 +38,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by pengwu on 16/9/28.
@@ -105,7 +108,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                 if (mStartDeal == DEALING) {
                     Date currentDate = getCurrentDate();
                     if (endDate != null && currentDate != null && endDate.getTime() >= currentDate.getTime()) {
-                        countDownTimer = new MyCountDownTimer(endDate.getTime() - currentDate.getTime(), 1000);
+                        countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentDate.getTime()- goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
                         countDownTimer.start();
                         enableBuy();
                         showDealsDetails();
@@ -138,32 +141,35 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                         PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalStart());
                         PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalEnd());
 
+                        long localTime = System.currentTimeMillis();
+                        Date currentSystemServerDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
+                        goodsInfo.getDealing().setTimeOffset(localTime - currentSystemServerDate.getTime());
+
                         startDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalStart());
                         endDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalEnd());
                         PictureAirLog.d(TAG, "formatStartDate " + startDate.toString());
                         PictureAirLog.d(TAG, "formatEndDate " + endDate.toString());
 
                         Date currentData = getCurrentDate();
-
-                        if (goodsInfo.getDealing().getState() == -2) {
-                            if (startDate.getTime()  > currentData.getTime() - dealingInfo.getTimeOffset()) {
+                        if (goodsInfo.getDealing().getState() == -2 || goodsInfo.getDealing().getState() == -3) {
+                            if (startDate.getTime()  > currentData.getTime() - goodsInfo.getDealing().getTimeOffset()) {
                                 mStartDeal = DEAL_NOT_START;
-                            }else if (currentData.getTime() - dealingInfo.getTimeOffset() <= endDate.getTime()) {
+                            }else if (currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
                                 mStartDeal = DEALING;
                             }
                         } else if (goodsInfo.getDealing().getState() == 1) {
-                            if ( currentData.getTime() - dealingInfo.getTimeOffset() >= startDate.getTime() && currentData.getTime() - dealingInfo.getTimeOffset() <= endDate.getTime()) {
+                            if ( currentData.getTime() - goodsInfo.getDealing().getTimeOffset() >= startDate.getTime() && currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
                                 mStartDeal = DEALING;
                             } else {
                                 mStartDeal = NO_DEALS;
                             }
                         }
                         if (mStartDeal == DEAL_NOT_START) {
-                            countDownTimer = new MyCountDownTimer(startDate.getTime() - (currentData.getTime() - dealingInfo.getTimeOffset()), 1000);
+                            countDownTimer = new MyCountDownTimer(startDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
                             countDownTimer.start();
                             disableBuy();
                         } else if (mStartDeal == DEALING) {
-                            countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentData.getTime() - dealingInfo.getTimeOffset()), 1000);
+                            countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
                             countDownTimer.start();
                             enableBuy();
                         } else if (mStartDeal == NO_DEALS) {
@@ -260,9 +266,29 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     private void showDealsDetails() {
 //        tv_title.setText(goodsInfo.getDealing().getTitle());
         tv_detail_title.setText(goodsInfo.getNameAlias());
-        tv_detail1.setText(goodsInfo.getDescription());
-        tv_detail2.setText(goodsInfo.getCopywriter());
+        tv_detail1.setText(goodsInfo.getDescription()+"\n");
+        String detail = new String("");
+        if (goodsInfo.getCopywriter() != null) {
+            String[] spilt =  goodsInfo.getCopywriter().split("\n");
+            if (spilt.length > 1) {
+                detail = appendEnter(spilt);
+            }
+        }
+        tv_detail2.setText(detail);
         tv_price.setText(currency + goodsInfo.getPrice());
+    }
+
+    private String appendEnter(String[] spilt) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < spilt.length; i++) {
+            if (i < spilt.length -1) {
+                buffer.append(spilt[i]).append("\n").append("\n");
+            } else {
+                buffer.append(spilt[i]).append("\n");
+            }
+        }
+
+        return buffer.toString();
     }
 
     private Date getCurrentDate() {
@@ -321,6 +347,9 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             startActivity(intent);
             finish();
         }
+        if (mStartDeal == NO_DEALS) {
+            EventBus.getDefault().postSticky(new StoryLoadCompletedEvent(false));
+        }
     }
 
     @Override
@@ -332,7 +361,28 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         return super.onKeyDown(keyCode, event);
     }
 
-    private class MyCountDownTimer extends CountDownTimer {
+    private void setTime(String hour, String min, String sec){
+        tv_hour.setText(hour);
+        tv_min.setText(min);
+        tv_sec.setText(sec);
+    }
+
+    private void goNextStatus() {
+        tv_hour.setText(TIME_ZERO);
+        tv_min.setText(TIME_ZERO);
+        tv_sec.setText(TIME_ZERO);
+
+        if (mStartDeal == DEAL_NOT_START) {
+            mStartDeal = DEALING;
+        } else if (mStartDeal == DEALING) {
+            mStartDeal = NO_DEALS;
+        }
+        if (panciBuyHandler != null) {
+            panciBuyHandler.sendEmptyMessage(COUNT_DOWN_TIME_FINISH);
+        }
+    }
+
+    private static class MyCountDownTimer extends CountDownTimer {
 
         /**
          * @param millisInFuture    The number of millis in the future from the call
@@ -341,8 +391,10 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
          * @param countDownInterval The interval along the way to receive
          *                          {@link #onTick(long)} callbacks.
          */
-        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+        private WeakReference<PanicBuyActivity> mActivity;
+        public MyCountDownTimer(long millisInFuture, long countDownInterval, PanicBuyActivity activity) {
             super(millisInFuture, countDownInterval);
+            mActivity = new WeakReference<PanicBuyActivity>(activity);
         }
 
         @Override
@@ -355,29 +407,25 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             long mm = (millisUntilFinished - hh * hour) / min;
             long ss = (millisUntilFinished - hh * hour - mm * min) / sec;
 
+            if (mActivity.get() == null) {
+                return;
+            }
+
             String strHour = hh < 10 ? "0" + hh : "" + hh;
             String strMin = mm < 10 ? "0" + mm : "" + mm;
             String strSec = ss < 10 ? "0" + ss : "" + ss;
 
-            tv_hour.setText(strHour);
-            tv_min.setText(strMin);
-            tv_sec.setText(strSec);
+            mActivity.get().setTime(strHour, strMin, strSec);
         }
 
         @Override
         public void onFinish() {
             PictureAirLog.e(TAG, "CountDownTime onFinish");
-            tv_hour.setText(TIME_ZERO);
-            tv_min.setText(TIME_ZERO);
-            tv_sec.setText(TIME_ZERO);
-            if (mStartDeal == DEAL_NOT_START) {
-                mStartDeal = DEALING;
-            } else if (mStartDeal == DEALING) {
-                mStartDeal = NO_DEALS;
+            if (mActivity.get() == null) {
+                return;
             }
-            if (panciBuyHandler != null) {
-                panciBuyHandler.sendEmptyMessage(COUNT_DOWN_TIME_FINISH);
-            }
+            mActivity.get().goNextStatus();
+
         }
     }
 }

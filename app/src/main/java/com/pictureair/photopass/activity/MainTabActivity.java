@@ -677,9 +677,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 }
                 dealingInfo = curDealingInfo;
 
-                if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2) {
+                if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2 || dealingInfo.getState() == -3) {
                     showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
-                } else {//活动结束
+                } else if (dealingInfo.getState() == 0){//活动结束
                     isDealing = false;
                     EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, false, false));
                 }

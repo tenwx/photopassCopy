@@ -179,7 +179,7 @@
                         android:id="@+id/special_deal_detail2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_12"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_dark_blue"
                         android:layout_marginLeft="21dp"
                         android:layout_marginRight="21dp"
