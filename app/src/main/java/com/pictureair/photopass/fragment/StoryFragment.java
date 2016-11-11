@@ -8,19 +8,19 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
-import com.pictureair.photopass.adapter.StickyGridAdapter;
+import com.pictureair.photopass.adapter.StickyRecycleAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
@@ -29,7 +29,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.util.ArrayList;
 
@@ -39,15 +38,18 @@ import de.greenrobot.event.Subscribe;
 
 public class StoryFragment extends Fragment {
 	private static final String TAG = "StoryFragment";
-	private StickyGridHeadersGridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
+	private RecyclerView recyclerView;
 	private TextView noPhotoTextView;
-	private StickyGridAdapter stickyGridAdapter;
 	private ArrayList<PhotoInfo> targetArrayList;
 	private ArrayList<PhotoInfo> photoInfoArrayList;
 	private int tab;
 	private View view;
 	private SwipeRefreshLayout refreshLayout;
+	private GridLayoutManager gridLayoutManager;
+	private StickyRecycleAdapter stickyRecycleAdapter;
+	private TextView tvStickyHeaderView;
+	private LinearLayout stickyHeaderLL;
 	private static Handler handler;
 	
 	private static final int REFRESH = 666;
@@ -85,9 +87,11 @@ public class StoryFragment extends Fragment {
 		if (view == null) {
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
-		gridView = (StickyGridHeadersGridView) view.findViewById(R.id.stickyGridHeadersGridView);
+		recyclerView = (RecyclerView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
+		tvStickyHeaderView = (TextView) view.findViewById(R.id.section_time);
+		stickyHeaderLL = (LinearLayout) view.findViewById(R.id.story_pinned_section_ll);
 
 		refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -141,17 +145,38 @@ public class StoryFragment extends Fragment {
 			}
 		}
 
-		stickyGridAdapter = new StickyGridAdapter(getContext(), photoInfoArrayList);
-		gridView.setAdapter(stickyGridAdapter);
-		gridView.setOnItemClickListener(new PhotoOnItemClickListener());
-		gridView.setOnItemLongClickListener(new OnItemLongClickListener() {
-			
+		gridLayoutManager = new GridLayoutManager(getContext(), 3);
+		gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				return true;
+			public int getSpanSize(int position) {
+				if (position >= photoInfoArrayList.size()) {
+					return 3;
+				}
+				if (position == 0) {
+					return 3;
+
+				} else if (position > 0 && photoInfoArrayList.get(position).sectionId != photoInfoArrayList.get(position - 1).sectionId) {
+					return 3;
+				} else {
+					return 1;
+				}
 			}
 		});
+
+		stickyRecycleAdapter = new StickyRecycleAdapter(getContext(), photoInfoArrayList);
+		stickyRecycleAdapter.setOnItemClickListener(new PhotoOnItemClickListener());
+//		recyclerView.addItemDecoration(new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5)));
+		recyclerView.setLayoutManager(gridLayoutManager);
+		recyclerView.setAdapter(stickyRecycleAdapter);
+		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
+				dealWithStickyHeader(recyclerView);
+			}
+		});
+
+
 		if (tab == 1) {//airpass
 			noPhotoTextView.setText(R.string.no_photo_in_airpass);
 		} else if (tab == 2) {//local
@@ -165,11 +190,11 @@ public class StoryFragment extends Fragment {
 		}
 		
 		if (photoInfoArrayList.size() > 0) {
-			gridView.setVisibility(View.VISIBLE);
+			recyclerView.setVisibility(View.VISIBLE);
 			noPhotoRelativeLayout.setVisibility(View.GONE);
 
 		} else {
-			gridView.setVisibility(View.GONE);
+			recyclerView.setVisibility(View.GONE);
 			noPhotoRelativeLayout.setVisibility(View.VISIBLE);
 		}
 	}
@@ -179,16 +204,46 @@ public class StoryFragment extends Fragment {
 		super.onDestroyView();
 	}
 
+	private void dealWithStickyHeader(RecyclerView recyclerView) {
+		// Get the sticky information from the topmost view of the screen.
+		View stickyInfoView = recyclerView.findChildViewUnder(5, 1);
+
+		if (stickyInfoView != null && stickyInfoView.getContentDescription() != null) {
+			tvStickyHeaderView.setText(String.valueOf(stickyInfoView.getContentDescription()));
+		}
+
+		// Get the sticky view's translationY by the first view below the sticky's height.
+		View transInfoView = recyclerView.findChildViewUnder(5, stickyHeaderLL.getMeasuredHeight() + 1);
+
+		if (transInfoView != null && transInfoView.getTag() != null) {
+			int transViewStatus = (int) transInfoView.getTag();
+			int dealtY = transInfoView.getTop() - stickyHeaderLL.getMeasuredHeight();
+			if (transViewStatus == StickyRecycleAdapter.HAS_STICKY_VIEW) {
+				// If the first view below the sticky's height scroll off the screen,
+				// then recovery the sticky view's translationY.
+				if (transInfoView.getTop() > 0) {
+					stickyHeaderLL.setTranslationY(dealtY);
+				} else {
+					stickyHeaderLL.setTranslationY(0);
+				}
+			} else if (transViewStatus == StickyRecycleAdapter.NONE_STICKY_VIEW) {
+				stickyHeaderLL.setTranslationY(0);
+			}
+		}
+	}
+
 	//照片点击的监听类
-	private class PhotoOnItemClickListener implements OnItemClickListener{
+	private class PhotoOnItemClickListener implements StickyRecycleAdapter.OnRecyclerViewItemClickListener{
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		public void onItemClick(View view, int position) {
 			if (photoInfoArrayList.size() == 0) {
 				return;
 			}
 
 			if (position < 0) {
 				position = 0;
+			} else {
+				position -= photoInfoArrayList.get(position).sectionId + 1;
 			}
 
 			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {//广告视频
@@ -253,7 +308,7 @@ public class StoryFragment extends Fragment {
 //				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTab());
 				PictureAirLog.out("photo size --" + photoInfoArrayList.size());
 				if (photoInfoArrayList.size() == 0) {
-					gridView.setVisibility(View.GONE);
+					recyclerView.setVisibility(View.GONE);
 					noPhotoRelativeLayout.setVisibility(View.VISIBLE);
 					if (tab == 1) {//airpass
 						noPhotoTextView.setText(R.string.no_photo_in_airpass);
@@ -265,12 +320,12 @@ public class StoryFragment extends Fragment {
 						noPhotoTextView.setText(R.string.no_photo_in_favourite);
 					}
 				} else {
-					gridView.setVisibility(View.VISIBLE);
+					recyclerView.setVisibility(View.VISIBLE);
 					noPhotoRelativeLayout.setVisibility(View.GONE);
 					
 				}
-				if (stickyGridAdapter != null) {
-					stickyGridAdapter.notifyDataSetChanged();
+				if (stickyRecycleAdapter != null) {
+					stickyRecycleAdapter.notifyDataSetChanged();
 				}
 				if (refreshLayout.isRefreshing()) {
 					refreshLayout.setRefreshing(false);

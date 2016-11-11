@@ -509,7 +509,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     try {
                         photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
                                 pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
-                                simpleDateFormat, MyApplication.getInstance().getLanguageType()));
+                                simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -518,7 +518,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
+                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false, false));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -530,7 +530,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
+                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true, false));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

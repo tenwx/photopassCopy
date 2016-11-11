@@ -773,10 +773,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 boughtPhotoList.clear();
 //                favouritePhotoList.clear();
 
-                allPhotoList.addAll(AppUtil.startSortForPinnedListView(allItemInfoList));
-                pictureAirPhotoList.addAll(AppUtil.startSortForPinnedListView(photoPassItemInfoList));
-                magicPhotoList.addAll(AppUtil.startSortForPinnedListView(magicItemInfoList));
-                boughtPhotoList.addAll(AppUtil.startSortForPinnedListView(boughtItemInfoList));
+                allPhotoList.addAll(AppUtil.startSortForPinnedListView(allItemInfoList, true));
+                pictureAirPhotoList.addAll(AppUtil.startSortForPinnedListView(photoPassItemInfoList, true));
+                magicPhotoList.addAll(AppUtil.startSortForPinnedListView(magicItemInfoList, true));
+                boughtPhotoList.addAll(AppUtil.startSortForPinnedListView(boughtItemInfoList, true));
 //                favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
 
                 if (isAll) {

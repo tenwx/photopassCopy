@@ -822,9 +822,10 @@ public class AppUtil {
      * 将photoItemInfo转成悬浮所需要的photoInfo的列表
      *
      * @param list
+     * @param isForStickyHeader 是否是用于悬浮
      * @return
      */
-    public static ArrayList<PhotoInfo> startSortForPinnedListView(ArrayList<PhotoItemInfo> list) {
+    public static ArrayList<PhotoInfo> startSortForPinnedListView(ArrayList<PhotoItemInfo> list, boolean isForStickyHeader) {
         ArrayList<PhotoInfo> tempInfos = new ArrayList<PhotoInfo>();
         PhotoInfo temp, temp2;
         for (int i = 0; i < list.size(); i++) {
@@ -860,6 +861,10 @@ public class AppUtil {
                 temp.isEncrypted = temp2.isEncrypted;
                 temp.isRefreshInfo = temp2.isRefreshInfo;
                 temp.adURL = temp2.adURL;
+                if (j == 0 && isForStickyHeader) {//设置header
+                    tempInfos.add(temp);
+
+                }
                 tempInfos.add(temp);
             }
         }
@@ -1314,7 +1319,7 @@ public class AppUtil {
      */
     public static ArrayList<PhotoInfo> getSortedPhotoPassPhotos(ArrayList<DiscoverLocationItemInfo> locationList,
                                                                 PictureAirDbManager pictureAirDbManager, String deleteTime,
-                                                                SimpleDateFormat sdf, String language, boolean isBought) throws ParseException {
+                                                                SimpleDateFormat sdf, String language, boolean isBought, boolean isForStickyHeader) throws ParseException {
         //从数据库获取图片
         ArrayList<PhotoInfo> photoList;
         if (isBought) {//获取已经购买的pp照片
@@ -1326,7 +1331,7 @@ public class AppUtil {
         ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
         //将新的数据进行排序
         Collections.sort(photoItemInfoArrayList);
-        return AppUtil.startSortForPinnedListView(photoItemInfoArrayList);
+        return AppUtil.startSortForPinnedListView(photoItemInfoArrayList, isForStickyHeader);
     }
 
     /**
@@ -1343,7 +1348,7 @@ public class AppUtil {
      */
     public static ArrayList<PhotoInfo> getSortedAllPhotos(Context context, ArrayList<DiscoverLocationItemInfo> locationList,
                                                           ArrayList<PhotoInfo> targetList, PictureAirDbManager pictureAirDbManager, String deleteTime,
-                                                          SimpleDateFormat sdf, String language) throws ParseException {
+                                                          SimpleDateFormat sdf, String language, boolean isForStickyHeader) throws ParseException {
         //从数据库获取图片
         ArrayList<PhotoInfo> photoList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
         //将图片按照地点组合
@@ -1358,7 +1363,7 @@ public class AppUtil {
 
         //将新的数据进行排序
         Collections.sort(allPhotoItemInfoArrayList);
-        return AppUtil.startSortForPinnedListView(allPhotoItemInfoArrayList);
+        return AppUtil.startSortForPinnedListView(allPhotoItemInfoArrayList, isForStickyHeader);
     }
 
     /**
@@ -1869,5 +1874,23 @@ public class AppUtil {
         context.getResources().updateConfiguration(config, displayMetrics);
         SPUtils.put(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
         PictureAirLog.d("apputil language ---> init language completed");
+    }
+
+    /**
+     * 获取悬浮header显示的时间
+     * @param photoList
+     * @param position
+     * @return
+     */
+    public static String getHeaderTime(ArrayList<PhotoInfo> photoList, int position) {
+        String headerTime = photoList.get(position).shootOn;
+        for (int i = position; i >= 0; i--) {
+            if (photoList.get(position).sectionId == photoList.get(i).sectionId) {//当前的
+                headerTime = photoList.get(i).shootOn;
+            } else {
+                break;
+            }
+        }
+        return headerTime;
     }
 }

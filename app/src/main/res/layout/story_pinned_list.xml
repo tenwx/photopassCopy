@@ -8,18 +8,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView
-            android:id="@+id/stickyGridHeadersGridView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/top"
-            android:background="@color/white"
-            android:clipToPadding="true"
-            android:horizontalSpacing="@dimen/pp_dp_5"
-            android:listSelector="@color/transparent"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:verticalSpacing="0dip" />
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/stickyGridHeadersGridView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:horizontalSpacing="@dimen/pp_dp_5"
+                android:scrollbars="none" />
+
+            <include
+                layout="@layout/story_pinned_listview_section"/>
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
