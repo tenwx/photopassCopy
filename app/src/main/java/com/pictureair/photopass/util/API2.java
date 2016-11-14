@@ -1,9 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -12,30 +10,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BasicResult;
-import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.http.BasicResultCallTask;
-import com.pictureair.photopass.http.BinaryCallBack;
-import com.pictureair.photopass.http.CallTaskManager;
-import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
+import com.pictureair.photopass.http.rxhttp.APIException;
 import com.pictureair.photopass.http.rxhttp.ApiFactory;
 import com.pictureair.photopass.http.rxhttp.PhotoPassAuthApi;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -661,39 +648,37 @@ public class API2 {
      *
      * @param context
      */
-    public static Observable<BasicResult<JSONObject>> getLocationInfo(final Context context, String tokenId) {
+    public static Observable<JSONObject> getLocationInfo(final Context context, String tokenId) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<BasicResult<JSONObject>> observable  = request.get(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params)
+        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<BasicResult<JSONObject>, Observable<BasicResult<JSONObject>>>() {
+                .map(new Func1<BasicResult<JSONObject>, JSONObject>() {
                     @Override
-                    public Observable<BasicResult<JSONObject>> call(BasicResult<JSONObject> jsonObject) {
+                    public JSONObject call(BasicResult<JSONObject> jsonObjectBasicResult) {
+                        if (jsonObjectBasicResult == null) {
+                            throw new APIException(401);
+                        } else {
+                            if (jsonObjectBasicResult.getStatus() == 200) {
+                                return jsonObjectBasicResult.getResult();
+                            } else {
+                                throw new APIException(jsonObjectBasicResult.getStatus());
+                            }
+                        }
+                    }
+                })
+
+                .flatMap(new Func1<JSONObject, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(JSONObject jsonObject) {
+                        ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
                         return Observable.just(jsonObject);
                     }
                 });
 
         return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
-//                handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.out("get location info failed----->" + status);
-//                handler.obtainMessage(GET_ALL_LOCATION_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
     }
 
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import com.pictureair.photopass.util.ScreenUtil;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import rx.Subscription;
+
 /**
  * Created by bauer_bao on 16/11/10.
  */
@@ -32,13 +35,22 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static final int LOAD_MORE_VIEW_TYPE = 100;
     public static final int LOAD_HEADER_VIEW_TYPE = 101;
 
-    private static final int COLUMN_COUNT = 3;
+    public static final int LOAD_MORE_VISIBLE = 4;//开始拉取的时候，需要显示
+    public static final int LOAD_MORE_GONE = 5;//拉取完毕之后，如果没有数据，需要隐藏
+    public static final int LOAD_MORE_LOADING = 6;//加载中的UI
+    public static final int LOAD_MORE_NO_MORE = 7;//没有更多数据的UI
+    public static final int LOAD_MORE_FAILED = 8;//加载失败的处理，可以点击，重新请求更多数据
 
+    private static final int COLUMN_COUNT = 3;
 
     private Context context;
     private ArrayList<PhotoInfo> photoList;
 
-    private boolean noMoreData = true;
+    private int loadMoreType = 0;
+    private int time = 0;
+    private Subscription subscription;
+
+
 
     private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
@@ -64,8 +76,8 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (photoList.size() == 0 || position >= photoList.size()) {
-            return ;
+        if (photoList.size() == 0 || position >= getItemCount()) {
+            return;
         }
 
         if (viewHolder instanceof RecyclerViewHolder) {
@@ -80,19 +92,16 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                     photoUrl = photoList.get(position).photoThumbnail;
                 }
                 if (photoList.get(position).isVideo == 1) {
-                    PictureAirLog.out("load video--->512 " + photoList.get(position).photoThumbnail_512);
-                    PictureAirLog.out("load video--->128 " + photoList.get(position).photoThumbnail);
                     recyclerViewHolder.videoImageView.setVisibility(View.VISIBLE);
                     ViewGroup.LayoutParams params2 = recyclerViewHolder.videoImageView.getLayoutParams();
                     params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
                     params2.height = params2.width;
                     recyclerViewHolder.videoImageView.setLayoutParams(params2);
                 } else {
-                    PictureAirLog.out("load online photo--->" + photoList.get(position).photoPathOrURL);
                     recyclerViewHolder.videoImageView.setVisibility(View.GONE);
                 }
             } else {
-                photoUrl = "file://" + photoList.get(position).photoPathOrURL;
+                photoUrl = GlideUtil.getFileUrl(photoList.get(position).photoPathOrURL);
                 recyclerViewHolder.videoImageView.setVisibility(View.GONE);
             }
 
@@ -121,15 +130,31 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
         } else if (viewHolder instanceof LoadMoreViewHolder) {
-            LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) viewHolder;
-            if (noMoreData) {
-                loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
-                loadMoreViewHolder.tvLoadStatus.setText("没有更多数据啦...");
+            final LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) viewHolder;
 
-            } else {
-                loadMoreViewHolder.pbLoading.setVisibility(View.VISIBLE);
-                loadMoreViewHolder.tvLoadStatus.setText("加载中，请稍后...");
+            PictureAirLog.d(" load more ---> " + loadMoreType);
+            switch (loadMoreType) {
+                case LOAD_MORE_GONE:
+                    loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
+                    loadMoreViewHolder.tvLoadStatus.setVisibility(View.GONE);
 
+                    break;
+
+                case LOAD_MORE_LOADING:
+                    loadMoreViewHolder.pbLoading.setVisibility(View.VISIBLE);
+                    loadMoreViewHolder.tvLoadStatus.setVisibility(View.VISIBLE);
+                    loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.is_loading));
+                    break;
+
+                case LOAD_MORE_NO_MORE:
+                    loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
+                    loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.nomore));
+                    break;
+
+                case LOAD_MORE_FAILED:
+                    loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
+                    loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.failed_click_load));
+                    break;
             }
         } else if (viewHolder instanceof RecyclerViewSectionViewHolder) {
             RecyclerViewSectionViewHolder recyclerViewSectionViewHolder = (RecyclerViewSectionViewHolder) viewHolder;
@@ -147,8 +172,6 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-
-
     @Override
     public int getItemViewType(int position) {
         if (position == getItemCount() - 1) {
@@ -164,9 +187,8 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         return photoList == null ? 1 : photoList.size() + 1;
     }
 
-
-    public void setNoMoreData(boolean noMoreData) {
-        this.noMoreData = noMoreData;
+    public void setLoadMoreType(int loadMoreType) {
+        this.loadMoreType = loadMoreType;
     }
 
     public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
@@ -174,13 +196,13 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
-        public ImageView pbLoading;
+        public ProgressBar pbLoading;
         public TextView tvLoadStatus;
 
         public LoadMoreViewHolder(View itemView) {
             super(itemView);
 
-            pbLoading = (ImageView) itemView.findViewById(R.id.pb_loading);
+            pbLoading = (ProgressBar) itemView.findViewById(R.id.pb_loading);
             tvLoadStatus = (TextView) itemView.findViewById(R.id.tv_load_status);
         }
     }

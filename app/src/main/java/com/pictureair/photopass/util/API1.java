@@ -45,6 +45,10 @@ public class API1 {
 
     private static final String TAG = "API";
 
+    public static final int GET_DEFAULT_PHOTOS = 1;//获取默认图片
+    public static final int GET_NEW_PHOTOS = 2;//获取最新图片
+    public static final int GET_OLD_PHOTOS = 3;//获取旧图片
+
     /**
      * 启动
      */
@@ -87,6 +91,9 @@ public class API1 {
 
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
+
+    public static final int GET_MORE_PHOTOS_BY_CONDITIONS_SUCCESS = 2022;
+    public static final int GET_MORE_PHOTOS_BY_CONDITIONS_FAILED = 2023;
 
     /**
      * 扫描
@@ -598,38 +605,53 @@ public class API1 {
      *
      * @param tokenId
      * @param handler
-     * @param timeString 根据时间获取图片信息
+     * @param type
      */
-    public static BasicResultCallTask getPhotosByConditions(final String tokenId, final Handler handler, final String timeString, String ppCode) {
+    public static BasicResultCallTask getPhotosByConditions(final String tokenId, final Handler handler, final int type, String id, String ppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        if (timeString != null) {
-            params.put(Common.LAST_UPDATE_TIME, timeString);
+        if (type == GET_NEW_PHOTOS) {
+            params.put(Common.GTEID, id);
+
+        } else if (type == GET_OLD_PHOTOS) {
+            params.put(Common.LTEID, id);
+
         }
         if (!TextUtils.isEmpty(ppCode)) {
             params.put(Common.CUSTOMERID, ppCode);
         }
-        PictureAirLog.out("the time of start get photos = " + timeString);
+
+        params.put(Common.LIMIT, 50);
+        PictureAirLog.out("the time of start get photos = " + id);
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 //成功获取照片信息
-                if (null == timeString) {//获取全部照片
+                if (type == GET_DEFAULT_PHOTOS) {
                     handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
-                } else {//获取当前照片
+
+                } else if (type == GET_NEW_PHOTOS) {
                     handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+
+                } else if (type == GET_OLD_PHOTOS) {
+                    handler.obtainMessage(GET_MORE_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+
                 }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                if (null == timeString) {//获取全部照片，需要将时间置空，保证下次下拉可以重新拉取数据
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null);
+                if (type == GET_DEFAULT_PHOTOS) {//获取全部照片，需要将时间置空，保证下次下拉可以重新拉取数据
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, null);
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, null);
                     handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
-                } else {//获取当前照片
+                } else if (type == GET_NEW_PHOTOS){//获取当前照片
                     handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+                } else if (type == GET_OLD_PHOTOS) {
+                    handler.obtainMessage(GET_MORE_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+
                 }
             }
         });

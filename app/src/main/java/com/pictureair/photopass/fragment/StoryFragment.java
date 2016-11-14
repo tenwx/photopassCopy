@@ -31,9 +31,13 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 
 public class StoryFragment extends Fragment {
@@ -44,6 +48,7 @@ public class StoryFragment extends Fragment {
 	private ArrayList<PhotoInfo> targetArrayList;
 	private ArrayList<PhotoInfo> photoInfoArrayList;
 	private int tab;
+	private int oldCount;
 	private View view;
 	private SwipeRefreshLayout refreshLayout;
 	private GridLayoutManager gridLayoutManager;
@@ -51,8 +56,10 @@ public class StoryFragment extends Fragment {
 	private TextView tvStickyHeaderView;
 	private LinearLayout stickyHeaderLL;
 	private static Handler handler;
+	private boolean isLoadMore = false;
 	
 	private static final int REFRESH = 666;
+	public static final int LOAD_MORE = 77777;
 	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
 	
 	public static StoryFragment getInstance(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int tab, Handler h){
@@ -77,6 +84,7 @@ public class StoryFragment extends Fragment {
 			photoInfoArrayList = getArguments().getParcelableArrayList("photo");
 			targetArrayList = getArguments().getParcelableArrayList("target");
 			tab = getArguments().getInt("tab");
+			oldCount = photoInfoArrayList.size();
 		}
 		super.onAttach(context);
 	}
@@ -100,7 +108,7 @@ public class StoryFragment extends Fragment {
 			@Override
 			public void onRefresh() {
 				PictureAirLog.out("start refresh");
-				if (photoInfoArrayList.size() != 0) {
+				if (photoInfoArrayList.size() != 0 && !isLoadMore) {
 
 					Message message = handler.obtainMessage();
 					message.what = REFRESH;
@@ -172,6 +180,7 @@ public class StoryFragment extends Fragment {
 			@Override
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
+				dealWithLoadMore(dy, recyclerView);
 				dealWithStickyHeader(recyclerView);
 			}
 		});
@@ -202,6 +211,21 @@ public class StoryFragment extends Fragment {
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+	}
+
+	private void dealWithLoadMore(int dy, RecyclerView recyclerView) {
+		// Scroll up.
+			PictureAirLog.d("start load more---->" + dy + recyclerView.canScrollVertically(1) + refreshLayout.isRefreshing());
+		if (dy > 0 && !recyclerView.canScrollVertically(1) && !refreshLayout.isRefreshing()) {
+			PictureAirLog.d("start load more---->");
+			isLoadMore = true;
+			stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
+			stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+			Message message = handler.obtainMessage();
+			message.what = LOAD_MORE;
+			message.arg1 = tab;
+			handler.sendMessage(message);
+		}
 	}
 
 	private void dealWithStickyHeader(RecyclerView recyclerView) {
@@ -299,6 +323,7 @@ public class StoryFragment extends Fragment {
 			if (storyFragmentEvent.getTab() == tab) {
 				PictureAirLog.out("start update" + tab);
 				PictureAirLog.out("storyFragmentEvent.getTab() = " + storyFragmentEvent.getTab());
+				int newCount = storyFragmentEvent.getPhotoInfos().size();
 				photoInfoArrayList.clear();
 				targetArrayList.clear();
 				photoInfoArrayList.addAll(storyFragmentEvent.getPhotoInfos());
@@ -306,7 +331,7 @@ public class StoryFragment extends Fragment {
 //				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getPhotoInfos().size());
 //				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTargetInfos().size());
 //				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTab());
-				PictureAirLog.out("photo size --" + photoInfoArrayList.size());
+				PictureAirLog.out("photo size --" + photoInfoArrayList.size() + " new count" + (newCount - oldCount) + storyFragmentEvent.isRefresh());
 				if (photoInfoArrayList.size() == 0) {
 					recyclerView.setVisibility(View.GONE);
 					noPhotoRelativeLayout.setVisibility(View.VISIBLE);
@@ -323,6 +348,37 @@ public class StoryFragment extends Fragment {
 					recyclerView.setVisibility(View.VISIBLE);
 					noPhotoRelativeLayout.setVisibility(View.GONE);
 					
+				}
+				if (!storyFragmentEvent.isRefresh()) {
+					isLoadMore = false;
+					recyclerView.scrollToPosition(oldCount);
+					if (newCount - oldCount < 50) {
+						stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
+						stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+
+						Observable.timer(2, TimeUnit.SECONDS)//2s之后隐藏footer
+								.observeOn(AndroidSchedulers.mainThread())
+								.subscribe(new Subscriber<Long>() {
+									@Override
+									public void onCompleted() {
+
+										stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_GONE);
+										stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+									}
+
+									@Override
+									public void onError(Throwable e) {
+
+									}
+
+									@Override
+									public void onNext(Long aLong) {
+
+									}
+								});
+
+					}
+					oldCount = newCount;
 				}
 				if (stickyRecycleAdapter != null) {
 					stickyRecycleAdapter.notifyDataSetChanged();
@@ -354,6 +410,13 @@ public class StoryFragment extends Fragment {
 				if (refreshLayout.isRefreshing()) {
 					refreshLayout.setRefreshing(false);
 				}
+				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
+			}
+
+			if (storyRefreshEvent.getTab() == tab &&
+					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.STOP_LOAD_MORE) {//开始关闭加载更多，此处为加载更多失败的处理
+				PictureAirLog.out(tab + "------>stop loading more from bus");
+				isLoadMore = false;
 				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
 			}
 		}

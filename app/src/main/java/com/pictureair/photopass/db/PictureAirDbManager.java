@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -18,11 +19,13 @@ import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.SQLException;
@@ -835,9 +838,9 @@ public class PictureAirDbManager {
      * 将照片插入到photoPassInfo表中
      *
      * @param responseArray
-     * @param isAll         是否是刷新信息
+     * @param type         是否是刷新信息
      */
-    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isAll) {
+    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
         if (responseArray.size() == 0) {
             return resultArrayList;
@@ -853,7 +856,22 @@ public class PictureAirDbManager {
                     photo.locationId = "others";
                 }
 
-                if (!isAll) {
+                if (type == API1.GET_DEFAULT_PHOTOS) {
+                    if (i == 0) {//记录最新的值
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, photo.photoId);
+                    } else if (i == responseArray.size() - 1) {//记录最后一个值
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, photo.photoId);
+                    }
+                } else if (type == API1.GET_NEW_PHOTOS) {
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, photo.photoId);
+
+                } else if (type == API1.GET_OLD_PHOTOS) {
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, photo.photoId);
+
+                }
+
+
+                if (type == API1.GET_NEW_PHOTOS) {
                     //1.先查询数据库是否有新的数据，如果有，则更新信息
                     //2.如果没有，则插入
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");

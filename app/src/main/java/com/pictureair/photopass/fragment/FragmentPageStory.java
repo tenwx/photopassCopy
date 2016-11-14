@@ -52,6 +52,7 @@ import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -79,6 +80,11 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * PhotoPass照片的图片墙，用来显示从服务器返回的照片信息，以及通过magic相机拍摄的图片
@@ -89,11 +95,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     //声明静态变量
     private static final int DEAL_ALL_PHOTO_DATA_DONE = 444;
     private static final int DEAL_REFRESH_PHOTO_DATA_DONE = 555;
+    private static final int DEAL_MORE_PHOTO_DATA_DONE = 5556;
     private static final int LOAD_COMPLETED = 111;
     private static final int REFRESH = 666;
     private static final int REFRESH_LOCAL_PHOTOS = 777;
     private static final int SORT_COMPLETED_ALL = 223;
     private static final int SORT_COMPLETED_REFRESH = 224;
+    private static final int SORT_COMPLETED_MORE = 225;
     private static final int DEAL_ALL_VIDEO_DATA_DONE = 888;
     private static final int DEAL_REFRESH_VIDEO_DATA_DONE = 999;
     private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
@@ -101,12 +109,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE = 1002;
     private static final int LOAD_PHOTO_FROM_DB = 1003;
     private static final int GET_REFRESH_DATA_DONE = 1004;
+    private static final int GET_MORE_DATA_DONE = 1005;
 
     private static final String TAG = "FragmentPageStory";
     private String[] titleStrings;
 
     //申明变量
     private int refreshDataCount = 0;//记录刷新数据的数量
+    private int loadMoreDataCount = 0;
     /**
      * 是否需要重新拉取数据
      */
@@ -279,7 +289,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //数据为0，需要从网上下载
                     PictureAirLog.out("photolist size = 0");
                     //判断是否之前有成功获取过
-                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
+                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null);//获取全部图片
                 } else {
                     PictureAirLog.out("photolist size = " + photoPassPicList.size());
                     //有数据，直接显示
@@ -299,13 +309,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
 
                 PictureAirLog.d(TAG, "--------->get photo success");
-                saveJsonToSQLite((JSONObject) msg.obj, true);
+                saveJsonToSQLite((JSONObject) msg.obj, API1.GET_DEFAULT_PHOTOS);
                 break;
 
             case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
 //                    app.setPushPhotoCount(0);
                 PictureAirLog.d(TAG, "deal refresh photos-------");
-                saveJsonToSQLite((JSONObject) msg.obj, false);
+                saveJsonToSQLite((JSONObject) msg.obj, API1.GET_NEW_PHOTOS);
                 break;
 
             case API1.GET_SOCKET_DATA_SUCCESS://手动刷新成功
@@ -326,11 +336,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler,
-                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null),
+                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_NEW_PHOTOS,
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, null),
                         null);//获取更新信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 showLeadView();
+                break;
+
+            case StoryFragment.LOAD_MORE:
+                PictureAirLog.d(TAG, "the index of loading more is " + msg.arg1);
+                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_OLD_PHOTOS,
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, null),
+                        null);//获取更新信息
+                break;
+
+            case API1.GET_MORE_PHOTOS_BY_CONDITIONS_FAILED:
+                EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_LOAD_MORE));
+                break;
+
+            case API1.GET_MORE_PHOTOS_BY_CONDITIONS_SUCCESS:
+                saveJsonToSQLite((JSONObject) msg.obj, API1.GET_OLD_PHOTOS);
+
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -352,6 +378,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getRefreshDataFinish();
                 break;
 
+            case DEAL_MORE_PHOTO_DATA_DONE:
+                getMoreDataFinish();
+                break;
+
             case DEAL_REFRESH_VIDEO_DATA_DONE://处理刷新视频成功
                 app.setPushViedoCount(0);
                 PictureAirLog.out("deal refresh video done");
@@ -359,12 +389,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case DEAL_FAVORITE_DATA_SUCCESS://处理收藏图片成功
-                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
+                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4, true));
                 break;
 
             case GET_REFRESH_DATA_DONE://处理刷新数据成功
                 PictureAirLog.out("start sortdata");
-                sortData(false);
+                sortData(API1.GET_NEW_PHOTOS);
+                break;
+
+            case GET_MORE_DATA_DONE:
+
+                PictureAirLog.out("start sortdata");
+                sortData(API1.GET_OLD_PHOTOS);
                 break;
 
             case SORT_COMPLETED_REFRESH:
@@ -380,12 +416,20 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 } else {//有图片页的刷新
-                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0));
-                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1));
-                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2));
-                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3));
-                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
+                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4, true));
                 }
+                break;
+
+            case SORT_COMPLETED_MORE:
+                EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, false));
+                EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1, false));
+                EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2, false));
+                EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3, false));
+                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4, false));
                 break;
 
             case LOAD_COMPLETED:
@@ -397,17 +441,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     PictureAirLog.out("ad location has got already");
                 }
 
-                sortData(true);
+                sortData(API1.GET_DEFAULT_PHOTOS);
                 break;
 
             case SORT_COMPLETED_ALL:
                 if (syncingBoughtPhotos) {//同步购买照片操作
                     syncingBoughtPhotos = false;
-                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0));
-                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1));
-                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2));
-                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3));
-                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
+                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3, true));
+                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4, true));
                 } else {
                     scanMagicPhotoNeedCallBack = true;
                     showViewPager();
@@ -585,7 +629,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     public void run() {
                         super.run();
                         synchronized (this) {
-                            getrefreshdata();
+                            getrefreshdata(refreshDataCount);
+                            refreshDataCount = 0;
                             fragmentPageStoryHandler.sendEmptyMessage(GET_REFRESH_DATA_DONE);
                         }
                     }
@@ -601,19 +646,40 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
     }
 
+    private void getMoreDataFinish() {
+        if (loadMoreDataCount > 0) {
+            PictureAirLog.out("get more data");
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    synchronized (this) {
+                        getrefreshdata(loadMoreDataCount);
+                        loadMoreDataCount = 0;
+                        fragmentPageStoryHandler.sendEmptyMessage(GET_MORE_DATA_DONE);
+                    }
+                }
+            }.start();
+
+        } else {
+            PictureAirLog.out("nomore");
+            fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_MORE);
+        }
+    }
+
     /**
      * 解析服务器返回的数据
      *
      * @param jsonObject json对象
-     * @param isAll      布尔值，是否是获取全部数据
+     * @param type      布尔值，是否是获取全部数据
      */
-    private void saveJsonToSQLite(final JSONObject jsonObject, final boolean isAll) {
+    private void saveJsonToSQLite(final JSONObject jsonObject, final int type) {
         PictureAirLog.out("start save json");
         new Thread() {
             public void run() {
                 synchronized (this) {
                     PictureAirLog.out("start save json in thread");
-                    if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
+                    if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据，需要先清空数据库，反之，插入到后面
                         PictureAirLog.d(TAG, "delete all data from table");
                         pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
                     } else {
@@ -621,15 +687,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                     final JSONArray responseArray = jsonObject.getJSONArray("photos");
 
-                    String updatetimeString = jsonObject.getString("time");
-                    PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
-
-                    if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
-                        //需要存储这个时间
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
-                    }
-
-                    if (isAll) {//如果全部获取，需要清除原有的数据
+                    if (type == API1.GET_DEFAULT_PHOTOS) {//如果全部获取，需要清除原有的数据
                         photoPassPicList.clear();
                     }
                     try {
@@ -637,20 +695,26 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isAll);
+                    ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type);
                     PictureAirLog.out("-----------------> finish insert photo data into database");
-                    if (!isAll) {
+                    if (type == API1.GET_NEW_PHOTOS) {
                         refreshDataCount = resultPhotoList.size();
                         PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
+                    } else if (type == API1.GET_OLD_PHOTOS) {
+                        loadMoreDataCount = resultPhotoList.size();
+                        PictureAirLog.d(TAG, "------load more count ----->" + loadMoreDataCount);
                     }
                     photoPassPicList.addAll(resultPhotoList);
 
                     //通知已经处理完毕
-                    if (isAll) {
+                    if (type == API1.GET_DEFAULT_PHOTOS) {
                         fragmentPageStoryHandler.sendEmptyMessage(DEAL_ALL_PHOTO_DATA_DONE);
 
-                    } else {
+                    } else if (type == API1.GET_NEW_PHOTOS){
                         fragmentPageStoryHandler.sendEmptyMessage(DEAL_REFRESH_PHOTO_DATA_DONE);
+                    } else if (type == API1.GET_OLD_PHOTOS) {
+                        fragmentPageStoryHandler.sendEmptyMessage(DEAL_MORE_PHOTO_DATA_DONE);
+
                     }
                 }
             }
@@ -744,24 +808,80 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         //获取API
         isLoading = true;
-        //获取地点信息
-        if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {
-            API1.getLocationInfo(context, app.getTokenId(), fragmentPageStoryHandler);//获取所有的location
-        } else {
-            Message message = fragmentPageStoryHandler.obtainMessage();
-            message.what = API1.GET_ALL_LOCATION_SUCCESS;
-            message.obj = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
-            fragmentPageStoryHandler.sendMessageDelayed(message, 200);
-        }
+
+        Observable.concat(acache, API2.getLocationInfo(context, app.getTokenId()))
+                .first()
+                .subscribeOn(Schedulers.io())
+
+                .compose(this.<JSONObject>bindToLifecycle())
+                .map(new Func1<JSONObject, ArrayList<DiscoverLocationItemInfo>>() {
+                    @Override
+                    public ArrayList<DiscoverLocationItemInfo> call(JSONObject jsonObject) {
+                        PictureAirLog.d(TAG, "---------->get location success" + jsonObject.toString());
+                        locationList.clear();
+                        locationList.addAll(AppUtil.getLocation(context, jsonObject.toString(), true));
+                        //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
+                        photoPassPicList.clear();
+                        return locationList;
+                    }
+                })
+
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ArrayList<DiscoverLocationItemInfo>>() {
+                    @Override
+                    public void onCompleted() {
+                        if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
+                            //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
+                            if (settingUtil.isFirstPP10(userId)) {
+                                //第一次 PP数量到 10 。
+                                API1.getPPPSByUserId(MyApplication.getTokenId(), fragmentPageStoryHandler);
+                            }
+
+                            PictureAirLog.d(TAG, "---------> load data from databases");
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    loadDataFromDataBase();
+                                    fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
+                                }
+                            }.start();
+                        } else {
+                            fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        fragmentPageStoryHandler.sendEmptyMessage(API1.GET_ALL_LOCATION_FAILED);
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<DiscoverLocationItemInfo> discoverLocationItemInfos) {
+
+                    }
+                });
 
         return view;
     }
+
+    private Observable<JSONObject> acache = Observable.create(new Observable.OnSubscribe<JSONObject>() {
+        @Override
+        public void call(Subscriber<? super JSONObject> subscriber) {
+            String locationInfo = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
+            if (!TextUtils.isEmpty(locationInfo)) {
+                subscriber.onNext(JSONObject.parseObject(locationInfo));
+            } else {
+                subscriber.onCompleted();
+            }
+        }
+    });
 
 
     /**
      * 排序
      */
-    private void sortData(final boolean isAll) {
+    private void sortData(final int type) {
         new Thread() {
             @Override
             public void run() {
@@ -779,10 +899,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 boughtPhotoList.addAll(AppUtil.startSortForPinnedListView(boughtItemInfoList, true));
 //                favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
 
-                if (isAll) {
+                if (type == API1.GET_DEFAULT_PHOTOS) {
                     fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_ALL);
-                } else {
+                } else if (type == API1.GET_NEW_PHOTOS){
                     fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
+                } else if (type == API1.GET_OLD_PHOTOS) {
+
+                    fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_MORE);
                 }
             }
         }.start();
@@ -820,11 +943,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             storyViewPager.setOffscreenPageLimit(2);
             storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
 //                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
-            EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0));
-            EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1));
-            EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2));
-            EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3));
-            EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
+            EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, true));
+            EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1, true));
+            EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2, true));
+            EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, targetMagicPhotoList, 3, true));
+            EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4, true));
             if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
                 PictureAirLog.out("need gone the badgeview");
                 PictureAirLog.out("photocount---->" + app.getPushPhotoCount());
@@ -998,7 +1121,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
-            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
+            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null);//获取全部图片
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程
@@ -1110,10 +1233,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         for (int j = 0; j < photoPassItemInfoList.size(); j++) {
 //                                    PictureAirLog.d(TAG, "weather already exists:" + j);
                             if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
-//                                        PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
-//                                        PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
-//                                        PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
-//                                        PictureAirLog.d(TAG, "already exist");
                                 info.locationName = photoPassItemInfoList.get(j).place;
                                 photoPassItemInfoList.get(j).list.add(info);
                                 date1 = sdf.parse(info.shootOn);
@@ -1374,18 +1493,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 2.加入list中，判断新的locationid是否在无photo的locationid中，如果有，需要重新排列list
      * 3.并且更新adapter
      */
-    private void getrefreshdata() {
+    private void getrefreshdata(int refreshCount) {
         PictureAirLog.e("getdata", "refreshdata");
         //根据数量，加入新的item
         PictureAirLog.out("all update data=" + photoPassPicList.size());
-        PictureAirLog.out("refreshdatacount---->" + refreshDataCount);
+        PictureAirLog.out("refreshdatacount---->" + refreshCount);
         PhotoItemInfo itemInfo;
         boolean findLocation = false;
         //先清除之前旧的列表
         allItemInfoList.removeAll(photoPassItemInfoList);
 
         //将图片按照location加载到list中去
-        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l >= 0; l++) {//遍历所要添加的图片list
+        for (int l = photoPassPicList.size() - refreshCount; l < photoPassPicList.size() && l >= 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassPicList.get(l);
 
@@ -1518,7 +1637,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 addRefreshDataToBoughtList(info, itemInfo.locationIds, itemInfo.place, itemInfo.placeUrl, itemInfo.latitude, itemInfo.longitude);
             }
         }
-        refreshDataCount = 0;
 
         allItemInfoList.addAll(photoPassItemInfoList);
         Collections.sort(allItemInfoList);//对all进行排序

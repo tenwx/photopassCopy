@@ -220,6 +220,11 @@ public class Common {
     public static final String ppp1 = "ppp";
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
+    public static final String LAST_UPDATE_TOP_PHOTO = "lastUpdateTopPhoto";
+    public static final String LAST_UPDATE_BOTTOM_PHOTO = "lastUpdateBottomPhoto";
+    public static final String GTEID = "gteID";//此id更新的照片
+    public static final String LTEID = "lteID";//此id更旧的照片
+    public static final String LIMIT = "limit";//获取图片的数量限制
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference
     public static final String LOCATION_ID = "locationId";

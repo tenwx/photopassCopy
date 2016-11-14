@@ -6,6 +6,7 @@ package com.pictureair.photopass.eventbus;
 public class StoryRefreshEvent implements BaseBusEvent {
     public static final int START_REFRESH = 11;
     public static final int STOP_REFRESH = 12;
+    public static final int STOP_LOAD_MORE= 13;
     private int tab;
     private int refreshStatus;
 

@@ -636,7 +636,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private void getPPList(String code) {
         showPWProgressDialog();
 
-        API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, null, code.replace("ppOK", ""));
+        API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, API1.GET_DEFAULT_PHOTOS, null, code.replace("ppOK", ""));
     }
 
     /**
@@ -650,7 +650,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             public void run() {
                 PictureAirLog.out("start save json in thread");
                 final JSONArray responseArray = jsonObject.getJSONArray("photos");
-                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false);
+                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, API1.GET_NEW_PHOTOS);
                 //通知已经处理完毕
                 myPPHandler.sendEmptyMessage(SAVE_JSON_DONE);
             }
