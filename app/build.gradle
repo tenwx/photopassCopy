@@ -10,7 +10,7 @@ android {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 8
+        versionCode 9
         versionName "2.0.0"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
     }
@@ -93,19 +93,19 @@ dependencies {
     //apache网络库
     compile files('libs/org.apache.http.legacy.jar')
     //sharesdk分享
-    compile files('libs/MobCommons-2016.0623.1641.jar')
-    compile files('libs/MobTools-2016.0623.1641.jar')
-    compile files('libs/ShareSDK-Core-2.7.2.jar')
-    compile files('libs/ShareSDK-Facebook-2.7.2.jar')
-    compile files('libs/ShareSDK-Instagram-2.7.2.jar')
-    compile files('libs/ShareSDK-QQ-2.7.2.jar')
-    compile files('libs/ShareSDK-QZone-2.7.2.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.2.jar')
-    compile files('libs/ShareSDK-Twitter-2.7.2.jar')
-    compile files('libs/ShareSDK-Wechat-2.7.2.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.7.2.jar')
-    compile files('libs/ShareSDK-Wechat-Favorite-2.7.2.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.7.2.jar')
+    compile files('libs/MobCommons-2016.1107.1809.jar')
+    compile files('libs/MobTools-2016.1107.1809.jar')
+    compile files('libs/ShareSDK-Core-2.7.10.jar')
+    compile files('libs/ShareSDK-Facebook-2.7.10.jar')
+    compile files('libs/ShareSDK-Instagram-2.7.10.jar')
+    compile files('libs/ShareSDK-QQ-2.7.10.jar')
+    compile files('libs/ShareSDK-QZone-2.7.10.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.10.jar')
+    compile files('libs/ShareSDK-Twitter-2.7.10.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.10.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.10.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.7.10.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.10.jar')
     //socketio
     compile files('libs/socketio.jar')
     //数据库

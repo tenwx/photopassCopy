@@ -74,8 +74,10 @@
 -keep class m.framework.**{*;}
 -keep class com.mob.**{*;}
 -keep class com.sina.**{*;}
+-keep class **.R$* {*;}
 -keep class **.R{*;}
 -dontwarn cn.sharesdk.**
+-dontwarn com.mob.**
 -dontwarn **.R$*
 
 #保持 native 的方法不去混淆

@@ -2,12 +2,12 @@
 
 
 -------16/x/xx--------
-versionCode 9     versionName "2.x.x"
+versionCode 10     versionName "2.x.x"
 更新要点：
 1.
 
 -------16/9/30--------
-versionCode 8     versionName "2.0.0"
+versionCode 9     versionName "2.0.0"
 更新要点：
 1.添加视频功能
 2.首页和ppp页面添加引导页
@@ -26,6 +26,11 @@ versionCode 8     versionName "2.0.0"
 
 
 
+
+-------16/11/15--------
+versionCode 8     versionName "1.2.1"
+更新要点：
+1.升级分享sdk，解决googleplay市场被下架的问题
 
 -------16/9/9--------
 versionCode 7     versionName "1.2.1"
