@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.ADVideoDetailProductActivity;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
@@ -29,15 +30,12 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.CustomTextView;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 
 public class StoryFragment extends Fragment {
@@ -53,7 +51,7 @@ public class StoryFragment extends Fragment {
 	private SwipeRefreshLayout refreshLayout;
 	private GridLayoutManager gridLayoutManager;
 	private StickyRecycleAdapter stickyRecycleAdapter;
-	private TextView tvStickyHeaderView;
+	private CustomTextView tvStickyHeaderView;
 	private LinearLayout stickyHeaderLL;
 	private static Handler handler;
 	private boolean isLoadMore = false;
@@ -98,8 +96,10 @@ public class StoryFragment extends Fragment {
 		recyclerView = (RecyclerView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
-		tvStickyHeaderView = (TextView) view.findViewById(R.id.section_time);
+		tvStickyHeaderView = (CustomTextView) view.findViewById(R.id.section_time);
 		stickyHeaderLL = (LinearLayout) view.findViewById(R.id.story_pinned_section_ll);
+
+		tvStickyHeaderView.setTypeface(MyApplication.getInstance().getFontBold());
 
 		refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -294,6 +294,12 @@ public class StoryFragment extends Fragment {
 				getContext().startActivity(i);
 			}
 		}
+
+		@Override
+		public void onLoadMoreClick(View view, int position) {
+			PictureAirLog.d("failed---> click to load more data");
+			dealWithLoadMore(10, recyclerView);
+		}
 	}
 
 	@Override
@@ -356,26 +362,26 @@ public class StoryFragment extends Fragment {
 						stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
 						stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
 
-						Observable.timer(2, TimeUnit.SECONDS)//2s之后隐藏footer
-								.observeOn(AndroidSchedulers.mainThread())
-								.subscribe(new Subscriber<Long>() {
-									@Override
-									public void onCompleted() {
-
-										stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_GONE);
-										stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
-									}
-
-									@Override
-									public void onError(Throwable e) {
-
-									}
-
-									@Override
-									public void onNext(Long aLong) {
-
-									}
-								});
+//						Observable.timer(2, TimeUnit.SECONDS)//2s之后隐藏footer
+//								.observeOn(AndroidSchedulers.mainThread())
+//								.subscribe(new Subscriber<Long>() {
+//									@Override
+//									public void onCompleted() {
+//
+//										stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_GONE);
+//										stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+//									}
+//
+//									@Override
+//									public void onError(Throwable e) {
+//
+//									}
+//
+//									@Override
+//									public void onNext(Long aLong) {
+//
+//									}
+//								});
 
 					}
 					oldCount = newCount;
@@ -417,6 +423,8 @@ public class StoryFragment extends Fragment {
 					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.STOP_LOAD_MORE) {//开始关闭加载更多，此处为加载更多失败的处理
 				PictureAirLog.out(tab + "------>stop loading more from bus");
 				isLoadMore = false;
+				stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_FAILED);
+				stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
 				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
 			}
 		}

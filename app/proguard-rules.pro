@@ -176,7 +176,6 @@
 -keep class com.pictureair.photopass.zxing.**{*;}
 -keep class com.googlecode.**{*;}
 
-
 # sqlcipher混淆
 -keep class net.sqlcipher.database.* extends java.lang.Exception {
    *;
@@ -220,3 +219,23 @@
 -dontwarn retrofit2.**
 -keep class retrofit2.**{ *; }
 
+# RxJava RxAndroid
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+# butterknife
+-keep public class * implements butterknife.internal.ViewBinder { public <init>(); }
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinder.
+-keep class butterknife.*
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }

@@ -62,7 +62,7 @@
             android:paddingRight="@dimen/pp_dp_2"
             android:text="@string/special_deal_on"
             android:textColor="@color/pp_red"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="@dimen/text_size_14"
             android:textStyle="bold" />
 
         <View
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:text="@string/special_deal_detail"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
     <LinearLayout
@@ -164,8 +164,9 @@
                 <ImageView
                     android:id="@+id/story_no_pp_scan"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp"
+                    android:layout_height="@dimen/pp_dp_150"
                     android:layout_below="@+id/story_top_tip"
+                    android:adjustViewBounds="true"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/scan_pp1" />

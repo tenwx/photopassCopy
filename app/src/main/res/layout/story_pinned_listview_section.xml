@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/pp_dp_16"
     android:paddingTop="@dimen/pp_dp_20">
 
-    <TextView
+    <com.pictureair.photopass.widget.CustomTextView
         android:id="@+id/section_time"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

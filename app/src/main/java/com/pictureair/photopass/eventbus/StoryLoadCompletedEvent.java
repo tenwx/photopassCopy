@@ -6,9 +6,11 @@ package com.pictureair.photopass.eventbus;
  */
 public class StoryLoadCompletedEvent implements BaseBusEvent{
     private boolean showLeadView;
+    private boolean isShowSpecialDealView;
 
-    public StoryLoadCompletedEvent(boolean showLeadView) {
+    public StoryLoadCompletedEvent(boolean showLeadView, boolean isShowSpecialDealView) {
         this.showLeadView = showLeadView;
+        this.isShowSpecialDealView =  isShowSpecialDealView;
     }
 
     public boolean isShowLeadView() {
@@ -17,5 +19,9 @@ public class StoryLoadCompletedEvent implements BaseBusEvent{
 
     public void setShowLeadView(boolean showLeadView) {
         this.showLeadView = showLeadView;
+    }
+
+    public boolean isShowSpecialDealView() {
+        return isShowSpecialDealView;
     }
 }

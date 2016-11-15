@@ -1104,6 +1104,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                PictureAirLog.d(Common.GET_PPPS_BY_USERID + "failed---->" + status);
                 handler.obtainMessage(GET_PPP_FAILED, status, 0).sendToTarget();
 
             }

@@ -151,7 +151,7 @@ public class TouchImageView extends ImageView {
 
                     switch (event.getAction() & MotionEvent.ACTION_MASK) {
                         case MotionEvent.ACTION_DOWN:
-                            PictureAirLog.out("------------>down");
+                            PictureAirLog.out("------------>down:" + event.getX() + ":" + event.getY());
                             allowInert = false;
                             savedMatrix.set(matrix);
                             last.set(event.getX(), event.getY());
@@ -235,18 +235,25 @@ public class TouchImageView extends ImageView {
                             break;
 
                         case MotionEvent.ACTION_MOVE:
-                            PictureAirLog.out("----------> action move");
-                            allowInert = false;
-                            if (mLongTouchTimer != null) {
-                                mLongTouchTimer.cancel();
+                            PictureAirLog.out("----------> action move:"  + event.getX() + ":" + event.getY());
+
+                            float deltaX = curr.x - last.x;
+                            float deltaY = curr.y - last.y;
+
+                            if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {//小米4，move事件有偏差，如果超过这偏差，才算move
+                                if (mLongTouchTimer != null) {
+                                    mLongTouchTimer.cancel();
+                                }
+                                allowInert = false;
+                            } else {
+                                break;
                             }
+
                             if (mode == TOUCH_CLEAR) {
                                 onTouchClearListener.onTouchClear(curr.x, curr.y, (int)matrixX, (int)matrixY, saveScale, hasReset, true);
                                 hasReset = false;
 
                             } else if (mode == DRAG) {
-                                float deltaX = curr.x - last.x;
-                                float deltaY = curr.y - last.y;
 
                                 long dragTime = System.currentTimeMillis();
 

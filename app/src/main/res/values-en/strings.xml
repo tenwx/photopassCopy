@@ -106,8 +106,8 @@
     <string name="no_network">Network busy, please try later.</string>
     <string name="click_button_reload">Click button to reload</string>
     <string name="reload">Refresh</string>
-    <string name="nomore">No more data to load!</string>
-    <string name="failed_click_load">加载失败，请点击重新加载！</string>
+    <string name="nomore">All photos loaded!</string>
+    <string name="failed_click_load">Fail to load, please click to re-load!</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="two_days_ago">2 days ago</string>

@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
@@ -17,6 +18,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomTextView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context context;
     private ArrayList<PhotoInfo> photoList;
 
-    private int loadMoreType = 0;
+    private int loadMoreType = LOAD_MORE_NO_MORE;
     private int time = 0;
     private Subscription subscription;
 
@@ -154,6 +156,14 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case LOAD_MORE_FAILED:
                     loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
                     loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.failed_click_load));
+                    loadMoreViewHolder.tvLoadStatus.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mOnItemClickListener != null) {
+                                mOnItemClickListener.onLoadMoreClick(loadMoreViewHolder.tvLoadStatus, loadMoreViewHolder.getLayoutPosition());
+                            }
+                        }
+                    });
                     break;
             }
         } else if (viewHolder instanceof RecyclerViewSectionViewHolder) {
@@ -207,12 +217,13 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
     public class RecyclerViewSectionViewHolder extends RecyclerView.ViewHolder {
-        private TextView storyTimeTextView;
+        private CustomTextView storyTimeTextView;
 
         public RecyclerViewSectionViewHolder(View itemView) {
             super(itemView);
 
-            storyTimeTextView = (TextView) itemView.findViewById(R.id.section_time);
+            storyTimeTextView = (CustomTextView) itemView.findViewById(R.id.section_time);
+            storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
         }
     }
 
@@ -236,5 +247,6 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     //define interface
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view , int position);
+        void onLoadMoreClick(View view , int position);
     }
 }

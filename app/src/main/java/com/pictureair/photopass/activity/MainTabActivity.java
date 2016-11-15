@@ -600,6 +600,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     }
 
     private void getSpecialDealGoods() {
+        PictureAirLog.d("get specialdeal goods-->" + needUpdate + showLeadView);
         if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
             //如果活动进行中，则不需要重新获取数据
             API1.getDealingGoods(MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType(), handler);
@@ -724,9 +725,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         } else if (baseBusEvent instanceof StoryLoadCompletedEvent) {//显示引导层
             StoryLoadCompletedEvent storyLoadCompletedEvent = (StoryLoadCompletedEvent) baseBusEvent;
             showLeadView = storyLoadCompletedEvent.isShowLeadView();
+            PictureAirLog.d("event bus---> show lead view");
             if (showLeadView) {
                 initLeadView();
             } else {
+                isDealing = storyLoadCompletedEvent.isShowSpecialDealView();
                 getSpecialDealGoods();
             }
             EventBus.getDefault().removeStickyEvent(storyLoadCompletedEvent);

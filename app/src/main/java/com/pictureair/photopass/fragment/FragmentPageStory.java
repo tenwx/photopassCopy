@@ -986,9 +986,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private void showLeadView(){
         if (TextUtils.isEmpty(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.STORY_LEAD_VIEW, null))) {
-            EventBus.getDefault().post(new StoryLoadCompletedEvent(true));
+            EventBus.getDefault().post(new StoryLoadCompletedEvent(true, specialDealLL.isShown()));
         } else {
-            EventBus.getDefault().post(new StoryLoadCompletedEvent(false));
+            EventBus.getDefault().post(new StoryLoadCompletedEvent(false, specialDealLL.isShown()));
         }
     }
 

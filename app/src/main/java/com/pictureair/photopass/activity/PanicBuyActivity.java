@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -348,7 +347,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             finish();
         }
         if (mStartDeal == NO_DEALS) {
-            EventBus.getDefault().postSticky(new StoryLoadCompletedEvent(false));
+            EventBus.getDefault().postSticky(new StoryLoadCompletedEvent(false, true));
         }
     }
 
