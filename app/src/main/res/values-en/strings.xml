@@ -356,7 +356,7 @@
     <string name="want_to_buy">There is no order history here.</string>
     <string name="order_pending">Pending</string>
     <string name="order_delete_msg">Confirm to delete order?</string>
-    <string name="order_cancled">已取消</string>
+    <string name="order_cancled">Canceled</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -636,11 +636,11 @@
     <string name="special_deal_start">Purchase</string>
     <string name="special_deal_start_content">Time left to start of deal</string>
     <string name="special_deal_end_content">Time left to end of deal</string>
-    <string name="special_deal_already_end_content">抢购已结束</string>
+    <string name="special_deal_already_end_content">This session is over</string>
     <string name="special_deal_begin_soon">Will Begin Soon</string>
     <string name="special_deal_buy">Buy Now</string>
-    <string name="special_deal_end">已结束</string>
-    <string name="special_deal_count_enough">购买次数达到上限</string>
+    <string name="special_deal_end">over</string>
+    <string name="special_deal_count_enough">You have reached the maximum number</string>
     <string name="special_deal_title">Special Deal</string>
     <!--special deal-->
 </resources>

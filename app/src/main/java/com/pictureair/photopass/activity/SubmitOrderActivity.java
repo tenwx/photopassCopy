@@ -418,6 +418,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         View lineBelowCoupon = view.findViewById(R.id.line_below_coupon);
         View lineBelowInvoice = view.findViewById(R.id.line_below_invoice);
         LinearLayout couponTitlelayout = (LinearLayout) view.findViewById(R.id.coupon_title_ll);
+        RelativeLayout couponLayout = (RelativeLayout) view.findViewById(R.id.coupon_content_layout);
+        RelativeLayout discountLayout = (RelativeLayout) view.findViewById(R.id.discount_content_layout);
+        RelativeLayout invoiceLayout = (RelativeLayout) view.findViewById(R.id.invoice_content_layout);
+
         couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -534,6 +538,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 couponCountRl.setVisibility(View.GONE);
                 lineBelowCoupon.setVisibility(View.GONE);
                 lineBelowInvoice.setVisibility(View.GONE);
+                couponLayout.setVisibility(View.GONE);
+                discountLayout.setVisibility(View.GONE);
+                invoiceLayout.setVisibility(View.GONE);
             }
 
             //显示商品优惠价格
