@@ -2963,9 +2963,10 @@ public class API1 {
         return task;
     }
 
-    public static void getSingleGoods(String dealingUrl, final Handler handler) {
+    public static void getSingleGoods(String dealingUrl, String language, final Handler handler) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE, language);
 
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + dealingUrl, params, new HttpCallback() {
 

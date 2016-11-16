@@ -633,11 +633,11 @@
     <string name="special_deal_start">抢购中</string>
     <string name="special_deal_start_content">抢购即将开始</string>
     <string name="special_deal_end_content">抢购即将结束</string>
-    <string name="special_deal_already_end_content">抢购已结束</string>
+    <string name="special_deal_already_end_content">本轮抢购已结束</string>
     <string name="special_deal_begin_soon">即将开场</string>
     <string name="special_deal_buy">立即购买</string>
     <string name="special_deal_end">已结束</string>
-    <string name="special_deal_count_enough">购买次数达到上限</string>
+    <string name="special_deal_count_enough">您的购买次数达到上限</string>
     <string name="special_deal_title">特惠活动</string>
     <!--special deal-->
 </resources>

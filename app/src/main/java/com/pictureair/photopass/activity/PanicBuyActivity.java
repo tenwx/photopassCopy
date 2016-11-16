@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,9 +25,11 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -47,10 +50,10 @@ import de.greenrobot.event.EventBus;
 public class PanicBuyActivity extends BaseActivity implements View.OnClickListener{
 
     private RelativeLayout layout_content;
-    private BannerView_Detail bannerViewDetail;
+    private ImageView bannerViewDetail;
     private CustomTextView tv_price;
     private Button btn_purchase;
-    private TextView tv_detail1;
+//    private TextView tv_detail1;
     private TextView tv_detail2;
     private TextView tv_detail_title;
     private TextView tv_time_status;
@@ -127,7 +130,8 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                         PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
                         List<GoodInfoPictures> goodInfoPicturesList = new ArrayList<>();
                         goodInfoPicturesList.add(goodsInfo.getPictures().get(1));
-                        bannerViewDetail.findimagepath(goodInfoPicturesList);
+//                        bannerViewDetail.findimagepath(goodInfoPicturesList);
+                        GlideUtil.load(PanicBuyActivity.this, Common.PHOTO_URL + goodInfoPicturesList.get(0).getUrl(), bannerViewDetail);
                         //封装购物车宣传图
                         photoUrls = new String[goodsInfo.getPictures().size()];
                         for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
@@ -143,7 +147,6 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                         long localTime = System.currentTimeMillis();
                         Date currentSystemServerDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
                         goodsInfo.getDealing().setTimeOffset(localTime - currentSystemServerDate.getTime());
-
                         startDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalStart());
                         endDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalEnd());
                         PictureAirLog.d(TAG, "formatStartDate " + startDate.toString());
@@ -192,7 +195,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD:
                 if (dealingInfo != null) {
                     showPWProgressDialog();
-                    API1.getSingleGoods(dealingInfo.getDealingUrl(), panciBuyHandler);
+                    API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler);
                 }
                 break;
 
@@ -209,14 +212,19 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
 
     private void initView() {
         layout_content = (RelativeLayout) findViewById(R.id.special_deal_content_layout);
-        bannerViewDetail = (BannerView_Detail) findViewById(R.id.special_deal_image);
+        bannerViewDetail = (ImageView) findViewById(R.id.special_deal_image);
+        bannerViewDetail.measure(0,0);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bannerViewDetail.getLayoutParams();
+        params.width = ScreenUtil.getScreenWidth(this) - ScreenUtil.dip2px(this, 32);
+        params.height = (int) (params.width /4.0 * 3);
+        bannerViewDetail.setLayoutParams(params);
         tv_price = (CustomTextView) findViewById(R.id.special_deal_price);
         tv_price.setTypeface(MyApplication.getInstance().getFontBold());
         tv_hour = (TextView) findViewById(R.id.special_deal_hour);
         tv_min = (TextView) findViewById(R.id.special_deal_min);
         tv_sec = (TextView) findViewById(R.id.special_deal_sec);
         tv_detail_title = (TextView) findViewById(R.id.special_deal_detail_title);
-        tv_detail1 = (TextView) findViewById(R.id.special_deal_detail1);
+//        tv_detail1 = (TextView) findViewById(R.id.special_deal_detail1);
         tv_detail2 = (TextView) findViewById(R.id.special_deal_detail2);
         tv_time_status = (TextView) findViewById(R.id.special_deal_time_status);
         tv_title = (TextView)findViewById(R.id.special_deal_title);
@@ -239,7 +247,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         PictureAirLog.d(dealingInfo.toString());
 
         if (dealingInfo != null) {
-            API1.getSingleGoods(dealingInfo.getDealingUrl(), panciBuyHandler);
+            API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler);
         }
     }
 
@@ -265,7 +273,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     private void showDealsDetails() {
 //        tv_title.setText(goodsInfo.getDealing().getTitle());
         tv_detail_title.setText(goodsInfo.getNameAlias());
-        tv_detail1.setText(goodsInfo.getDescription()+"\n");
+//        tv_detail1.setText(goodsInfo.getDescription()+"\n");
         String detail = new String("");
         if (goodsInfo.getCopywriter() != null) {
             String[] spilt =  goodsInfo.getCopywriter().split("\n");
@@ -300,29 +308,33 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.special_deal_purchase:
                 int lave = goodsInfo.getDealing().getLave();
-                if (lave == -1 || lave > 0) {
-                    Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                    CartItemInfo cartItemInfo = new CartItemInfo();
+                if (goodsInfo.getDealing().isParticipated()) {
+                    if (lave == -1 || lave > 0) {
+                        Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo = new CartItemInfo();
 
-                    cartItemInfo.setProductName(goodsInfo.getName());
-                    cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
-                    cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                    cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                    cartItemInfo.setDescription(goodsInfo.getDescription());
-                    cartItemInfo.setQty(1);
-                    cartItemInfo.setStoreId(goodsInfo.getStoreId());
-                    cartItemInfo.setPictures(photoUrls);
-                    cartItemInfo.setPrice(goodsInfo.getPrice());
-                    cartItemInfo.setCartProductType(3);
-                    cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
+                        cartItemInfo.setProductName(goodsInfo.getName());
+                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
+                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo.setDescription(goodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(goodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
+                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
 
-                    orderinfoArrayList.add(cartItemInfo);
-                    intent.putExtra("orderinfo", orderinfoArrayList);
-                    intent.putExtra("fromPanicBuy", 1);
-                    intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
-                    startActivity(intent);
-                } else if (lave == 0  && goodsInfo.getDealing().isParticipated()){
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent.putExtra("orderinfo", orderinfoArrayList);
+                        intent.putExtra("fromPanicBuy", 1);
+                        intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
+                        startActivity(intent);
+                    } else {
+                        myToast.setTextAndShow(R.string.special_deal_count_enough);
+                    }
+                } else {
                     myToast.setTextAndShow(R.string.special_deal_count_enough);
                 }
                 break;

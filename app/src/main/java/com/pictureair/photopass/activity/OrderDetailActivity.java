@@ -96,6 +96,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         payMethod.setText(paymethod);  //支付方式
         switch (orderInfo.orderStatus) {
             //订单当前状态 -3 已退款 -2交易错误 -1交易取消 0交易处理中 1等待付款 2交易成功
+            //兼容订单状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结,6,已付款 未收到推送
+
             case -3:
                 orderstatus = getResources().getString(R.string.order_refund);
                 deliveryButton.setVisibility(View.GONE);
@@ -117,6 +119,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
 
             case 2://交易成功
+            case 3:
+            case 4:
+            case 5:
                 orderstatus = getResources().getString(R.string.order_paid);
                 deliveryButton.setVisibility(View.GONE);
                 break;

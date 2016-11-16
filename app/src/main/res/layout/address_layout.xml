@@ -224,6 +224,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/coupon_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/pp_dp_16"
@@ -270,6 +271,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/discount_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/pp_dp_16"
@@ -316,6 +318,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/invoice_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/pp_dp_16"
