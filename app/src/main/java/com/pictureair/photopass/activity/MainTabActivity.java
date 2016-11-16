@@ -174,6 +174,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         newToast = new PWToast(this);
 
+        findViewById(R.id.fab).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainTabActivity.this, OpinionsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage);

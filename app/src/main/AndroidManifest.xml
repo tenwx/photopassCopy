@@ -425,6 +425,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".activity.OpinionsActivity"></activity>
     </application>
 
 </manifest>

@@ -1,2 +1,2 @@
 //include ':hkdlphotopass', ':pwshandroid'   // hkdl
-include ':app'    // shdr
+include ':app', ':UdeskSDKUI'    // shdr

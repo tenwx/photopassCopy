@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_opinions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.pictureair.photopass.activity.OpinionsActivity">
+
+
+    <Button
+        android:id="@+id/btn_man"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="人工客服"
+        />
+
+    <Button
+        android:id="@+id/btn_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="帮助中心"
+        />
+
+    <Button
+        android:id="@+id/btn_commodity_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发送咨询对象(先点击该按钮，再点击人工客服按钮)"
+        />
+
+
+    <Button
+        android:id="@+id/btn_agent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="指定分配客服,功能暂无"
+        />
+
+    <Button
+        android:id="@+id/btn_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="指定客服组,功能暂无"
+        />
+
+    <Button
+        android:id="@+id/btn_conversation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="导航客服组,功能暂无"
+        />
+
+</LinearLayout>
