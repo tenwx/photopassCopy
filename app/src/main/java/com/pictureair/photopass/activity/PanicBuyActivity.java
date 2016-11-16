@@ -109,7 +109,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             case COUNT_DOWN_TIME_FINISH:
                 if (mStartDeal == DEALING) {
                     Date currentDate = getCurrentDate();
-                    if (endDate != null && currentDate != null && endDate.getTime() >= currentDate.getTime()) {
+                    if (endDate != null && currentDate != null && endDate.getTime() >= currentDate.getTime() - goodsInfo.getDealing().getTimeOffset()) {
                         countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentDate.getTime()- goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
                         countDownTimer.start();
                         enableBuy();
