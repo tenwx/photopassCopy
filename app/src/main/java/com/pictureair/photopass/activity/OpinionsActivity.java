@@ -11,7 +11,9 @@ import android.widget.Button;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,14 +58,21 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
         UdeskSDKManager.getInstance().initApiKey(this,DOMAIN,SECRETKEY);
         UdeskSDKManager.getInstance().isShowLog(true);
 
-        Map<String, String> info = new HashMap<String, String>();
-        info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, MyApplication.getTokenId());
-        info.put(UdeskConst.UdeskUserInfo.CELLPHONE, "15601925037");
-        info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"嚣张");
-        UdeskSDKManager.getInstance().setUserInfo(this, MyApplication.getTokenId(), info);
-        boolean  res = UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
-        PictureAirLog.e("bind",res ? "true" : "false");
-        UIStyle1();
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "");
+            Map<String, String> info = new HashMap<String, String>();
+            info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, MyApplication.getTokenId());
+            if (acount.contains("@")) {
+                info.put(UdeskConst.UdeskUserInfo.EMAIL, acount);
+            } else {
+                info.put(UdeskConst.UdeskUserInfo.CELLPHONE, acount);
+            }
+            info.put(UdeskConst.UdeskUserInfo.NICK_NAME,SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""));
+            UdeskSDKManager.getInstance().setUserInfo(this, MyApplication.getTokenId(), info);
+            boolean  res = UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
+            PictureAirLog.e("bind",res ? "true" : "false");
+            UIStyle1();
+        }
     }
 
     @Override

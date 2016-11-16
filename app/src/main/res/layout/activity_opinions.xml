@@ -5,50 +5,118 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_light"
     tools:context="com.pictureair.photopass.activity.OpinionsActivity">
 
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@color/pp_blue">
 
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:id="@+id/myppp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="客户服务"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_dp_14"
+            android:text="@string/pp_ok"
+            android:textColor="@color/white"
+            android:padding="@dimen/pp_dp_5"
+            android:visibility="gone"
+            android:textSize="@dimen/text_size_14" />
+
+    </RelativeLayout>
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_man"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="人工客服"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_help"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="帮助中心"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_commodity_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="发送咨询对象(先点击该按钮，再点击人工客服按钮)"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_agent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="指定分配客服,功能暂无"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="指定客服组,功能暂无"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
     <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/btn_conversation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="导航客服组,功能暂无"
+        android:background="@drawable/button_enable_blue_disable_gray_shape_and_selector"
         />
 
 </LinearLayout>
