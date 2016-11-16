@@ -29,8 +29,10 @@ import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomTextView;
+import com.pictureair.photopass.widget.RecycleDividerItemDecoration;
 
 import java.util.ArrayList;
 
@@ -173,7 +175,7 @@ public class StoryFragment extends Fragment {
 
 		stickyRecycleAdapter = new StickyRecycleAdapter(getContext(), photoInfoArrayList);
 		stickyRecycleAdapter.setOnItemClickListener(new PhotoOnItemClickListener());
-//		recyclerView.addItemDecoration(new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5)));
+		recyclerView.addItemDecoration(new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5)));
 		recyclerView.setLayoutManager(gridLayoutManager);
 		recyclerView.setAdapter(stickyRecycleAdapter);
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -230,7 +232,7 @@ public class StoryFragment extends Fragment {
 
 	private void dealWithStickyHeader(RecyclerView recyclerView) {
 		// Get the sticky information from the topmost view of the screen.
-		View stickyInfoView = recyclerView.findChildViewUnder(5, 1);
+		View stickyInfoView = recyclerView.findChildViewUnder(30, 1);//获取 （x,y）坐标下的view
 
 		if (stickyInfoView != null && stickyInfoView.getContentDescription() != null) {
 			tvStickyHeaderView.setText(String.valueOf(stickyInfoView.getContentDescription()));

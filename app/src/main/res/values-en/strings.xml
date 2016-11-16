@@ -628,9 +628,6 @@
 
     <!--special deal-->
     <string name="special_deal_on">Deal is ON!</string>
-    <string name="special_deal_detail">Get all your digital photos from ONE Disney Park Ticket/PhotoPass card within one day for just RMB 169!</string>
-    <string name="special_deal_detail2">Get all your digital photos from ONE Disney Park Ticket/PhotoPass card within one day for just RMB 169!</string>
-    <string name="special_deal">Special Offer!</string>
     <string name="special_deal_buy_now">Buy Now</string>
     <string name="special_deal_not_start">Begin Soon</string>
     <string name="special_deal_start">Purchase</string>

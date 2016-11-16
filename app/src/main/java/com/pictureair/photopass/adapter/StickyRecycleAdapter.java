@@ -238,8 +238,8 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
             videoImageView = (ImageView) convertView.findViewById(R.id.play_video_iv);
             gridItemRL = (RelativeLayout) convertView.findViewById(R.id.sticky_grid_view_rl);
             ViewGroup.LayoutParams params = gridItemRL.getLayoutParams();
-            params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * 2)) / COLUMN_COUNT;
-            params.height = params.width;
+            //宽度不用设置，会平均分配，大小也正好等于高度的数值
+            params.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * 2)) / COLUMN_COUNT;
             gridItemRL.setLayoutParams(params);
         }
     }

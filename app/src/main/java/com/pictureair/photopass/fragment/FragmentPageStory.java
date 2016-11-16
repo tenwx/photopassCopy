@@ -151,6 +151,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private CustomTextView storyDiscover;
     private CustomTextView storyNoPhotoTip;
     private CustomTextView specialDealOnTV;
+    private CustomTextView specialDealDetailTV;
     private LinearLayout specialDealLL;
 
     //申明类
@@ -751,6 +752,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyDiscover = (CustomTextView) view.findViewById(R.id.story_discover);
         storyNoPhotoTip = (CustomTextView) view.findViewById(R.id.story_no_photo_tip);
         specialDealLL = (LinearLayout) view.findViewById(R.id.special_deal_ll);
+        specialDealDetailTV = (CustomTextView) view.findViewById(R.id.special_deal_detail_tv);
         specialDealOnTV = (CustomTextView) view.findViewById(R.id.special_deal_on);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -1732,6 +1734,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 if (storyRefreshOnClickEvent.isShowSpecialDealBar()) {
                     specialDealLL.setVisibility(View.VISIBLE);
+                    specialDealDetailTV.setText(dealingInfo.getDetails());
                 } else {
                     specialDealLL.setVisibility(View.GONE);
                 }

@@ -1,6 +1,7 @@
 package com.pictureair.photopass.widget;
 
 import android.graphics.Rect;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -17,15 +18,11 @@ public class RecycleDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.left = space;
+        //获取当前的view在每一行中的第几个位置
+        int index = ((GridLayoutManager.LayoutParams)view.getLayoutParams()).getSpanIndex();
 
-        if (view.getPivotX() == 0)
-            outRect.left = 0;
-
-//
-//
-//        // Add top margin only for the first item to avoid double space between items
-//        if(parent.getChildLayoutPosition(view) % 3 == 0)
-//            outRect.left = 0;
+        if (index != 0) {//如果不是第一个，则需要设置左边距
+            outRect.left = space;
+        }
     }
 }

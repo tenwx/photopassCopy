@@ -628,9 +628,6 @@
 
     <!--special deal-->
     <string name="special_deal_on">抢购进行中</string>
-    <string name="special_deal_detail">仅需169元即可获得同一天内任意一张乐园门票／乐拍通卡里的所有数码照片！</string>
-    <string name="special_deal_detail2">只需169元就能获得同一天内任意一张迪士尼乐园门票／乐拍通卡内的所有数码照片！</string>
-    <string name="special_deal">优享特惠！</string>
     <string name="special_deal_buy_now">购买</string>
     <string name="special_deal_not_start">未开始</string>
     <string name="special_deal_start">抢购中</string>

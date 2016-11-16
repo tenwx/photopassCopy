@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/special_dialog_deal_close_iv"
             android:gravity="center"
-            android:text="@string/special_deal"
             android:textColor="@color/pp_red"
             android:textSize="@dimen/text_size_20" />
 
@@ -34,7 +33,6 @@
             android:layout_below="@+id/special_dialog_title_tv"
             android:gravity="center"
             android:padding="@dimen/pp_dp_16"
-            android:text="@string/special_deal_detail2"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 

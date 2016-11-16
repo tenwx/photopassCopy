@@ -73,10 +73,10 @@
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/special_deal_detail_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/special_deal_detail"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 

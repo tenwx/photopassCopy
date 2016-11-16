@@ -84,6 +84,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private PWDialog pwDialog;
     private TextView specialDealBuyTV;
     private ImageView specialDealCloseIV;
+    private TextView specialDealTitleTV;
+    private TextView specialDealContentTV;
     private DealingInfo dealingInfo;
     private boolean isDealing = false;
 
@@ -595,6 +597,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
         if (!isDealing) {
             pwDialog.pwDilogShow();
+            specialDealTitleTV.setText(dealingInfo.getTitle());
+            specialDealContentTV.setText(dealingInfo.getContent());
+            specialDealBuyTV.setText(getString(R.string.special_deal_buy_now));
         }
         isDealing = true;
     }
@@ -612,6 +617,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (dialogId == SPECIAL_DIALOG) {
             specialDealBuyTV = (TextView) view.findViewById(R.id.special_dialog_buy_tv);
             specialDealCloseIV = (ImageView) view.findViewById(R.id.special_dialog_deal_close_iv);
+            specialDealTitleTV = (TextView) view.findViewById(R.id.special_dialog_title_tv);
+            specialDealContentTV = (TextView) view.findViewById(R.id.special_dialg_deal_detail_tv);
             specialDealBuyTV.setOnClickListener(this);
             specialDealCloseIV.setOnClickListener(this);
         }
