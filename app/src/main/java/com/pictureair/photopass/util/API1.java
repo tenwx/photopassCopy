@@ -13,6 +13,7 @@ import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
@@ -2974,7 +2975,8 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PictureAirLog.json(jsonObject.toString());
-                handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, jsonObject).sendToTarget();
+                GoodsInfo goodsInfo = JsonUtil.getGoodsInfo(jsonObject);
+                handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, goodsInfo).sendToTarget();
             }
 
             @Override

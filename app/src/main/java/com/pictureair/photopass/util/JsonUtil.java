@@ -18,6 +18,7 @@ import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.HelpInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
@@ -1117,13 +1118,41 @@ public class JsonUtil {
      * @return
      */
     public static DealingInfo getDealingInfo(JSONObject jsonObject) {
+        DealingInfo dealingInfo = null;
         if (jsonObject.containsKey("dealings")) {
             JSONArray jsonArray = jsonObject.getJSONArray("dealings");
             if (jsonArray.size() > 0) {
-                return JsonTools.parseObject(jsonArray.getJSONObject(0).toJSONString(), DealingInfo.class);
+                dealingInfo = JsonTools.parseObject(jsonArray.getJSONObject(0).toJSONString(), DealingInfo.class);
+                if (jsonArray.getJSONObject(0).containsKey("isPossible")) {
+                    dealingInfo.setPossible(jsonArray.getJSONObject(0).getBoolean("isPossible"));
+                }
+
+                if (jsonArray.getJSONObject(0).containsKey("participated")) {
+                    dealingInfo.setParticipated(jsonArray.getJSONObject(0).getBoolean("participated"));
+                }
+
+                return dealingInfo;
             }
         }
         return null;
+    }
+
+    public static GoodsInfo getGoodsInfo(JSONObject jsonObject) {
+
+        GoodsInfo goodsInfo = JsonTools.parseObject(jsonObject.toString(), GoodsInfo.class);
+        JSONObject json = null;
+        if (jsonObject.containsKey("dealing")) {
+            json = jsonObject.getJSONObject("dealing");
+            if (json != null) {
+                if (json.containsKey("isPossible")) {
+                    goodsInfo.getDealing().setPossible(json.getBoolean("isPossible"));
+                }
+                if (json.containsKey("participated")) {
+                    goodsInfo.getDealing().setParticipated(json.getBoolean("participated"));
+                }
+            }
+        }
+        return goodsInfo;
     }
 
 }

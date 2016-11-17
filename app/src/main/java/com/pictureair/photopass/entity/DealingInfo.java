@@ -71,12 +71,12 @@ public class DealingInfo implements Serializable {
     /**
      * 是否参加过
      * */
-    private boolean participated;
+    private Boolean  participated;
 
     /**
      * 是否可参加
      * */
-    private boolean isPossible;
+    private Boolean isPossible;
 
     /**
      * 总参加活动次数
@@ -102,7 +102,7 @@ public class DealingInfo implements Serializable {
 
     }
 
-    public DealingInfo(String participateTimeIntervalEnd, String currTimeIntervalStart, boolean isPossible, int state, String content, int lave, String details, String participateTimeIntervalStart, String title, String key, String currTime, int totalCount, String dealingUrl, String currTimeIntervalEnd, boolean participated, long timeOffset) {
+    public DealingInfo(String participateTimeIntervalEnd, String currTimeIntervalStart, Boolean isPossible, int state, String content, int lave, String details, String participateTimeIntervalStart, String title, String key, String currTime, int totalCount, String dealingUrl, String currTimeIntervalEnd, Boolean participated, long timeOffset) {
         this.participateTimeIntervalEnd = participateTimeIntervalEnd;
         this.currTimeIntervalStart = currTimeIntervalStart;
         this.isPossible = isPossible;
@@ -193,14 +193,6 @@ public class DealingInfo implements Serializable {
         this.participateTimeIntervalEnd = participateTimeIntervalEnd;
     }
 
-    public boolean isPossible() {
-        return isPossible;
-    }
-
-    public void setPossible(boolean possible) {
-        isPossible = possible;
-    }
-
     public int getLave() {
         return lave;
     }
@@ -241,12 +233,20 @@ public class DealingInfo implements Serializable {
         this.totalCount = totalCount;
     }
 
-    public boolean isParticipated() {
+    public Boolean getParticipated() {
         return participated;
     }
 
-    public void setParticipated(boolean participated) {
+    public void setParticipated(Boolean participated) {
         this.participated = participated;
+    }
+
+    public Boolean getPossible() {
+        return isPossible;
+    }
+
+    public void setPossible(Boolean possible) {
+        isPossible = possible;
     }
 
     @Override

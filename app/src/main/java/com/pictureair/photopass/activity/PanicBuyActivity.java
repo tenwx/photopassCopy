@@ -26,11 +26,9 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
@@ -122,8 +120,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                 break;
 
             case API1.GET_SINGLE_GOODS_SUCCESS:
-
-                goodsInfo = JsonTools.parseObject( msg.obj.toString(), GoodsInfo.class);
+                goodsInfo = (GoodsInfo) msg.obj;
                 if (goodsInfo != null) {
                     PictureAirLog.v(goodsInfo.toString());
                     if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
@@ -308,7 +305,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.special_deal_purchase:
                 int lave = goodsInfo.getDealing().getLave();
-                if (goodsInfo.getDealing().isParticipated()) {
+                if (goodsInfo.getDealing().getPossible() != null && goodsInfo.getDealing().getPossible()) {
                     if (lave == -1 || lave > 0) {
                         Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
                         ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
