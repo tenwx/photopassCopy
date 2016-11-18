@@ -206,6 +206,9 @@ public class API1 {
     public static final int GET_SINGLE_GOODS_SUCCESS = 4201;
     public static final int GET_SINGLE_GOODS_FAILED = 4200;
 
+    public static final int UPDATE_SINGLE_GOODS_SUCCESS = 4211;
+    public static final int UPDATE_SINGLE_GOODS_FAILED = 4210;
+
     //Shop模块 end
 
     //我的模块 start
@@ -2964,7 +2967,14 @@ public class API1 {
         return task;
     }
 
-    public static void getSingleGoods(String dealingUrl, String language, final Handler handler) {
+    /**
+     * 拼单功能获取单个商品信息
+     * @param dealingUrl 链接
+     * @param language
+     * @param handler
+     * @param onClick 购买的时候需要获取最新的状态
+     * */
+    public static void getSingleGoods(String dealingUrl, String language, final Handler handler, final boolean onClick) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, language);
@@ -2976,13 +2986,21 @@ public class API1 {
                 super.onSuccess(jsonObject);
                 PictureAirLog.json(jsonObject.toString());
                 GoodsInfo goodsInfo = JsonUtil.getGoodsInfo(jsonObject);
-                handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, goodsInfo).sendToTarget();
+                if (!onClick) {
+                    handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, goodsInfo).sendToTarget();
+                } else {
+                    handler.obtainMessage(UPDATE_SINGLE_GOODS_SUCCESS, goodsInfo).sendToTarget();
+                }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_SINGLE_GOODS_FAILED, status, 0).sendToTarget();
+                if (!onClick) {
+                    handler.obtainMessage(GET_SINGLE_GOODS_FAILED, status, 0).sendToTarget();
+                } else {
+                    handler.obtainMessage(UPDATE_SINGLE_GOODS_FAILED, status, 0).sendToTarget();
+                }
             }
 
         });

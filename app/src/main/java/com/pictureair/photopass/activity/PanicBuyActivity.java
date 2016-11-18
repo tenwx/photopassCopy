@@ -192,8 +192,48 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD:
                 if (dealingInfo != null) {
                     showPWProgressDialog();
-                    API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler);
+                    API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, false);
                 }
+                break;
+
+            case API1.UPDATE_SINGLE_GOODS_SUCCESS:
+                dismissPWProgressDialog();
+                GoodsInfo info = (GoodsInfo) msg.obj;
+                int lave = info.getDealing().getLave();
+                if (info.getDealing().getPossible() != null && info.getDealing().getPossible()) {
+                    if (lave == -1 || lave > 0) {
+                        Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo = new CartItemInfo();
+
+                        cartItemInfo.setProductName(goodsInfo.getName());
+                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
+                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo.setDescription(goodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(goodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
+                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
+
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent.putExtra("orderinfo", orderinfoArrayList);
+                        intent.putExtra("fromPanicBuy", 1);
+                        intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
+                        startActivity(intent);
+                    } else {
+                        myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
+                    }
+                } else {
+                    myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
+                }
+                break;
+
+            case API1.UPDATE_SINGLE_GOODS_FAILED:
+                dismissPWProgressDialog();
+                myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                 break;
 
         }
@@ -244,7 +284,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         PictureAirLog.d(dealingInfo.toString());
 
         if (dealingInfo != null) {
-            API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler);
+            API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, false);
         }
     }
 
@@ -304,36 +344,9 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.special_deal_purchase:
-                int lave = goodsInfo.getDealing().getLave();
-                if (goodsInfo.getDealing().getPossible() != null && goodsInfo.getDealing().getPossible()) {
-                    if (lave == -1 || lave > 0) {
-                        Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                        CartItemInfo cartItemInfo = new CartItemInfo();
+                showPWProgressDialog();
+                API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, true);
 
-                        cartItemInfo.setProductName(goodsInfo.getName());
-                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
-                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                        cartItemInfo.setDescription(goodsInfo.getDescription());
-                        cartItemInfo.setQty(1);
-                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
-                        cartItemInfo.setPictures(photoUrls);
-                        cartItemInfo.setPrice(goodsInfo.getPrice());
-                        cartItemInfo.setCartProductType(3);
-                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
-
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putExtra("orderinfo", orderinfoArrayList);
-                        intent.putExtra("fromPanicBuy", 1);
-                        intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
-                        startActivity(intent);
-                    } else {
-                        myToast.setTextAndShow(R.string.special_deal_count_enough);
-                    }
-                } else {
-                    myToast.setTextAndShow(R.string.special_deal_count_enough);
-                }
                 break;
             case R.id.special_deal_back:
                 goBack();
