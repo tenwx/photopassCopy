@@ -54,6 +54,9 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
         btn_agent.setOnClickListener(this);
         btn_group.setOnClickListener(this);
         btn_conversation.setOnClickListener(this);
+        btn_agent.setEnabled(false);
+        btn_group.setEnabled(false);
+        btn_conversation.setEnabled(false);
 
         UdeskSDKManager.getInstance().initApiKey(this,DOMAIN,SECRETKEY);
         UdeskSDKManager.getInstance().isShowLog(true);
@@ -122,6 +125,7 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
 
         Notification notification =new  NotificationCompat.Builder(context).setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(getString(R.string.app_name))
                 .setContentText(content).build();
+        notification.vibrate = new long[]{0, 1000};
 
         manager.notify(1001, notification);
     }

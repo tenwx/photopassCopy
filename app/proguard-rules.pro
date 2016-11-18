@@ -220,3 +220,23 @@
 -dontwarn retrofit2.**
 -keep class retrofit2.**{ *; }
 
+#udesk
+-keep class udesk.** {*;}
+-keep class cn.udesk.**{*; }
+#七牛
+-keep class com.qiniu.android.dns.** {*; }
+-keep class com.qiniu.android.** {*;}
+#smack
+-keep class org.jxmpp.** {*;}
+-keep class de.measite.** {*;}
+-keep class org.jivesoftware.** {*;}
+-keep class org.xmlpull.** {*;}
+#Android M 权限
+-keep class rx.** {*;}
+-keep class com.tbruyelle.rxpermissions.** {*;}
+
+#其它
+-keep class com.tencent.bugly.** {*; }
+-keep class com.nostra13.universalimageloader.** {*;}
+-keep class de.hdodenhof.circleimageview.** {*;}
+
