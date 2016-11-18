@@ -249,7 +249,7 @@ public class DownloadService extends Service {
 
     private void startNotification(){
         Notification notification = new NotificationCompat.Builder(mContext).
-                setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();
         notification.flags = Notification.FLAG_ONGOING_EVENT;//通知栏可以自动删除
         manager.notify(0, notification);
@@ -360,7 +360,7 @@ public class DownloadService extends Service {
                     PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     Notification notification = new NotificationCompat.Builder(mContext).
-                            setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                            setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                             .setContentText(notificationDetail).setContentIntent(pendingIntent).
                                     setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除

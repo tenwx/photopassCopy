@@ -843,7 +843,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
 
 //			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
             Notification notification = new NotificationCompat.Builder(app)
-                    .setSmallIcon(R.drawable.pp_icon)
+                    .setSmallIcon(AppUtil.getNotificationIcon())
                     .setAutoCancel(true)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(text)

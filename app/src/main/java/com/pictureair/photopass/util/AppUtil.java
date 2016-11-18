@@ -1893,4 +1893,12 @@ public class AppUtil {
         }
         return headerTime;
     }
+
+    public static int getNotificationIcon() {
+        if (Build.VERSION.SDK_INT < 21) {
+            return R.drawable.pp_icon4;
+        }
+
+        return R.drawable.pp_icon5;
+    }
 }
