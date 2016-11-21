@@ -556,15 +556,10 @@ public class DownloadService extends Service {
     private void getNewUrl(DownloadFileStatus fileStatus){
         if (AppUtil.isOldVersionOfTheVideo(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
             PictureAirLog.out("getNewUrl----------->  requestNewUrl");
-            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, null, fileStatus);
+            API1.getPhotosInfo(MyApplication.getTokenId(), handler, false, fileStatus);
         }else{
             PictureAirLog.out("getNewUrl----------->  original Url");
-//            fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-//            handler.obtainMessage(API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
-            JSONArray downloadPhotoIds = new JSONArray();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("_id", fileStatus.getPhotoId());
-            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, downloadPhotoIds, fileStatus);
+            API1.getPhotosInfo(MyApplication.getTokenId(), handler, true, fileStatus);
         }
     }
 
