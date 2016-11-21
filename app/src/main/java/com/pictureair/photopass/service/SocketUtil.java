@@ -18,6 +18,7 @@ import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -211,7 +212,7 @@ public class SocketUtil {
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
         if (notification == null) {
             notification = new NotificationCompat.Builder(mContext).
-                    setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(titleStr).
+                    setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(titleStr).
                     setContentIntent(pendingIntent)
                     .setContentText(contentStr).setWhen(System.currentTimeMillis()).setTicker(titleStr).build();
         }

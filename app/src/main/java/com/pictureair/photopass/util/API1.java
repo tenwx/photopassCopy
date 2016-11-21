@@ -2458,24 +2458,23 @@ public class API1 {
      * 获取照片的最新数据,并后台统计图片的下载数量
      *
      * @param tokenId
-     * @param id photoId
-     * @param isDownload 后台要统计图片
-     * @param downloadPhotoIds 有原图链接时,该对象存储photoId,后台用于过滤,没有原图链接时为null
+     * @param hasOriginalUrl 是否有原图
      * @param handler
      */
-    public static BasicResultCallTask getPhotosInfo(String tokenId, final int id, final Handler handler,final boolean isDownload, final JSONArray downloadPhotoIds,final DownloadFileStatus fileStatus) {
+    public static BasicResultCallTask getPhotosInfo(String tokenId, final Handler handler,final boolean hasOriginalUrl, final DownloadFileStatus fileStatus) {
         Map<String,Object> params = new HashMap<>();
-        JSONArray ids = new JSONArray();
-        ids.add(fileStatus.getPhotoId());
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (ids != null) {
-            params.put(Common.EPPP_IDS, ids.toJSONString());
-        }
-        params.put(Common.ISDOWNLOAD, isDownload);
-        if (downloadPhotoIds != null) {
-            params.put(Common.DOWNLOAD_PHOTO_IDS, downloadPhotoIds.toString());
-        }
 
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.ISDOWNLOAD, true);
+        //有原图是字符串downloadPhotoIds，没有原图是传ids ，jsonArray
+        if (hasOriginalUrl) {
+            params.put(Common.DOWNLOAD_PHOTO_IDS, fileStatus.getPhotoId());
+        } else {
+            JSONArray ids = new JSONArray();
+            ids.add(fileStatus.getPhotoId());
+            params.put(Common.EPPP_IDS, ids.toString());
+
+        }
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
 
             private void sendNoDataMsg () {
@@ -2493,37 +2492,33 @@ public class API1 {
                 handler.sendMessage(msg);
             }
 
-            private void sendMsg() {
-                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
-                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-                } else {
-                    sendNoDataMsg();
-                }
-            }
-
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PictureAirLog.out("jsonobject---->" + jsonObject.toString());
                 JSONArray photos = jsonObject.getJSONArray("photos");
-                if (photos.size() > 0) {
-                    PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-                    fileStatus.setNewUrl(photoInfo.photoPathOrURL);
-                    if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
-                        handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                if (!hasOriginalUrl) {
+                    if (photos.size() > 0) {
+                        PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                        fileStatus.setNewUrl(photoInfo.photoPathOrURL);
+                        if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
+                            handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
+                        } else {
+                            sendNoDataMsg();
+                        }
                     } else {
-                        sendMsg();
+                        sendNoDataMsg();
                     }
                 } else {
-                    sendMsg();
+                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
                 }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
+                if (hasOriginalUrl) {//如果有原图链接的情况直接下载
                     fileStatus.setNewUrl(fileStatus.getOriginalUrl());
                     handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
                 } else {

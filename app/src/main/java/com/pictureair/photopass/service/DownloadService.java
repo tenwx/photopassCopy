@@ -249,7 +249,7 @@ public class DownloadService extends Service {
 
     private void startNotification(){
         Notification notification = new NotificationCompat.Builder(mContext).
-                setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();
         notification.flags = Notification.FLAG_ONGOING_EVENT;//通知栏可以自动删除
         manager.notify(0, notification);
@@ -360,7 +360,7 @@ public class DownloadService extends Service {
                     PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     Notification notification = new NotificationCompat.Builder(mContext).
-                            setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                            setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                             .setContentText(notificationDetail).setContentIntent(pendingIntent).
                                     setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
@@ -556,15 +556,10 @@ public class DownloadService extends Service {
     private void getNewUrl(DownloadFileStatus fileStatus){
         if (AppUtil.isOldVersionOfTheVideo(fileStatus.getOriginalUrl(), fileStatus.getPhotoThumbnail_1024(), fileStatus.getPhotoThumbnail_512(), fileStatus.getPhotoThumbnail())){
             PictureAirLog.out("getNewUrl----------->  requestNewUrl");
-            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, null, fileStatus);
+            API1.getPhotosInfo(MyApplication.getTokenId(), handler, false, fileStatus);
         }else{
             PictureAirLog.out("getNewUrl----------->  original Url");
-//            fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-//            handler.obtainMessage(API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
-            JSONArray downloadPhotoIds = new JSONArray();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("_id", fileStatus.getPhotoId());
-            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, true, downloadPhotoIds, fileStatus);
+            API1.getPhotosInfo(MyApplication.getTokenId(), handler, true, fileStatus);
         }
     }
 
