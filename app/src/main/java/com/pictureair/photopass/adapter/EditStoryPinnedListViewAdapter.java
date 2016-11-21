@@ -66,7 +66,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		if (convertView == null) {
 			viewHolder = new ViewHolder();
 			// 图片的 布局
-			convertView = layoutInflater.inflate(R.layout.sticky_grid_view, parent, false);
+			convertView = layoutInflater.inflate(R.layout.sticky_grid_view1, parent, false);
 
 			// 布局的 图片
 			viewHolder.imageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);

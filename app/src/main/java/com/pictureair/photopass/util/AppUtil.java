@@ -877,17 +877,15 @@ public class AppUtil {
      * @param list
      * @return
      */
-    public static ArrayList<PhotoInfo> insertSortFavouritePhotos(ArrayList<PhotoInfo> list) {
+    public static ArrayList<PhotoInfo> insertSortFavouritePhotos(ArrayList<PhotoInfo> list, boolean isShowHeader) {
         PictureAirLog.d("insert sort", list.size() + "");
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         boolean findPosition = false;
         for (int i = 0; i < list.size(); i++) {
             if (resultArrayList.size() > 1) {//从第三个开始插入
                 for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
-                    if (resultArrayList.get(j).locationName.equals(list.get(i).locationName) &&
-                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime)) {
-                        if (resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
-                                resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
+                    if (resultArrayList.get(j).shootTime.equals(list.get(i).shootTime)) {
+                        if (resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
 
                         } else {
                             findPosition = true;
@@ -901,8 +899,7 @@ public class AppUtil {
                 if (findPosition) {//找到
                     findPosition = false;
                 } else {//没有找到，直接放在后面
-                    if (resultArrayList.get(i - 1).shootTime.equals(list.get(i).shootTime) &&
-                            resultArrayList.get(i - 1).locationName.equals(list.get(i).locationName)) {
+                    if (resultArrayList.get(i - 1).shootTime.equals(list.get(i).shootTime)) {
                         list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
                     } else {
                         list.get(i).sectionId = resultArrayList.get(i - 1).sectionId + 1;
@@ -914,8 +911,7 @@ public class AppUtil {
                 if (i == 0) {
                     list.get(i).sectionId = 0;
                 } else if (i == 1) {
-                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)
-                            && resultArrayList.get(0).shootTime.equals(list.get(i).shootTime)) {
+                    if (resultArrayList.get(0).shootTime.equals(list.get(i).shootTime)) {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId;
                     } else {
                         list.get(i).sectionId = resultArrayList.get(0).sectionId + 1;
@@ -925,9 +921,34 @@ public class AppUtil {
             }
         }
         PictureAirLog.d("insert sort", resultArrayList.size() + "");
-        return resultArrayList;
+        if (isShowHeader && resultArrayList.size() > 0) {//设置悬浮
+            return getHeaderFavoriteList(resultArrayList);
+        } else {
+            return resultArrayList;
+        }
     }
 
+    /**
+     * 需要对favorite数据进行header的排序
+     * @param list
+     * @return
+     */
+    private static ArrayList<PhotoInfo> getHeaderFavoriteList(ArrayList<PhotoInfo> list) {
+        ArrayList<PhotoInfo> resultList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if (i == 0) {
+                resultList.add(list.get(0));
+                resultList.add(list.get(0));
+            } else {
+                if (list.get(i).sectionId != list.get(i - 1).sectionId) {
+                    resultList.add(list.get(i));
+
+                }
+                resultList.add(list.get(i));
+            }
+        }
+        return resultList;
+    }
 
     /**
      * 获取视频的缩略图
@@ -1443,9 +1464,17 @@ public class AppUtil {
             //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {
                 //						PictureAirLog.d(TAG, "weather already exists:"+j);
-                if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
-                        && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                    info.locationName = photoPassItemInfoList.get(j).place;
+                if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
+//                    info.locationName = photoPassItemInfoList.get(j).place;
+                    if (locationList.size() > 0) {
+                        if (language.equals(Common.SIMPLE_CHINESE)) {
+                            info.locationName = locationList.get(resultPosition).placeCHName;
+
+                        } else {
+                            info.locationName = locationList.get(resultPosition).placeENName;
+
+                        }
+                    }
                     photoPassItemInfoList.get(j).list.add(info);
                     date1 = sdf.parse(info.shootOn);
                     date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);

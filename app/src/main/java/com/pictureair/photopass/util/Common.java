@@ -13,6 +13,7 @@ public class Common {
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
+    public static final boolean NEED_RELOGIN = true;//升级版本，是否需要重新登录
 
     /**
      * 外网可访问的8.3测试服务器
@@ -212,6 +213,7 @@ public class Common {
     public static final String DEALINGKEY = "dealingKey";
 
     public static final int TOAST_SHORT_TIME = 1000;
+    public static final int LOAD_PHOTO_COUNT = 100;//每次下拉刷新的数量
     public static final String ppp = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
     public static final String SINGLE_PPP = "SinglePhotoPass+";//拼单区别照片和PP+
     public static final String PPPCode = "PPPCode";
@@ -220,10 +222,10 @@ public class Common {
     public static final String ppp1 = "ppp";
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
-    public static final String LAST_UPDATE_TOP_PHOTO = "lastUpdateTopPhoto";
-    public static final String LAST_UPDATE_BOTTOM_PHOTO = "lastUpdateBottomPhoto";
-    public static final String GTEID = "gteID";//此id更新的照片
-    public static final String LTEID = "lteID";//此id更旧的照片
+    public static final String LAST_UPDATE_TOP_PHOTO_MODIFYON = "lastUpdateTopPhotoModifyOn";
+    public static final String LAST_UPDATE_BOTTOM_PHOTO_MODIFYON = "lastUpdateBottomPhotoModifyOn";
+    public static final String GTEMODIFIEDON = "gteModifiedOn";//此时间更新的照片
+    public static final String LTEMODIFIEDON = "lteModifiedOn";//此时间更旧的照片
     public static final String LIMIT = "limit";//获取图片的数量限制
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference
@@ -293,6 +295,7 @@ public class Common {
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
     public static final String APP_VERSION_NAME = "version_name";
+    public static final String APP_NEED_RELOGIN = "app_need_relogin";
     public static final String DEFAULT_ADDRESS = "default_address";
     public static final String NEED_FRESH = "need_fresh";
     public static final String LANGUAGE_TYPE = "languageType";

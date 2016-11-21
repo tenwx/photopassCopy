@@ -261,7 +261,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void run() {
 				originalAlbumArrayList = pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
-				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList));
+				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList, false));
 				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
 			}
 		}).start();

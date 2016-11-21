@@ -858,15 +858,15 @@ public class PictureAirDbManager {
 
                 if (type == API1.GET_DEFAULT_PHOTOS) {
                     if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, photo.photoId);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, photo.modifyOn);
                     } else if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, photo.photoId);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, photo.modifyOn);
                     }
                 } else if (type == API1.GET_NEW_PHOTOS) {
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, photo.photoId);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, photo.modifyOn);
 
                 } else if (type == API1.GET_OLD_PHOTOS) {
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, photo.photoId);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, photo.modifyOn);
 
                 }
 
@@ -1049,7 +1049,7 @@ public class PictureAirDbManager {
                 resultArrayList.add(photoInfo);
             } while (cursor.moveToNext());
         }
-        PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo" + resultArrayList.size());
         cursor.close();
         DBManager.getInstance().closeDatabase();
         return resultArrayList;

@@ -55,6 +55,7 @@ public class StoryFragment extends Fragment {
 	private StickyRecycleAdapter stickyRecycleAdapter;
 	private CustomTextView tvStickyHeaderView;
 	private LinearLayout stickyHeaderLL;
+	private RecycleDividerItemDecoration recycleDividerItemDecoration;
 	private static Handler handler;
 	private boolean isLoadMore = false;
 	
@@ -95,6 +96,7 @@ public class StoryFragment extends Fragment {
 		if (view == null) {
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
+		PictureAirLog.d("fragment init create");
 		recyclerView = (RecyclerView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
@@ -165,7 +167,8 @@ public class StoryFragment extends Fragment {
 				if (position == 0) {
 					return 3;
 
-				} else if (position > 0 && photoInfoArrayList.get(position).sectionId != photoInfoArrayList.get(position - 1).sectionId) {
+				} else if (position > 0 && photoInfoArrayList.get(position) != null &&
+						photoInfoArrayList.get(position).sectionId != photoInfoArrayList.get(position - 1).sectionId) {
 					return 3;
 				} else {
 					return 1;
@@ -175,7 +178,9 @@ public class StoryFragment extends Fragment {
 
 		stickyRecycleAdapter = new StickyRecycleAdapter(getContext(), photoInfoArrayList);
 		stickyRecycleAdapter.setOnItemClickListener(new PhotoOnItemClickListener());
-		recyclerView.addItemDecoration(new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5)));
+		recyclerView.setHasFixedSize(true);
+		recycleDividerItemDecoration = new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5));
+		recyclerView.addItemDecoration(recycleDividerItemDecoration);
 		recyclerView.setLayoutManager(gridLayoutManager);
 		recyclerView.setAdapter(stickyRecycleAdapter);
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -213,16 +218,25 @@ public class StoryFragment extends Fragment {
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+		PictureAirLog.d("fragment init destroyview");
+		if (recyclerView != null && recycleDividerItemDecoration != null) {//因为多次进来，会叠加间距，因此在此移除
+			recyclerView.removeItemDecoration(recycleDividerItemDecoration);
+		}
 	}
 
 	private void dealWithLoadMore(int dy, RecyclerView recyclerView) {
-		// Scroll up.
-			PictureAirLog.d("start load more---->" + dy + recyclerView.canScrollVertically(1) + refreshLayout.isRefreshing());
-		if (dy > 0 && !recyclerView.canScrollVertically(1) && !refreshLayout.isRefreshing()) {
+		if (dy > 0 && gridLayoutManager.getItemCount() <= (gridLayoutManager.findFirstVisibleItemPosition() + recyclerView.getChildCount())
+				&& !refreshLayout.isRefreshing() && !isLoadMore) {//如果滑动到了item的最下面了（除了加载更多项）就开始加载更多
+//		if (dy > 0 && !recyclerView.canScrollVertically(1) && !refreshLayout.isRefreshing() && !isLoadMore) {//如果滑动到底了，才开始加载更多
 			PictureAirLog.d("start load more---->");
 			isLoadMore = true;
 			stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
-			stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+			recyclerView.post(new Runnable() {//不能在measure或者layout的过程中notify
+				@Override
+				public void run() {
+					stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+				}
+			});
 			Message message = handler.obtainMessage();
 			message.what = LOAD_MORE;
 			message.arg1 = tab;
@@ -239,7 +253,7 @@ public class StoryFragment extends Fragment {
 		}
 
 		// Get the sticky view's translationY by the first view below the sticky's height.
-		View transInfoView = recyclerView.findChildViewUnder(5, stickyHeaderLL.getMeasuredHeight() + 1);
+		View transInfoView = recyclerView.findChildViewUnder(30, stickyHeaderLL.getMeasuredHeight() + 1);
 
 		if (transInfoView != null && transInfoView.getTag() != null) {
 			int transViewStatus = (int) transInfoView.getTag();
@@ -360,7 +374,7 @@ public class StoryFragment extends Fragment {
 				if (!storyFragmentEvent.isRefresh()) {
 					isLoadMore = false;
 					recyclerView.scrollToPosition(oldCount);
-					if (newCount - oldCount < 50) {
+					if (newCount - oldCount < Common.LOAD_PHOTO_COUNT) {
 						stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
 						stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
 

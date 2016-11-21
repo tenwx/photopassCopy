@@ -94,6 +94,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="keyboard|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ProfileActivity"

@@ -611,22 +611,22 @@ public class API1 {
      * @param handler
      * @param type
      */
-    public static BasicResultCallTask getPhotosByConditions(final String tokenId, final Handler handler, final int type, String id, String ppCode) {
+    public static BasicResultCallTask getPhotosByConditions(final String tokenId, final Handler handler, final int type, String modifiedOn, String ppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (type == GET_NEW_PHOTOS) {
-            params.put(Common.GTEID, id);
+            params.put(Common.GTEMODIFIEDON, modifiedOn);
 
         } else if (type == GET_OLD_PHOTOS) {
-            params.put(Common.LTEID, id);
+            params.put(Common.LTEMODIFIEDON, modifiedOn);
 
         }
         if (!TextUtils.isEmpty(ppCode)) {
             params.put(Common.CUSTOMERID, ppCode);
         }
 
-        params.put(Common.LIMIT, 50);
-        PictureAirLog.out("the time of start get photos = " + id);
+        params.put(Common.LIMIT, Common.LOAD_PHOTO_COUNT);
+        PictureAirLog.out("the time of start get photos = " + modifiedOn);
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -648,8 +648,8 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 if (type == GET_DEFAULT_PHOTOS) {//获取全部照片，需要将时间置空，保证下次下拉可以重新拉取数据
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO, null);
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO, null);
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, null);
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, null);
                     handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
                 } else if (type == GET_NEW_PHOTOS){//获取当前照片
                     handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();

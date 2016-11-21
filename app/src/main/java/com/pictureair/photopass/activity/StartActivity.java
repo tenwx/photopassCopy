@@ -17,6 +17,9 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
+import com.pictureair.photopass.service.DownloadService;
+import com.pictureair.photopass.service.NotificationService;
+import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PhotoDownLoadInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -36,7 +39,6 @@ public class StartActivity extends BaseActivity implements Callback {
     private int code = 0;
     private String _id;
     private TextView versionTextView;
-    private static final String TAG = "StartActivity";
     private Handler handler;
     private Class tarClass;
     private PictureAirDbManager pictureAirDbManager;
@@ -46,8 +48,6 @@ public class StartActivity extends BaseActivity implements Callback {
     private LinearLayout ll_update;
     private ImageView img_update;
     private AnimationDrawable spinner;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,50 +85,85 @@ public class StartActivity extends BaseActivity implements Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case UPDATE_SUCCESS:
-                try {
-                    PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    int versionCode = info.versionCode;
-                    versionTextView.setText("V" + info.versionName);
-                    code = SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, 0);
-                    PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
-
-                    if (_id != null) {//之前登录过，直接进入主页面
-                        tarClass = MainTabActivity.class;
-
-                    } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
-                        tarClass = WelcomeActivity.class;
-                        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
-                        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
-
-//                  } else if (code == versionCode) {//无登录过，并且不是第一次安装，并且版本一致，进入登录页面
-//                      tarClass = LoginActivity.class;
-
-                    } else {//无登录，也不是第一次安装，版本不一致，表示升级的版本，进入登录页面
-                        tarClass = LoginActivity.class;
-
-                    }
-                    curTime = System.currentTimeMillis();
-                    long between = curTime-updateTime;
-                    PictureAirLog.e("startactivity between",String.valueOf(between));
-                    if (between < 2000){
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                goToNextActivity();
-                            }
-                        }, 2000-between);
-                    }else{
-                        goToNextActivity();
-                    }
-                } catch (NameNotFoundException e) {
-                    e.printStackTrace();
+                curTime = System.currentTimeMillis();
+                long between = curTime - updateTime;
+                PictureAirLog.e("startactivity between", String.valueOf(between));
+                if (between < 2000) {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            goToNextActivity();
+                        }
+                    }, 2000 - between);
+                } else {
+                    goToNextActivity();
                 }
                 break;
         }
         return false;
     }
 
+    /**
+     * 需要在开始跳转的时候，才去判断需要跳转哪个页面。不然会造成，已经判断好跳转的页面，在2s的等待时间内，登录过期，进入重新登录页面之后，2s事件触发，又进入了之前得到的页面
+     */
     private void goToNextActivity(){
+        PictureAirLog.d("go to next activity");
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            int versionCode = info.versionCode;
+            versionTextView.setText("V" + info.versionName);
+            code = SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, 0);
+            PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
+
+            boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
+
+            if (_id != null && isLogin) {//之前登录过
+                if (Common.NEED_RELOGIN && SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, 0) < versionCode) {//检查是否需要重新登录
+                    SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
+
+                    ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
+                    ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
+
+                    MyApplication.getInstance().setPushPhotoCount(0);
+                    MyApplication.getInstance().setPushViedoCount(0);
+                    MyApplication.getInstance().scanMagicFinish = false;
+                    MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
+                    pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
+
+                    MyApplication.clearTokenId();
+
+                    //取消通知
+                    Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
+                    intent.putExtra("status", "disconnect");
+                    MyApplication.getInstance().startService(intent);
+
+                    //关闭下载
+                    Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("logout",true);
+                    intent1.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent1);
+
+                    SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, versionCode);
+                    tarClass = LoginActivity.class;
+
+                } else {//直接进入主页面
+                    tarClass = MainTabActivity.class;
+                }
+
+            } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
+                tarClass = WelcomeActivity.class;
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
+
+            } else {//无登录，也不是第一次安装，版本不一致，表示升级的版本，进入登录页面
+                tarClass = LoginActivity.class;
+
+            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         Intent intent = new Intent(StartActivity.this, tarClass);
         startActivity(intent);
         finish();

@@ -72,6 +72,7 @@ public class BasicResultCallTask<T> extends ACallTask{
                         if (!isLogin){//没有登录
                             httpCallback.onFailure(response.getStatus());
                         } else {//如果在登录状态，需要退出操作
+                            PictureAirLog.d("need relogin");
                             SPUtils.remove(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN);
                             AppExitUtil.getInstance().AppReLogin();
                         }
