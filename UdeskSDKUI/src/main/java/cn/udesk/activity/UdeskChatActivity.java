@@ -37,7 +37,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.json.JSONException;
@@ -1507,18 +1506,14 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             if (!TextUtils.isEmpty(message.getLocalPath())) {
                 sourceImagePath = message.getLocalPath();
             } else {
-                sourceImagePath = ImageLoader.getInstance().getDiscCache()
-                        .get(message.getMsgContent()).getPath();
+                sourceImagePath = message.getMsgContent();
             }
-            File sourceFile = new File(sourceImagePath);
-            if (sourceFile.exists()) {
-                Intent intent = new Intent(UdeskChatActivity.this,
-                        UdeskZoomImageActivty.class);
-                Bundle data = new Bundle();
-                data.putParcelable("image_path", Uri.fromFile(sourceFile));
-                intent.putExtras(data);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(UdeskChatActivity.this,
+                    UdeskZoomImageActivty.class);
+            Bundle data = new Bundle();
+            data.putString("image_path",sourceImagePath);
+            intent.putExtras(data);
+            startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

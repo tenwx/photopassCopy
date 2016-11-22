@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +26,7 @@ public class UdeskZoomImageActivty extends Activity implements
 
 	private UdeskZoomImageView zoomImageView;
 	private View saveIdBtn;
-	private Uri uri;
-
+	private String url;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -37,15 +34,12 @@ public class UdeskZoomImageActivty extends Activity implements
 		zoomImageView = (UdeskZoomImageView) findViewById(R.id.udesk_zoom_imageview);
 		try{
 			Bundle bundle = getIntent().getExtras();
-			uri = (android.net.Uri) bundle.getParcelable("image_path");
-			DisplayImageOptions options = new DisplayImageOptions.Builder()
-					.cacheInMemory(true)
-					.cacheOnDisk(true)
-					.bitmapConfig(Bitmap.Config.RGB_565)
-					.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-					.build();
-			if (uri != null){
-				ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
+			url = bundle.getString("image_path");
+			if (url != null){
+				Glide.with(this)
+						.load(url)
+						.dontAnimate()
+						.into(zoomImageView);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -68,11 +62,11 @@ public class UdeskZoomImageActivty extends Activity implements
 
 	}
 	public void saveImage() {
-		if (uri == null) {
+		if (url == null) {
 			return;
 		}
 		// 获取参数中的原文件路径
-		String oldPath = uri.getPath();
+		String oldPath = url;
 		File oldFile = new File(oldPath);
 		// 修改文件路径
 		String newName = oldFile.getName();

@@ -31,7 +31,9 @@
         <activity
             android:name="cn.udesk.activity.UdeskChatActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
-            android:theme="@style/Udesk_Theme" />
+            android:theme="@style/Udesk_Theme"
+            android:hardwareAccelerated="false"
+            />
         <activity
             android:name="cn.udesk.activity.UdeskZoomImageActivty"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"

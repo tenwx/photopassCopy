@@ -21,17 +21,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
+import cn.udesk.ScreenUtil;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
@@ -102,53 +104,9 @@ public class MessageAdatper extends BaseAdapter {
 
     private Context mContext;
     private List<MessageInfo> list = new ArrayList<MessageInfo>();
-    private DisplayImageOptions options;
-    private DisplayImageOptions agentHeadOptions;
-    private ImageLoader mImageLoader;
 
     public MessageAdatper(Context context) {
         mContext = context;
-        initDisplayOptions();
-        getImageLoader(context);
-    }
-
-    /**
-     * 初始化universalimageloader开源库的DisplayImageOptions的设置
-     */
-    private void initDisplayOptions() {
-        try {
-            options = new DisplayImageOptions.Builder()
-                    .showImageOnFail(R.drawable.udesk_defualt_failure)
-                    .showImageOnLoading(R.drawable.udesk_defalut_image_loading)
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                    .build();
-
-            agentHeadOptions = new DisplayImageOptions.Builder()
-                    .showImageOnFail(R.drawable.udesk_im_default_agent_avatar)
-                    .showImageOnLoading(R.drawable.udesk_im_default_agent_avatar)
-                    .showImageForEmptyUri(R.drawable.udesk_im_default_agent_avatar)
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                    .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private ImageLoader getImageLoader(Context context) {
-        if (mImageLoader == null) {
-            mImageLoader = ImageLoader.getInstance();
-        }
-        if(!mImageLoader.isInited()){
-            mImageLoader.init(UdeskUtil.initImageLoaderConfig(context));
-        }
-        return mImageLoader;
     }
 
     @Override
@@ -394,13 +352,13 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_IMG_R:
                     this.isLeft = false;
                     if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getCustomerUrl())){
-                        getImageLoader(mContext).displayImage(UdeskSDKManager.getInstance().getCustomerUrl(),ivHeader,
-                                new DisplayImageOptions.Builder()
-                                        .showImageOnFail(R.drawable.udesk_im_default_user_avatar)
-                                        .showImageOnLoading(R.drawable.udesk_im_default_user_avatar)
-                                        .showImageForEmptyUri(R.drawable.udesk_im_default_user_avatar)
-                                        .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                                        .build() );
+                        Glide.with(mContext)
+                                .load(UdeskSDKManager.getInstance().getCustomerUrl())
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .placeholder(R.drawable.udesk_im_default_user_avatar)
+                                .error(R.drawable.udesk_im_default_user_avatar)
+                                .dontAnimate()
+                                .into(ivHeader);
                     }else {
                         ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
                     }
@@ -413,7 +371,13 @@ public class MessageAdatper extends BaseAdapter {
                     if (message.getAgentUrl() == null || TextUtils.isEmpty(message.getAgentUrl().trim())){
                         ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
                     }else{
-                        getImageLoader(mContext).displayImage(message.getAgentUrl(), ivHeader, agentHeadOptions);
+                        Glide.with(mContext)
+                                .load(message.getAgentUrl())
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .placeholder(R.drawable.udesk_im_default_agent_avatar)
+                                .error(R.drawable.udesk_im_default_agent_avatar)
+                                .dontAnimate()
+                                .into(ivHeader);
                     }
                     agentnickName.setText(message.getNickName());
 //                    ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
@@ -658,12 +622,48 @@ public class MessageAdatper extends BaseAdapter {
         public ChatImageView imgView;
 
         @Override
-        void bind(Context context) {
+        void bind(final Context context) {
             try {
-                if (options == null) {
-                    initDisplayOptions();
-                }
-                getImageLoader(context).displayImage(UdeskUtil.buildImageLoaderImgUrl(message), imgView, options);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgView.getLayoutParams();
+                params.width = ScreenUtil.dip2px(mContext, 100);
+                params.height = ScreenUtil.dip2px(mContext, 150);
+                imgView.setLayoutParams(params);
+                Glide.with(context)
+                        .load(UdeskUtil.buildImageLoaderImgUrl(message))
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.drawable.udesk_defalut_image_loading)
+                        .error(R.drawable.udesk_defualt_failure)
+                        .dontAnimate()
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgView.getLayoutParams();
+                                int bmpWidth = bitmap.getWidth();
+                                int bmpHeight = bitmap.getHeight();
+                                float wRatio = bmpWidth/(params.width * 1f);
+                                float hRatio = bmpHeight/(params.height * 1f);
+                                if (wRatio < 1 && hRatio < 1) {
+                                    params.width = bmpWidth;
+                                    params.height = bmpHeight;
+                                    imgView.setLayoutParams(params);
+                                    imgView.setImageBitmap(bitmap);
+                                    return;
+                                }
+
+                                if (wRatio >= hRatio) {
+                                    params.height = (int)(bmpHeight / wRatio);
+                                    imgView.setLayoutParams(params);
+                                    imgView.invalidate();
+                                } else if (wRatio < hRatio) {
+                                    params.width = (int)(bmpWidth / hRatio);
+                                    imgView.setLayoutParams(params);
+                                }
+
+                                imgView.setImageBitmap(bitmap);
+                            }
+                        });
+
                 imgView.setOnClickListener(new OnClickListener() {
 
                     @Override
@@ -716,7 +716,15 @@ public class MessageAdatper extends BaseAdapter {
                 final UdeskCommodityItem item = (UdeskCommodityItem) message;
                 title.setText(item.getTitle());
                 subTitle.setText(item.getSubTitle());
-                getImageLoader(context).displayImage(item.getThumbHttpUrl(), thumbnail, options);
+                Glide.with(context)
+                        .load(item.getThumbHttpUrl())
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.drawable.udesk_defalut_image_loading)
+                        .error(R.drawable.udesk_defualt_failure)
+                        .dontAnimate()
+                        .into(thumbnail);
+
                 link.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {

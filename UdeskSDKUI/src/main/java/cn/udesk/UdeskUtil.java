@@ -11,14 +11,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
@@ -195,7 +187,7 @@ public class UdeskUtil {
 	public static String buildImageLoaderImgUrl(MessageInfo message){
 
 		if(!TextUtils.isEmpty(message.getLocalPath()) && isExitFile(message.getLocalPath())){
-			return "file:///" + message.getLocalPath();
+			return message.getLocalPath();
 		}else{
 			return message.getMsgContent();
 		}
@@ -240,30 +232,6 @@ public class UdeskUtil {
 			}
 		}
 		return builder.toString();
-	}
-
-
-	public static ImageLoaderConfiguration initImageLoaderConfig(Context context){
-		File cacheDir = StorageUtils.getOwnCacheDirectory(
-				context, "udesksdk/img/cache");
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context)
-				.threadPoolSize(3)
-				// 线程池内加载的数量
-				.threadPriority(Thread.NORM_PRIORITY - 2)
-				.denyCacheImageMultipleSizesInMemory()
-				.memoryCache(new WeakMemoryCache())
-				.memoryCacheSize(2 * 1024 * 1024)
-				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.discCacheFileCount(100) // 缓存的文件数量
-				.discCache(new UnlimitedDiskCache(cacheDir))// 自定义缓存路径
-				.defaultDisplayImageOptions(DisplayImageOptions.createSimple())
-				.imageDownloader(
-						new BaseImageDownloader(context,
-								5 * 1000, 30 * 1000))
-				.build();// 开始构建
-		ImageLoader.getInstance().init(config);
-		return config;
 	}
 
 	public static  void initCrashReport(Context context){

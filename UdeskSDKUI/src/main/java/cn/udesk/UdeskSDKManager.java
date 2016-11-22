@@ -63,14 +63,12 @@ public class UdeskSDKManager {
 	public void initApiKey(Context context,String domain, String secretKey){
 		UdeskConfig.domain = domain;
 		UdeskConfig.secretKey = secretKey;
-		UdeskUtil.initImageLoaderConfig(context);
 	}
 
 	public void initApiKey(Context context,String domain, String secretKey,String appid){
 		UdeskConfig.domain = domain;
 		UdeskConfig.secretKey = secretKey;
 		UdeskConfig.appid = appid;
-		UdeskUtil.initImageLoaderConfig(context);
 	}
 
 	public void setUserInfo(Context context,String sdkToken,Map<String, String> info){

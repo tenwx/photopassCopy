@@ -81,8 +81,10 @@ public class ChatImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mNinePatchDrawable != null) {
-            canvas.drawBitmap(mTarget, 0, 0, null);
-            mPaint.setXfermode(null);
+            if (mTarget != null) {
+                canvas.drawBitmap(mTarget, 0, 0, null);
+                mPaint.setXfermode(null);
+            }
         } else {
             if (mDirection == DIRECTION_LEFT) {
                 canvas.drawPath(drawLeftPath(), mPaint);
