@@ -3,7 +3,7 @@
     android:id="@+id/sticky_grid_view_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/pp_dp_5">
+    android:layout_marginBottom="@dimen/pp_dp_6">
 
     <ImageView
         android:id="@+id/sticky_imageView"

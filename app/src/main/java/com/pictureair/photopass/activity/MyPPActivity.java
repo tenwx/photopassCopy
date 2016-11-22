@@ -195,21 +195,18 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case API1.GET_PPS_SUCCESS:// 获取pp列表成功。 如果status等于 200 的时候
                 JSONObject ppsJsonObject = (JSONObject) msg.obj;
-                PictureAirLog.e("","ppsJsonObject:"+ppsJsonObject.toString());
+                PictureAirLog.json(ppsJsonObject.toString());
                 if (ppsJsonObject.containsKey("PPList")) {
                     showPPCodeList.clear();
                     try {
-                        JSONArray pplists = ppsJsonObject
-                                .getJSONArray("PPList");
-                        PPinfo ppCodeInfo = null;
-                        String ppcode = null;
-                        int isupgrade = 0;
+                        JSONArray pplists = ppsJsonObject.getJSONArray("PPList");
+                        PPinfo ppCodeInfo;
+                        String ppcode;
                         boolean createnew = false;
                         // 遍历所有pplist，如果有重复的pp，isUpgrade属性取升级过的值，图片选最新的图片(如果图片数量为零，就不查找)
                         for (int i = 0; i < pplists.size(); i++) {
                             JSONObject pplist = pplists.getJSONObject(i);
                             ppcode = pplist.getString("customerId");
-                            isupgrade = pplist.getIntValue("isUpgrade");
                             createnew = false;
                             // 查看是否有重复的ppcode，需要更新isupgrade和图片属性
                             for (int j = 0; j < showPPCodeList.size(); j++) {
@@ -217,26 +214,18 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                                     createnew = true;
                                     ppCodeInfo = showPPCodeList.get(j);
                                     ppCodeInfo.setShootDate(pplist.getString("shootDate")); //new add 取最新的时间，解决PP排序问题。
-                                    if (ppCodeInfo.getIsUpgrade() == 1) {
-
-                                    } else {
-                                        if (isupgrade == 1) {
-                                            ppCodeInfo.setIsUpgrade(1);
-                                            ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount() + pplist.getIntValue("photoCount"));
-                                            PictureAirLog.out("changing------------");
-                                        }
-                                    }
+                                    ppCodeInfo.setIsUpgrade(1);
+                                    ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount() + pplist.getIntValue("photoCount"));
+                                    PictureAirLog.out("changing------------");
                                     break;
                                 }
                             }
                             if (!createnew) {
                                 ppCodeInfo = new PPinfo();
-                                ppCodeInfo.setPpCode(pplist
-                                        .getString("customerId"));
+                                ppCodeInfo.setPpCode(pplist.getString("customerId"));
                                 ppCodeInfo.setPhotoCount(pplist.getIntValue("photoCount"));
                                 ppCodeInfo.setIsUpgrade(pplist.getIntValue("isUpgrade"));
-                                ppCodeInfo.setShootDate(pplist
-                                        .getString("shootDate"));
+                                ppCodeInfo.setShootDate(pplist.getString("shootDate"));
                                 ppCodeInfo.setIsHidden(pplist.getIntValue("isHidden"));
                                 showPPCodeList.add(ppCodeInfo);
                             }
@@ -268,7 +257,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             // seletePP的页面
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, true, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, true, true, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -417,7 +406,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                         deleteAPI();// 提交删除PP
                         deletePosition = position;
                     }
-                }, false, true, null, null);
+                }, false, true, true, null, null);
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {

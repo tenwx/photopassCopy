@@ -8,12 +8,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,10 +26,9 @@ import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomTextView;
-import com.pictureair.photopass.widget.RecycleDividerItemDecoration;
+import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 
 import java.util.ArrayList;
 
@@ -40,10 +36,10 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 
-public class StoryFragment extends Fragment {
+public class StoryFragment extends Fragment implements PWStickySectionRecyclerView.OnPullListener{
 	private static final String TAG = "StoryFragment";
 	private RelativeLayout noPhotoRelativeLayout;
-	private RecyclerView recyclerView;
+	private PWStickySectionRecyclerView pwStickySectionRecyclerView;
 	private TextView noPhotoTextView;
 	private ArrayList<PhotoInfo> targetArrayList;
 	private ArrayList<PhotoInfo> photoInfoArrayList;
@@ -51,14 +47,9 @@ public class StoryFragment extends Fragment {
 	private int oldCount;
 	private View view;
 	private SwipeRefreshLayout refreshLayout;
-	private GridLayoutManager gridLayoutManager;
-	private StickyRecycleAdapter stickyRecycleAdapter;
 	private CustomTextView tvStickyHeaderView;
-	private LinearLayout stickyHeaderLL;
-	private RecycleDividerItemDecoration recycleDividerItemDecoration;
 	private static Handler handler;
-	private boolean isLoadMore = false;
-	
+
 	private static final int REFRESH = 666;
 	public static final int LOAD_MORE = 77777;
 	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
@@ -97,11 +88,10 @@ public class StoryFragment extends Fragment {
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
 		PictureAirLog.d("fragment init create");
-		recyclerView = (RecyclerView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
 		tvStickyHeaderView = (CustomTextView) view.findViewById(R.id.section_time);
-		stickyHeaderLL = (LinearLayout) view.findViewById(R.id.story_pinned_section_ll);
+		pwStickySectionRecyclerView = (PWStickySectionRecyclerView) view.findViewById(R.id.pw_sticky_section_recyclerview);
 
 		tvStickyHeaderView.setTypeface(MyApplication.getInstance().getFontBold());
 
@@ -112,7 +102,7 @@ public class StoryFragment extends Fragment {
 			@Override
 			public void onRefresh() {
 				PictureAirLog.out("start refresh");
-				if (photoInfoArrayList.size() != 0 && !isLoadMore) {
+				if (photoInfoArrayList.size() != 0 && !pwStickySectionRecyclerView.isLoadMore()) {
 
 					Message message = handler.obtainMessage();
 					message.what = REFRESH;
@@ -121,6 +111,9 @@ public class StoryFragment extends Fragment {
 				}
 			}
 		});
+
+		pwStickySectionRecyclerView.setOnRecyclerViewItemClickListener(new PhotoOnItemClickListener());
+		pwStickySectionRecyclerView.setOnPullListener(this);
 
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null) {
@@ -157,41 +150,7 @@ public class StoryFragment extends Fragment {
 			}
 		}
 
-		gridLayoutManager = new GridLayoutManager(getContext(), 3);
-		gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-			@Override
-			public int getSpanSize(int position) {
-				if (position >= photoInfoArrayList.size()) {
-					return 3;
-				}
-				if (position == 0) {
-					return 3;
-
-				} else if (position > 0 && photoInfoArrayList.get(position) != null &&
-						photoInfoArrayList.get(position).sectionId != photoInfoArrayList.get(position - 1).sectionId) {
-					return 3;
-				} else {
-					return 1;
-				}
-			}
-		});
-
-		stickyRecycleAdapter = new StickyRecycleAdapter(getContext(), photoInfoArrayList);
-		stickyRecycleAdapter.setOnItemClickListener(new PhotoOnItemClickListener());
-		recyclerView.setHasFixedSize(true);
-		recycleDividerItemDecoration = new RecycleDividerItemDecoration(ScreenUtil.dip2px(getContext(), 5));
-		recyclerView.addItemDecoration(recycleDividerItemDecoration);
-		recyclerView.setLayoutManager(gridLayoutManager);
-		recyclerView.setAdapter(stickyRecycleAdapter);
-		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-			@Override
-			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-				super.onScrolled(recyclerView, dx, dy);
-				dealWithLoadMore(dy, recyclerView);
-				dealWithStickyHeader(recyclerView);
-			}
-		});
-
+		pwStickySectionRecyclerView.initDate(photoInfoArrayList);
 
 		if (tab == 1) {//airpass
 			noPhotoTextView.setText(R.string.no_photo_in_airpass);
@@ -206,11 +165,11 @@ public class StoryFragment extends Fragment {
 		}
 		
 		if (photoInfoArrayList.size() > 0) {
-			recyclerView.setVisibility(View.VISIBLE);
+			pwStickySectionRecyclerView.setVisibility(View.VISIBLE);
 			noPhotoRelativeLayout.setVisibility(View.GONE);
 
 		} else {
-			recyclerView.setVisibility(View.GONE);
+			pwStickySectionRecyclerView.setVisibility(View.GONE);
 			noPhotoRelativeLayout.setVisibility(View.VISIBLE);
 		}
 	}
@@ -219,56 +178,20 @@ public class StoryFragment extends Fragment {
 	public void onDestroyView() {
 		super.onDestroyView();
 		PictureAirLog.d("fragment init destroyview");
-		if (recyclerView != null && recycleDividerItemDecoration != null) {//因为多次进来，会叠加间距，因此在此移除
-			recyclerView.removeItemDecoration(recycleDividerItemDecoration);
-		}
+		pwStickySectionRecyclerView.removeItemDecoration();//因为多次进来，会叠加间距，因此在此移除
 	}
 
-	private void dealWithLoadMore(int dy, RecyclerView recyclerView) {
-		if (dy > 0 && gridLayoutManager.getItemCount() <= (gridLayoutManager.findFirstVisibleItemPosition() + recyclerView.getChildCount())
-				&& !refreshLayout.isRefreshing() && !isLoadMore) {//如果滑动到了item的最下面了（除了加载更多项）就开始加载更多
-//		if (dy > 0 && !recyclerView.canScrollVertically(1) && !refreshLayout.isRefreshing() && !isLoadMore) {//如果滑动到底了，才开始加载更多
+	@Override
+	public void loadMore() {
+		if (!refreshLayout.isRefreshing()) {
 			PictureAirLog.d("start load more---->");
-			isLoadMore = true;
-			stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
-			recyclerView.post(new Runnable() {//不能在measure或者layout的过程中notify
-				@Override
-				public void run() {
-					stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
-				}
-			});
+			pwStickySectionRecyclerView.setIsLoadMore(true);
+			pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
+
 			Message message = handler.obtainMessage();
 			message.what = LOAD_MORE;
 			message.arg1 = tab;
 			handler.sendMessage(message);
-		}
-	}
-
-	private void dealWithStickyHeader(RecyclerView recyclerView) {
-		// Get the sticky information from the topmost view of the screen.
-		View stickyInfoView = recyclerView.findChildViewUnder(30, 1);//获取 （x,y）坐标下的view
-
-		if (stickyInfoView != null && stickyInfoView.getContentDescription() != null) {
-			tvStickyHeaderView.setText(String.valueOf(stickyInfoView.getContentDescription()));
-		}
-
-		// Get the sticky view's translationY by the first view below the sticky's height.
-		View transInfoView = recyclerView.findChildViewUnder(30, stickyHeaderLL.getMeasuredHeight() + 1);
-
-		if (transInfoView != null && transInfoView.getTag() != null) {
-			int transViewStatus = (int) transInfoView.getTag();
-			int dealtY = transInfoView.getTop() - stickyHeaderLL.getMeasuredHeight();
-			if (transViewStatus == StickyRecycleAdapter.HAS_STICKY_VIEW) {
-				// If the first view below the sticky's height scroll off the screen,
-				// then recovery the sticky view's translationY.
-				if (transInfoView.getTop() > 0) {
-					stickyHeaderLL.setTranslationY(dealtY);
-				} else {
-					stickyHeaderLL.setTranslationY(0);
-				}
-			} else if (transViewStatus == StickyRecycleAdapter.NONE_STICKY_VIEW) {
-				stickyHeaderLL.setTranslationY(0);
-			}
 		}
 	}
 
@@ -314,7 +237,7 @@ public class StoryFragment extends Fragment {
 		@Override
 		public void onLoadMoreClick(View view, int position) {
 			PictureAirLog.d("failed---> click to load more data");
-			dealWithLoadMore(10, recyclerView);
+			loadMore();
 		}
 	}
 
@@ -350,12 +273,9 @@ public class StoryFragment extends Fragment {
 				targetArrayList.clear();
 				photoInfoArrayList.addAll(storyFragmentEvent.getPhotoInfos());
 				targetArrayList.addAll(storyFragmentEvent.getTargetInfos());
-//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getPhotoInfos().size());
-//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTargetInfos().size());
-//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTab());
 				PictureAirLog.out("photo size --" + photoInfoArrayList.size() + " new count" + (newCount - oldCount) + storyFragmentEvent.isRefresh());
 				if (photoInfoArrayList.size() == 0) {
-					recyclerView.setVisibility(View.GONE);
+					pwStickySectionRecyclerView.setVisibility(View.GONE);
 					noPhotoRelativeLayout.setVisibility(View.VISIBLE);
 					if (tab == 1) {//airpass
 						noPhotoTextView.setText(R.string.no_photo_in_airpass);
@@ -367,44 +287,20 @@ public class StoryFragment extends Fragment {
 						noPhotoTextView.setText(R.string.no_photo_in_favourite);
 					}
 				} else {
-					recyclerView.setVisibility(View.VISIBLE);
+					pwStickySectionRecyclerView.setVisibility(View.VISIBLE);
 					noPhotoRelativeLayout.setVisibility(View.GONE);
 					
 				}
 				if (!storyFragmentEvent.isRefresh()) {
-					isLoadMore = false;
-					recyclerView.scrollToPosition(oldCount);
+					pwStickySectionRecyclerView.setIsLoadMore(false);
+					pwStickySectionRecyclerView.scrollToPosition(oldCount);
 					if (newCount - oldCount < Common.LOAD_PHOTO_COUNT) {
-						stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
-						stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
-
-//						Observable.timer(2, TimeUnit.SECONDS)//2s之后隐藏footer
-//								.observeOn(AndroidSchedulers.mainThread())
-//								.subscribe(new Subscriber<Long>() {
-//									@Override
-//									public void onCompleted() {
-//
-//										stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_GONE);
-//										stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
-//									}
-//
-//									@Override
-//									public void onError(Throwable e) {
-//
-//									}
-//
-//									@Override
-//									public void onNext(Long aLong) {
-//
-//									}
-//								});
+						pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
 
 					}
 					oldCount = newCount;
 				}
-				if (stickyRecycleAdapter != null) {
-					stickyRecycleAdapter.notifyDataSetChanged();
-				}
+				pwStickySectionRecyclerView.notifyDataSetChanged();
 				if (refreshLayout.isRefreshing()) {
 					refreshLayout.setRefreshing(false);
 				}
@@ -438,9 +334,8 @@ public class StoryFragment extends Fragment {
 			if (storyRefreshEvent.getTab() == tab &&
 					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.STOP_LOAD_MORE) {//开始关闭加载更多，此处为加载更多失败的处理
 				PictureAirLog.out(tab + "------>stop loading more from bus");
-				isLoadMore = false;
-				stickyRecycleAdapter.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_FAILED);
-				stickyRecycleAdapter.notifyItemChanged(stickyRecycleAdapter.getItemCount() - 1);
+				pwStickySectionRecyclerView.setIsLoadMore(false);
+				pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_FAILED);
 				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
 			}
 		}

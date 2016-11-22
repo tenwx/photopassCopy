@@ -213,7 +213,7 @@ public class Common {
     public static final String DEALINGKEY = "dealingKey";
 
     public static final int TOAST_SHORT_TIME = 1000;
-    public static final int LOAD_PHOTO_COUNT = 100;//每次下拉刷新的数量
+    public static final int LOAD_PHOTO_COUNT = 200;//每次下拉刷新的数量
     public static final String ppp = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
     public static final String SINGLE_PPP = "SinglePhotoPass+";//拼单区别照片和PP+
     public static final String PPPCode = "PPPCode";

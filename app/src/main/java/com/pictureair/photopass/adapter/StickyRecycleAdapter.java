@@ -23,22 +23,17 @@ import com.pictureair.photopass.widget.CustomTextView;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import rx.Subscription;
-
 /**
  * Created by bauer_bao on 16/11/10.
  */
 
 public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final int FIRST_STICKY_VIEW = 1;
     public static final int HAS_STICKY_VIEW = 2;
     public static final int NONE_STICKY_VIEW = 3;
 
     public static final int LOAD_MORE_VIEW_TYPE = 100;
     public static final int LOAD_HEADER_VIEW_TYPE = 101;
 
-    public static final int LOAD_MORE_VISIBLE = 4;//开始拉取的时候，需要显示
-    public static final int LOAD_MORE_GONE = 5;//拉取完毕之后，如果没有数据，需要隐藏
     public static final int LOAD_MORE_LOADING = 6;//加载中的UI
     public static final int LOAD_MORE_NO_MORE = 7;//没有更多数据的UI
     public static final int LOAD_MORE_FAILED = 8;//加载失败的处理，可以点击，重新请求更多数据
@@ -49,10 +44,6 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     private ArrayList<PhotoInfo> photoList;
 
     private int loadMoreType = LOAD_MORE_NO_MORE;
-    private int time = 0;
-    private Subscription subscription;
-
-
 
     private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
@@ -67,12 +58,15 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (viewType == LOAD_MORE_VIEW_TYPE) {
             View view = LayoutInflater.from(context).inflate(R.layout.story_pinned_listview_load_more, parent, false);
             return new LoadMoreViewHolder(view);
+
         } else if (viewType == LOAD_HEADER_VIEW_TYPE) {
             View view = LayoutInflater.from(context).inflate(R.layout.story_pinned_listview_section, parent, false);
-            return new RecyclerViewSectionViewHolder(view);
+            return new StickySectionHeaderViewHolder(view);
+
         } else {
             View view = LayoutInflater.from(context).inflate(R.layout.sticky_grid_view, parent, false);
-            return new RecyclerViewHolder(view);
+            return new RecyclerItemViewHolder(view);
+
         }
     }
 
@@ -82,10 +76,8 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
             return;
         }
 
-        if (viewHolder instanceof RecyclerViewHolder) {
-            final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) viewHolder;
-
-
+        if (viewHolder instanceof RecyclerItemViewHolder) {
+            final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
             String photoUrl;
             if (photoList.get(position).onLine == 1) {
                 if (photoList.get(position).isPayed == 1) {
@@ -96,7 +88,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if (photoList.get(position).isVideo == 1) {
                     recyclerViewHolder.videoImageView.setVisibility(View.VISIBLE);
                     ViewGroup.LayoutParams params2 = recyclerViewHolder.videoImageView.getLayoutParams();
-                    params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
+                    params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 6 * 2)) / (4 * COLUMN_COUNT);
                     params2.height = params2.width;
                     recyclerViewHolder.videoImageView.setLayoutParams(params2);
                 } else {
@@ -136,12 +128,6 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             PictureAirLog.d(" load more ---> " + loadMoreType);
             switch (loadMoreType) {
-                case LOAD_MORE_GONE:
-                    loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
-                    loadMoreViewHolder.tvLoadStatus.setVisibility(View.GONE);
-
-                    break;
-
                 case LOAD_MORE_LOADING:
                     loadMoreViewHolder.pbLoading.setVisibility(View.VISIBLE);
                     loadMoreViewHolder.tvLoadStatus.setVisibility(View.VISIBLE);
@@ -166,11 +152,10 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                     });
                     break;
             }
-        } else if (viewHolder instanceof RecyclerViewSectionViewHolder) {
-            RecyclerViewSectionViewHolder recyclerViewSectionViewHolder = (RecyclerViewSectionViewHolder) viewHolder;
+        } else if (viewHolder instanceof StickySectionHeaderViewHolder) {
+            StickySectionHeaderViewHolder recyclerViewSectionViewHolder = (StickySectionHeaderViewHolder) viewHolder;
 
             String headerTime = AppUtil.getHeaderTime(photoList, position);
-
             try {
                 recyclerViewSectionViewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(headerTime, context));
                 recyclerViewSectionViewHolder.itemView.setContentDescription(AppUtil.dateToSmartDate(headerTime, context));
@@ -216,30 +201,30 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
             tvLoadStatus = (TextView) itemView.findViewById(R.id.tv_load_status);
         }
     }
-    public class RecyclerViewSectionViewHolder extends RecyclerView.ViewHolder {
+    public class StickySectionHeaderViewHolder extends RecyclerView.ViewHolder {
         private CustomTextView storyTimeTextView;
 
-        public RecyclerViewSectionViewHolder(View itemView) {
+        public StickySectionHeaderViewHolder(View itemView) {
             super(itemView);
-
             storyTimeTextView = (CustomTextView) itemView.findViewById(R.id.section_time);
             storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
         }
     }
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    public class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public ImageView videoImageView;
         public RelativeLayout gridItemRL;
 
-        public RecyclerViewHolder(View convertView) {
+        public RecyclerItemViewHolder(View convertView) {
             super(convertView);
             mImageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);
             videoImageView = (ImageView) convertView.findViewById(R.id.play_video_iv);
             gridItemRL = (RelativeLayout) convertView.findViewById(R.id.sticky_grid_view_rl);
             ViewGroup.LayoutParams params = gridItemRL.getLayoutParams();
             //宽度不用设置，会平均分配，大小也正好等于高度的数值
-            params.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * 2)) / COLUMN_COUNT;
+            params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 6 * 2)) / COLUMN_COUNT;
+            params.height = params.width;
             gridItemRL.setLayoutParams(params);
         }
     }

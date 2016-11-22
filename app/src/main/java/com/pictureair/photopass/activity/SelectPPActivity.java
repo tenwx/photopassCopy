@@ -78,7 +78,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
         switch (msg.what){
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, null, true, false, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, null, true, false, false, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {

@@ -60,12 +60,13 @@ public class PWPhotoPassPhotoView extends RelativeLayout {
             frontPlayIV.setVisibility(INVISIBLE);
         }
 
-        if (photoCount >= 12 && position == 11) {
-            countTV.setVisibility(View.VISIBLE);
-            countTV.setText(photoCount + "");
-
-        } else {
-            countTV.setVisibility(View.GONE);
-        }
+//        if (photoCount >= 12 && position == 11) {
+//            countTV.setVisibility(View.VISIBLE);
+//            countTV.setText(photoCount + "");
+//
+//        } else {
+//            countTV.setVisibility(View.GONE);
+//        }
+        countTV.setVisibility(View.GONE);
     }
 }

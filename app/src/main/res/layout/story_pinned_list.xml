@@ -8,19 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <com.pictureair.photopass.widget.PWStickySectionRecyclerView
+            android:id="@+id/pw_sticky_section_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/stickyGridHeadersGridView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:horizontalSpacing="@dimen/pp_dp_5"
-                android:scrollbars="none" />
+            android:layout_height="match_parent"/>
 
-            <include
-                layout="@layout/story_pinned_listview_section"/>
-        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout

@@ -6,6 +6,7 @@ import java.util.List;
 public class PPinfo {
 	private String ppCode;//照片对应pp号码
 	private int photoCount;//照片数量
+	private int visiblePhotoCount;//已经加载过的本地照片数量
 	private int isUpgrade;//是否已经绑定到PP+（0否，1是）
 	private String shootDate;//shootDate
 	private int isHidden;//是否已经隐藏（0否，1是）
@@ -29,6 +30,14 @@ public class PPinfo {
 
 	public void setPhotoCount(int photoCount) {
 		this.photoCount = photoCount;
+	}
+
+	public int getVisiblePhotoCount() {
+		return visiblePhotoCount;
+	}
+
+	public void setVisiblePhotoCount(int visiblePhotoCount) {
+		this.visiblePhotoCount = visiblePhotoCount;
 	}
 
 	public int getIsUpgrade() {
@@ -87,11 +96,12 @@ public class PPinfo {
 		this.isSelected = isSelected;
 	}
 
-	public PPinfo(String ppCode, int photoCount, int isUpgrade, String shootDate, int isHidden, String location,
+	public PPinfo(String ppCode, int photoCount, int visiblePhotoCount, int isUpgrade, String shootDate, int isHidden, String location,
 				  List<HashMap<String, String>> urlList, List<PhotoInfo> selectPhotoItemInfos, int isSelected) {
 		super();
 		this.ppCode = ppCode;
 		this.photoCount = photoCount;
+		this.visiblePhotoCount = visiblePhotoCount;
 		this.isUpgrade = isUpgrade;
 		this.shootDate = shootDate;
 		this.isHidden = isHidden;
@@ -104,10 +114,4 @@ public class PPinfo {
 	public PPinfo() {
 		super();
 	}
-	
-	
-	
-
-	
-
 }

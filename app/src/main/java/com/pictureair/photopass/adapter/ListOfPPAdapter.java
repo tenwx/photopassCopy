@@ -40,6 +40,7 @@ public class ListOfPPAdapter extends BaseAdapter {
     private PWToast myToast;
 
     private boolean isSelete;
+    private boolean showCount;//显示数字
     private Handler mHandler;
     private OnItemChildClickListener childClickListener;
     private int useNumber = 0;//已经使用的个数
@@ -51,11 +52,12 @@ public class ListOfPPAdapter extends BaseAdapter {
     private String userPP;
 
     public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doDeletePhotoListener deleteListner,
-                           boolean isSelete, boolean isDeletePP, Handler mHandler, PPPinfo pppInfo) {
+                           boolean isSelete, boolean isDeletePP, boolean showCount, Handler mHandler, PPPinfo pppInfo) {
         this.arrayList = list;
         this.mContext = mContext;
         this.deleteListner = deleteListner;
         this.isSelete = isSelete;
+        this.showCount = showCount;
         this.mHandler = mHandler;
         this.isDeletePP = isDeletePP;
         myToast = new PWToast(mContext);
@@ -153,10 +155,15 @@ public class ListOfPPAdapter extends BaseAdapter {
 
         // 初始化pp码
         PPinfo ppInfo1 = arrayList.get(position);
-        holder.ppCode.setText(ppInfo1.getPpCode());
+        if (showCount) {
+            holder.ppCode.setText(ppInfo1.getPpCode() + " (" + ppInfo1.getPhotoCount() + ")");
 
+        } else {
+            holder.ppCode.setText(ppInfo1.getPpCode());
+        }
+
+        int photoCount = ppInfo1.getVisiblePhotoCount();
         // 图片显示
-        int photoCount = ppInfo1.getPhotoCount();
         if (photoCount == 0) {
             holder.conerImageView.setImageResource(R.drawable.my_pp_miqi_no_photo);
         } else {
@@ -332,7 +339,7 @@ public class ListOfPPAdapter extends BaseAdapter {
             } else {
                 //选择PP 点击单张直接进入改PP的相册页面
                 if (checkUrl(position)) {
-                    if (arrayList.get(position).getPhotoCount() > 0) {
+                    if (arrayList.get(position).getVisiblePhotoCount() > 0) {
                         //进入相册
                         Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
                         i.putExtra("ppCode", arrayList.get(position).getPpCode());

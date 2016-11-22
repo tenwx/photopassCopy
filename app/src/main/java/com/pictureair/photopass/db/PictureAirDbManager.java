@@ -633,9 +633,10 @@ public class PictureAirDbManager {
                 PPinfo ppInfo1 = new PPinfo();
                 ppInfo1.setPpCode(ppInfo.getPpCode());
                 ppInfo1.setShootDate(ppInfo.getShootDate());
+                ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
                 ppInfo1.setUrlList(urlList);
                 ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
-                ppInfo1.setPhotoCount(count);
+                ppInfo1.setVisiblePhotoCount(count);
                 showPPCodeList.add(ppInfo1);
                 if (cursor != null) {
                     PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");
@@ -871,7 +872,7 @@ public class PictureAirDbManager {
                 }
 
 
-                if (type == API1.GET_NEW_PHOTOS) {
+                if (type == API1.GET_NEW_PHOTOS || type == API1.GET_OLD_PHOTOS) {
                     //1.先查询数据库是否有新的数据，如果有，则更新信息
                     //2.如果没有，则插入
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
