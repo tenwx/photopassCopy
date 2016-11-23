@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -183,11 +184,17 @@ public class DownloadService extends Service {
 
                                 PhotoDownLoadInfo info = infos.get(j);
                                 if (info.getPhotoId().equalsIgnoreCase(fileStatus.getPhotoId())) {
-                                    String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(), fileStatus.isVideo());
-                                    PictureAirLog.out("filename=" + fileName);
+                                    String fileName = "";
                                     File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
                                     filedir.mkdirs();
-                                    File file = new File(filedir + "/" + fileName);
+                                    if (TextUtils.isEmpty(info.getFailedTime())) {//过长的文件名的处理
+                                        fileName = filedir + "/" + AppUtil.getReallyFileName(fileStatus.getUrl(), fileStatus.isVideo());
+                                    } else {
+                                        fileName = info.getFailedTime();
+                                    }
+                                    PictureAirLog.out("filename=" + fileName);
+
+                                    File file = new File(fileName);
                                     if ("true".equalsIgnoreCase(info.getStatus())) {
                                         if (!file.exists()) {
                                             addToDownloadList(fileStatus);

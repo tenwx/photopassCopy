@@ -252,7 +252,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         bannerViewDetail = (ImageView) findViewById(R.id.special_deal_image);
         bannerViewDetail.measure(0,0);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bannerViewDetail.getLayoutParams();
-        params.width = ScreenUtil.getScreenWidth(this) - ScreenUtil.dip2px(this, 32);
+        params.width = ScreenUtil.getScreenWidth(this);
         params.height = (int) (params.width /4.0 * 3);
         bannerViewDetail.setLayoutParams(params);
         tv_price = (CustomTextView) findViewById(R.id.special_deal_price);
