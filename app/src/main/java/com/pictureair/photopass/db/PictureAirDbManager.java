@@ -633,7 +633,13 @@ public class PictureAirDbManager {
                 PPinfo ppInfo1 = new PPinfo();
                 ppInfo1.setPpCode(ppInfo.getPpCode());
                 ppInfo1.setShootDate(ppInfo.getShootDate());
-                ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
+                if (ppInfo.getPhotoCount() == -1) {//需要设置本地数量
+                    ppInfo1.setPhotoCount(count);
+
+                } else {
+                    ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
+
+                }
                 ppInfo1.setUrlList(urlList);
                 ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
                 ppInfo1.setVisiblePhotoCount(count);
@@ -849,6 +855,9 @@ public class PictureAirDbManager {
         database = DBManager.getInstance().writData();
         database.beginTransaction();
         Cursor cursor = null;
+        String repeatTopId = null;
+        String repeatBottomId = null;
+        PictureAirLog.d("photo size -->" + responseArray.size());
         try {
             for (int i = 0; i < responseArray.size(); i++) {
                 JSONObject object = responseArray.getJSONObject(i);
@@ -859,16 +868,19 @@ public class PictureAirDbManager {
 
                 if (type == API1.GET_DEFAULT_PHOTOS) {
                     if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, photo.modifyOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.receiveOn);
                     } else if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, photo.modifyOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.receiveOn);
                     }
                 } else if (type == API1.GET_NEW_PHOTOS) {
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, photo.modifyOn);
+                    if (i == 0) {//记录最新的值
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.receiveOn);
+                    }
 
                 } else if (type == API1.GET_OLD_PHOTOS) {
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, photo.modifyOn);
-
+                    if (i == responseArray.size() - 1) {//记录最后一个值
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.receiveOn);
+                    }
                 }
 
 
@@ -920,6 +932,46 @@ public class PictureAirDbManager {
             }
 
             database.setTransactionSuccessful();
+
+            //获取repeatTopId
+            for (int i = 0; i < resultArrayList.size(); i++) {
+                if (i == 0) {
+                    repeatTopId = resultArrayList.get(i).photoId;
+                } else {
+                    if (resultArrayList.get(0).receiveOn.equals(resultArrayList.get(i).receiveOn)) {
+                        repeatTopId += "," + resultArrayList.get(i).photoId;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //获取repeatBottomId
+            for (int i = resultArrayList.size() - 1; i >= 0; i--) {
+                if (i == resultArrayList.size() - 1) {
+                    repeatBottomId = resultArrayList.get(i).photoId;
+
+                } else {
+                    if (resultArrayList.get(resultArrayList.size() - 1).receiveOn.equals(resultArrayList.get(i).receiveOn)) {
+                        repeatBottomId += "," + resultArrayList.get(i).photoId;
+
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (type == API1.GET_DEFAULT_PHOTOS) {
+                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+
+            } else if (type == API1.GET_NEW_PHOTOS) {
+                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+
+            } else if (type == API1.GET_OLD_PHOTOS) {
+                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+
+            }
         } catch (JSONException e1) {
             e1.printStackTrace();
         } finally {

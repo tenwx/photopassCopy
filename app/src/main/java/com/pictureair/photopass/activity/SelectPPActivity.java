@@ -78,7 +78,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
         switch (msg.what){
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, null, true, false, false, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, null, true, false, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -146,6 +146,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                         PPinfo pPinfo = new PPinfo();
                         pPinfo.setPpCode(finalPhotoCode[i]);
                         pPinfo.setShootDate(shootTime);
+                        pPinfo.setPhotoCount(-1);//不请求网络数据，因此不知道这个值，如果为-1，则使用本地数据处理（在其他地方会处理）
                         PPlist.add(pPinfo);
                     }
                 }

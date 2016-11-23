@@ -40,7 +40,6 @@ public class ListOfPPAdapter extends BaseAdapter {
     private PWToast myToast;
 
     private boolean isSelete;
-    private boolean showCount;//显示数字
     private Handler mHandler;
     private OnItemChildClickListener childClickListener;
     private int useNumber = 0;//已经使用的个数
@@ -52,12 +51,11 @@ public class ListOfPPAdapter extends BaseAdapter {
     private String userPP;
 
     public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doDeletePhotoListener deleteListner,
-                           boolean isSelete, boolean isDeletePP, boolean showCount, Handler mHandler, PPPinfo pppInfo) {
+                           boolean isSelete, boolean isDeletePP, Handler mHandler, PPPinfo pppInfo) {
         this.arrayList = list;
         this.mContext = mContext;
         this.deleteListner = deleteListner;
         this.isSelete = isSelete;
-        this.showCount = showCount;
         this.mHandler = mHandler;
         this.isDeletePP = isDeletePP;
         myToast = new PWToast(mContext);
@@ -155,12 +153,7 @@ public class ListOfPPAdapter extends BaseAdapter {
 
         // 初始化pp码
         PPinfo ppInfo1 = arrayList.get(position);
-        if (showCount) {
-            holder.ppCode.setText(ppInfo1.getPpCode() + " (" + ppInfo1.getPhotoCount() + ")");
-
-        } else {
-            holder.ppCode.setText(ppInfo1.getPpCode());
-        }
+        holder.ppCode.setText(ppInfo1.getPpCode() + " (" + ppInfo1.getPhotoCount() + ")");
 
         int photoCount = ppInfo1.getVisiblePhotoCount();
         // 图片显示

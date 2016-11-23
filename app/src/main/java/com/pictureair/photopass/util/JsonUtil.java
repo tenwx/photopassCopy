@@ -218,8 +218,8 @@ public class JsonUtil {
 
         }
 
-        if (object.containsKey("modifiedOn")) {
-            info.modifyOn = object.getString("modifiedOn");
+        if (object.containsKey("receivedOn")) {
+            info.receiveOn = object.getString("receivedOn");
         }
 
         info.isChecked = 0;

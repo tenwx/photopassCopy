@@ -257,7 +257,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             // seletePP的页面
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, true, true, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, true, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -406,7 +406,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                         deleteAPI();// 提交删除PP
                         deletePosition = position;
                     }
-                }, false, true, true, null, null);
+                }, false, true, null, null);
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
@@ -625,7 +625,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private void getPPList(String code) {
         showPWProgressDialog();
 
-        API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, API1.GET_DEFAULT_PHOTOS, null, code.replace("ppOK", ""));
+        API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, API1.GET_DEFAULT_PHOTOS, null, null, code.replace("ppOK", ""), 20);
     }
 
     /**

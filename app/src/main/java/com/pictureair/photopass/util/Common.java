@@ -222,10 +222,13 @@ public class Common {
     public static final String ppp1 = "ppp";
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
-    public static final String LAST_UPDATE_TOP_PHOTO_MODIFYON = "lastUpdateTopPhotoModifyOn";
-    public static final String LAST_UPDATE_BOTTOM_PHOTO_MODIFYON = "lastUpdateBottomPhotoModifyOn";
-    public static final String GTEMODIFIEDON = "gteModifiedOn";//此时间更新的照片
-    public static final String LTEMODIFIEDON = "lteModifiedOn";//此时间更旧的照片
+    public static final String LAST_UPDATE_TOP_PHOTO_RECEIVE_ON = "lastUpdateTopPhotoReceiveOn";
+    public static final String LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON = "lastUpdateBottomPhotoReceiveOn";
+    public static final String LAST_UPDATE_TOP_PHOTO_IDS = "lastUpdateTopPhotoIds";
+    public static final String LAST_UPDATE_BOTTOM_PHOTO_IDS = "lastUpdateBottomPhotoIds";
+    public static final String GTE_RECEIVE_ON = "gteReceivedOn";//此时间更新的照片
+    public static final String LTE_RECEIVE_ON = "lteReceivedOn";//此时间更旧的照片
+    public static final String REPEAT_ID = "repeatId";//区分重复的id
     public static final String LIMIT = "limit";//获取图片的数量限制
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference

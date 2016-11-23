@@ -290,7 +290,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //数据为0，需要从网上下载
                     PictureAirLog.out("photolist size = 0");
                     //判断是否之前有成功获取过
-                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null);//获取全部图片
+                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
                 } else {
                     PictureAirLog.out("photolist size = " + photoPassPicList.size());
                     //有数据，直接显示
@@ -338,8 +338,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_NEW_PHOTOS,
-                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_MODIFYON, null),
-                        null);//获取更新信息
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, null),
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, null),
+                        null, Common.LOAD_PHOTO_COUNT);//获取更新信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 showLeadView();
                 break;
@@ -347,8 +348,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case StoryFragment.LOAD_MORE:
                 PictureAirLog.d(TAG, "the index of loading more is " + msg.arg1);
                 API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_OLD_PHOTOS,
-                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_MODIFYON, null),
-                        null);//获取更新信息
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, null),
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, null),
+                        null, Common.LOAD_PHOTO_COUNT);//获取更新信息
                 break;
 
             case API1.GET_MORE_PHOTOS_BY_CONDITIONS_FAILED:
@@ -1124,7 +1126,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
-            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null);//获取全部图片
+            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程
@@ -1451,7 +1453,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
             PictureAirLog.d(TAG, "add to bought list" + info.locationId);
             for (int j = 0; j < boughtItemInfoList.size(); j++) {
-                PictureAirLog.d(TAG, "检查之前的是否存在");
+//                PictureAirLog.d(TAG, "检查之前的是否存在");
 
                 if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime)) {
                     PictureAirLog.d(TAG, "已经存在于bought列表");
@@ -1624,7 +1626,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                         break;
                                     } else {
 
-                                        PictureAirLog.out("scan next------>");
+//                                        PictureAirLog.out("scan next------>");
                                     }
                                 }
                             } catch (ParseException e) {
