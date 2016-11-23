@@ -118,7 +118,7 @@ public class StartActivity extends BaseActivity implements Callback {
             boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
 
             if (_id != null && isLogin) {//之前登录过
-                if (Common.NEED_RELOGIN && SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, 0) < versionCode) {//检查是否需要重新登录
+                if (Common.NEED_RELOGIN && SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, 0) < versionCode) {//升级版本之后检查是否需要重新登录
                     SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
 
                     ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
@@ -153,11 +153,15 @@ public class StartActivity extends BaseActivity implements Callback {
 
             } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
                 tarClass = WelcomeActivity.class;
-                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
 
             } else {//无登录，也不是第一次安装，版本不一致，表示升级的版本，进入登录页面
                 tarClass = LoginActivity.class;
+
+            }
+
+            if (code < versionCode) {//更新版本号
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
 
             }
         } catch (NameNotFoundException e) {
