@@ -44,6 +44,8 @@ public class AppExitUtil {
 
                     MyApplication.clearTokenId();
 
+                    Installation.clearId(MyApplication.getInstance());
+
                     //取消通知
                     Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
                     intent.putExtra("status", "disconnect");

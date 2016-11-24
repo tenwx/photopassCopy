@@ -26,9 +26,22 @@ public class Installation {
 				throw new RuntimeException(e);
 			}
 		}
-		PictureAirLog.out("uuid------------>"+sID);
-		
+		PictureAirLog.out("uuid------------> "+sID);
+
 		return sID;
+	}
+
+	/**
+	 * 切换服务器，或者其他情况，可能会导致之前的uuid获取的tokenid一直过期，因此需要清除旧的uuid
+	 * @param context
+     */
+	public synchronized static void clearId(Context context) {
+		PictureAirLog.out("uuid------------> clear");
+		File installation = new File(context.getFilesDir(), INSTALLATION);
+		if (installation.exists()) {
+			installation.delete();
+			sID = null;
+		}
 	}
 
 	private static String readInstallationFile(File installation) throws IOException {

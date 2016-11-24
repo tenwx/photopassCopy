@@ -290,6 +290,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //数据为0，需要从网上下载
                     PictureAirLog.out("photolist size = 0");
                     //判断是否之前有成功获取过
+                    PictureAirLog.out("story flow ---> start get photo from net");
                     API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
                 } else {
                     PictureAirLog.out("photolist size = " + photoPassPicList.size());
@@ -309,7 +310,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
 
-                PictureAirLog.d(TAG, "--------->get photo success");
+                PictureAirLog.d(TAG, "story flow ---> get photo success");
                 saveJsonToSQLite((JSONObject) msg.obj, API1.GET_DEFAULT_PHOTOS);
                 break;
 
@@ -346,7 +347,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case StoryFragment.LOAD_MORE:
-                PictureAirLog.d(TAG, "the index of loading more is " + msg.arg1);
+                PictureAirLog.d(TAG, "story flow ---> start get more form net the index of loading more is " + msg.arg1);
                 API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_OLD_PHOTOS,
                         SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, null),
                         SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, null),
@@ -358,11 +359,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_MORE_PHOTOS_BY_CONDITIONS_SUCCESS:
+                PictureAirLog.out("story flow ---> get photo done");
                 saveJsonToSQLite((JSONObject) msg.obj, API1.GET_OLD_PHOTOS);
 
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
+                PictureAirLog.out("story flow ---> save json done");
                 app.setPushPhotoCount(0);//清空推送消息的数量
                 getPhotoInfoDone = true;
                 getDataFinish();
@@ -382,6 +385,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case DEAL_MORE_PHOTO_DATA_DONE:
+                PictureAirLog.out("story flow ---> save more json done");
                 getMoreDataFinish();
                 break;
 
@@ -401,8 +405,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case GET_MORE_DATA_DONE:
-
-                PictureAirLog.out("start sortdata");
+                PictureAirLog.out("story flow ---> get more data done");
                 sortData(API1.GET_OLD_PHOTOS);
                 break;
 
@@ -428,6 +431,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case SORT_COMPLETED_MORE:
+                PictureAirLog.out("story flow ---> sort more done");
                 EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, false));
                 EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, targetMagicPhotoList, 1, false));
                 EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, targetMagicPhotoList, 2, false));
@@ -437,6 +441,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case LOAD_COMPLETED:
                 //没有成功获取广告信息
+                PictureAirLog.out("story flow ---> deal data done");
                 if (!app.isGetADLocationSuccess()) {
                     PictureAirLog.out("start get ad location");
                     API1.getADLocations(0, fragmentPageStoryHandler);
@@ -448,6 +453,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case SORT_COMPLETED_ALL:
+                PictureAirLog.out("story flow ---> sort data done");
                 if (syncingBoughtPhotos) {//同步购买照片操作
                     syncingBoughtPhotos = false;
                     EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, targetMagicPhotoList, 0, true));
@@ -651,7 +657,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private void getMoreDataFinish() {
         if (loadMoreDataCount > 0) {
-            PictureAirLog.out("get more data");
+            PictureAirLog.out("story flow ---> get more data");
             new Thread(){
                 @Override
                 public void run() {
@@ -677,7 +683,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * @param type      布尔值，是否是获取全部数据
      */
     private void saveJsonToSQLite(final JSONObject jsonObject, final int type) {
-        PictureAirLog.out("start save json");
+        PictureAirLog.out("story flow ---> start save json");
         new Thread() {
             public void run() {
                 synchronized (this) {
@@ -728,7 +734,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        PictureAirLog.out("on create----->story");
+        PictureAirLog.out("story flow ---> on create----->story");
         context = getActivity();
         isOnCreate = true;
         View view = inflater.inflate(R.layout.fragment_story, null);
@@ -812,7 +818,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         //获取API
         isLoading = true;
-
+        PictureAirLog.out("story flow ---> get location info");
         Observable.concat(acache, API2.getLocationInfo(context, app.getTokenId()))
                 .first()
                 .subscribeOn(Schedulers.io())
@@ -821,7 +827,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 .map(new Func1<JSONObject, ArrayList<DiscoverLocationItemInfo>>() {
                     @Override
                     public ArrayList<DiscoverLocationItemInfo> call(JSONObject jsonObject) {
-                        PictureAirLog.d(TAG, "---------->get location success" + jsonObject.toString());
+                        PictureAirLog.d(TAG, "story flow ---> get location success" + jsonObject.toString());
                         locationList.clear();
                         locationList.addAll(AppUtil.getLocation(context, jsonObject.toString(), true));
                         //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
@@ -886,6 +892,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 排序
      */
     private void sortData(final int type) {
+        PictureAirLog.out("story flow ---> start sort data");
         new Thread() {
             @Override
             public void run() {
@@ -922,6 +929,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 控制控件的隐藏或者显示
      */
     private void showViewPager() {
+        PictureAirLog.out("story flow ---> show view");
         if (allItemInfoList != null && allItemInfoList.size() > 0) {//有图片
             PictureAirLog.out("viewpager---->has photos");
 //            more.setVisibility(View.VISIBLE);
@@ -985,6 +993,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
+        PictureAirLog.out("story flow ---> show view done");
         showLeadView();
         isOnCreate = false;
     }
@@ -1210,6 +1219,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * @throws ParseException
      */
     private void getData() {
+        PictureAirLog.out("story flow ---> deal data");
         new Thread(new Runnable() {
             @Override
             public void run() {

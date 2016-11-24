@@ -13,7 +13,7 @@ public class Common {
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
-    public static final boolean NEED_RELOGIN = true;//升级版本，是否需要重新登录
+    public static final int[] NEED_RELOGIN_VERSION_CODE = new int[9];//对应版本号需要重新登录，记录的都是versionCode
 
     /**
      * 外网可访问的8.3测试服务器
@@ -298,7 +298,6 @@ public class Common {
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
     public static final String APP_VERSION_NAME = "version_name";
-    public static final String APP_NEED_RELOGIN = "app_need_relogin";
     public static final String DEFAULT_ADDRESS = "default_address";
     public static final String NEED_FRESH = "need_fresh";
     public static final String LANGUAGE_TYPE = "languageType";

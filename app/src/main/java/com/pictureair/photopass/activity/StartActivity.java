@@ -21,6 +21,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.util.PhotoDownLoadInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -118,7 +119,15 @@ public class StartActivity extends BaseActivity implements Callback {
             boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
 
             if (_id != null && isLogin) {//之前登录过
-                if (Common.NEED_RELOGIN && SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, 0) < versionCode) {//升级版本之后检查是否需要重新登录
+                boolean needReLogin = false;
+                //比较旧版本Old和新版本New之间有没有需要重新登录的版本Target，  target > old， new >= target
+                for (int i = 0; i < Common.NEED_RELOGIN_VERSION_CODE.length; i++) {
+                    if (code < Common.NEED_RELOGIN_VERSION_CODE[i] && versionCode >= Common.NEED_RELOGIN_VERSION_CODE[i]) {
+                        needReLogin = true;
+                        break;
+                    }
+                }
+                if (needReLogin) {//升级版本之后检查是否需要重新登录
                     SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
 
                     ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
@@ -132,6 +141,8 @@ public class StartActivity extends BaseActivity implements Callback {
 
                     MyApplication.clearTokenId();
 
+                    Installation.clearId(MyApplication.getInstance());
+
                     //取消通知
                     Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
                     intent.putExtra("status", "disconnect");
@@ -144,7 +155,6 @@ public class StartActivity extends BaseActivity implements Callback {
                     intent1.putExtras(bundle);
                     MyApplication.getInstance().startService(intent1);
 
-                    SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_NEED_RELOGIN, versionCode);
                     tarClass = LoginActivity.class;
 
                 } else {//直接进入主页面
