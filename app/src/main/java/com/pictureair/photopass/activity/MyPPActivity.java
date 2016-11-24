@@ -357,6 +357,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     }
 
     private void initView() {
+        myApplication = (MyApplication) getApplication();
         pictureAirDbManager = new PictureAirDbManager(this);
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
@@ -390,7 +391,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         pppPop = new PPPPop(this, myPPHandler, PPPPop.MENU_TYPE_PP);
         menuLayout = (RelativeLayout) findViewById(R.id.pp_rl);
         menuLayout.setVisibility(View.VISIBLE);
-        myApplication = (MyApplication) getApplication();
         menuLayout.setOnClickListener(this);
         // 获取PP信息
         showPWProgressDialog();
