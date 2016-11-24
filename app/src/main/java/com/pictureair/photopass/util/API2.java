@@ -325,8 +325,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -392,8 +391,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -444,8 +442,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -561,8 +558,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -619,8 +615,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -677,8 +672,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -726,8 +720,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -783,8 +776,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -843,8 +835,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -901,8 +892,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
         return observable;
 
 
@@ -948,8 +938,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1007,8 +996,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1055,8 +1043,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1111,8 +1098,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1177,8 +1163,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1221,8 +1206,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1271,8 +1255,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1333,8 +1316,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1413,9 +1395,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
-
+                .compose(RxHelper.<JSONObject>handleResult());
         return observable;
 
 
@@ -1463,8 +1443,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1512,8 +1491,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1558,8 +1536,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1614,8 +1591,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
@@ -1661,8 +1637,7 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
 
