@@ -2,12 +2,12 @@ package com.pictureair.photopass;
 
 import android.annotation.TargetApi;
 import android.app.Application;
-import android.graphics.Typeface;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -16,6 +16,8 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
+import com.pictureair.photopass.greendao.DaoMaster;
+import com.pictureair.photopass.greendao.DaoSession;
 import com.pictureair.photopass.receiver.NetBroadCastReciver;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.AESKeyHelper;
@@ -26,6 +28,8 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.FontResource;
+
+import org.greenrobot.greendao.database.Database;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -71,6 +75,8 @@ public class MyApplication extends Application {
     private ConnectivityManager.NetworkCallback networkCallback;
     private NetBroadCastReciver netBroadCastReciver;
 
+    private DaoSession mDaoSession;
+
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -92,10 +98,36 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
+        setDatabase();
         registerConnectDector();
         // 初始化友盟
         UmengUtil.initUmeng();
         PictureAirLog.out("application on create--->");
+    }
+
+    /**
+     * 设置greenDao
+     */
+    private void setDatabase() {
+        // 通过 DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的 SQLiteOpenHelper 对象。
+        // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为 greenDAO 已经帮你做了。
+        // 注意：默认的 DaoMaster.DevOpenHelper 会在数据库升级时，删除所有的表，意味着这将导致数据的丢失。
+        // 所以，在正式的项目中，你还应该做一层封装，来实现数据库的安全升级。
+
+        //创建表
+        DaoMaster.DevOpenHelper mHelper = new DaoMaster.DevOpenHelper(this, "photopass_info.db3");
+        //打开对应的数据库，此处应该使用加密的数据库
+        Database db = Common.USE_ENCRYPTED_DATABASE ? mHelper.getEncryptedWritableDb(PWJniUtil.getSqlCipherKey(Common.APP_TYPE_SHDRPP)) : mHelper.getWritableDb();
+        // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
+        mDaoSession = new DaoMaster(db).newSession();
+    }
+
+    /**
+     * 获取daoSession
+     * @return
+     */
+    public DaoSession getDaoSession() {
+        return mDaoSession;
     }
 
     /**

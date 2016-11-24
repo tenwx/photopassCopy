@@ -278,6 +278,7 @@ public class Common {
     public static final String CACHE_LOCATION_TIMER = "cache_location_time";//计时器
 
     //photo sqlite数据库字段
+    public static final boolean USE_ENCRYPTED_DATABASE = true;//是否使用加密的数据库
     public static final String PHOTOPASS_INFO_NAME = "photopass_info.db3";
     public static final String PHOTOPASS_INFO_TABLE = "photopassinfo";
     public static final String FAVORITE_INFO_TABLE = "favoriteinfo";

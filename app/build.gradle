@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'newlens'
 apply plugin: 'android-apt'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 24
@@ -72,8 +73,14 @@ repositories {
     mavenCentral()
 }
 
+greendao {
+    schemaVersion 3 //指定数据库版本号
+    targetGenDir 'src/main/java' //生成数据库文件的目录
+    daoPackage 'com.pictureair.photopass.greendao' //dao的包名
+}
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //支付宝
     compile files('libs/alipaySdk-20160825.jar')
     //高德地图
@@ -125,7 +132,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     //听云
-    compile "com.networkbench.newlens.agent.android:nbs.newlens.agent:2.4.4"
+    compile 'com.networkbench.newlens.agent.android:nbs.newlens.agent:2.4.4'
     //retrofit + rxjava + rxlifecycle
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'io.reactivex:rxjava:1.2.1'
@@ -135,4 +142,6 @@ dependencies {
     //butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    //greendao
+    compile 'org.greenrobot:greendao:3.2.0'
 }
