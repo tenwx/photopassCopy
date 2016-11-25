@@ -636,7 +636,7 @@
     <string name="special_deal_already_end_content">This session is over</string>
     <string name="special_deal_begin_soon">Will Begin Soon</string>
     <string name="special_deal_buy">Buy Now</string>
-    <string name="special_deal_end">over</string>
+    <string name="special_deal_end">Over</string>
     <string name="special_deal_count_enough">You have reached the maximum number</string>
     <string name="special_deal_title">Special Deal</string>
     <!--special deal-->

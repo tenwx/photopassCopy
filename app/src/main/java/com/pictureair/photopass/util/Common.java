@@ -390,7 +390,7 @@ public class Common {
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
-    public static final int OFFSET = 1;
+    public static final int OFFSET = 2;
 
     //加密
     public static final String USERINFO_SALT = "salt";//加密必须参数

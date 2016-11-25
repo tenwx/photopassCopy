@@ -327,7 +327,10 @@ public class API1 {
 
                 super.onSuccess(jsonObject);
                 try {
-                    ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
+                    byte[] key = ACache.get(MyApplication.getInstance()).getAsBinary(Common.USERINFO_SALT);
+                    if (key == null) {
+                        ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
+                    }
                     SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID,
                             AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
                 } catch (JSONException e) {
