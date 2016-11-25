@@ -133,10 +133,11 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 				PictureAirLog.out(this.ownOn+"_"+another.ownOn);
 				Date date1 = sdf.parse(this.ownOn);
 				Date date2 = sdf.parse(another.ownOn);
-				if (date1.after(date2))
-					return -1;
-				else
-					return 1;
+				return date1.compareTo(date2) * -1;
+//				if (date1.after(date2))
+//					return -1;
+//				else
+//					return 1;
 			} else if (!"".equals(this.ownOn) && "".equals(another.ownOn)) {
 				PictureAirLog.out(this.ownOn+"_"+another.ownOn);
 				return -1;

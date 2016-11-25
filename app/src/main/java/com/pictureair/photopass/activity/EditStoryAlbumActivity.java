@@ -304,6 +304,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						bundle.putInt("position", position);
 						bundle.putString("tab", "editStory");
 						bundle.putString("ppCode", ppCode);
+						bundle.putString("photoId", albumArrayList.get(position).photoId);
 						i.putExtra("bundle", bundle);
 						startActivity(i);
 					}

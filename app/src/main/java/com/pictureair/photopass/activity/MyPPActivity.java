@@ -144,7 +144,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 break;
 
             case UPDATE_UI:
-                PictureAirLog.out("update ui----->");
+                PictureAirLog.out("update ui----->" + showPPCodeList.size());
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, showPPCodeList, 1);// 根据条码从数据库获取图片
                 PictureAirLog.out("pp code size --->" + showPPCodeList.size());
                 // 更新界面  查看pp页面
@@ -236,6 +236,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                         e.printStackTrace();
                     }
                 }
+                PictureAirLog.d("get pps success");
                 updateUI(UPDATE_UI);
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 break;
@@ -509,6 +510,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             needNotifyStoryRefresh = true;
             SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false);
             showPWProgressDialog();
+            PictureAirLog.d("is delete photo from pp");
             updateUI(UPDATE_UI);
         }
     }

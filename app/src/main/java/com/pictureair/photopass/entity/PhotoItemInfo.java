@@ -23,6 +23,7 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 	public int islove;// 地点是否收藏,0：未收藏；1：收藏
 	public double latitude;
 	public double longitude;
+	public int lastInsertPosition;//便于找到插入的索引值
 	
 	public static final Parcelable.Creator<PhotoItemInfo> CREATOR = new Creator<PhotoItemInfo>() {
 
@@ -61,6 +62,7 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 		islove = source.readInt();
 		latitude = source.readDouble();
 		longitude = source.readDouble();
+		lastInsertPosition = source.readInt();
 //		length = source.readInt();
 //		if (length > 0) {
 //			gps = new String[length];
@@ -97,8 +99,10 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 		dest.writeInt(islove);
 
 		dest.writeDouble(latitude);
-		
+
 		dest.writeDouble(longitude);
+
+		dest.writeInt(lastInsertPosition);
 
 	}
 
@@ -112,10 +116,7 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 				PictureAirLog.out("this---->" + this.shootOn + "another----->"+ another.shootOn);
 				Date date1 = sdf.parse(this.shootOn);
 				Date date2 = sdf.parse(another.shootOn);
-				if (date1.after(date2))
-					return -1;
-				else
-					return 1;
+				return date1.compareTo(date2) * -1;
 			} else if (this.shootOn != null && another.shootOn == null) {
 				return -1;
 			} else if (this.shootOn == null && another.shootOn != null) {

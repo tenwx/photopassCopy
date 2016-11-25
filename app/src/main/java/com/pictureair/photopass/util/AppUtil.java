@@ -503,7 +503,8 @@ public class AppUtil {
 //        PictureAirLog.d(TAG, "d1:" + d1.get(Calendar.YEAR) + "d2:" + y2);
         //判断相差几天
         if (days == 0) {//当天的，只需要显示hh:mm
-            result = time.substring(0, 5);
+//            result = time.substring(0, 5);
+            result = context.getString(R.string.today);
         } else if (days == 1) {
             result = context.getString(R.string.yesterday);
         } else if (days == 2) {
@@ -1307,6 +1308,7 @@ public class AppUtil {
                         selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
                         selectPhotoItemInfo.lastModify = files[i].lastModified();
                         date = new Date(selectPhotoItemInfo.lastModify);
+                        selectPhotoItemInfo.photoId = selectPhotoItemInfo.photoPathOrURL;
                         selectPhotoItemInfo.shootOn = sdf.format(date);
                         selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
                         selectPhotoItemInfo.isChecked = 0;

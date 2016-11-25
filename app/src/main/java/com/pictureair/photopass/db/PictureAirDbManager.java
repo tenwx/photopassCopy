@@ -296,6 +296,7 @@ public class PictureAirDbManager {
                         continue;
                     } else {
                         photoInfo.locationName = context.getString(R.string.story_tab_magic);
+                        photoInfo.photoId = photoInfo.photoPathOrURL;
                     }
                 } else {//网络图片
                     PictureAirLog.out("network photos");
@@ -982,6 +983,7 @@ public class PictureAirDbManager {
             database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
+        Collections.sort(resultArrayList);
         return resultArrayList;
     }
 

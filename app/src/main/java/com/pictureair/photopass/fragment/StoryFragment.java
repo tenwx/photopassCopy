@@ -202,20 +202,21 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 			if (photoInfoArrayList.size() == 0) {
 				return;
 			}
+			PictureAirLog.out("click photo---> " + position);
+			PhotoInfo photoInfo = null;
 
 			if (position < 0) {
 				position = 0;
 			} else {
-				position -= photoInfoArrayList.get(position).sectionId + 1;
+				photoInfo = photoInfoArrayList.get(position);
+				position -= photoInfo.sectionId + 1;
 			}
 
-			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {//广告视频
+			if (photoInfo.isVideo == 1 && photoInfo.isPayed == 0) {//广告视频
 				PictureAirLog.v(TAG, "点击了广告视频");
-				PhotoInfo info = photoInfoArrayList.get(position);
-				PictureAirLog.out("未购买的视频");
 
 				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
-				intent.putExtra("videoInfo", info);
+				intent.putExtra("videoInfo", photoInfo);
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
 				bundle.putString("tab", tabName[tab]);
@@ -228,6 +229,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 				i.setClass(getContext(), PreviewPhotoActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
+				bundle.putString("photoId", photoInfo.photoId);
 				bundle.putString("tab", tabName[tab]);
 				i.putExtra("bundle", bundle);
 				getContext().startActivity(i);
@@ -311,13 +313,15 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 			if (storyRefreshEvent.getTab() == tab &&
 					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.START_REFRESH) {//通知页面开始刷新
 				PictureAirLog.out(tab + "------>start refresh from bus");
-				if (!refreshLayout.isRefreshing()) {
+
+				if (!pwStickySectionRecyclerView.isLoadMore() && !refreshLayout.isRefreshing()) {//如果不在加载更多，并且不在刷新，开始刷新数据
+					PictureAirLog.out(tab + "------>start refresh from tab----");
 					refreshLayout.setRefreshing(true);
+					Message message = handler.obtainMessage();
+					message.what = REFRESH;
+					message.arg1 = tab;
+					handler.sendMessage(message);
 				}
-				Message message = handler.obtainMessage();
-				message.what = REFRESH;
-				message.arg1 = tab;
-				handler.sendMessage(message);
 
 				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
 			}

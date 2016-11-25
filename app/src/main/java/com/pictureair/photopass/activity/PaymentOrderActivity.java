@@ -34,6 +34,8 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 import com.unionpay.UPPayAssistEx;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 
 import de.greenrobot.event.EventBus;
@@ -679,59 +681,65 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
      * @param resultJsonObject
      */
     public void dealData(org.json.JSONObject resultJsonObject) {
-        PictureAirLog.v(TAG, "dealData()");
-        Intent intent;
-        if (resultJsonObject.has("pppCode")) {// ppp
-            // product
-            PictureAirLog.v(TAG, "----------------->buy ppp");
-            myApplication.setNeedRefreshPPPList(true);
-            if (myApplication.getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY)) {
-                myApplication.setBuyPPPStatus(Common.FROM_AD_ACTIVITY_PAYED);
+        PictureAirLog.v(TAG, "dealData()" + resultJsonObject.toString());
+        Intent intent = null;
+        try {
+            if (resultJsonObject.has("pppCode") &&
+                    resultJsonObject.getJSONArray("pppCode") != null
+                    && resultJsonObject.getJSONArray("pppCode").length() != 0) {// ppp
+                // product
+                PictureAirLog.v(TAG, "----------------->buy ppp");
+                myApplication.setNeedRefreshPPPList(true);
+                if (myApplication.getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY)) {
+                    myApplication.setBuyPPPStatus(Common.FROM_AD_ACTIVITY_PAYED);
 
-            } else if (myApplication.getBuyPPPStatus().equals(Common.FROM_PREVIEW_PPP_ACTIVITY)) {
-                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY_PAYED);
+                } else if (myApplication.getBuyPPPStatus().equals(Common.FROM_PREVIEW_PPP_ACTIVITY)) {
+                    myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY_PAYED);
 
-            }
-            intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
-            API1.PPPlist.clear();
-
-        } else {
-            // 以下两种情况，进入图片清晰页面
-            PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
-            // 以下三种情况要回到清晰图片页面
-            if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)
-                    || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)
-                    || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
-                PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
-                PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
-                String tab = myApplication.getIsBuyingTabName();
-                String photoId = myApplication.getIsBuyingPhotoId();
-                PictureAirLog.out("tabname---->" + tab + "photoid--->" + photoId);
-
-                intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", -1);
-                bundle.putString("tab", tab);
-                bundle.putString("photoId", photoId);
-                intent.putExtra("bundle", bundle);
-
-                // 清空标记
-                myApplication.clearIsBuyingPhotoList();
-
-                if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
-                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_VIEWORSELECTACTIVITYANDPAYED);
-                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
-                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASSPAYED);
-                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
-                    myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 }
+                intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
+                API1.PPPlist.clear();
 
             } else {
-                // 回到订单页面
-                PictureAirLog.v(TAG, "----------------->回到订单页面 productType： " + productType);
-                intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                intent.putExtra("orderType", productType);
+                // 以下两种情况，进入图片清晰页面
+                PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
+                // 以下三种情况要回到清晰图片页面
+                if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)
+                        || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)
+                        || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
+                    PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
+                    PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
+                    String tab = myApplication.getIsBuyingTabName();
+                    String photoId = myApplication.getIsBuyingPhotoId();
+                    PictureAirLog.out("tabname---->" + tab + "photoid--->" + photoId);
+
+                    intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", -1);
+                    bundle.putString("tab", tab);
+                    bundle.putString("photoId", photoId);
+                    intent.putExtra("bundle", bundle);
+
+                    // 清空标记
+                    myApplication.clearIsBuyingPhotoList();
+
+                    if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
+                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_VIEWORSELECTACTIVITYANDPAYED);
+                    } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
+                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASSPAYED);
+                    } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
+                        myApplication.setRefreshViewAfterBuyBlurPhoto("");
+                    }
+
+                } else {
+                    // 回到订单页面
+                    PictureAirLog.v(TAG, "----------------->回到订单页面 productType： " + productType);
+                    intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                    intent.putExtra("orderType", productType);
+                }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 //        SharedPreferences.Editor editor = sPreferences.edit();
 //        editor.putBoolean(Common.NEED_FRESH, true);

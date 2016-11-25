@@ -1063,6 +1063,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         localPhotoInfo.photoPathOrURL = files[i].getPath();
                         localPhotoInfo.lastModify = files[i].lastModified();
                         date = new Date(localPhotoInfo.lastModify);
+                        localPhotoInfo.photoId = localPhotoInfo.photoPathOrURL;
                         localPhotoInfo.shootOn = sdf.format(date);
                         localPhotoInfo.shootTime = localPhotoInfo.shootOn.substring(0, 10);
                         localPhotoInfo.isChecked = 0;
@@ -1231,6 +1232,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     Date date1;
                     Date date2;
                     Date date3;
+
+                    //排序前，需要将之前的插入状态初始化为-1
+                    for (int i = 0; i < photoPassItemInfoList.size(); i++) {
+                        photoPassItemInfoList.get(i).lastInsertPosition = 0;
+                    }
+
+                    for (int i = 0; i < boughtItemInfoList.size(); i++) {
+                        boughtItemInfoList.get(i).lastInsertPosition = 0;
+                    }
+
                     //处理网络图片
                     for (int l = 0; l < photoPassPicList.size(); l++) {
                         PhotoInfo info = photoPassPicList.get(l);
@@ -1251,20 +1262,25 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
                                 info.locationName = photoPassItemInfoList.get(j).place;
 
-                                for (int k = 0; k < photoPassItemInfoList.get(j).list.size(); k++) {//图片返回没有顺序，因此插入的时候，需要客户端排序
+                                //如果上次插入的索引值为-1，则从0开始，如果不是，则从上次插入的位置开始
+                                for (int k = photoPassItemInfoList.get(j).lastInsertPosition;
+                                     k < photoPassItemInfoList.get(j).list.size(); k++) {//图片返回没有顺序，因此插入的时候，需要客户端排序
                                     date1 = sdf.parse(info.shootOn);
                                     date2 = sdf.parse(photoPassItemInfoList.get(j).list.get(k).shootOn);
                                     if (date1.after(date2)) {
                                         photoPassItemInfoList.get(j).list.add(k, info);
+                                        photoPassItemInfoList.get(j).lastInsertPosition = k;
                                         break;
                                     } else {
                                         if (k == photoPassItemInfoList.get(j).list.size() - 1) {//最后一个
                                             photoPassItemInfoList.get(j).list.add(info);
+                                            photoPassItemInfoList.get(j).lastInsertPosition = k + 1;
                                             break;
                                         } else {
                                             date3 = sdf.parse(photoPassItemInfoList.get(j).list.get(k + 1).shootOn);
                                             if (date1.after(date3)) {
                                                 photoPassItemInfoList.get(j).list.add(k + 1, info);
+                                                photoPassItemInfoList.get(j).lastInsertPosition = k + 1;
                                                 break;
                                             }
                                         }
@@ -1305,6 +1321,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             photoItemInfo.placeUrl = locationList.get(resultPosition).placeUrl;
                             photoItemInfo.latitude = locationList.get(resultPosition).latitude;
                             photoItemInfo.longitude = locationList.get(resultPosition).longitude;
+                            photoItemInfo.lastInsertPosition = 0;
                             photoItemInfo.islove = 0;
                             photoItemInfo.shootOn = info.shootOn;
                             photoPassItemInfoList.add(photoItemInfo);
@@ -1394,22 +1411,25 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 //                    PictureAirLog.d(TAG, "已经存在于bought列表");
 //                    info.locationName = boughtItemInfoList.get(j).place;
                     try {
-                        for (int k = 0; k < boughtItemInfoList.get(j).list.size(); k++) {//图片返回没有顺序，因此插入的时候，需要客户端排序
+                        for (int k = boughtItemInfoList.get(j).lastInsertPosition; k < boughtItemInfoList.get(j).list.size(); k++) {//图片返回没有顺序，因此插入的时候，需要客户端排序
                             date1 = sdf.parse(info.shootOn);
                             date2 = sdf.parse(boughtItemInfoList.get(j).list.get(k).shootOn);
                             if (date1.after(date2)) {
                                 boughtItemInfoList.get(j).list.add(k, info);
+                                boughtItemInfoList.get(j).lastInsertPosition = k;
                                 break;
 
                             } else {
                                 if (k == boughtItemInfoList.get(j).list.size() - 1) {//最后一个
                                     boughtItemInfoList.get(j).list.add(info);
+                                    boughtItemInfoList.get(j).lastInsertPosition = k + 1;
                                     break;
 
                                 } else {
                                     date3 = sdf.parse(boughtItemInfoList.get(j).list.get(k + 1).shootOn);
                                     if (date1.after(date3)) {
                                         boughtItemInfoList.get(j).list.add(k + 1, info);
+                                        boughtItemInfoList.get(j).lastInsertPosition = k + 1;
                                         break;
                                     }
                                 }
@@ -1440,6 +1460,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 photoItemInfo.placeUrl = locationList.get(position).placeUrl;
                 photoItemInfo.latitude = locationList.get(position).latitude;
                 photoItemInfo.longitude = locationList.get(position).longitude;
+                photoItemInfo.lastInsertPosition = 0;
                 photoItemInfo.islove = 0;
                 photoItemInfo.shootOn = info.shootOn;
                 boughtItemInfoList.add(photoItemInfo);
@@ -1469,7 +1490,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     PictureAirLog.d(TAG, "已经存在于bought列表");
 
                     //比较时间，按照时间排序
-                    for (int i = 0; i < boughtItemInfoList.get(j).list.size(); i++) {
+                    for (int i = boughtItemInfoList.get(j).lastInsertPosition; i < boughtItemInfoList.get(j).list.size(); i++) {
                         if (info.isRefreshInfo == 1) {//如果需要刷新旧数据，需要遍历比对photoid，并且替换对应信息
                             if (info.photoId.equals(boughtItemInfoList.get(j).list.get(i).photoId)) {
                                 boughtItemInfoList.get(j).list.get(i).photoPathOrURL = info.photoPathOrURL;
@@ -1488,6 +1509,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
                                     PictureAirLog.out("the lastest time, need add");
                                     boughtItemInfoList.get(j).list.add(i, info);
+                                    boughtItemInfoList.get(j).lastInsertPosition = i;
                                     if (date2.after(date3)) {//当前时间date3之后
                                         boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
                                     }
@@ -1496,6 +1518,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                     if (i == (boughtItemInfoList.get(j).list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                         PictureAirLog.out("the last position, need add");
                                         boughtItemInfoList.get(j).list.add(info);
+                                        boughtItemInfoList.get(j).lastInsertPosition = i + 1;
                                         if (date2.after(date3)) {//当前时间date3之后
                                             boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
                                         }
@@ -1521,6 +1544,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 photoItemInfo.shootTime = info.shootTime;
                 photoItemInfo.place = placeName;
                 photoItemInfo.list.add(info);
+                photoItemInfo.lastInsertPosition = 0;
                 photoItemInfo.placeUrl = placeUrl;
                 photoItemInfo.latitude = latitude;
                 photoItemInfo.longitude = longitude;
@@ -1562,6 +1586,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         boolean findLocation = false;
         //先清除之前旧的列表
         allItemInfoList.removeAll(photoPassItemInfoList);
+
+        //排序前，需要将之前的插入状态初始化为-1
+        for (int i = 0; i < photoPassItemInfoList.size(); i++) {
+            photoPassItemInfoList.get(i).lastInsertPosition = 0;
+        }
+
+        for (int i = 0; i < boughtItemInfoList.size(); i++) {
+            boughtItemInfoList.get(i).lastInsertPosition = 0;
+        }
 
         //将图片按照location加载到list中去
         for (int l = photoPassPicList.size() - refreshCount; l < photoPassPicList.size() && l >= 0; l++) {//遍历所要添加的图片list
@@ -1607,7 +1640,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         findLocation = true;
                         PictureAirLog.out("shootTime一致，直接插入列表");
                         //比较时间，按照时间排序
-                        for (int i = 0; i < p.list.size(); i++) {
+                        for (int i = p.lastInsertPosition; i < p.list.size(); i++) {
                             try {
                                 Date date1 = sdf.parse(p.list.get(i).shootOn);
                                 Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
@@ -1618,6 +1651,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
                                     PictureAirLog.out("the lastest time, need add");
                                     p.list.add(i, info);
+                                    p.lastInsertPosition = i;
                                     PictureAirLog.out("size->" + p.list.size());
                                     if (date2.after(date3)) {//当前时间date3之后
                                         p.shootOn = info.shootOn;//更新shootOn的时间
@@ -1628,6 +1662,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                     if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                         PictureAirLog.out("the last position, need add");
                                         p.list.add(info);
+                                        p.lastInsertPosition = i + 1;
                                         PictureAirLog.out("size->" + p.list.size());
                                         if (date2.after(date3)) {//当前时间date3之后
                                             p.shootOn = info.shootOn;//更新shootOn的时间
@@ -1645,24 +1680,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             }//获取列表中的时间
                         }
                         break;
-//                    } else {//时间不一致，新建列表
-//                        PictureAirLog.out("时间不一致，新建列表");
-//                        itemInfo = new PhotoItemInfo();
-//                        itemInfo.locationId = p.locationId;
-//                        itemInfo.locationIds = p.locationIds;
-//                        itemInfo.shootTime = info.shootTime;
-//                        itemInfo.place = p.place;
-//                        info.locationName = p.place;
-//                        itemInfo.list.add(0, info);
-//                        PictureAirLog.out("size->" + itemInfo.list.size());
-//                        itemInfo.placeUrl = p.placeUrl;
-//                        itemInfo.latitude = p.latitude;
-//                        itemInfo.longitude = p.longitude;
-//                        itemInfo.shootOn = info.shootOn;
-//                        //							itemInfo.gps = p.gps;
-//                        itemInfo.islove = p.islove;
-//                        photoPassItemInfoList.add(0, itemInfo);//放置到列表的顶部
-//                        addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                     }
 
                 }
@@ -1686,6 +1703,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 }
                 itemInfo.list.add(info);
+                itemInfo.lastInsertPosition = 0;
                 itemInfo.placeUrl = locationList.get(resultPosition).placeUrl;
                 itemInfo.latitude = locationList.get(resultPosition).latitude;
                 itemInfo.longitude = locationList.get(resultPosition).longitude;

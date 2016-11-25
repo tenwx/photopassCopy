@@ -192,12 +192,14 @@ public class ListOfPPAdapter extends BaseAdapter {
         holder.image5.setLayoutParams(params);
         holder.image6.setLayoutParams(params);
 
-        holder.image1.initData(ppInfo1.getUrlList().get(0), 0, photoCount);
-        holder.image2.initData(ppInfo1.getUrlList().get(1), 1, photoCount);
-        holder.image3.initData(ppInfo1.getUrlList().get(2), 2, photoCount);
-        holder.image4.initData(ppInfo1.getUrlList().get(3), 3, photoCount);
-        holder.image5.initData(ppInfo1.getUrlList().get(4), 4, photoCount);
-        holder.image6.initData(ppInfo1.getUrlList().get(5), 5, photoCount);
+        if (ppInfo1.getUrlList() != null) {
+            holder.image1.initData(ppInfo1.getUrlList().get(0), 0, photoCount);
+            holder.image2.initData(ppInfo1.getUrlList().get(1), 1, photoCount);
+            holder.image3.initData(ppInfo1.getUrlList().get(2), 2, photoCount);
+            holder.image4.initData(ppInfo1.getUrlList().get(3), 3, photoCount);
+            holder.image5.initData(ppInfo1.getUrlList().get(4), 4, photoCount);
+            holder.image6.initData(ppInfo1.getUrlList().get(5), 5, photoCount);
+        }
         return convertView;
     }
 

@@ -548,7 +548,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
                             pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType()), false));
 
-                } else {//获取列表图片
+                } else {//获取列表图片， other，不需要根据photoid重新找到地点
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
                     if (temp != null) {
                         photolist.addAll(temp);
@@ -568,12 +568,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             break;
                         }
                     }
-                }
-
-                if (currentPosition == -2) {//绑定PP后返回
+                } else if (currentPosition == -2) {//绑定PP后返回
                     String ppsStr = bundle.getString("ppsStr");
                     refreshPP(photolist,ppsStr);
                     currentPosition = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition",0);
+                } else {//其他情况，需要根据photoid找到应对的position位置，再显示
+                    if (tabName.equals("all") ||
+                            tabName.equals("photopass") ||
+                            tabName.equals("bought") ||
+                            tabName.equals("editStory")) {
+                        String photoId = bundle.getString("photoId", "");
+                        for (int i = 0; i < photolist.size(); i++) {
+                            if (photolist.get(i).photoId.equals(photoId)){
+                                currentPosition = i;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if (currentPosition < 0) {
@@ -965,6 +976,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 File file = new File(selectPhotoItemInfo.photoPathOrURL);
                 selectPhotoItemInfo.lastModify = file.lastModified();
                 date = new Date(selectPhotoItemInfo.lastModify);
+                selectPhotoItemInfo.photoId = selectPhotoItemInfo.photoPathOrURL;
                 selectPhotoItemInfo.shootOn = simpleDateFormat.format(date);
                 selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
                 selectPhotoItemInfo.isChecked = 0;

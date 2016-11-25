@@ -5,6 +5,10 @@ import android.os.Parcelable;
 
 import com.pictureair.photopass.util.PictureAirLog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * 图片封装类
  * @author bauer_bao
@@ -144,19 +148,46 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 
 	@Override
 	public int compareTo(PhotoInfo another) {
-		if (another.lastModify == 0 && this.lastModify != 0) {
-			PictureAirLog.out("----->1");
-			return 1;//排后面
-		}else if (this.lastModify > another.lastModify) {
-			PictureAirLog.out("----->2");
-			return -1;//排前面
-		}else if (this.lastModify < another.lastModify) {
-			PictureAirLog.out("----->3");
-			return 1;//排后面
-		}else {
-			PictureAirLog.out("----->4");
+//		此处是本地照片的排序方法
+//		if (another.lastModify == 0 && this.lastModify != 0) {
+//			PictureAirLog.out("----->1");
+//			return 1;//排后面
+//		}else if (this.lastModify > another.lastModify) {
+//			PictureAirLog.out("----->2");
+//			return -1;//排前面
+//		}else if (this.lastModify < another.lastModify) {
+//			PictureAirLog.out("----->3");
+//			return 1;//排后面
+//		}else {
+//			PictureAirLog.out("----->4");
+//		}
+//
+//		return 0;
+		//此处为通用的排序方法
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		PictureAirLog.out("sort photoItemInfo------->");
+		try {
+			if (this.shootOn != null && another.shootOn != null) {
+				PictureAirLog.out("this---->" + this.shootOn + "another----->"+ another.shootOn);
+				Date date1 = sdf.parse(this.shootOn);
+				Date date2 = sdf.parse(another.shootOn);
+				return date1.compareTo(date2) * -1;
+
+//				if (date1.after(date2))
+//					return -1;
+//				else if (date1.before(date2))
+//					return 1;
+//				else
+//					return 0;
+			} else if (this.shootOn != null && another.shootOn == null) {
+				return -1;
+			} else if (this.shootOn == null && another.shootOn != null) {
+				return 1;
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 		return 0;
 	}
 }
