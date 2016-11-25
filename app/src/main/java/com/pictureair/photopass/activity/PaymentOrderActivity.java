@@ -145,8 +145,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         switch (msg.what) {
             case RQF_ERROR:
                 PictureAirLog.v(TAG, "RQF_ERROR");
-                Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                startActivity(intent1);
+                if (fromPanicBuy == 0) {
+                    Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                    startActivity(intent1);
+                }
                 ErrorInPayment();
                 break;
 
@@ -548,7 +550,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
         AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
-        finish();
+        if (fromPanicBuy == 1) {
+            AppManager.getInstance().killActivity(PanicBuyActivity.class);
+            showPWProgressDialog();
+            API1.updateDealingOrder(paymentOrderHandler, orderid, dealingKey);
+        } else {
+            finish();
+        }
     }
 
     // 取消操作处理
