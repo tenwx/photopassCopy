@@ -110,6 +110,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int LOAD_PHOTO_FROM_DB = 1003;
     private static final int GET_REFRESH_DATA_DONE = 1004;
     private static final int GET_MORE_DATA_DONE = 1005;
+    private static final int REFRESH_ALL_PHOTOS = 1006;
 
     private static final String TAG = "FragmentPageStory";
     private String[] titleStrings;
@@ -299,6 +300,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     allItemInfoList.clear();
                     boughtItemInfoList.clear();
                     getData();
+                }
+                break;
+
+            case REFRESH_ALL_PHOTOS:
+                if (!hasHidden) {
+                    showPWProgressDialog();
+                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
+
+                } else {
+                    fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
                 }
                 break;
 
@@ -1821,10 +1832,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         if (baseBusEvent instanceof SocketEvent) {
             SocketEvent socketEvent = (SocketEvent) baseBusEvent;
-            if (!noPhotoView.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
+            if (socketEvent.getType() == SocketEvent.SOCKET_REFRESH_PHOTO) {//刷新全部图片
+                if (!syncingBoughtPhotos) {
+                    syncingBoughtPhotos = true;
+                    fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
+                }
+
+            } else if (!noPhotoView.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
                 syncingBoughtPhotos = true;
                 PictureAirLog.out("start sync------->");
                 fragmentPageStoryHandler.sendEmptyMessageDelayed(SYNC_BOUGHT_PHOTOS, 2000);
+
             } else {
                 PictureAirLog.out("still waiting sync");
             }

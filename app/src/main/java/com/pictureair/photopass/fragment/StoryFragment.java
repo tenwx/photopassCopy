@@ -296,10 +296,15 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 				if (!storyFragmentEvent.isRefresh()) {
 					pwStickySectionRecyclerView.setIsLoadMore(false);
 					pwStickySectionRecyclerView.scrollToPosition(oldCount);
-					if (newCount - oldCount < Common.LOAD_PHOTO_COUNT) {
-						pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
+					if (newCount >= oldCount) {
+						if (newCount - oldCount < Common.LOAD_PHOTO_COUNT) {//说明刷新出来的照片已经小于额定值了，说明没有更多数据了
+							pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
 
+						}
+					} else {//属于删除pp卡操作，因此如果少于一页，可以点击加载更多
+						pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_CLICK_LOAD);
 					}
+
 					oldCount = newCount;
 				}
 				pwStickySectionRecyclerView.notifyDataSetChanged();

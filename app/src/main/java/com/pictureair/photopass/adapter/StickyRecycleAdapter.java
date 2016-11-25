@@ -37,6 +37,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static final int LOAD_MORE_LOADING = 6;//加载中的UI
     public static final int LOAD_MORE_NO_MORE = 7;//没有更多数据的UI
     public static final int LOAD_MORE_FAILED = 8;//加载失败的处理，可以点击，重新请求更多数据
+    public static final int LOAD_MORE_CLICK_LOAD = 9;//如果数据少于1页，并且数据还可以加载，就可以点击，请求更多数据
 
     private static final int COLUMN_COUNT = 3;
 
@@ -142,6 +143,19 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                 case LOAD_MORE_FAILED:
                     loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
                     loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.failed_click_load));
+                    loadMoreViewHolder.tvLoadStatus.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mOnItemClickListener != null) {
+                                mOnItemClickListener.onLoadMoreClick(loadMoreViewHolder.tvLoadStatus, loadMoreViewHolder.getLayoutPosition());
+                            }
+                        }
+                    });
+                    break;
+
+                case LOAD_MORE_CLICK_LOAD:
+                    loadMoreViewHolder.pbLoading.setVisibility(View.GONE);
+                    loadMoreViewHolder.tvLoadStatus.setText(context.getResources().getString(R.string.click_load_more));
                     loadMoreViewHolder.tvLoadStatus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

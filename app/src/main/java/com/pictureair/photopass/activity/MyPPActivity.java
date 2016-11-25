@@ -71,6 +71,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private PictureAirDbManager pictureAirDbManager;
 
     private static final int UPDATE_UI = 10000;
+    private boolean needNotifyStorySync = false;
     private boolean needNotifyStoryRefresh = false;
     private JSONArray pps;
     private MyApplication myApplication;
@@ -167,8 +168,16 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             case API1.REMOVE_PP_SUCCESS:
                 //请求删除API成功 更新界面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
-                    needNotifyStoryRefresh = true;
                     final int deletePosition = (int) msg.obj;
+
+                    if (showPPCodeList.get(deletePosition).getPhotoCount() > 0) {//如果大于0，整个首页刷新
+                        needNotifyStoryRefresh = true;
+
+                    } else {//首页sync，进行本地删除
+                        needNotifyStorySync = true;
+
+                    }
+
                     new Thread() {
                         @Override
                         public void run() {
@@ -507,7 +516,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         }
 
         if (SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false)) {
-            needNotifyStoryRefresh = true;
+            needNotifyStorySync = true;
             SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false);
             showPWProgressDialog();
             PictureAirLog.d("is delete photo from pp");
@@ -549,6 +558,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         super.onDestroy();
         if (needNotifyStoryRefresh) {
             needNotifyStoryRefresh = false;
+            needNotifyStorySync = false;
+            EventBus.getDefault().post(new SocketEvent(false, SocketEvent.SOCKET_REFRESH_PHOTO, null, null, null));
+        }
+
+        if (needNotifyStorySync) {
+            needNotifyStorySync = false;
             PictureAirLog.out("need notify story to refresh");
             EventBus.getDefault().post(new SocketEvent(false, -1, null, null, null));
         }

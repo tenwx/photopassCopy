@@ -108,6 +108,7 @@
     <string name="reload">Refresh</string>
     <string name="nomore">All photos loaded!</string>
     <string name="failed_click_load">Fail to load, please click to re-load!</string>
+    <string name="click_load_more">Click to load more!</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="two_days_ago">2 days ago</string>

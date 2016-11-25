@@ -17,6 +17,10 @@ public class SocketEvent implements BaseBusEvent {
      */
     public static final int SOCKET_PHOTOPASS = 2;
     /**
+     * 需要刷新照片的推送消息
+     */
+    public static final int SOCKET_REFRESH_PHOTO = 3;
+    /**
      * 成功收到推送消息
      */
     private boolean receiveSocket;
