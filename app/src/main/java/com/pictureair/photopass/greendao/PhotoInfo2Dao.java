@@ -15,7 +15,7 @@ import com.pictureair.photopass.entity.PhotoInfo2;
 /** 
  * DAO for table "PHOTO_INFO2".
 */
-public class PhotoInfo2Dao extends AbstractDao<PhotoInfo2, Long> {
+public class PhotoInfo2Dao extends AbstractDao<PhotoInfo2, Void> {
 
     public static final String TABLENAME = "PHOTO_INFO2";
 
@@ -24,9 +24,17 @@ public class PhotoInfo2Dao extends AbstractDao<PhotoInfo2, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property PhotoId = new Property(1, String.class, "photoId", false, "PHOTO_ID");
-        public final static Property PhotoPathOrURL = new Property(2, String.class, "photoPathOrURL", false, "PHOTO_PATH_OR_URL");
+        public final static Property ShootDate = new Property(0, String.class, "shootDate", false, "SHOOT_DATE");
+        public final static Property PresetId = new Property(1, String.class, "presetId", false, "PRESET_ID");
+        public final static Property StrShootOn = new Property(2, String.class, "strShootOn", false, "STR_SHOOT_ON");
+        public final static Property EnImage = new Property(3, boolean.class, "enImage", false, "EN_IMAGE");
+        public final static Property _id = new Property(4, String.class, "_id", false, "_ID");
+        public final static Property ReceivedOn = new Property(5, String.class, "receivedOn", false, "RECEIVED_ON");
+        public final static Property MimeType = new Property(6, String.class, "mimeType", false, "MIME_TYPE");
+        public final static Property LocationId = new Property(7, String.class, "locationId", false, "LOCATION_ID");
+        public final static Property ModifiedOn = new Property(8, String.class, "modifiedOn", false, "MODIFIED_ON");
+        public final static Property ShootOn = new Property(9, String.class, "shootOn", false, "SHOOT_ON");
+        public final static Property IsPaid = new Property(10, boolean.class, "isPaid", false, "IS_PAID");
     }
 
 
@@ -42,9 +50,17 @@ public class PhotoInfo2Dao extends AbstractDao<PhotoInfo2, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PHOTO_INFO2\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"PHOTO_ID\" TEXT," + // 1: photoId
-                "\"PHOTO_PATH_OR_URL\" TEXT);"); // 2: photoPathOrURL
+                "\"SHOOT_DATE\" TEXT," + // 0: shootDate
+                "\"PRESET_ID\" TEXT," + // 1: presetId
+                "\"STR_SHOOT_ON\" TEXT," + // 2: strShootOn
+                "\"EN_IMAGE\" INTEGER NOT NULL ," + // 3: enImage
+                "\"_ID\" TEXT," + // 4: _id
+                "\"RECEIVED_ON\" TEXT," + // 5: receivedOn
+                "\"MIME_TYPE\" TEXT," + // 6: mimeType
+                "\"LOCATION_ID\" TEXT," + // 7: locationId
+                "\"MODIFIED_ON\" TEXT," + // 8: modifiedOn
+                "\"SHOOT_ON\" TEXT," + // 9: shootOn
+                "\"IS_PAID\" INTEGER NOT NULL );"); // 10: isPaid
     }
 
     /** Drops the underlying database table. */
@@ -57,82 +73,159 @@ public class PhotoInfo2Dao extends AbstractDao<PhotoInfo2, Long> {
     protected final void bindValues(DatabaseStatement stmt, PhotoInfo2 entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        String shootDate = entity.getShootDate();
+        if (shootDate != null) {
+            stmt.bindString(1, shootDate);
         }
  
-        String photoId = entity.getPhotoId();
-        if (photoId != null) {
-            stmt.bindString(2, photoId);
+        String presetId = entity.getPresetId();
+        if (presetId != null) {
+            stmt.bindString(2, presetId);
         }
  
-        String photoPathOrURL = entity.getPhotoPathOrURL();
-        if (photoPathOrURL != null) {
-            stmt.bindString(3, photoPathOrURL);
+        String strShootOn = entity.getStrShootOn();
+        if (strShootOn != null) {
+            stmt.bindString(3, strShootOn);
         }
+        stmt.bindLong(4, entity.getEnImage() ? 1L: 0L);
+ 
+        String _id = entity.get_id();
+        if (_id != null) {
+            stmt.bindString(5, _id);
+        }
+ 
+        String receivedOn = entity.getReceivedOn();
+        if (receivedOn != null) {
+            stmt.bindString(6, receivedOn);
+        }
+ 
+        String mimeType = entity.getMimeType();
+        if (mimeType != null) {
+            stmt.bindString(7, mimeType);
+        }
+ 
+        String locationId = entity.getLocationId();
+        if (locationId != null) {
+            stmt.bindString(8, locationId);
+        }
+ 
+        String modifiedOn = entity.getModifiedOn();
+        if (modifiedOn != null) {
+            stmt.bindString(9, modifiedOn);
+        }
+ 
+        String shootOn = entity.getShootOn();
+        if (shootOn != null) {
+            stmt.bindString(10, shootOn);
+        }
+        stmt.bindLong(11, entity.getIsPaid() ? 1L: 0L);
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, PhotoInfo2 entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        String shootDate = entity.getShootDate();
+        if (shootDate != null) {
+            stmt.bindString(1, shootDate);
         }
  
-        String photoId = entity.getPhotoId();
-        if (photoId != null) {
-            stmt.bindString(2, photoId);
+        String presetId = entity.getPresetId();
+        if (presetId != null) {
+            stmt.bindString(2, presetId);
         }
  
-        String photoPathOrURL = entity.getPhotoPathOrURL();
-        if (photoPathOrURL != null) {
-            stmt.bindString(3, photoPathOrURL);
+        String strShootOn = entity.getStrShootOn();
+        if (strShootOn != null) {
+            stmt.bindString(3, strShootOn);
         }
+        stmt.bindLong(4, entity.getEnImage() ? 1L: 0L);
+ 
+        String _id = entity.get_id();
+        if (_id != null) {
+            stmt.bindString(5, _id);
+        }
+ 
+        String receivedOn = entity.getReceivedOn();
+        if (receivedOn != null) {
+            stmt.bindString(6, receivedOn);
+        }
+ 
+        String mimeType = entity.getMimeType();
+        if (mimeType != null) {
+            stmt.bindString(7, mimeType);
+        }
+ 
+        String locationId = entity.getLocationId();
+        if (locationId != null) {
+            stmt.bindString(8, locationId);
+        }
+ 
+        String modifiedOn = entity.getModifiedOn();
+        if (modifiedOn != null) {
+            stmt.bindString(9, modifiedOn);
+        }
+ 
+        String shootOn = entity.getShootOn();
+        if (shootOn != null) {
+            stmt.bindString(10, shootOn);
+        }
+        stmt.bindLong(11, entity.getIsPaid() ? 1L: 0L);
     }
 
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public Void readKey(Cursor cursor, int offset) {
+        return null;
     }    
 
     @Override
     public PhotoInfo2 readEntity(Cursor cursor, int offset) {
         PhotoInfo2 entity = new PhotoInfo2( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // photoId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // photoPathOrURL
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // shootDate
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // presetId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // strShootOn
+            cursor.getShort(offset + 3) != 0, // enImage
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // _id
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // receivedOn
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // mimeType
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // locationId
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // modifiedOn
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // shootOn
+            cursor.getShort(offset + 10) != 0 // isPaid
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, PhotoInfo2 entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPhotoId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setPhotoPathOrURL(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setShootDate(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setPresetId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setStrShootOn(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setEnImage(cursor.getShort(offset + 3) != 0);
+        entity.set_id(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setReceivedOn(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setMimeType(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setLocationId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setModifiedOn(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setShootOn(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setIsPaid(cursor.getShort(offset + 10) != 0);
      }
     
     @Override
-    protected final Long updateKeyAfterInsert(PhotoInfo2 entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected final Void updateKeyAfterInsert(PhotoInfo2 entity, long rowId) {
+        // Unsupported or missing PK type
+        return null;
     }
     
     @Override
-    public Long getKey(PhotoInfo2 entity) {
-        if(entity != null) {
-            return entity.getId();
-        } else {
-            return null;
-        }
+    public Void getKey(PhotoInfo2 entity) {
+        return null;
     }
 
     @Override
     public boolean hasKey(PhotoInfo2 entity) {
-        return entity.getId() != null;
+        // TODO
+        return false;
     }
 
     @Override

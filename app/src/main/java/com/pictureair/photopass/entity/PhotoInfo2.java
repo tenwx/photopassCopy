@@ -1,8 +1,8 @@
 package com.pictureair.photopass.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
-
-import java.util.List;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * 图片封装类
@@ -12,20 +12,6 @@ import java.util.List;
 @Entity
 public class PhotoInfo2 {
     /**
-     * url : media/fff048f44d6deda7710f7bbb371b875a6b45f25c55b722d989880fa987b8a7fbc3a9555b1adb6166b83e0f43b075d3137d858624717a1d81ada10e5e3edb5779
-     */
-
-    private OriginalInfoBean originalInfo;
-    /**
-     * x512 : {"url":"media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef53d312562a3c0eaacb714c9ccf09e943d72cef0aead420b80ccacd3b84678c1ef66cb886012940e12271a30e12e858b"}
-     * x1024 : {"url":"media/7e1fbf09e23ac50aae1421c3fadd101a10a0a9e50d6c3739c32ad92e160bc657ddeb7ad12971fbc44f088d189cecc27f4be03bae8d0363d94bb0d52008585fc22ee119776a76ed1fccb8307afd322e4f","height":683,"width":1024}
-     * x128 : {"url":"media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef21efd76ce649fb7ec87379aba345cc3cfdb0b26af103f4e2b43b15fcbccc7aa01bf9c318e5afab44634c70203eece96"}
-     */
-
-    private ThumbnailBean thumbnail;
-    /**
-     * originalInfo : {"url":"media/fff048f44d6deda7710f7bbb371b875a6b45f25c55b722d989880fa987b8a7fbc3a9555b1adb6166b83e0f43b075d3137d858624717a1d81ada10e5e3edb5779"}
-     * thumbnail : {"x512":{"url":"media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef53d312562a3c0eaacb714c9ccf09e943d72cef0aead420b80ccacd3b84678c1ef66cb886012940e12271a30e12e858b"},"x1024":{"url":"media/7e1fbf09e23ac50aae1421c3fadd101a10a0a9e50d6c3739c32ad92e160bc657ddeb7ad12971fbc44f088d189cecc27f4be03bae8d0363d94bb0d52008585fc22ee119776a76ed1fccb8307afd322e4f","height":683,"width":1024},"x128":{"url":"media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef21efd76ce649fb7ec87379aba345cc3cfdb0b26af103f4e2b43b15fcbccc7aa01bf9c318e5afab44634c70203eece96"}}
      * shootDate : 2016-10-20
      * presetId : 000000000000000000000000
      * strShootOn : 2016-10-20 10:06:57
@@ -40,254 +26,41 @@ public class PhotoInfo2 {
      * isPaid : true
      */
 
-    private String shootDate;
-    private String presetId;
-    private String strShootOn;
-    private boolean enImage;
-    private String _id;
-    private String receivedOn;
-    private String mimeType;
-    private String locationId;
-    private String modifiedOn;
-    private String shootOn;
-    private boolean isPaid;
-    /**
-     * code : SHDRC22AMWK5H4NB
-     */
+    @Id
+    private long id;//自增长id
+    private String photoId;//网络图片的话就是photoId，本地图片的话，就是原始路径
+    private String photoPassCode;//网络图片的PPCode
+    private String shootDate;// 拍摄时间 年月日，用于页面显示
+    private String photoThumbnail_128;//缩略图128尺寸路径
+    private String photoThumbnail_512;//缩略图512尺寸的路径
+    private String photoThumbnail_1024;//缩略图1024尺寸的路径
+    private String photoOriginalURL;//图片的原始路径
+    private String locationId;//照片拍摄地点
+    private String strShootOn;//拍摄时间 年月日时分秒，用来数据库的排序
+    private boolean isPaid;//网络图片是否已经购买属性，1已付，0，未支付
+    private String shareURL;//网络图片分享的URL
+    private int isVideo;//1是视频，0是图片
+    private int fileSize;//文件大小
+    private int videoWidth;//视频文件宽
+    private int videoHeight;//视频文件高
+    private int hasPreset; // 照片是否有模版，0，代表没有模板，1，代表有模版
+    private boolean enImage;//是否是加密的图片 0：未加密；1：已加密
+    private String adURL;//广告链接
+    private int onLine;//1线上图片，0，本地图片
 
-    private List<CustomerIdsBean> customerIds;
+    @Transient
+    private String locationName;//每张图片的地点名称
+    @Transient
+    private String receivedOn;//每张图片到服务器的时间，用于刷新加载操作
+    @Transient
+    private int isRefreshInfo;//0：不需要刷新旧数据，1：需要刷新旧数据列表，只针对刷新的旧图片，其他均用不到
+    @Transient
+    private int sectionId;//悬浮的id
+    @Transient
+    private String failedTime;
+    @Transient
+    private int isChecked;//图片是否被检索到，用在ViewPhotoActivity中的全选操作，1，true，0，false
+    @Transient
+    private int isSelected;//图片是否被选中，1，选中，0，未选中
 
-    public OriginalInfoBean getOriginalInfo() {
-        return originalInfo;
-    }
-
-    public void setOriginalInfo(OriginalInfoBean originalInfo) {
-        this.originalInfo = originalInfo;
-    }
-
-    public ThumbnailBean getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(ThumbnailBean thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public String getShootDate() {
-        return shootDate;
-    }
-
-    public void setShootDate(String shootDate) {
-        this.shootDate = shootDate;
-    }
-
-    public String getPresetId() {
-        return presetId;
-    }
-
-    public void setPresetId(String presetId) {
-        this.presetId = presetId;
-    }
-
-    public String getStrShootOn() {
-        return strShootOn;
-    }
-
-    public void setStrShootOn(String strShootOn) {
-        this.strShootOn = strShootOn;
-    }
-
-    public boolean isEnImage() {
-        return enImage;
-    }
-
-    public void setEnImage(boolean enImage) {
-        this.enImage = enImage;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
-    public String getReceivedOn() {
-        return receivedOn;
-    }
-
-    public void setReceivedOn(String receivedOn) {
-        this.receivedOn = receivedOn;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public String getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(String locationId) {
-        this.locationId = locationId;
-    }
-
-    public String getModifiedOn() {
-        return modifiedOn;
-    }
-
-    public void setModifiedOn(String modifiedOn) {
-        this.modifiedOn = modifiedOn;
-    }
-
-    public String getShootOn() {
-        return shootOn;
-    }
-
-    public void setShootOn(String shootOn) {
-        this.shootOn = shootOn;
-    }
-
-    public boolean isIsPaid() {
-        return isPaid;
-    }
-
-    public void setIsPaid(boolean isPaid) {
-        this.isPaid = isPaid;
-    }
-
-    public List<CustomerIdsBean> getCustomerIds() {
-        return customerIds;
-    }
-
-    public void setCustomerIds(List<CustomerIdsBean> customerIds) {
-        this.customerIds = customerIds;
-    }
-
-    public static class OriginalInfoBean {
-        private String url;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-    }
-
-    public static class ThumbnailBean {
-        /**
-         * url : media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef53d312562a3c0eaacb714c9ccf09e943d72cef0aead420b80ccacd3b84678c1ef66cb886012940e12271a30e12e858b
-         */
-
-        private X512Bean x512;
-        /**
-         * url : media/7e1fbf09e23ac50aae1421c3fadd101a10a0a9e50d6c3739c32ad92e160bc657ddeb7ad12971fbc44f088d189cecc27f4be03bae8d0363d94bb0d52008585fc22ee119776a76ed1fccb8307afd322e4f
-         * height : 683
-         * width : 1024
-         */
-
-        private X1024Bean x1024;
-        /**
-         * url : media/7e1fbf09e23ac50aae1421c3fadd101ab3fcd88949b2b7d2ebc19837f6ac262ef21efd76ce649fb7ec87379aba345cc3cfdb0b26af103f4e2b43b15fcbccc7aa01bf9c318e5afab44634c70203eece96
-         */
-
-        private X128Bean x128;
-
-        public X512Bean getX512() {
-            return x512;
-        }
-
-        public void setX512(X512Bean x512) {
-            this.x512 = x512;
-        }
-
-        public X1024Bean getX1024() {
-            return x1024;
-        }
-
-        public void setX1024(X1024Bean x1024) {
-            this.x1024 = x1024;
-        }
-
-        public X128Bean getX128() {
-            return x128;
-        }
-
-        public void setX128(X128Bean x128) {
-            this.x128 = x128;
-        }
-
-        public static class X512Bean {
-            private String url;
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-        }
-
-        public static class X1024Bean {
-            private String url;
-            private int height;
-            private int width;
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public int getHeight() {
-                return height;
-            }
-
-            public void setHeight(int height) {
-                this.height = height;
-            }
-
-            public int getWidth() {
-                return width;
-            }
-
-            public void setWidth(int width) {
-                this.width = width;
-            }
-        }
-
-        public static class X128Bean {
-            private String url;
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-        }
-    }
-
-    public static class CustomerIdsBean {
-        private String code;
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-    }
 }
