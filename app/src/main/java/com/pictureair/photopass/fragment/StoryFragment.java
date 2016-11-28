@@ -206,10 +206,10 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 			if (position < 0) {
 				position = 0;
 			} else {
-				position -= photoInfoArrayList.get(position).sectionId + 1;
+				position -= photoInfoArrayList.get(position).getSectionId() + 1;
 			}
 
-			if (photoInfoArrayList.get(position).isVideo == 1 && photoInfoArrayList.get(position).isPayed == 0) {//广告视频
+			if (photoInfoArrayList.get(position).getIsVideo() == 1 && photoInfoArrayList.get(position).getIsPaid() == 0) {//广告视频
 				PictureAirLog.v(TAG, "点击了广告视频");
 				PhotoInfo info = photoInfoArrayList.get(position);
 				PictureAirLog.out("未购买的视频");

@@ -387,15 +387,15 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		imageHeight = 1200;
 
 		photoInfo = getIntent().getParcelableExtra("photo");
-		if (photoInfo.onLine == 1) {
+		if (photoInfo.getIsOnLine() == 1) {
 			//网络图片。
-			photoURL = photoInfo.photoThumbnail_1024;
+			photoURL = photoInfo.getPhotoThumbnail_1024();
 			isOnlinePic = true;
-			isEncrypted = AppUtil.isEncrypted(photoInfo.isEncrypted);
+			isEncrypted = AppUtil.isEncrypted(photoInfo.getIsEnImage());
 			loadOnlineImg();
 		}else{
 			//本地图片
-			photoURL = photoInfo.photoPathOrURL;
+			photoURL = photoInfo.getPhotoOriginalURL();
 			isOnlinePic = false;
 			loadImage(photoURL, true);
 		}
@@ -496,7 +496,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							default:
 								break;
 						}
-						if (photoInfo.onLine == 1) {
+						if (photoInfo.getIsOnLine() == 1) {
 
 							// 1.获取需要显示文件的文件名
 							String fileString = AppUtil.getReallyFileName(editPhotoInfoArrayList.get(0).getPhotoPath(), 0);
@@ -1426,7 +1426,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private void cancelFrameEdition() {
 		//恢复到没有裁减的状态。
 		if (editPhotoInfoArrayList.size() == 1 || index == 0){ //代表最初的图片。
-			if (photoInfo.onLine == 1) {
+			if (photoInfo.getIsOnLine() == 1) {
 				loadOnlineImg();
 			}else{
 				loadImage(photoURL, true);
@@ -1464,7 +1464,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			}
 //					mainImage.setImageBitmap(mainBitmap);
 			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-				if (photoInfo.onLine == 1) {
+				if (photoInfo.getIsOnLine() == 1) {
 					loadOnlineImg();
 				}else{
 					loadImage(photoURL, true);
@@ -1477,7 +1477,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		// 如果旋转了
 		if (editType == 4) { // 恢复到原始状态。
 			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-				if (photoInfo.onLine == 1) {
+				if (photoInfo.getIsOnLine() == 1) {
 					loadOnlineImg();
 				}else{
 					loadImage(photoURL, true);

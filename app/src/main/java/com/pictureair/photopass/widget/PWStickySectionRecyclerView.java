@@ -118,7 +118,7 @@ public class PWStickySectionRecyclerView extends FrameLayout {
             @Override
             public int getSpanSize(int position) {
                 if (position > 0 && position < photoInfoArrayList.size() && photoInfoArrayList.get(position) != null
-                        && photoInfoArrayList.get(position).sectionId == photoInfoArrayList.get(position - 1).sectionId) {
+                        && photoInfoArrayList.get(position).getSectionId() == photoInfoArrayList.get(position - 1).getSectionId()) {
                     return 1;
                 } else {
                     return 3;

@@ -68,13 +68,13 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void getReallyVideoUrl(){
-        String fileName = AppUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
+        String fileName = AppUtil.getReallyFileName(videoInfo.getPhotoOriginalURL(),1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
-            videoPath = videoInfo.photoThumbnail_1024;
+            videoPath = videoInfo.getPhotoThumbnail_1024();
             PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {
@@ -82,11 +82,11 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             videoPath = file.getPath();
             isOnline = false;
         }
-        if (videoInfo.videoHeight == 0) {
-            videoInfo.videoHeight = 300;
+        if (videoInfo.getVideoHeight() == 0) {
+            videoInfo.setVideoHeight(300);
         }
-        if (videoInfo.videoWidth == 0) {
-            videoInfo.videoWidth = 400;
+        if (videoInfo.getVideoWidth() == 0) {
+            videoInfo.setVideoWidth(400);
         }
     }
 
@@ -138,10 +138,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         ViewGroup.LayoutParams layoutParams = pwVideoPlayerManagerView.getLayoutParams();
         if (isVertical) {//竖屏
             layoutParams.width = ScreenUtil.getScreenWidth(this);
-            layoutParams.height = layoutParams.width * videoInfo.videoHeight / videoInfo.videoWidth;
+            layoutParams.height = layoutParams.width * videoInfo.getVideoHeight() / videoInfo.getVideoWidth();
         } else {//横屏
             layoutParams.height = ScreenUtil.getScreenHeight(this);
-            layoutParams.width = layoutParams.height * videoInfo.videoWidth / videoInfo.videoHeight;
+            layoutParams.width = layoutParams.height * videoInfo.getVideoWidth() / videoInfo.getVideoHeight();
         }
         pwVideoPlayerManagerView.setVideoScale(layoutParams.width, layoutParams.height);
         pwVideoPlayerManagerView.setLayoutParams(layoutParams);

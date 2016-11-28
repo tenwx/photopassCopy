@@ -187,8 +187,8 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                             PhotoInfo photoInfo = new PhotoInfo();
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
-                            photoInfo.photoId = showPPCodeList.get(j).getPpCode();
-                            photoInfo.shootTime = showPPCodeList.get(j).getShootDate();
+                            photoInfo.setPhotoId(showPPCodeList.get(j).getPpCode());
+                            photoInfo.setShootDate(showPPCodeList.get(j).getShootDate());
                             tempPhotoLists.add(photoInfo);
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block

@@ -187,23 +187,23 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     }
 
                     PhotoInfo info = photoList.get(upload_index - 1);
-                    info.isUploaded = 1;
-                    info.photoId = photoIdString;
-                    info.photoPathOrURL = photoUrlString;
+                    info.setIsUploaded(1);
+                    info.setPhotoId(photoIdString);
+                    info.setPhotoOriginalURL(photoUrlString);
                     photoList.set(upload_index - 1, info);
                 }
                 if (upload_index < photoList.size()) {
-                    if (photoList.get(upload_index).onLine == 0) {//需要将图片上传
-                        if (photoList.get(upload_index).isUploaded == 1) {//已经上传过了
+                    if (photoList.get(upload_index).getIsOnLine() == 0) {//需要将图片上传
+                        if (photoList.get(upload_index).getIsUploaded() == 1) {//已经上传过了
                             PictureAirLog.out("has already uploaded");
                             PhotoInfo selectPhotoItemInfo = photoList.get(upload_index);
-                            selectPhotoItemInfo.photoId = photoList.get(upload_index).photoId;
-                            selectPhotoItemInfo.photoPathOrURL = photoList.get(upload_index).photoPathOrURL;
+                            selectPhotoItemInfo.setPhotoId(photoList.get(upload_index).getPhotoId());
+                            selectPhotoItemInfo.setPhotoOriginalURL(photoList.get(upload_index).getPhotoOriginalURL());
                             photoList.set(upload_index, selectPhotoItemInfo);
                             makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
                         } else {//还没有上传
                             PictureAirLog.out("not uploaded, starting upload");
-                            String photourl = photoList.get(upload_index).photoPathOrURL;
+                            String photourl = photoList.get(upload_index).getPhotoOriginalURL();
                             PictureAirLog.out("上传的图片URL" + photourl);
                             // 需要上传选择的图片
                             File file = new File(photourl);
@@ -222,8 +222,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                         upload_index++;
                     } else {//服务器上获取的图片，只需要将photoid获取就行
                         PhotoInfo info = photoList.get(upload_index);
-                        info.photoId = photoList.get(upload_index).photoId;
-                        info.photoPathOrURL = photoList.get(upload_index).photoThumbnail_512;
+                        info.setPhotoId(photoList.get(upload_index).getPhotoId());
+                        info.setPhotoOriginalURL(photoList.get(upload_index).getPhotoThumbnail_512());
                         photoList.set(upload_index, info);
                         upload_index++;
                         makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
@@ -234,7 +234,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
                     for (int i = 0; i < photoList.size(); i++) {
                         JSONObject photoid = new JSONObject();
-                        photoid.put("photoId", photoList.get(i).photoId);
+                        photoid.put("photoId", photoList.get(i).getPhotoId());
                         embedPhotos.add(photoid);
                     }
                     PictureAirLog.v(TAG, embedPhotos.toString());
@@ -281,9 +281,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     photoListAfterUpload.clear();
                     for (int i = 0; i < photoList.size(); i++) {
                         CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
-                        cartPhotosInfo.setPhotoUrl(photoList.get(i).photoPathOrURL);
-                        cartPhotosInfo.setPhotoId(photoList.get(i).photoId);
-                        cartPhotosInfo.setIsEncrypted(photoList.get(i).isEncrypted);
+                        cartPhotosInfo.setPhotoUrl(photoList.get(i).getPhotoOriginalURL());
+                        cartPhotosInfo.setPhotoId(photoList.get(i).getPhotoId());
+                        cartPhotosInfo.setIsEncrypted(photoList.get(i).getIsEnImage());
                         photoListAfterUpload.add(cartPhotosInfo);
                     }
 
@@ -666,7 +666,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             PhotoInfo info;
             for (int i = 0; i < list.size(); i++) {
                 info = new PhotoInfo();
-                info.photoPathOrURL = list.get(i).photoPathOrURL;
+                info.setPhotoOriginalURL(list.get(i).getPhotoOriginalURL());
 //				info.Id = list.get(i).Id;
                 photoList.add(info);
                 PictureAirLog.out("i=" + i);

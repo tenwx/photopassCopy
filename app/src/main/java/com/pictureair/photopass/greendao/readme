@@ -31,8 +31,8 @@ GreenDao 教程
 
 3.创建bean对象
 
-    @Entity public
-    class PhotoBean { 
+    @Entity 
+    public class PhotoBean { 
         @Id 
         private Long id; 
         private String name; 
@@ -40,6 +40,12 @@ GreenDao 教程
         @Transient 
         private int tempUsageCount;
     }
+
+    @Entity：make project 的时候，优先查找 @Entity，找到，则创建对应的类
+    @Id：主键，自增长
+    @NotNul：不能为空
+    @Transient：不会在数据库中生成对应的列
+    @Property：用于设置属性在数据库中的列名（默认不写就是保持一致）
 
 4.make project，自动生成对应文件
 

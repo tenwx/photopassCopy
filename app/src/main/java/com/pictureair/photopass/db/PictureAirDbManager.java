@@ -15,8 +15,6 @@ import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.API1;
@@ -32,11 +30,9 @@ import net.sqlcipher.SQLException;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -60,396 +56,6 @@ public class PictureAirDbManager {
             DBManager.initializeInstance(photoInfoDBHelper);//初始化数据库操作类
         }
     }
-
-    /**
-     * 收藏或者取消收藏图片
-     *
-     * @param photoInfo 网络图片的id
-     * @param userId
-     * @param setLove   是收藏还是取消收藏操作
-     */
-    public void setPictureLove(PhotoInfo photoInfo, String userId, boolean setLove) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        Cursor cursor = null;
-        try {
-            if (setLove) {//添加收藏，因为收藏按钮是异步执行，所以添加前需要检查是否已经收藏过
-                PictureAirLog.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
-
-                PictureAirLog.out("cursor open---> checklovephoto");
-                if (photoInfo.onLine == 1) {
-                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
-                                    " where photoId = ? and userId = ?",
-                            new String[]{photoInfo.photoId, userId});
-
-                } else {
-                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
-                                    " where userId = ? and originalUrl = ?",
-                            new String[]{userId, photoInfo.photoPathOrURL});
-
-                }
-
-                if (cursor.getCount() == 0) {//之前没有添加过
-                    database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                            new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
-                                    photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
-                                    photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
-                                    photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
-                                    photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
-                                    photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "",
-                                    photoInfo.isHasPreset + "", photoInfo.isEncrypted + "", photoInfo.adURL});
-                }
-
-            } else {//取消收藏
-
-                if (photoInfo.onLine == 1) {
-                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
-                            new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
-                } else {
-                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where userId = ? and originalUrl = ?",
-                            new String[]{userId, photoInfo.photoPathOrURL});
-                }
-
-            }
-            database.setTransactionSuccessful();
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-        }
-    }
-
-    /**
-     * 检查图片是否为收藏图片
-     *
-     * @param photoInfo
-     * @param userId
-     */
-    public boolean checkLovePhoto(PhotoInfo photoInfo, String userId) {
-        boolean result = false;
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().readData();
-            PictureAirLog.out("cursor open---> checklovephoto");
-            if (photoInfo.onLine == 1) {
-
-                cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
-                                " where photoId = ? and userId = ?",
-                        new String[]{photoInfo.photoId, userId});
-            } else {
-                cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
-                                " where userId = ? and originalUrl = ?",
-                        new String[]{userId, photoInfo.photoPathOrURL});
-
-            }
-            result = (cursor.getCount() > 0) ? true : false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close---> check love photo");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return result;
-    }
-
-    /**
-     * 检查图片列表是否为收藏图片，较于checkLovePhoto，可以减少database开关的次数，从而提高效率
-     *
-     * @param originalPhotosArrayList
-     * @param userId
-     */
-    public ArrayList<PhotoItemInfo> checkLovePhotos(ArrayList<PhotoItemInfo> originalPhotosArrayList, String userId) {
-        ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<PhotoItemInfo>();
-        PhotoItemInfo photoItemInfo;
-        ArrayList<PhotoInfo> photoInfos;
-        PhotoInfo photoInfo;
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            for (int i = 0; i < originalPhotosArrayList.size(); i++) {
-                photoItemInfo = new PhotoItemInfo();
-                photoItemInfo.locationId = originalPhotosArrayList.get(i).locationId;
-                photoItemInfo.locationIds = originalPhotosArrayList.get(i).locationIds;
-                photoItemInfo.shootTime = originalPhotosArrayList.get(i).shootTime;
-                photoItemInfo.shootOn = originalPhotosArrayList.get(i).shootOn;
-                photoItemInfo.place = originalPhotosArrayList.get(i).place;
-                photoItemInfo.list = originalPhotosArrayList.get(i).list;
-                photoItemInfo.placeUrl = originalPhotosArrayList.get(i).placeUrl;
-                photoItemInfo.islove = originalPhotosArrayList.get(i).islove;
-                photoItemInfo.latitude = originalPhotosArrayList.get(i).latitude;
-                photoItemInfo.longitude = originalPhotosArrayList.get(i).longitude;
-
-                photoInfos = new ArrayList<>();
-                photoInfos.addAll(photoItemInfo.list);
-                Iterator<PhotoInfo> iterator = photoInfos.iterator();
-                while (iterator.hasNext()) {
-                    photoInfo = iterator.next();
-                    //检查是否是收藏图片
-                    if (photoInfo.photoId == null) {
-                        photoInfo.photoId = "";
-                    }
-                    if (photoInfo.photoPathOrURL == null) {
-                        photoInfo.photoPathOrURL = "";
-                    }
-                    PictureAirLog.out("cursor open ---> check love photos");
-                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
-                            new String[]{(photoInfo.photoId != null) ? photoInfo.photoId : "", userId,
-                                    (photoInfo.photoPathOrURL != null) ? photoInfo.photoPathOrURL : ""});
-                    if (cursor.getCount() > 0) {//是收藏的图片
-                        photoInfo.isLove = 1;
-                    } else {//不是收藏图片
-                        iterator.remove();
-                    }
-                    if (cursor != null) {
-                        PictureAirLog.out("cursor close ---> check love photos");
-                        cursor.close();
-                    }
-                }
-                if (photoInfos.size() > 0) {//有收藏图片
-                    photoItemInfo.list = photoInfos;
-                    resultArrayList.add(photoItemInfo);
-                    PictureAirLog.d(TAG, "photo size " + photoItemInfo.list.size());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> check love photos");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return resultArrayList;
-    }
-
-
-    /**
-     * 通过userId获取降序排列的已收藏图片列表
-     *
-     * @param userId
-     * @return
-     */
-    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(Context context, String userId, String deleteTime, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
-        ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
-        Cursor cursor = null;
-        Cursor cursor1 = null;
-        try {
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> getFavoritePhotoInfoListFromDB");
-
-            //根据当前时间，删除超过30天并且未支付的数据信息
-            /**
-             * 1.获取当前时间，以毫秒为单位
-             * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
-             */
-            database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
-
-            cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where userId = ? order by shootOn desc", new String[]{userId});
-            PhotoInfo photoInfo;
-            File file;
-            while (cursor.moveToNext()) {
-                photoInfo = new PhotoInfo();
-                photoInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
-                photoInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
-                photoInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
-                photoInfo.photoPathOrURL = cursor.getString(cursor.getColumnIndex("originalUrl"));
-                photoInfo.photoThumbnail = cursor.getString(cursor.getColumnIndex("previewUrl"));
-                photoInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
-                photoInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
-                photoInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
-                photoInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
-                photoInfo.isLove = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isLove")));
-                photoInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
-                photoInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
-                photoInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
-                photoInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));
-                photoInfo.fileSize = Integer.valueOf(cursor.getString(cursor.getColumnIndex("fileSize")));
-                photoInfo.videoWidth = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoWidth")));
-                photoInfo.videoHeight = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoHeight")));
-                photoInfo.onLine = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isOnLine")));
-                photoInfo.isHasPreset = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isHasPreset")));
-                photoInfo.isEncrypted = Integer.valueOf(cursor.getString(cursor.getColumnIndex("enImg")));
-                photoInfo.adURL = cursor.getString(cursor.getColumnIndex("adURL"));
-                if (photoInfo.isPayed == 0) {//如果为0，检查photo表是否是已经购买状态
-                    cursor1 = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and isPay = ?", new String[]{photoInfo.photoId, "1"});
-                    if (cursor1.getCount() > 0) {
-                        photoInfo.isPayed = 1;
-                    }
-                    if (cursor1 != null) {
-                        cursor1.close();
-                    }
-                }
-                if (photoInfo.onLine == 0) {//本地图片，检查是否存在
-                    PictureAirLog.out("local photos");
-                    file = new File(photoInfo.photoPathOrURL);
-                    if (!file.exists()) {
-                        continue;
-                    } else {
-                        photoInfo.locationName = context.getString(R.string.story_tab_magic);
-                    }
-                } else {//网络图片
-                    PictureAirLog.out("network photos");
-                    for (int i = 0; i < locationItemInfos.size(); i++) {
-                        PictureAirLog.out("find favorite location---->");
-                        if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
-                            PictureAirLog.out("found favorite location---->");
-                            if (language.equals(Common.ENGLISH)) {
-                                PictureAirLog.out("found favorite endligh location---->");
-                                photoInfo.locationName = locationItemInfos.get(i).placeENName;
-                            } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                                PictureAirLog.out("found favorite chinese location---->");
-                                photoInfo.locationName = locationItemInfos.get(i).placeCHName;
-                            }
-                            break;
-                        }
-                    }
-                    if (TextUtils.isEmpty(photoInfo.locationName)) {
-                        if (language.equals(Common.ENGLISH)) {
-                            PictureAirLog.out("found favorite endligh location---->");
-                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeENName;
-                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                            PictureAirLog.out("found favorite chinese location---->");
-                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeCHName;
-                        }
-                    }
-                }
-                resultArrayList.add(photoInfo);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            PictureAirLog.out("cursor close ---> getFavoritePhotoInfoListFromDB");
-            if (cursor != null)
-                cursor.close();
-            if (cursor1 != null) {
-                cursor1.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-
-        return resultArrayList;
-    }
-
-
-    /**
-     * 插入问题答案信息
-     *
-     * @param questionArrayList
-     */
-//    public void insertIntoQuestionTable(ArrayList<QuestionInfo> questionArrayList) {
-//        database = DBManager.getInstance().writData();
-//        database.beginTransaction();
-//        try {
-//            database.delete(Common.HELP_QUESTION_TABLE, null, null);
-//
-//            System.out.println("title size" + questionArrayList.size());
-//            String addsql = "insert into " + Common.HELP_QUESTION_TABLE + " values(null,?,?,?,?)";
-//            for (int i = 0; i < questionArrayList.size(); i++) {
-//                System.out.println("inserting data into database:" + i);
-//                database.execSQL(addsql, new String[]{i + "", questionArrayList.get(i).questionName, questionArrayList.get(i).answer, PinYin.getPinYin(questionArrayList.get(i).questionName)});
-//            }
-//            database.setTransactionSuccessful();
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//        } finally {
-//            database.endTransaction();
-//            DBManager.getInstance().closeDatabase();
-//        }
-//    }
-
-    /**
-     * 在问题答案表中查询所有信息
-     *
-     * @return
-     */
-    public ArrayList<QuestionInfo> findAllQuestions() {
-        ArrayList<QuestionInfo> resultArray = new ArrayList<QuestionInfo>();
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> findAllQuestions");
-            cursor = database.rawQuery("select * from " + Common.HELP_QUESTION_TABLE, null);
-            QuestionInfo question = null;
-            //			cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                question = new QuestionInfo();
-                question.questionId = cursor.getString(cursor.getColumnIndex("questionId"));
-                question.questionName = cursor.getString(cursor.getColumnIndex("question"));
-                question.answer = cursor.getString(cursor.getColumnIndex("answer"));
-                resultArray.add(question);
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> findAllQuestions");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return resultArray;
-    }
-
-    /**
-     * 查询问题表中的单个记录
-     *
-     * @param pinyin
-     * @return
-     */
-    public ArrayList<QuestionInfo> queryQuestionInfo(String pinyin) {
-        ArrayList<QuestionInfo> resultArray = new ArrayList<QuestionInfo>();
-        database = DBManager.getInstance().writData();
-        Cursor cursor = null;
-        try {
-            // 创建模糊查询的条件
-            String likeStr = "'";
-            String[] words = pinyin.split(" ");
-
-            for (int i = 0; i < words.length; i++) {
-                if (i < words.length - 1) {
-                    likeStr += "%" + words[i];
-                } else {
-                    likeStr += "%" + words[i] + "%'";
-                }
-            }
-            PictureAirLog.out("cursor open ---> queryQuestionInfo");
-            cursor = database.rawQuery("select * from "
-                    + Common.HELP_QUESTION_TABLE + " where pinyin like " + likeStr, null);
-            QuestionInfo question = null;
-            //			cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                question = new QuestionInfo();
-                question.questionName = cursor.getString(cursor.getColumnIndex("question"));
-                question.questionId = cursor.getString(cursor.getColumnIndex("questionId"));
-                question.answer = cursor.getString(cursor.getColumnIndex("answer"));
-                resultArray.add(question);
-            }
-            PictureAirLog.out("-------find the question and the size is " + resultArray.size());
-
-        } catch (Exception e) {
-            // TODO: handle exception
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> queryQuestionInfo");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-
-        return resultArray;
-    }
-
 
     /**
      * 插入设置中的状态
@@ -539,8 +145,8 @@ public class PictureAirDbManager {
             if (cursor.moveToFirst()) {
                 do {
                     PhotoInfo photoInfo = new PhotoInfo();
-                    photoInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
-                    photoInfo.photoPathOrURL = Common.PHOTO_URL + cursor.getString(cursor.getColumnIndex("originalUrl"));
+                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+                    photoInfo.setPhotoOriginalURL(Common.PHOTO_URL + cursor.getString(cursor.getColumnIndex("originalUrl")));
                     photoInfos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
@@ -679,20 +285,20 @@ public class PictureAirDbManager {
                     // 获取图片路径
                     PhotoInfo photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                     for (int i = 0; i < locationItemInfos.size(); i++) {
-                        if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
+                        if (photoInfo.getLocationId().equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.getLocationId())) {
                             if (language.equals(Common.ENGLISH)) {
-                                photoInfo.locationName = locationItemInfos.get(i).placeENName;
+                                photoInfo.setLocationName(locationItemInfos.get(i).placeENName);
                             } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                                photoInfo.locationName = locationItemInfos.get(i).placeCHName;
+                                photoInfo.setLocationName(locationItemInfos.get(i).placeCHName);
                             }
                             break;
                         }
                     }
-                    if (TextUtils.isEmpty(photoInfo.locationName)) {
+                    if (TextUtils.isEmpty(photoInfo.getLocationName())) {
                         if (language.equals(Common.ENGLISH)) {
-                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeENName;
+                            photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeENName);
                         } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeCHName;
+                            photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeCHName);
                         }
                     }
                     selectPhotoItemInfos.add(photoInfo);
@@ -722,24 +328,14 @@ public class PictureAirDbManager {
             database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
                             "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                             "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                            "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
+                            "isPay = ?, locationName = ?, shareURL = ?," +
                             "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                    new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
-                            photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                            photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
-                            photo.locationCountry, photo.shareURL, photo.fileSize + "",
-                            photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
+                    new String[]{photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
+                            photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
+                            photo.getLocationId(), photo.getStrShootOn(), photo.getIsPaid() + "", photo.getLocationName(),
+                            photo.getShareURL(), photo.getFileSize() + "", photo.getVideoWidth() + "", photo.getVideoHeight() + "",
+                            photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getPhotoId()});
 
-            database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ?, " +
-                            "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
-                            "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                            "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
-                            "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                    new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
-                            photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                            photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
-                            photo.locationCountry, photo.shareURL,  photo.fileSize + "",
-                            photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -757,10 +353,8 @@ public class PictureAirDbManager {
         try {
             if (isDelete) {//删除操作
                 database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
-                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
             } else {//同步操作
                 database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
-                database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -781,10 +375,8 @@ public class PictureAirDbManager {
         try {
             if (isDelete) {//删除操作
                 database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
-                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
             } else {//同步
                 database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
-                database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -862,24 +454,24 @@ public class PictureAirDbManager {
             for (int i = 0; i < responseArray.size(); i++) {
                 JSONObject object = responseArray.getJSONObject(i);
                 PhotoInfo photo = JsonUtil.getPhoto(object);
-                if (photo.locationId == null || photo.locationId.equals("")) {
-                    photo.locationId = "others";
+                if (TextUtils.isEmpty(photo.getLocationId())) {
+                    photo.setLocationId("others");
                 }
 
                 if (type == API1.GET_DEFAULT_PHOTOS) {
                     if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.receiveOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
                     } else if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.receiveOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
                     }
                 } else if (type == API1.GET_NEW_PHOTOS) {
                     if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.receiveOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
                     }
 
                 } else if (type == API1.GET_OLD_PHOTOS) {
                     if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.receiveOn);
+                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
                     }
                 }
 
@@ -888,31 +480,20 @@ public class PictureAirDbManager {
                     //1.先查询数据库是否有新的数据，如果有，则更新信息
                     //2.如果没有，则插入
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
-                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.photoId});
+                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.getPhotoId()});
                     if (cursor.getCount() > 0) {//说明存在此数据，需要更新下数据
                         database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
                                 "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                                 "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                                "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
+                                "isPay = ?, locationCountry = ?, shareURL = ?," +
                                 "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                                new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
-                                        photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                                        photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
-                                        photo.locationCountry, photo.shareURL, photo.fileSize + "",
-                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
+                                new String[]{photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
+                                        photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
+                                        photo.getLocationId(), photo.getStrShootOn(), photo.getIsPaid() + "", photo.getLocationName(),
+                                        photo.getShareURL(), photo.getFileSize() + "", photo.getVideoWidth() + "",
+                                        photo.getVideoHeight() + "", photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getPhotoId()});
 
-                        database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ?, " +
-                                "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
-                                "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                                "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
-                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                                new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
-                                        photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                                        photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
-                                        photo.locationCountry, photo.shareURL,  photo.fileSize + "",
-                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
-
-                        photo.isRefreshInfo = 1;
+                        photo.setIsRefreshInfo(1);
                         cursor.close();
                         resultArrayList.add(photo);
                         continue;
@@ -923,12 +504,12 @@ public class PictureAirDbManager {
 
                 resultArrayList.add(photo);
                 //将数据插入到数据库
-                database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-                        photo.photoId, photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
-                        photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                        photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
-                        photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
-                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.adURL});
+                database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+                        photo.getPhotoId(), photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
+                        photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
+                        photo.getLocationId(), photo.getStrShootOn(), 0 + "", photo.getIsPaid() + "", photo.getLocationName(),
+                        photo.getShareURL(), photo.getIsVideo() + "", photo.getFileSize() + "",
+                        photo.getVideoWidth() + "", photo.getVideoHeight() + "", photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getAdURL()});
             }
 
             database.setTransactionSuccessful();
@@ -936,10 +517,10 @@ public class PictureAirDbManager {
             //获取repeatTopId
             for (int i = 0; i < resultArrayList.size(); i++) {
                 if (i == 0) {
-                    repeatTopId = resultArrayList.get(i).photoId;
+                    repeatTopId = resultArrayList.get(i).getPhotoId();
                 } else {
-                    if (resultArrayList.get(0).receiveOn.equals(resultArrayList.get(i).receiveOn)) {
-                        repeatTopId += "," + resultArrayList.get(i).photoId;
+                    if (resultArrayList.get(0).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                        repeatTopId += "," + resultArrayList.get(i).getPhotoId();
                     } else {
                         break;
                     }
@@ -949,11 +530,11 @@ public class PictureAirDbManager {
             //获取repeatBottomId
             for (int i = resultArrayList.size() - 1; i >= 0; i--) {
                 if (i == resultArrayList.size() - 1) {
-                    repeatBottomId = resultArrayList.get(i).photoId;
+                    repeatBottomId = resultArrayList.get(i).getPhotoId();
 
                 } else {
-                    if (resultArrayList.get(resultArrayList.size() - 1).receiveOn.equals(resultArrayList.get(i).receiveOn)) {
-                        repeatBottomId += "," + resultArrayList.get(i).photoId;
+                    if (resultArrayList.get(resultArrayList.size() - 1).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                        repeatBottomId += "," + resultArrayList.get(i).getPhotoId();
 
                     } else {
                         break;
@@ -995,13 +576,11 @@ public class PictureAirDbManager {
         database.beginTransaction();
         try {
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).photoPassCode.equals(ppCode)) {//只有一张卡
-                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).photoId, ppCode});
-                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).photoId, ppCode});
+                if (list.get(i).getPhotoPassCode().equals(ppCode)) {//只有一张卡
+                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).getPhotoId(), ppCode});
                 } else {//有多张卡
-                    String newPPCode = list.get(i).photoPassCode.replace(ppCode, "");
-                    database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).photoId});
-                    database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).photoId});
+                    String newPPCode = list.get(i).getPhotoPassCode().replace(ppCode, "");
+                    database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).getPhotoId()});
                 }
             }
             database.setTransactionSuccessful();
@@ -1039,7 +618,7 @@ public class PictureAirDbManager {
         try {
             for (int i = 0; i < deletePhotos.size(); i++) {
                 //2
-                deletePPCode = deletePhotos.get(i).photoPassCode;
+                deletePPCode = deletePhotos.get(i).getPhotoPassCode();
                 PictureAirLog.out("deletePPCode--->" + deletePPCode);
                 //3
                 for (int j = 0; j < ppList.size(); j++) {
@@ -1056,8 +635,7 @@ public class PictureAirDbManager {
 
                 //5
                 if (needDelete) {//需要删除
-                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).photoId});
-                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).photoId});
+                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).getPhotoId()});
                 } else {
                     needDelete = true;
                 }
@@ -1160,7 +738,7 @@ public class PictureAirDbManager {
             DBManager.getInstance().closeDatabase();
         }
 
-        return AppUtil.isOldVersionOfTheVideo(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail);
+        return AppUtil.isOldVersionOfTheVideo(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_128());
     }
 
     /**

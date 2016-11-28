@@ -137,7 +137,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                  * 3.设置跳转到story标记
                  */
                 // 找出购买的info，并且将购买属性改为1
-                photoURLlist.get(0).isPayed = 1;
+                photoURLlist.get(0).setIsPaid(1);
 
                 Intent intent = new Intent(SelectPhotoActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
@@ -245,11 +245,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private ArrayList<PhotoInfo> transferPhotoItemInfoToPhotoInfo() {
         ArrayList<PhotoInfo> list = new ArrayList<>();
         for (PhotoInfo photoInfo : photopassList) {
-            photoInfo.isChecked = 1;
-            photoInfo.isSelected = 0;
-            photoInfo.showMask = 0;
+            photoInfo.setIsChecked(1);
+            photoInfo.setIsSelected(0);
             if (activity.equals("mypppactivity")) {//ppp体验卡选图使用未购买的图片
-                if (photoInfo.isPayed == 0) {
+                if (photoInfo.getIsPaid() == 0) {
                     list.add(photoInfo);
                 }
             } else {
@@ -260,11 +259,11 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 }
                 //数码照片--是则获取未购买的图片 礼物--获取全部
                 if (!goodsInfo.getIsAllowBuy()) {
-                    if (photoInfo.isPayed == 0) {
+                    if (photoInfo.getIsPaid() == 0) {
                         list.add(photoInfo);
                     }
                 } else {//需要排除纪念照，纪念照不允许制作
-                    if (!photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                    if (!photoInfo.getLocationId().equals("photoSouvenirs")) {//排除纪念照的照片
                         list.add(photoInfo);
                     }
                 }
@@ -302,12 +301,11 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
             //判断数量
             if (selectedCount >= 0) {
                 PictureAirLog.v(TAG, selectedCount + "current:" + position);
-                if (info.isSelected == 1) {//取消选中
+                if (info.getIsSelected() == 1) {//取消选中
                     if (photoURLlist.contains(info)) {//存在
                         photoURLlist.remove(info);
                     }
-                    info.isSelected = 0;
-                    info.showMask = 0;
+                    info.setIsSelected(0);
                     selectedCount--;
                     PictureAirLog.v(TAG, "点过了，取消选中");
                     int visiblePos = gridView.getFirstVisiblePosition();
@@ -315,9 +313,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);
                 } else {
                     if (selectedCount < photocount) {
-                        info.isSelected = 1;
-                        info.showMask = 1;
-                        PictureAirLog.v(TAG, "没点过，选中 url: " + info.photoPathOrURL);
+                        info.setIsSelected(1);
+                        PictureAirLog.v(TAG, "没点过，选中 url: " + info.getPhotoOriginalURL());
                         selectedCount++;
                         int visiblePos = gridView.getFirstVisiblePosition();
                         viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);
@@ -384,7 +381,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     setResult(20, intent);
                     finish();
                 } else if (activity.equals("cartactivity")) {
-                    PictureAirLog.v(TAG, "提交按钮: " + photoURLlist.get(0).photoPathOrURL);
+                    PictureAirLog.v(TAG, "提交按钮: " + photoURLlist.get(0).getPhotoOriginalURL());
                     intent = new Intent();
                     intent.putExtra("photopath", photoURLlist);
                     setResult(20, intent);
@@ -394,7 +391,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     showPWProgressDialog();
                     JSONArray photoIds = new JSONArray();
                     for (int i = 0; i < photoURLlist.size(); i++) {
-                        photoIds.add(photoURLlist.get(i).photoId);
+                        photoIds.add(photoURLlist.get(i).getPhotoId());
                     }
                     API1.useExperiencePPP(getIntent().getStringExtra("pppCode"), photoIds, selectPhotoHandler);
                 }

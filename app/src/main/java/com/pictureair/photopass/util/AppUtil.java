@@ -832,38 +832,33 @@ public class AppUtil {
             for (int j = 0; j < list.get(i).list.size(); j++) {
                 temp2 = list.get(i).list.get(j);
                 temp = new PhotoInfo();
-                temp.sectionId = i;
-                temp.photoId = temp2.photoId;
-                temp.photoPathOrURL = temp2.photoPathOrURL;
-                temp.photoThumbnail = temp2.photoThumbnail;
-                temp.photoThumbnail_512 = temp2.photoThumbnail_512;
-                temp.photoThumbnail_1024 = temp2.photoThumbnail_1024;
-                temp.photoPassCode = temp2.photoPassCode;
-                temp.isPayed = temp2.isPayed;
-                temp.isChecked = temp2.isChecked;
-                temp.isSelected = temp2.isSelected;
-                temp.showMask = temp2.showMask;
-                temp.lastModify = temp2.lastModify;
-                temp.shootOn = temp2.shootOn;
-                temp.shootTime = temp2.shootTime;
-                temp.locationName = temp2.locationName;
-                temp.onLine = temp2.onLine;
-                temp.locationCountry = temp2.locationCountry;
-                temp.isUploaded = temp2.isUploaded;
-                temp.locationId = temp2.locationId;
-                temp.isLove = temp2.isLove;
-                temp.shareURL = temp2.shareURL;
-                temp.isVideo = temp2.isVideo;
-                temp.fileSize = temp2.fileSize;
-                temp.videoWidth = temp2.videoWidth;
-                temp.videoHeight = temp2.videoHeight;
-                temp.isHasPreset = temp2.isHasPreset;
-                temp.isEncrypted = temp2.isEncrypted;
-                temp.isRefreshInfo = temp2.isRefreshInfo;
-                temp.adURL = temp2.adURL;
+                temp.setSectionId(i);
+                temp.setPhotoId(temp2.getPhotoId());
+                temp.setPhotoOriginalURL(temp2.getPhotoOriginalURL());
+                temp.setPhotoThumbnail_128(temp2.getPhotoThumbnail_128());
+                temp.setPhotoThumbnail_512(temp2.getPhotoThumbnail_512());
+                temp.setPhotoThumbnail_1024(temp2.getPhotoThumbnail_1024());
+                temp.setPhotoPassCode(temp2.getPhotoPassCode());
+                temp.setIsPaid(temp2.getIsPaid());
+                temp.setIsChecked(temp2.getIsChecked());
+                temp.setIsSelected(temp2.getIsSelected());
+                temp.setStrShootOn(temp2.getStrShootOn());
+                temp.setShootDate(temp2.getShootDate());
+                temp.setLocationName(temp2.getLocationName());
+                temp.setIsOnLine(temp2.getIsOnLine());
+                temp.setIsUploaded(temp2.getIsUploaded());
+                temp.setLocationId(temp2.getLocationId());
+                temp.setShareURL(temp2.getShareURL());
+                temp.setIsVideo(temp2.getIsVideo());
+                temp.setFileSize(temp2.getFileSize());
+                temp.setVideoWidth(temp2.getVideoWidth());
+                temp.setVideoHeight(temp2.getVideoHeight());
+                temp.setIsPreset(temp2.getIsPreset());
+                temp.setIsEnImage(temp2.getIsEnImage());
+                temp.setIsRefreshInfo(temp2.getIsRefreshInfo());
+                temp.setAdURL(temp2.getAdURL());
                 if (j == 0 && isForStickyHeader) {//设置header
                     tempInfos.add(temp);
-
                 }
                 tempInfos.add(temp);
             }
@@ -884,12 +879,12 @@ public class AppUtil {
         for (int i = 0; i < list.size(); i++) {
             if (resultArrayList.size() > 1) {//从第三个开始插入
                 for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
-                    if (resultArrayList.get(j).shootTime.equals(list.get(i).shootTime)) {
-                        if (resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
+                    if (resultArrayList.get(j).getShootDate().equals(list.get(i).getShootDate())) {
+                        if (resultArrayList.get(j + 1).getShootDate().equals(list.get(i).getShootDate())) {
 
                         } else {
                             findPosition = true;
-                            list.get(i).sectionId = resultArrayList.get(j).sectionId;
+                            list.get(i).setSectionId(resultArrayList.get(j).getSectionId());
                             resultArrayList.add(j + 1, list.get(i));
                             break;
                         }
@@ -899,22 +894,22 @@ public class AppUtil {
                 if (findPosition) {//找到
                     findPosition = false;
                 } else {//没有找到，直接放在后面
-                    if (resultArrayList.get(i - 1).shootTime.equals(list.get(i).shootTime)) {
-                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
+                    if (resultArrayList.get(i - 1).getShootDate().equals(list.get(i).getShootDate())) {
+                        list.get(i).setSectionId(resultArrayList.get(i - 1).getSectionId());
                     } else {
-                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId + 1;
+                        list.get(i).setSectionId(resultArrayList.get(i - 1).getSectionId() + 1);
                     }
                     resultArrayList.add(list.get(i));
                 }
 
             } else {//小于3个的时候
                 if (i == 0) {
-                    list.get(i).sectionId = 0;
+                    list.get(i).setSectionId(0);
                 } else if (i == 1) {
-                    if (resultArrayList.get(0).shootTime.equals(list.get(i).shootTime)) {
-                        list.get(i).sectionId = resultArrayList.get(0).sectionId;
+                    if (resultArrayList.get(0).getShootDate().equals(list.get(i).getShootDate())) {
+                        list.get(i).setSectionId(resultArrayList.get(0).getSectionId());
                     } else {
-                        list.get(i).sectionId = resultArrayList.get(0).sectionId + 1;
+                        list.get(i).setSectionId(resultArrayList.get(0).getSectionId() + 1);
                     }
                 }
                 resultArrayList.add(list.get(i));
@@ -940,7 +935,7 @@ public class AppUtil {
                 resultList.add(list.get(0));
                 resultList.add(list.get(0));
             } else {
-                if (list.get(i).sectionId != list.get(i - 1).sectionId) {
+                if (list.get(i).getSectionId() != list.get(i - 1).getSectionId()) {
                     resultList.add(list.get(i));
 
                 }
@@ -1304,23 +1299,14 @@ public class AppUtil {
                 if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
                     if (files[i].length() > 0) {//扫描到文件
                         selectPhotoItemInfo = new PhotoInfo();
-                        selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
-                        selectPhotoItemInfo.lastModify = files[i].lastModified();
-                        date = new Date(selectPhotoItemInfo.lastModify);
-                        selectPhotoItemInfo.shootOn = sdf.format(date);
-                        selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
-                        selectPhotoItemInfo.isChecked = 0;
-                        selectPhotoItemInfo.isSelected = 0;
-                        selectPhotoItemInfo.showMask = 0;
-                        selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
-                        selectPhotoItemInfo.isPayed = 1;
-                        selectPhotoItemInfo.onLine = 0;
-                        selectPhotoItemInfo.isVideo = 0;
-                        selectPhotoItemInfo.isHasPreset = 0;
-                        selectPhotoItemInfo.isEncrypted = 0;
-                        selectPhotoItemInfo.isRefreshInfo = 0;
+                        selectPhotoItemInfo.setPhotoOriginalURL(files[i].getPath());
+                        date = new Date(files[i].lastModified());
+                        selectPhotoItemInfo.setStrShootOn(sdf.format(date));
+                        selectPhotoItemInfo.setShootDate(selectPhotoItemInfo.getStrShootOn().substring(0, 10));
+                        selectPhotoItemInfo.setLocationName(context.getString(R.string.story_tab_magic));
+                        selectPhotoItemInfo.setIsPaid(1);
                         resultList.add(selectPhotoItemInfo);
-                        PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+                        PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.getPhotoOriginalURL());
                     }
                 }
             }
@@ -1403,14 +1389,14 @@ public class AppUtil {
         Date date1;
         Date date2;
         for (int i = 0; i < targetMagicPhotoList.size(); i++) {
-            PictureAirLog.out("photo shoot time is " + targetMagicPhotoList.get(i).shootOn);
+            PictureAirLog.out("photo shoot time is " + targetMagicPhotoList.get(i).getStrShootOn());
             for (int j = 0; j < magicItemInfoList.size(); j++) {
-                if (targetMagicPhotoList.get(i).shootTime.equals(magicItemInfoList.get(j).shootTime)) {
+                if (targetMagicPhotoList.get(i).getShootDate().equals(magicItemInfoList.get(j).shootTime)) {
                     magicItemInfoList.get(j).list.add(targetMagicPhotoList.get(i));
-                    date1 = sdf.parse(targetMagicPhotoList.get(i).shootOn);
+                    date1 = sdf.parse(targetMagicPhotoList.get(i).getStrShootOn());
                     date2 = sdf.parse(magicItemInfoList.get(j).shootOn);
                     if (date1.after(date2)) {
-                        magicItemInfoList.get(j).shootOn = targetMagicPhotoList.get(i).shootOn;
+                        magicItemInfoList.get(j).shootOn = targetMagicPhotoList.get(i).getStrShootOn();
                     }
                     clone_contains = true;
                     break;
@@ -1419,11 +1405,11 @@ public class AppUtil {
             //判断是否需要new
             if (!clone_contains) {//如果之前没有找到，说明需要new
                 photoItemInfo = new PhotoItemInfo();
-                PictureAirLog.out("shootTime:" + targetMagicPhotoList.get(i).shootTime);
-                photoItemInfo.shootTime = targetMagicPhotoList.get(i).shootTime;
+                PictureAirLog.out("shootTime:" + targetMagicPhotoList.get(i).getShootDate());
+                photoItemInfo.shootTime = targetMagicPhotoList.get(i).getShootDate();
                 photoItemInfo.place = context.getString(R.string.story_tab_magic);
                 photoItemInfo.list.add(targetMagicPhotoList.get(i));
-                photoItemInfo.shootOn = targetMagicPhotoList.get(i).shootOn;
+                photoItemInfo.shootOn = targetMagicPhotoList.get(i).getStrShootOn();
                 magicItemInfoList.add(photoItemInfo);
             } else {
                 clone_contains = false;
@@ -1455,7 +1441,7 @@ public class AppUtil {
             int resultPosition = findPositionInLocationList(info, locationList);
             if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
                 resultPosition = locationList.size() - 1;
-                info.locationId = "others";
+                info.setLocationId("others");
             }
             if (resultPosition < 0 ) {
                 resultPosition = 0;
@@ -1464,22 +1450,22 @@ public class AppUtil {
             //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {
                 //						PictureAirLog.d(TAG, "weather already exists:"+j);
-                if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
+                if (info.getShootDate().equals(photoPassItemInfoList.get(j).shootTime)) {
 //                    info.locationName = photoPassItemInfoList.get(j).place;
                     if (locationList.size() > 0) {
                         if (language.equals(Common.SIMPLE_CHINESE)) {
-                            info.locationName = locationList.get(resultPosition).placeCHName;
+                            info.setLocationName(locationList.get(resultPosition).placeCHName);
 
                         } else {
-                            info.locationName = locationList.get(resultPosition).placeENName;
+                            info.setLocationName(locationList.get(resultPosition).placeENName);
 
                         }
                     }
                     photoPassItemInfoList.get(j).list.add(info);
-                    date1 = sdf.parse(info.shootOn);
+                    date1 = sdf.parse(info.getStrShootOn());
                     date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
                     if (date1.after(date2)) {
-                        photoPassItemInfoList.get(j).shootOn = info.shootOn;
+                        photoPassItemInfoList.get(j).shootOn = info.getStrShootOn();
                     }
                     clone_contains = true;
                     break;
@@ -1494,14 +1480,14 @@ public class AppUtil {
 //                } else {
                     photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
 //                }
-                photoItemInfo.shootTime = info.shootTime;
+                photoItemInfo.shootTime = info.getShootDate();
                 if (language.equals(Common.SIMPLE_CHINESE)) {
                     photoItemInfo.place = locationList.get(resultPosition).placeCHName;
-                    info.locationName = locationList.get(resultPosition).placeCHName;
+                    info.setLocationName(locationList.get(resultPosition).placeCHName);
 
                 } else {
                     photoItemInfo.place = locationList.get(resultPosition).placeENName;
-                    info.locationName = locationList.get(resultPosition).placeENName;
+                    info.setLocationName(locationList.get(resultPosition).placeENName);
 
                 }
                 photoItemInfo.list.add(info);
@@ -1509,7 +1495,7 @@ public class AppUtil {
                 photoItemInfo.latitude = locationList.get(resultPosition).latitude;
                 photoItemInfo.longitude = locationList.get(resultPosition).longitude;
                 photoItemInfo.islove = 0;
-                photoItemInfo.shootOn = info.shootOn;
+                photoItemInfo.shootOn = info.getStrShootOn();
                 photoPassItemInfoList.add(photoItemInfo);
             } else {
                 clone_contains = false;
@@ -1649,35 +1635,26 @@ public class AppUtil {
      */
     public static PhotoInfo getPhotoInfoFromCursor(Cursor cursor) {
         PhotoInfo sInfo = new PhotoInfo();
-        sInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
-        sInfo.photoPathOrURL = cursor.getString(cursor.getColumnIndex("originalUrl"));
-        sInfo.photoThumbnail = cursor.getString(cursor.getColumnIndex("previewUrl"));
-        sInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
-        sInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
-        sInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
-        sInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
-        sInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
-        sInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
-        sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
-        sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
-        sInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
-        sInfo.isPayed = cursor.getInt(cursor.getColumnIndex("isPay"));
-        sInfo.isVideo = cursor.getInt(cursor.getColumnIndex("isVideo"));
-        sInfo.isLove = cursor.getInt(cursor.getColumnIndex("isLove"));
-        sInfo.fileSize = cursor.getInt(cursor.getColumnIndex("fileSize"));
-        sInfo.videoHeight = cursor.getInt(cursor.getColumnIndex("videoHeight"));
-        sInfo.videoWidth = cursor.getInt(cursor.getColumnIndex("videoWidth"));
-        sInfo.isHasPreset = cursor.getInt(cursor.getColumnIndex("isHasPreset"));
-        sInfo.isEncrypted = cursor.getInt(cursor.getColumnIndex("enImg"));
-        sInfo.adURL = cursor.getString(cursor.getColumnIndex("adURL"));
-        sInfo.onLine = 1;
-        sInfo.isChecked = 0;
-        sInfo.isSelected = 0;
-        sInfo.isUploaded = 0;
-        sInfo.showMask = 0;
-        sInfo.lastModify = 0l;
-        sInfo.index = "";
-        sInfo.isRefreshInfo = 0;
+        sInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+        sInfo.setPhotoOriginalURL(cursor.getString(cursor.getColumnIndex("originalUrl")));
+        sInfo.setPhotoThumbnail_128(cursor.getString(cursor.getColumnIndex("previewUrl")));
+        sInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("previewUrl_512")));
+        sInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("previewUrl_1024")));
+        sInfo.setPhotoPassCode(cursor.getString(cursor.getColumnIndex("photoCode")));
+        sInfo.setLocationId(cursor.getString(cursor.getColumnIndex("locationId")));
+        sInfo.setLocationName(cursor.getString(cursor.getColumnIndex("locationName")));
+        sInfo.setStrShootOn(cursor.getString(cursor.getColumnIndex("shootOn")));
+        sInfo.setShootDate(cursor.getString(cursor.getColumnIndex("shootTime")));
+        sInfo.setShareURL(cursor.getString(cursor.getColumnIndex("shareURL")));
+        sInfo.setIsPaid(cursor.getInt(cursor.getColumnIndex("isPay")));
+        sInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
+        sInfo.setFileSize(cursor.getInt(cursor.getColumnIndex("fileSize")));
+        sInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
+        sInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
+        sInfo.setIsPreset(cursor.getInt(cursor.getColumnIndex("isHasPreset")));
+        sInfo.setIsEnImage(cursor.getInt(cursor.getColumnIndex("enImg")));
+        sInfo.setAdURL(cursor.getString(cursor.getColumnIndex("adURL")));
+        sInfo.setIsOnLine(1);
         return sInfo;
     }
 
@@ -1833,7 +1810,7 @@ public class AppUtil {
         int resultPosition = -1;
         //先挑选出相同的locationid信息
         for (int i = 0; i < locationList.size(); i++) {
-            if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
+            if (info.getLocationId().equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.getLocationId())) {
                 resultPosition = i;
                 break;
             }
@@ -1912,10 +1889,10 @@ public class AppUtil {
      * @return
      */
     public static String getHeaderTime(ArrayList<PhotoInfo> photoList, int position) {
-        String headerTime = photoList.get(position).shootOn;
+        String headerTime = photoList.get(position).getStrShootOn();
         for (int i = position; i >= 0; i--) {
-            if (photoList.get(position).sectionId == photoList.get(i).sectionId) {//当前的
-                headerTime = photoList.get(i).shootOn;
+            if (photoList.get(position).getSectionId() == photoList.get(i).getSectionId()) {//当前的
+                headerTime = photoList.get(i).getStrShootOn();
             } else {
                 break;
             }

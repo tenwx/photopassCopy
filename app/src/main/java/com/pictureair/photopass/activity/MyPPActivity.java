@@ -455,8 +455,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                             PhotoInfo photoInfo = new PhotoInfo();
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
-                            photoInfo.photoId = showPPCodeList.get(j).getPpCode();
-                            photoInfo.shootTime = showPPCodeList.get(j).getShootDate();
+                            photoInfo.setPhotoId(showPPCodeList.get(j).getPpCode());
+                            photoInfo.setShootDate(showPPCodeList.get(j).getShootDate());
                             tempPhotoLists.add(photoInfo);
                             selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
                         } catch (JSONException e) {
@@ -495,7 +495,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 PictureAirLog.out("deal data after bought photo");
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 //找到之前选择的图片的索引值，并且更新购买信息
-                showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).isPayed = 1;
+                showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).setIsPaid(1);
                 selectedCurrent = -1;
                 selectedTag = -1;
                 listPPAdapter.notifyDataSetChanged();

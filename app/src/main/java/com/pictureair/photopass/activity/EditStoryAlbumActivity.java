@@ -122,7 +122,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				case START_DELETE_NETWORK_PHOTOS://开始删除网络图片
 					JSONArray ids = new JSONArray();
 					for (int i = 0; i < photopassPhotoslist.size(); i++) {
-						ids.add(photopassPhotoslist.get(i).photoId);
+						ids.add(photopassPhotoslist.get(i).getPhotoId());
 					}
 					PictureAirLog.out("ids---->" + ids);
 					PictureAirLog.out("ppCode---->" + ppCode);
@@ -181,9 +181,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
 		//将已购买并且已选择的加入下载队列中
 		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).isSelected == 1) {
+			if (albumArrayList.get(i).getIsSelected() == 1) {
 				if (hasUnPayPhotos) {
-					if (albumArrayList.get(i).isPayed == 1) {
+					if (albumArrayList.get(i).getIsPaid() == 1) {
 						hasPayedList.add(albumArrayList.get(i));
 					}
 				} else {
@@ -288,7 +288,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					itemOnClick(position, view);
 				} else {//预览模式，点击进入大图预览
 					PictureAirLog.out("select" + position);
-					if (albumArrayList.get(position).isVideo == 1 && albumArrayList.get(position).isPayed == 0) {
+					if (albumArrayList.get(position).getIsVideo() == 1 && albumArrayList.get(position).getIsPaid() == 0) {
 						PhotoInfo info = albumArrayList.get(position);
 						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
 						intent.putExtra("videoInfo", info);
@@ -326,16 +326,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		PictureAirLog.out("select" + position);
 		EditStoryPinnedListViewAdapter.ViewHolder viewHolder = (EditStoryPinnedListViewAdapter.ViewHolder) view.getTag();
 		//选择事件
-		if (info.isSelected == 1) {//取消选择
+		if (info.getIsSelected() == 1) {//取消选择
 			selectCount--;
-			info.isSelected = 0;
-			info.showMask = 0;
+			info.setIsSelected(0);
 			viewHolder.selectImageView.setImageResource(R.drawable.sel3);
 			viewHolder.maskImageView.setVisibility(View.GONE);
 		} else {//选择
 			selectCount++;
-			info.isSelected = 1;
-			info.showMask = 1;
+			info.setIsSelected(1);
 			viewHolder.selectImageView.setImageResource(R.drawable.sel2);
 			viewHolder.maskImageView.setVisibility(View.VISIBLE);
 		}
@@ -375,8 +373,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			case R.id.select_all:
 				for (int i = 0; i < albumArrayList.size(); i++) {
-					albumArrayList.get(i).isSelected = 1;
-					albumArrayList.get(i).showMask = 1;
+					albumArrayList.get(i).setIsSelected(1);
 				}
 				editStoryPinnedListViewAdapter.notifyDataSetChanged();
 				selectCount = albumArrayList.size();
@@ -388,8 +385,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			case R.id.select_disall:
 				for (int i = 0; i < albumArrayList.size(); i++) {
-					albumArrayList.get(i).isSelected = 0;
-					albumArrayList.get(i).showMask = 0;
+					albumArrayList.get(i).setIsSelected(0);
 				}
 				editStoryPinnedListViewAdapter.notifyDataSetChanged();
 				selectCount = 0;
@@ -421,9 +417,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		int unPayCount = 0;
 		int downloadCount =0;
 		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).isSelected == 1) {
+			if (albumArrayList.get(i).getIsSelected() == 1) {
 				downloadCount++;
-				if (albumArrayList.get(i).isPayed == 0) {
+				if (albumArrayList.get(i).getIsPaid() == 0) {
 					unPayCount++;
 				}
 			}
@@ -489,9 +485,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			titleTextView.setText(R.string.mypage_pp);
 			if (selectCount > 0) {
 				for (int i = 0; i < albumArrayList.size(); i++) {
-					if (albumArrayList.get(i).isSelected == 1) {
-						albumArrayList.get(i).isSelected = 0;
-						albumArrayList.get(i).showMask = 0;
+					if (albumArrayList.get(i).getIsSelected() == 1) {
+						albumArrayList.get(i).setIsSelected(0);
 					}
 				}
 				selectCount = 0;
@@ -521,7 +516,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
 			while (iterator.hasNext()) {
 				PhotoInfo photoInfo = iterator.next();
-				if (photoInfo.photoPathOrURL.equals(photopassPhotoslist.get(i).photoPathOrURL)) {
+				if (photoInfo.getPhotoOriginalURL().equals(photopassPhotoslist.get(i).getPhotoOriginalURL())) {
 					iterator.remove();
 					break;
 				}
@@ -536,27 +531,27 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		File file;
 		for (int i = 0; i < localPhotoslist.size(); i++) {
 			//删除contentpridiver表中的数据
-			PictureAirLog.out("需要删除的文件为" + localPhotoslist.get(i).photoPathOrURL);
-			String params[] = new String[]{localPhotoslist.get(i).photoPathOrURL};
+			PictureAirLog.out("需要删除的文件为" + localPhotoslist.get(i).getPhotoOriginalURL());
+			String params[] = new String[]{localPhotoslist.get(i).getPhotoOriginalURL()};
 			//删除Media数据库中的对应图片信息
 			PictureAirLog.out("删除Media表中的对应数据");
 			getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA + " like ?", params);
 
 			//获取需要删除的文件
-			file = new File(localPhotoslist.get(i).photoPathOrURL);
+			file = new File(localPhotoslist.get(i).getPhotoOriginalURL());
 			//删除文件
 			if (file.exists()) {
-				PictureAirLog.out("开始删除文件" + localPhotoslist.get(i).photoPathOrURL);
+				PictureAirLog.out("开始删除文件" + localPhotoslist.get(i).getPhotoOriginalURL());
 				//删除文件
 				file.delete();
 				PictureAirLog.out("the file has been deleted");
 			}
 
-			PictureAirLog.out("arraylist需要移除的文件是" + localPhotoslist.get(i).photoPathOrURL);
+			PictureAirLog.out("arraylist需要移除的文件是" + localPhotoslist.get(i).getPhotoOriginalURL());
 			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
 			while (iterator.hasNext()) {
 				PhotoInfo photoInfo = iterator.next();
-				if (photoInfo.photoPathOrURL.equals(localPhotoslist.get(i).photoPathOrURL)) {
+				if (photoInfo.getPhotoOriginalURL().equals(localPhotoslist.get(i).getPhotoOriginalURL())) {
 					iterator.remove();
 					break;
 				}
@@ -608,8 +603,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							deleteLocalPhotoDone = false;
 							deleteNetPhotoDone = false;
 							for (int i = 0; i < albumArrayList.size(); i++) {
-								if (albumArrayList.get(i).isSelected == 1) {//选中的照片
-									if (albumArrayList.get(i).onLine == 1) {//网络照片
+								if (albumArrayList.get(i).getIsSelected() == 1) {//选中的照片
+									if (albumArrayList.get(i).getIsOnLine() == 1) {//网络照片
 										photopassPhotoslist.add(albumArrayList.get(i));
 									} else {
 										localPhotoslist.add(albumArrayList.get(i));

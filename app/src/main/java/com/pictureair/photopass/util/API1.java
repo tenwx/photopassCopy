@@ -689,7 +689,7 @@ public class API1 {
                 JSONArray photos = jsonObject.getJSONArray("photos");
                 if (photos.size() > 0) {
                     PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-                    PictureAirLog.out("jsonobject---->" + photoInfo.photoThumbnail_1024);
+                    PictureAirLog.out("jsonobject---->" + photoInfo.getPhotoThumbnail_1024());
                     handler.obtainMessage(GET_NEW_PHOTOS_INFO_SUCCESS, id, 0, photoInfo).sendToTarget();
 
                 } else {
@@ -2504,7 +2504,7 @@ public class API1 {
                 if (!hasOriginalUrl) {
                     if (photos.size() > 0) {
                         PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-                        fileStatus.setNewUrl(photoInfo.photoPathOrURL);
+                        fileStatus.setNewUrl(photoInfo.getPhotoOriginalURL());
                         if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
                             handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
                         } else {

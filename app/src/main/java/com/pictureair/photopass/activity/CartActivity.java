@@ -676,10 +676,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             PictureAirLog.v(TAG, "onActivityResult photoPathOrURL size : " + updatephotolist.size());
             JSONArray jsonArray = new JSONArray();
             for (PhotoInfo info : updatephotolist) {
-                PictureAirLog.v(TAG, "onActivityResult info url: " + info.photoThumbnail);
-                if (info.onLine == 1) {//如果是选择的PP的照片
+                PictureAirLog.v(TAG, "onActivityResult info url: " + info.getPhotoThumbnail_128());
+                if (info.getIsOnLine() == 1) {//如果是选择的PP的照片
                     JSONObject object = new JSONObject();
-                    object.put("photoId", info.photoId);
+                    object.put("photoId", info.getPhotoId());
                     jsonArray.add(object);
                 } else {
                     //目前合成图片均为pp上的图片
@@ -721,11 +721,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         List<CartPhotosInfo> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
         for (PhotoInfo photoInfo : photoList) {
             //构建购物车图片对象
-            PictureAirLog.v(TAG, "update url: " + photoInfo.photoPathOrURL);
+            PictureAirLog.v(TAG, "update url: " + photoInfo.getPhotoOriginalURL());
             CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
-            cartPhotosInfo.setPhotoUrl(photoInfo.photoThumbnail);//缩略图
-            cartPhotosInfo.setPhotoId(photoInfo.photoId);
-            cartPhotosInfo.setIsEncrypted(photoInfo.isEncrypted);
+            cartPhotosInfo.setPhotoUrl(photoInfo.getPhotoThumbnail_128());//缩略图
+            cartPhotosInfo.setPhotoId(photoInfo.getPhotoId());
+            cartPhotosInfo.setIsEncrypted(photoInfo.getIsEnImage());
             oriphoto.add(cartPhotosInfo);
         }
 

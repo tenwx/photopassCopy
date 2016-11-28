@@ -83,7 +83,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     public void videoClick(int position) {
 
         PhotoInfo info = photolist.get(position);
-        String fileName = AppUtil.getReallyFileName(info.photoPathOrURL,info.isVideo);
+        String fileName = AppUtil.getReallyFileName(info.getPhotoOriginalURL(), info.getIsVideo());
         PictureAirLog.e(TAG, "filename=" + fileName);
         File file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
         if (!file.exists()){
@@ -127,11 +127,11 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
                 PhotoInfo info = photolist.get(msg.arg1);
                 File file;
-                if (info.isVideo == 1) {//视频
-                    String fileName = AppUtil.getReallyFileName(info.photoPathOrURL,info.isVideo);
+                if (info.getIsVideo() == 1) {//视频
+                    String fileName = AppUtil.getReallyFileName(info.getPhotoOriginalURL(), info.getIsVideo());
                     file = new File(Common.PHOTO_DOWNLOAD_PATH + "/" + fileName);
                 } else {//照片
-                    file = new File(info.photoPathOrURL);
+                    file = new File(info.getPhotoOriginalURL());
                 }
 
                 //更新收藏图标
@@ -241,7 +241,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         PhotoDownLoadInfo downLoadInfo = photos.get(i);
 
                         PhotoInfo photoInfo = new PhotoInfo();
-                        photoInfo.photoId = downLoadInfo.getPhotoId();
+                        photoInfo.setPhotoId(downLoadInfo.getPhotoId());
 
                         String loadUrl;
                         //如果文件名过长导致无法保存，会将文件名进行MD5，数据库中保存在FailedTime字段，此处是对这种情况的特殊处理
@@ -252,37 +252,20 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                             loadUrl = downLoadInfo.getFailedTime();
                         }
                         if (downLoadInfo.getIsVideo() == 0) {
-                            photoInfo.photoPathOrURL = loadUrl;
+                            photoInfo.setPhotoOriginalURL(loadUrl);
                         }else{
-                            photoInfo.photoPathOrURL = downLoadInfo.getUrl();
+                            photoInfo.setPhotoOriginalURL(downLoadInfo.getUrl());
                         }
-                        photoInfo.photoThumbnail = downLoadInfo.getPreviewUrl();
-                        photoInfo.photoThumbnail_512 = downLoadInfo.getPhotoThumbnail_512();
-                        photoInfo.photoThumbnail_1024 = downLoadInfo.getPhotoThumbnail_1024();
-                        photoInfo.photoPassCode = "";
-                        photoInfo.locationId = "";
-                        photoInfo.locationName = "";
-                        photoInfo.locationCountry = "";
-                        photoInfo.shootOn = downLoadInfo.getShootTime();
-                        photoInfo.shootTime = "";
-                        photoInfo.shareURL = "";
-                        photoInfo.isPayed = 1;
-                        photoInfo.isVideo = downLoadInfo.getIsVideo();
-                        photoInfo.isLove = 0;
-                        photoInfo.fileSize = 0;
-                        photoInfo.videoHeight = downLoadInfo.getVideoHeight();
-                        photoInfo.videoWidth = downLoadInfo.getVideoWidth();
-                        photoInfo.isHasPreset = 0;
-                        photoInfo.isEncrypted = 1;
-                        photoInfo.onLine = 1;//因为都是网络图片，也都有保存photoid，本地图还要压缩，并且上传，因此就以网络图处理
-                        photoInfo.isChecked = 0;
-                        photoInfo.isSelected = 0;
-                        photoInfo.isUploaded = 0;
-                        photoInfo.showMask = 0;
-                        photoInfo.lastModify = 0l;
-                        photoInfo.index = "";
-                        photoInfo.isRefreshInfo = 0;
-
+                        photoInfo.setPhotoThumbnail_128(downLoadInfo.getPreviewUrl());
+                        photoInfo.setPhotoThumbnail_512(downLoadInfo.getPhotoThumbnail_512());
+                        photoInfo.setPhotoThumbnail_1024(downLoadInfo.getPhotoThumbnail_1024());
+                        photoInfo.setStrShootOn(downLoadInfo.getShootTime());
+                        photoInfo.setIsPaid(1);
+                        photoInfo.setIsVideo(downLoadInfo.getIsVideo());
+                        photoInfo.setVideoHeight(downLoadInfo.getVideoHeight());
+                        photoInfo.setVideoWidth(downLoadInfo.getVideoWidth());
+                        photoInfo.setIsEnImage(1);
+                        photoInfo.setIsOnLine(1);//因为都是网络图片，也都有保存photoid，本地图还要压缩，并且上传，因此就以网络图处理
                         photolist.add(photoInfo);
                     }
                 }
@@ -304,7 +287,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                     if (!TextUtils.isEmpty(url)){
                         String path = Common.PHOTO_DOWNLOAD_PATH+AppUtil.getReallyFileName(url,0);
                         for (int i = 0; i < photolist.size(); i++) {
-                            if (path.equals(photolist.get(i).photoPathOrURL)){
+                            if (path.equals(photolist.get(i).getPhotoOriginalURL())){
                                 currentPosition = i;
                             }
                         }

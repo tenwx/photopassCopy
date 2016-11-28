@@ -58,7 +58,7 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
         pictureAirDbManager.updatePhotoInfo(videoInfo);
 
         //判断从网络获取的视频数据是否已经制作完成
-        if (AppUtil.isOldVersionOfTheVideo(videoInfo.photoPathOrURL, videoInfo.photoThumbnail_1024, videoInfo.photoThumbnail_512, videoInfo.photoThumbnail)) {
+        if (AppUtil.isOldVersionOfTheVideo(videoInfo.getPhotoOriginalURL(), videoInfo.getPhotoThumbnail_1024(), videoInfo.getPhotoThumbnail_512(), videoInfo.getPhotoThumbnail_128())) {
             //依旧不是最新的url
             handler.sendEmptyMessage(GET_RIGHT_VIDEO_INFO_FAILED);
 

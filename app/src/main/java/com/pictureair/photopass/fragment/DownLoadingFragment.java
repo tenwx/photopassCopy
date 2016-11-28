@@ -35,7 +35,6 @@ import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.PWToast;
@@ -44,7 +43,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.greenrobot.event.EventBus;
 
@@ -124,11 +122,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     }
                     ArrayList<PhotoInfo> photos = new ArrayList<>();
                     PhotoInfo info = new PhotoInfo();
-                    info.isVideo = reconnecFile.isVideo();
-                    info.photoPathOrURL = reconnecFile.getUrl();
-                    info.photoId = reconnecFile.getPhotoId();
-                    info.shootOn = reconnecFile.getShootOn();
-                    info.failedTime = reconnecFile.getFailedTime();
+                    info.setIsVideo(reconnecFile.isVideo());
+                    info.setPhotoOriginalURL(reconnecFile.getUrl());
+                    info.setPhotoId(reconnecFile.getPhotoId());
+                    info.setStrShootOn(reconnecFile.getShootOn());
+                    info.setFailedTime(reconnecFile.getFailedTime());
                     photos.add(info);
                     Intent intent = new Intent(MyApplication.getInstance(),DownloadService.class);
                     Bundle bundle = new Bundle();
@@ -165,12 +163,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
     private PhotoInfo newPhotoInfo(DownloadFileStatus fileStatus,int position){
         PhotoInfo info = new PhotoInfo();
-        info.isVideo = fileStatus.isVideo();
-        info.photoPathOrURL = fileStatus.getUrl();
-        info.photoId = fileStatus.getPhotoId();
-        info.shootOn = fileStatus.getShootOn();
-        info.failedTime = fileStatus.getFailedTime();
-        info.isSelected = position;
+        info.setIsVideo(fileStatus.isVideo());
+        info.setPhotoOriginalURL(fileStatus.getUrl());
+        info.setPhotoId(fileStatus.getPhotoId());
+        info.setStrShootOn(fileStatus.getShootOn());
+        info.setFailedTime(fileStatus.getFailedTime());
+        info.setIsSelected(position);
         return info;
     }
 
@@ -179,7 +177,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             Iterator<PhotoInfo> iterator = selectPhotos.iterator();
             while (iterator.hasNext()) {
                 PhotoInfo info = iterator.next();
-                if (info.isSelected == pos) {
+                if (info.getIsSelected() == pos) {
                     selectPhotos.remove(info);
                 }
             }

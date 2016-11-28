@@ -143,10 +143,10 @@ public class DownloadService extends Service {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
                                 DownloadFileStatus fileStatus = downloadList.get(j);
-                                if (fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                                if (fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).getPhotoId()) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
-                                }else if(fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
+                                }else if(fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).getPhotoId()) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
                                 }
@@ -168,14 +168,14 @@ public class DownloadService extends Service {
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
                             DownloadFileStatus fileStatus = null;
-                            if (photoInfo.isVideo == 0) {
-                                fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
-                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
-                                        photoInfo.videoWidth, photoInfo.videoHeight);
+                            if (photoInfo.getIsVideo() == 0) {
+                                fileStatus = new DownloadFileStatus(photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_1024(),
+                                        photoInfo.getPhotoOriginalURL(), "0", "0", "0", photoInfo.getPhotoId(), photoInfo.getIsVideo(), photoInfo.getPhotoThumbnail_128(),
+                                        photoInfo.getStrShootOn(), "", photoInfo.getVideoWidth(), photoInfo.getVideoHeight());
                             }else{
-                                fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
-                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
-                                        photoInfo.videoWidth, photoInfo.videoHeight);
+                                fileStatus = new DownloadFileStatus(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_1024(),
+                                        photoInfo.getPhotoOriginalURL(), "0", "0", "0", photoInfo.getPhotoId(), photoInfo.getIsVideo(), photoInfo.getPhotoThumbnail_128(),
+                                        photoInfo.getStrShootOn(), "", photoInfo.getVideoWidth(), photoInfo.getVideoHeight());
                             }
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
