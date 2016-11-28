@@ -34,7 +34,7 @@ public class Common {
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 
     /**
-     * 线上测试服务器，上线前用这个服务器测试
+     * 线上测试UAT服务器，上线前用这个服务器测试
      */
 //    public static final String BASE_URL_TEST = "http://211.144.223.225:3006";
 //    public static final String BASE_URL_SOCKET = "http://211.144.223.225:3006";

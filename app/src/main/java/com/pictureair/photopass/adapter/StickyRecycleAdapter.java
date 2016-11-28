@@ -80,6 +80,9 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
             String photoUrl;
+            if (photoList.size() == 0 || position >= photoList.size()) {
+                return;
+            }
             if (photoList.get(position).onLine == 1) {
                 if (photoList.get(position).isPayed == 1) {
                     photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
@@ -105,8 +108,8 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                 recyclerViewHolder.mImageView.setTag(R.id.glide_image_tag, photoUrl);
             }
 
-            String headerTime = AppUtil.getHeaderTime(photoList, position);
             recyclerViewHolder.itemView.setTag(NONE_STICKY_VIEW);
+            String headerTime = AppUtil.getHeaderTime(photoList, position);
             try {
                 recyclerViewHolder.itemView.setContentDescription(AppUtil.dateToSmartDate(headerTime, context));
             } catch (ParseException e) {

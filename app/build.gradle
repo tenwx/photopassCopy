@@ -10,8 +10,8 @@ android {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 9
-        versionName "2.0.0"
+        versionCode 10
+        versionName "2.0.1"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
     }
 

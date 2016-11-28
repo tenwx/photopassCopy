@@ -293,6 +293,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 					noPhotoRelativeLayout.setVisibility(View.GONE);
 					
 				}
+				pwStickySectionRecyclerView.notifyDataSetChanged();
 				if (!storyFragmentEvent.isRefresh()) {
 					pwStickySectionRecyclerView.setIsLoadMore(false);
 					pwStickySectionRecyclerView.scrollToPosition(oldCount);
@@ -307,7 +308,6 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 
 					oldCount = newCount;
 				}
-				pwStickySectionRecyclerView.notifyDataSetChanged();
 				if (refreshLayout.isRefreshing()) {
 					refreshLayout.setRefreshing(false);
 				}

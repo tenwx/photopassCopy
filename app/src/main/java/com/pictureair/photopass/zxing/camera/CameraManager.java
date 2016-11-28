@@ -268,6 +268,9 @@ public final class CameraManager {
             if (cameraResolution == null) {
                 cameraResolution = new Point(ScreenUtil.getDpi(context), ScreenUtil.getScreenWidth(context));
             }
+            if (screenResolution == null) {
+                screenResolution = new Point(ScreenUtil.getDpi(context), ScreenUtil.getScreenWidth(context));
+            }
             int temp = rect.width() / 4;  // 为了 增加识别得范围。故增加区域
             rect.left = (rect.left - temp) * cameraResolution.y / screenResolution.x;
             rect.right = (rect.right  + temp) * cameraResolution.y / screenResolution.x;
