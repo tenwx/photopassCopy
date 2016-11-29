@@ -200,12 +200,72 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    <fragment
-        android:id="@+id/navigation_drawer"
-        android:name="net.xpece.material.navigationdrawer.list.SupportNavigationListFragment"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/main_slide_layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_gravity="start"
-        tools:layout="@layout/mnd_list"
-        />
+        android:background="@color/black"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="@color/transparent">
+
+            <ImageView
+                android:id="@+id/main_slide_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/blur_bg_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/pp_dp_30"
+                />
+            <TextView
+                android:id="@+id/main_slide_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/story_myphotopass"
+                android:gravity="center"
+                android:layout_below="@id/main_slide_logo"
+                android:layout_marginTop="@dimen/pp_dp_5"
+                android:textSize="@dimen/text_size_16"
+                />
+            <CheckBox
+                android:layout_marginTop="@dimen/pp_dp_10"
+                android:id="@+id/main_slide_unbound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/main_slide_text"
+                android:layout_alignParentRight="true"
+                android:text="@string/story_unbound"
+                android:textSize="@dimen/text_size_12"
+                style="@style/custom_checkbox"
+                />
+
+            <CheckBox
+                android:id="@+id/main_slide_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/main_slide_text"
+                android:text="@string/select_all"
+                android:layout_toLeftOf="@id/main_slide_unbound"
+                android:layout_marginRight="@dimen/pp_dp_20"
+                android:layout_marginTop="@dimen/pp_dp_10"
+                android:textSize="@dimen/text_size_12"
+                style="@style/custom_checkbox"/>
+
+        </RelativeLayout>
+        <ListView
+            android:id="@+id/slid_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/white"
+            android:dividerHeight="1px"
+            android:scrollbars="none"
+            android:background="@color/transparent"
+            />
+    </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -171,6 +171,8 @@
     <string name="story_unbound">解绑</string>
     <string name="story_myphotopass">我的乐拍通</string>
     <string name="story_photo_count">(%1$d)</string>
+    <string name="story_slide_open"></string>
+    <string name="story_slide_close"></string>
     <!-- disney story end -->
 
     <!-- me start -->
