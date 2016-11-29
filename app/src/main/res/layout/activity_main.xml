@@ -1,193 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/main_content"
+
+    <RelativeLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/main_divider" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/main_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_px_1"
-        android:layout_above="@+id/main_bottom_bar"
-        android:background="@color/pp_gray" />
+        <FrameLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_divider" />
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        fab:fab_icon="@drawable/add_righttop"
-        fab:fab_colorNormal="@color/secondary_progress"
-        fab:fab_colorPressed="@color/pp_red"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="65dp"
+        <ImageView
+            android:id="@+id/main_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_above="@+id/main_bottom_bar"
+            android:background="@color/pp_gray" />
 
-        />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_icon="@drawable/add_righttop"
+            fab:fab_colorNormal="@color/secondary_progress"
+            fab:fab_colorPressed="@color/pp_red"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="65dp"
 
-    <LinearLayout
-        android:id="@+id/main_bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_bottom_bar_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/gray_light4"
-        android:orientation="horizontal">
+            />
 
         <LinearLayout
-            android:id="@+id/main_photo_tab"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_dp_4"
-            android:paddingTop="@dimen/pp_dp_4">
+            android:id="@+id/main_bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_bottom_bar_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_light4"
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/main_photo_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/pp_dp_4"
+                android:paddingTop="@dimen/pp_dp_4">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/main_photo_iv"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:adjustViewBounds="true"
+                        android:focusable="false"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/tab_photo_btn" />
+
+                    <com.pictureair.photopass.widget.dropview.WaterDrop
+                        android:id="@+id/waterdrop"
+                        android:layout_width="@dimen/pp_dp_10"
+                        android:layout_height="@dimen/pp_dp_10"
+                        android:layout_alignRight="@+id/main_photo_iv"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/main_photo_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:text="@string/tab_story"
+                    android:textColor="@drawable/tab_selector_onclick"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_discover_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/pp_dp_4"
+                android:paddingTop="@dimen/pp_dp_4">
 
                 <ImageView
-                    android:id="@+id/main_photo_iv"
+                    android:id="@+id/main_discover_iv"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:adjustViewBounds="true"
                     android:focusable="false"
                     android:scaleType="centerInside"
-                    android:src="@drawable/tab_photo_btn" />
+                    android:src="@drawable/tab_discover_btn" />
 
-                <com.pictureair.photopass.widget.dropview.WaterDrop
-                    android:id="@+id/waterdrop"
-                    android:layout_width="@dimen/pp_dp_10"
-                    android:layout_height="@dimen/pp_dp_10"
-                    android:layout_alignRight="@+id/main_photo_iv"
-                    android:visibility="gone" />
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/main_discover_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:text="@string/tab_discover"
+                    android:textColor="@drawable/tab_selector_onclick"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/main_photo_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top|center_horizontal"
-                android:text="@string/tab_story"
-                android:textColor="@drawable/tab_selector_onclick"
-                android:textSize="@dimen/text_size_12" />
+            <LinearLayout
+                android:id="@+id/main_shop_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/pp_dp_4"
+                android:paddingTop="@dimen/pp_dp_4">
+
+                <ImageView
+                    android:id="@+id/main_shop_iv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:adjustViewBounds="true"
+                    android:focusable="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/tab_shop_btn" />
+
+                <TextView
+                    android:id="@+id/main_shop_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:text="@string/tab_shops"
+                    android:textColor="@drawable/tab_selector_onclick"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_me_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/pp_dp_4"
+                android:paddingTop="@dimen/pp_dp_4">
+
+                <ImageView
+                    android:id="@+id/main_me_iv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:adjustViewBounds="true"
+                    android:focusable="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/tab_me_btn" />
+
+                <TextView
+                    android:id="@+id/main_me_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:text="@string/tab_me"
+                    android:textColor="@drawable/tab_selector_onclick"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/main_discover_tab"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:id="@+id/story_lead_view_rl"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_dp_4"
-            android:paddingTop="@dimen/pp_dp_4">
+            android:background="@drawable/guide_background"
+            android:visibility="gone">
 
             <ImageView
-                android:id="@+id/main_discover_iv"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:adjustViewBounds="true"
-                android:focusable="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/tab_discover_btn" />
-
-            <TextView
-                android:id="@+id/main_discover_tv"
+                android:id="@+id/story_lead_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="top|center_horizontal"
-                android:text="@string/tab_discover"
-                android:textColor="@drawable/tab_selector_onclick"
-                android:textSize="@dimen/text_size_12" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/main_shop_tab"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_dp_4"
-            android:paddingTop="@dimen/pp_dp_4">
-
-            <ImageView
-                android:id="@+id/main_shop_iv"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/pp_dp_10"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginRight="@dimen/pp_dp_3"
+                android:layout_marginTop="@dimen/pp_dp_4"
                 android:adjustViewBounds="true"
-                android:focusable="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/tab_shop_btn" />
+                android:src="@drawable/story_lead_zh" />
 
-            <TextView
-                android:id="@+id/main_shop_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top|center_horizontal"
-                android:text="@string/tab_shops"
-                android:textColor="@drawable/tab_selector_onclick"
-                android:textSize="@dimen/text_size_12" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/main_me_tab"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/pp_dp_4"
-            android:paddingTop="@dimen/pp_dp_4">
-
-            <ImageView
-                android:id="@+id/main_me_iv"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:adjustViewBounds="true"
-                android:focusable="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/tab_me_btn" />
-
-            <TextView
-                android:id="@+id/main_me_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top|center_horizontal"
-                android:text="@string/tab_me"
-                android:textColor="@drawable/tab_selector_onclick"
-                android:textSize="@dimen/text_size_12" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/story_lead_view_rl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/guide_background"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/story_lead_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/pp_dp_10"
-            android:layout_marginLeft="@dimen/pp_dp_5"
-            android:layout_marginRight="@dimen/pp_dp_3"
-            android:layout_marginTop="@dimen/pp_dp_4"
-            android:adjustViewBounds="true"
-            android:src="@drawable/story_lead_zh" />
+        </RelativeLayout>
 
     </RelativeLayout>
-
-</RelativeLayout>
+    <fragment
+        android:id="@+id/navigation_drawer"
+        android:name="net.xpece.material.navigationdrawer.list.SupportNavigationListFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        tools:layout="@layout/mnd_list"
+        />
+</android.support.v4.widget.DrawerLayout>

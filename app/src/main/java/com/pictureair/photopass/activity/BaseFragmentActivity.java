@@ -15,12 +15,14 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 import com.pictureair.photopass.util.AppManager;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by milo on 15/12/16.
  */
-public class BaseFragmentActivity extends FragmentActivity{
+public class BaseFragmentActivity extends RxAppCompatActivity{
     private Context context;
 
     //Top bar

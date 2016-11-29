@@ -240,3 +240,6 @@
 -keep class com.nostra13.universalimageloader.** {*;}
 -keep class de.hdodenhof.circleimageview.** {*;}
 
+#navigationdrawer
+-dontwarn net.xpece.material.navigationdrawer.**
+

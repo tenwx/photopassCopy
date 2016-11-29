@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,11 +45,18 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CheckUpdateListener;
 import com.pictureair.photopass.widget.CheckUpdateManager;
+import com.pictureair.photopass.widget.PPDescriptor;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
+import net.xpece.material.navigationdrawer.descriptors.NavigationItemDescriptor;
+import net.xpece.material.navigationdrawer.descriptors.NavigationSectionDescriptor;
+import net.xpece.material.navigationdrawer.list.NavigationListFragmentCallbacks;
+import net.xpece.material.navigationdrawer.list.SupportNavigationListFragment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -58,7 +68,7 @@ import de.greenrobot.event.Subscribe;
  * 通过扫描或者登录之后会来到此页面
  */
 public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback,
-        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener {
+        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener, PPDescriptor.DescriptorClickListener,NavigationListFragmentCallbacks {
     private FragmentPageStory fragmentPageStory;
     private FragmentPageDiscover fragmentPageDiscover;
     private FragmentPageShop fragmentPageShop;
@@ -122,7 +132,14 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     private int expolredAnimFrameIndex = 0;
 
+    private static List<NavigationSectionDescriptor> SECTIONS;
+
     private static final String REFLECTION_RESOURCE = "explored";
+
+    private DrawerLayout mDrawerLayout;
+    private SupportNavigationListFragment mNavFragment;
+    private ActionBarDrawerToggle mDrawerToggle;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,9 +222,44 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         explored.setAdjustViewBounds(true);
         parentLayout.addView(explored);
 
+        intiData();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.mnd_shadow_left, Gravity.RIGHT);
+        mDrawerLayout.setDrawerShadow(R.drawable.mnd_shadow_right, Gravity.LEFT);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, android.R.string.untitled, android.R.string.untitled);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        mNavFragment = (SupportNavigationListFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
+        mNavFragment.setHeaderView(mNavFragment.getLayoutInflater2().inflate(R.layout.slide_custom_header, null), true);
+        mNavFragment.setSections(SECTIONS);
+
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
+    }
+
+    private void intiData() {
+        NavigationSectionDescriptor section = new NavigationSectionDescriptor()
+                .addItem(new PPDescriptor(0, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+
+                .addItem(new PPDescriptor(1, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+                .addItem(new PPDescriptor(2, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+                .addItem(new PPDescriptor(3, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+                .addItem(new PPDescriptor(4, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+                .addItem(new PPDescriptor(5, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele))
+                .addItem(new PPDescriptor(6, this).checked(false).date("2016-01-02").count(String.format(getString(R.string.story_photo_count),180)).num("SHDRH3H3H3H3H3H3H")
+                        .checkedDrawable(R.drawable.sele).unCheckedDrawable(R.drawable.nosele));
+
+        SECTIONS = new ArrayList<>();
+        SECTIONS.add(section);
+
     }
 
     private void initLeadView() {
@@ -283,7 +335,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (application.getPushPhotoCount() + application.getPushViedoCount() > 0) {//显示红点
             waterDropView.setVisibility(View.VISIBLE);
         }
-
     }
 
 
@@ -321,6 +372,19 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        newToast.setTextAndShow("点击了第"+position+"项");
+    }
+
+    /**
+     * 不需要写代码，单项点击使用上面的函数，不实现该类，解析会崩溃
+     * */
+    @Override
+    public void onNavigationItemSelected(View view, int position, int id, NavigationItemDescriptor item) {
+
     }
 
     //tab按钮的点击监听
