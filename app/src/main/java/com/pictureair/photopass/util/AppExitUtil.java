@@ -23,7 +23,6 @@ import com.pictureair.photopass.widget.PWToast;
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
     private static PictureAirDbManager pictureAirDbManager;
-    private static PWToast newToast;
 
     private Handler myHandler = new Handler(new Handler.Callback() {
         @Override
@@ -80,7 +79,6 @@ public class AppExitUtil {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
             pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-            newToast = new PWToast(MyApplication.getInstance());
         }
         return appExitUtil;
     }
@@ -90,7 +88,7 @@ public class AppExitUtil {
      */
     public void AppReLogin() {
         //断开推送
-        newToast.setTextAndShow(R.string.please_relogin, Toast.LENGTH_SHORT);
+        PWToast.getInstance(MyApplication.getInstance()).setTextAndShow(R.string.please_relogin, Toast.LENGTH_SHORT);
         API1.noticeSocketDisConnect(myHandler);
     }
 
