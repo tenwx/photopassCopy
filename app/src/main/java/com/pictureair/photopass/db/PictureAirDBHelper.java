@@ -61,53 +61,6 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         PictureAirLog.out("create sqlite-------->");
         // TODO Auto-generated method stub
         /**
-         * 创建photo表
-         * _id
-         * photoId
-         * photoCode ppCode 图片所属pp码
-         * shootTime 拍摄时间
-         * originalUrl 原图
-         * previewUrl 128缩略图
-         * previewUrl_512 512缩略图
-         * previewUrl_1024 1024缩略图
-         * locationId 地点id
-         * shootOn 拍摄时间
-         * isLove 是否收藏，目前没有用到
-         * isPay 是否已经付费
-         * locationName 地点名称
-         * locationCountry 国家地点
-         * shareURL  分享URL
-         * isVideo   是否是视频
-         * fileSize  文件的大小
-         * videoWidth 视频宽
-         * videoHeight 视频高
-         */
-        db.execSQL("create table if not exists " + Common.PHOTOPASS_INFO_TABLE +
-                        "(_id integer primary key autoincrement, " +
-                        "photoId text," +
-                        "photoCode text," +
-                        "shootTime text, " +
-                        "originalUrl text, " +
-                        "previewUrl text, " +
-                        "previewUrl_512 text, " +
-                        "previewUrl_1024 text," +
-                        "locationId text, " +
-                        "shootOn text, " +
-                        "isLove integer, " +
-                        "isPay integer, " +
-                        "locationName text, " +
-                        "locationCountry text, " +
-                        "shareURL text, " +
-                        "isVideo integer, " +
-                        "fileSize integer, " +
-                        "videoWidth integer, " +
-                        "videoHeight integer, " +
-                        "isHasPreset integer, " +
-                        "enImg integer, " +
-                        "adURL text)"
-        );
-
-        /**
          * 创建firststart表，记录所有页面第一次进入的记录
          * _id
          * activity
@@ -193,7 +146,6 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         int upgradeVersion  = oldVersion;
         if (upgradeVersion == 1) {//从版本1更新到版本2
             db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
-            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD enImg INTEGER default '0';");
             upgradeVersion = 2;
         }
 
@@ -202,8 +154,6 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD photoThumbnail_1024 text;");
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoWidth integer default '0';");
             db.execSQL("ALTER TABLE " + Common.PHOTOS_LOAD + " ADD videoHeight integer default '0';");
-
-            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD adURL text;");
             upgradeVersion = 3;
         }
 

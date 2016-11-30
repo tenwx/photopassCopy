@@ -17,6 +17,7 @@ import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.photopass.greendao.PhotoInfoDao;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -127,42 +128,6 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 通过photoCode和shootOn查找数据库中的所有符合条件的照片
-     *
-     * @param photoCode
-     * @param shootOn
-     * @return
-     */
-    public ArrayList<PhotoInfo> getPhotoUrlByPhotoIDAndShootOn(String photoCode, String shootOn) {
-        ArrayList<PhotoInfo> photoInfos = new ArrayList<PhotoInfo>();
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> getPhotoUrlByPhotoIDAndShootOn");
-            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + photoCode + "%", shootOn});
-
-            PictureAirLog.d("查出来的数据。", "cursor.getCount(); ;" + cursor.getCount());
-            if (cursor.moveToFirst()) {
-                do {
-                    PhotoInfo photoInfo = new PhotoInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setPhotoOriginalURL(Common.PHOTO_URL + cursor.getString(cursor.getColumnIndex("originalUrl")));
-                    photoInfos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> getPhotoUrlByPhotoIDAndShootOn");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return photoInfos;
-    }
-
-    /**
      * 根据pp列表获取对应的PPCodeInfo1列表
      *
      * @param ppCodeList ppCodeList
@@ -181,89 +146,70 @@ public class PictureAirDbManager {
         } else {
 
         }
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            ArrayList<HashMap<String, String>> urlList;
-            ArrayList<PhotoInfo> selectPhotoItemInfos;
-            HashMap<String, String> map;
-            for (int i = 0; i < ppCodeList.size(); i++) {
-                if (ppCodeList.get(i).getIsHidden() == 1) {
-                    continue;
-                }
-                urlList = new ArrayList<>();
-                selectPhotoItemInfos = new ArrayList<>();
-                PPinfo ppInfo = ppCodeList.get(i);
-                PictureAirLog.out("cursor open ---> getPPCodeInfo1ByPPCodeList" + cursor);
-                if (type == 1) {
-                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
-                            + " where photoCode like ? order by shootOn desc", new String[]{"%" + ppInfo.getPpCode() + "%"});
-                    PictureAirLog.d("cursor cursor cursor ", "cursor :" + cursor.getCount());
-                } else {
-                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
-                            " where photoCode like ? and isPay = 0 and shootTime = ? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
-                }
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        ArrayList<HashMap<String, String>> urlList;
+        ArrayList<PhotoInfo> selectPhotoItemInfos;
+        HashMap<String, String> map;
+        for (int i = 0; i < ppCodeList.size(); i++) {
+            if (ppCodeList.get(i).getIsHidden() == 1) {
+                continue;
+            }
+            urlList = new ArrayList<>();
+            PPinfo ppInfo = ppCodeList.get(i);
+            if (type == 1) {
+                selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                        .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
+                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+            } else {
+                selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                        .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"),
+                                PhotoInfoDao.Properties.IsPaid.eq(0),
+                                PhotoInfoDao.Properties.ShootDate.eq(ppInfo.getShootDate()))
+                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+            }
 
-                if (cursor != null && cursor.moveToFirst()) {
-                    do {
-                        // 获取图片路径
-                        map = new HashMap<>();
-                        map.put("url", cursor.getString(cursor.getColumnIndex("previewUrl")));
-                        map.put("isVideo", cursor.getInt(cursor.getColumnIndex("isVideo")) + "");
-                        urlList.add(map);
-                        PhotoInfo sInfo = AppUtil.getPhotoInfoFromCursor(cursor);
-                        selectPhotoItemInfos.add(sInfo);
-                    } while (cursor.moveToNext());
+            for (PhotoInfo photoInfo : selectPhotoItemInfos) {
+                // 获取图片路径
+                map = new HashMap<>();
+                map.put("url", photoInfo.getPhotoThumbnail_128());
+                map.put("isVideo", photoInfo.getIsVideo() + "");
+                urlList.add(map);
+            }
 
-                }
-                if (type == 2) {
-                    Collections.reverse(urlList);
-                }
+            if (type == 2) {
+                Collections.reverse(urlList);
+            }
 
-                int count = urlList.size();
-                if (count < 6) {//不满6或者12的，需要补全
-                    for (int j = 6 - count; j > 0; j--) {
-                        map = new HashMap<>();
-                        map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
-                        map.put("isVideo", "0");
-                        urlList.add(map);
-                    }
-                } else if (count < 12) {
-                    for (int j = 12 - count; j > 0; j--) {
-                        map = new HashMap<>();
-                        map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
-                        map.put("isVideo", "0");
-                        urlList.add(map);
-                    }
+            int count = urlList.size();
+            if (count < 6) {//不满6或者12的，需要补全
+                for (int j = 6 - count; j > 0; j--) {
+                    map = new HashMap<>();
+                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                    map.put("isVideo", "0");
+                    urlList.add(map);
                 }
-                PPinfo ppInfo1 = new PPinfo();
-                ppInfo1.setPpCode(ppInfo.getPpCode());
-                ppInfo1.setShootDate(ppInfo.getShootDate());
-                if (ppInfo.getPhotoCount() == -1) {//需要设置本地数量
-                    ppInfo1.setPhotoCount(count);
-
-                } else {
-                    ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
-
-                }
-                ppInfo1.setUrlList(urlList);
-                ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
-                ppInfo1.setVisiblePhotoCount(count);
-                showPPCodeList.add(ppInfo1);
-                if (cursor != null) {
-                    PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");
-                    cursor.close();
+            } else if (count < 12) {
+                for (int j = 12 - count; j > 0; j--) {
+                    map = new HashMap<>();
+                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                    map.put("isVideo", "0");
+                    urlList.add(map);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // 处理完了，通知处理之后的信息
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");
-                cursor.close();
+            PPinfo ppInfo1 = new PPinfo();
+            ppInfo1.setPpCode(ppInfo.getPpCode());
+            ppInfo1.setShootDate(ppInfo.getShootDate());
+            if (ppInfo.getPhotoCount() == -1) {//需要设置本地数量
+                ppInfo1.setPhotoCount(count);
+
+            } else {
+                ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
+
             }
-            DBManager.getInstance().closeDatabase();
+            ppInfo1.setUrlList(urlList);
+            ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
+            ppInfo1.setVisiblePhotoCount(count);
+            showPPCodeList.add(ppInfo1);
         }
         return showPPCodeList;
     }
@@ -273,47 +219,30 @@ public class PictureAirDbManager {
      * @param ppCode
      */
     public ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
-        Cursor cursor = null;
-        ArrayList<PhotoInfo> selectPhotoItemInfos = new ArrayList<>();
-        try {
-            database = DBManager.getInstance().writData();
-            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
-                    + " where photoCode like ? order by shootOn desc", new String[]{"%" + ppCode + "%"});
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        ArrayList<PhotoInfo> selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"))
+                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
 
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // 获取图片路径
-                    PhotoInfo photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
-                    for (int i = 0; i < locationItemInfos.size(); i++) {
-                        if (photoInfo.getLocationId().equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.getLocationId())) {
-                            if (language.equals(Common.ENGLISH)) {
-                                photoInfo.setLocationName(locationItemInfos.get(i).placeENName);
-                            } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                                photoInfo.setLocationName(locationItemInfos.get(i).placeCHName);
-                            }
-                            break;
-                        }
+        for (PhotoInfo photoInfo: selectPhotoItemInfos) {
+            // 获取图片路径
+            for (int i = 0; i < locationItemInfos.size(); i++) {
+                if (photoInfo.getLocationId().equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.getLocationId())) {
+                    if (language.equals(Common.ENGLISH)) {
+                        photoInfo.setLocationName(locationItemInfos.get(i).placeENName);
+                    } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                        photoInfo.setLocationName(locationItemInfos.get(i).placeCHName);
                     }
-                    if (TextUtils.isEmpty(photoInfo.getLocationName())) {
-                        if (language.equals(Common.ENGLISH)) {
-                            photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeENName);
-                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                            photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeCHName);
-                        }
-                    }
-                    selectPhotoItemInfos.add(photoInfo);
-                } while (cursor.moveToNext());
-
+                    break;
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // 处理完了，通知处理之后的信息
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");
-                cursor.close();
+            if (TextUtils.isEmpty(photoInfo.getLocationName())) {
+                if (language.equals(Common.ENGLISH)) {
+                    photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeENName);
+                } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                    photoInfo.setLocationName(locationItemInfos.get(locationItemInfos.size() - 1).placeCHName);
+                }
             }
-            DBManager.getInstance().closeDatabase();
         }
         return selectPhotoItemInfos;
     }
@@ -323,24 +252,30 @@ public class PictureAirDbManager {
      * @param photo
      */
     public void updatePhotoInfo(PhotoInfo photo) {
-        database = DBManager.getInstance().writData();
-        try {
-            database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
-                            "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
-                            "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                            "isPay = ?, locationName = ?, shareURL = ?," +
-                            "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                    new String[]{photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
-                            photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
-                            photo.getLocationId(), photo.getStrShootOn(), photo.getIsPaid() + "", photo.getLocationName(),
-                            photo.getShareURL(), photo.getFileSize() + "", photo.getVideoWidth() + "", photo.getVideoHeight() + "",
-                            photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getPhotoId()});
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        PhotoInfo photoInfo = photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().unique();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
+        if (photoInfo == null) {
+            return;
         }
+        photoInfo.setPhotoPassCode(photo.getPhotoPassCode());
+        photoInfo.setShootDate(photo.getShootDate());
+        photoInfo.setPhotoOriginalURL(photo.getPhotoOriginalURL());
+        photoInfo.setPhotoThumbnail_128(photo.getPhotoThumbnail_128());
+        photoInfo.setPhotoThumbnail_512(photo.getPhotoThumbnail_512());
+        photoInfo.setPhotoThumbnail_1024(photo.getPhotoThumbnail_1024());
+        photoInfo.setLocationId(photo.getLocationId());
+        photoInfo.setStrShootOn(photo.getStrShootOn());
+        photoInfo.setIsPaid(photo.getIsPaid());
+        photoInfo.setShareURL(photo.getShareURL());
+        photoInfo.setFileSize(photo.getFileSize());
+        photoInfo.setVideoWidth(photo.getVideoWidth());
+        photoInfo.setVideoHeight(photo.getVideoHeight());
+        photoInfo.setIsPreset(photo.getIsPreset());
+        photoInfo.setIsEnImage(photo.getIsEnImage());
+
+        photoInfoDao.update(photoInfo);
     }
 
     /**
@@ -349,17 +284,19 @@ public class PictureAirDbManager {
      * @param selectedPhotoId 指定照片ID
      */
     public void updatePhotoBought(String selectedPhotoId, boolean isDelete) {
-        database = DBManager.getInstance().writData();
-        try {
-            if (isDelete) {//删除操作
-                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
-            } else {//同步操作
-                database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        PhotoInfo photoInfo = photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoId.eq(selectedPhotoId)).build().unique();
+
+        if (photoInfo == null) {
+            return;
+        }
+        if (isDelete) {//删除操作
+            photoInfoDao.delete(photoInfo);
+
+        } else {//同步操作
+            photoInfo.setIsPaid(1);
+            photoInfoDao.update(photoInfo);
         }
     }
 
@@ -370,20 +307,26 @@ public class PictureAirDbManager {
      * @param shootDate 绑定时间
      */
     public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, boolean isDelete) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            if (isDelete) {//删除操作
-                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
-            } else {//同步
-                database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        ArrayList<PhotoInfo> photos;
+        if (isDelete) {//删除操作
+            photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%")).build().list();
+            if (photos != null && photos.size() > 0) {
+                photoInfoDao.deleteInTx(photos);
             }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+
+        } else {//同步
+            photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate))
+                    .build().list();
+            if (photos == null && photos.size() == 0) {
+                return;
+            }
+            for (PhotoInfo photo : photos) {
+                photo.setIsPaid(1);
+            }
+            photoInfoDao.updateInTx(photos);
         }
     }
 
@@ -420,17 +363,10 @@ public class PictureAirDbManager {
     /**
      * 删除photopassInfo中的内容
      *
-     * @param tableName 需要清空的表的名字
      */
-    public void deleteAllInfoFromTable(String tableName) {
-        database = DBManager.getInstance().writData();
-        try {
-            database.execSQL("delete from " + tableName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
-        }
+    public void deleteAllInfoFromTable() {
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        photoInfoDao.deleteAll();
     }
 
     /**
@@ -440,128 +376,113 @@ public class PictureAirDbManager {
      * @param type         是否是刷新信息
      */
     public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type) {
-        ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();//返回的数据列表
+        ArrayList<PhotoInfo> dbPhotoList = new ArrayList<>();//插入数据库的列表
         if (responseArray.size() == 0) {
             return resultArrayList;
         }
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        Cursor cursor = null;
         String repeatTopId = null;
         String repeatBottomId = null;
         PictureAirLog.d("photo size -->" + responseArray.size());
-        try {
-            for (int i = 0; i < responseArray.size(); i++) {
-                JSONObject object = responseArray.getJSONObject(i);
-                PhotoInfo photo = JsonUtil.getPhoto(object);
-                if (TextUtils.isEmpty(photo.getLocationId())) {
-                    photo.setLocationId("others");
-                }
-
-                if (type == API1.GET_DEFAULT_PHOTOS) {
-                    if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
-                    } else if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
-                    }
-                } else if (type == API1.GET_NEW_PHOTOS) {
-                    if (i == 0) {//记录最新的值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
-                    }
-
-                } else if (type == API1.GET_OLD_PHOTOS) {
-                    if (i == responseArray.size() - 1) {//记录最后一个值
-                        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
-                    }
-                }
-
-
-                if (type == API1.GET_NEW_PHOTOS || type == API1.GET_OLD_PHOTOS) {
-                    //1.先查询数据库是否有新的数据，如果有，则更新信息
-                    //2.如果没有，则插入
-                    PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
-                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.getPhotoId()});
-                    if (cursor.getCount() > 0) {//说明存在此数据，需要更新下数据
-                        database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
-                                "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
-                                "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
-                                "isPay = ?, locationCountry = ?, shareURL = ?," +
-                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
-                                new String[]{photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
-                                        photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
-                                        photo.getLocationId(), photo.getStrShootOn(), photo.getIsPaid() + "", photo.getLocationName(),
-                                        photo.getShareURL(), photo.getFileSize() + "", photo.getVideoWidth() + "",
-                                        photo.getVideoHeight() + "", photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getPhotoId()});
-
-                        photo.setIsRefreshInfo(1);
-                        cursor.close();
-                        resultArrayList.add(photo);
-                        continue;
-                    } else {
-                        cursor.close();
-                    }
-                }
-
-                resultArrayList.add(photo);
-                //将数据插入到数据库
-                database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-                        photo.getPhotoId(), photo.getPhotoPassCode(), photo.getShootDate(), photo.getPhotoOriginalURL(),
-                        photo.getPhotoThumbnail_128(), photo.getPhotoThumbnail_512(), photo.getPhotoThumbnail_1024(),
-                        photo.getLocationId(), photo.getStrShootOn(), 0 + "", photo.getIsPaid() + "", photo.getLocationName(),
-                        photo.getShareURL(), photo.getIsVideo() + "", photo.getFileSize() + "",
-                        photo.getVideoWidth() + "", photo.getVideoHeight() + "", photo.getIsPreset() + "", photo.getIsEnImage() + "", photo.getAdURL()});
-            }
-
-            database.setTransactionSuccessful();
-
-            //获取repeatTopId
-            for (int i = 0; i < resultArrayList.size(); i++) {
-                if (i == 0) {
-                    repeatTopId = resultArrayList.get(i).getPhotoId();
-                } else {
-                    if (resultArrayList.get(0).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
-                        repeatTopId += "," + resultArrayList.get(i).getPhotoId();
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            //获取repeatBottomId
-            for (int i = resultArrayList.size() - 1; i >= 0; i--) {
-                if (i == resultArrayList.size() - 1) {
-                    repeatBottomId = resultArrayList.get(i).getPhotoId();
-
-                } else {
-                    if (resultArrayList.get(resultArrayList.size() - 1).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
-                        repeatBottomId += "," + resultArrayList.get(i).getPhotoId();
-
-                    } else {
-                        break;
-                    }
-                }
+        for (int i = 0; i < responseArray.size(); i++) {
+            JSONObject object = responseArray.getJSONObject(i);
+            PhotoInfo photo = JsonUtil.getPhoto(object);
+            if (TextUtils.isEmpty(photo.getLocationId())) {
+                photo.setLocationId("others");
             }
 
             if (type == API1.GET_DEFAULT_PHOTOS) {
-                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
-                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
-
+                if (i == 0) {//记录最新的值
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                } else if (i == responseArray.size() - 1) {//记录最后一个值
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                }
             } else if (type == API1.GET_NEW_PHOTOS) {
-                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+                if (i == 0) {//记录最新的值
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                }
 
             } else if (type == API1.GET_OLD_PHOTOS) {
-                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+                if (i == responseArray.size() - 1) {//记录最后一个值
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                }
+            }
 
+
+            if (type == API1.GET_NEW_PHOTOS || type == API1.GET_OLD_PHOTOS) {
+                //1.先查询数据库是否有新的数据，如果有，则更新信息
+                //2.如果没有，则插入
+                PhotoInfo dbPhotoInfo = photoInfoDao.queryBuilder()
+                        .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().unique();
+                if (dbPhotoInfo != null) {//说明存在此数据，需要更新下数据
+                    dbPhotoInfo.setPhotoPassCode(photo.getPhotoPassCode());
+                    dbPhotoInfo.setShootDate(photo.getShootDate());
+                    dbPhotoInfo.setPhotoOriginalURL(photo.getPhotoOriginalURL());
+                    dbPhotoInfo.setPhotoThumbnail_128(photo.getPhotoThumbnail_128());
+                    dbPhotoInfo.setPhotoThumbnail_512(photo.getPhotoThumbnail_512());
+                    dbPhotoInfo.setPhotoThumbnail_1024(photo.getPhotoThumbnail_1024());
+                    dbPhotoInfo.setLocationId(photo.getLocationId());
+                    dbPhotoInfo.setStrShootOn(photo.getStrShootOn());
+                    dbPhotoInfo.setIsPaid(photo.getIsPaid());
+                    dbPhotoInfo.setShareURL(photo.getShareURL());
+                    dbPhotoInfo.setFileSize(photo.getFileSize());
+                    dbPhotoInfo.setVideoWidth(photo.getVideoWidth());
+                    dbPhotoInfo.setVideoHeight(photo.getVideoHeight());
+                    dbPhotoInfo.setIsPreset(photo.getIsPreset());
+                    dbPhotoInfo.setIsEnImage(photo.getIsEnImage());
+
+                    photoInfoDao.update(dbPhotoInfo);
+
+                    photo.setIsRefreshInfo(1);
+                    resultArrayList.add(photo);
+                    continue;
+                }
             }
-        } catch (JSONException e1) {
-            e1.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> insertPhotoInfoIntoPhotoPassInfo");
-                cursor.close();
+
+            resultArrayList.add(photo);
+            dbPhotoList.add(photo);
+        }
+        photoInfoDao.insertInTx(dbPhotoList);
+
+        //获取repeatTopId
+        for (int i = 0; i < resultArrayList.size(); i++) {
+            if (i == 0) {
+                repeatTopId = resultArrayList.get(i).getPhotoId();
+            } else {
+                if (resultArrayList.get(0).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                    repeatTopId += "," + resultArrayList.get(i).getPhotoId();
+                } else {
+                    break;
+                }
             }
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        }
+
+        //获取repeatBottomId
+        for (int i = resultArrayList.size() - 1; i >= 0; i--) {
+            if (i == resultArrayList.size() - 1) {
+                repeatBottomId = resultArrayList.get(i).getPhotoId();
+
+            } else {
+                if (resultArrayList.get(resultArrayList.size() - 1).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                    repeatBottomId += "," + resultArrayList.get(i).getPhotoId();
+
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (type == API1.GET_DEFAULT_PHOTOS) {
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+
+        } else if (type == API1.GET_NEW_PHOTOS) {
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+
+        } else if (type == API1.GET_OLD_PHOTOS) {
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+
         }
         return resultArrayList;
     }
@@ -572,23 +493,32 @@ public class PictureAirDbManager {
      * @param ppCode
      */
     public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list, String ppCode) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        PhotoInfo photoInfo;
         try {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getPhotoPassCode().equals(ppCode)) {//只有一张卡
-                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).getPhotoId(), ppCode});
+                    photoInfo = photoInfoDao.queryBuilder()
+                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()), PhotoInfoDao.Properties.PhotoPassCode.eq(ppCode))
+                            .build().unique();
+                    if (photoInfo != null) {
+                        photoInfoDao.delete(photoInfo);
+                    }
+
                 } else {//有多张卡
                     String newPPCode = list.get(i).getPhotoPassCode().replace(ppCode, "");
-                    database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).getPhotoId()});
+                    photoInfo = photoInfoDao.queryBuilder()
+                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId())).build().unique();
+                    if (photoInfo == null) {
+                        return;
+                    }
+                    photoInfo.setPhotoPassCode(newPPCode);
+                    photoInfoDao.update(photoInfo);
                 }
             }
-            database.setTransactionSuccessful();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -607,46 +537,40 @@ public class PictureAirDbManager {
          * 4.检查是否其他pp的code在删除图片对应的ppcode中
          * 5.如果在，则不删除，如果不在，则删除
          */
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         String deletePPCode;
         boolean needDelete = true;
         ArrayList<PhotoInfo> deletePhotos = new ArrayList<>();
         //1
         deletePhotos.addAll(ppList.get(position).getSelectPhotoItemInfos());
 
-        try {
-            for (int i = 0; i < deletePhotos.size(); i++) {
-                //2
-                deletePPCode = deletePhotos.get(i).getPhotoPassCode();
-                PictureAirLog.out("deletePPCode--->" + deletePPCode);
-                //3
-                for (int j = 0; j < ppList.size(); j++) {
-                    if (j == position) {
-                        continue;
-                    }
-
-                    //4
-                    if (deletePPCode.contains(ppList.get(j).getPpCode())) {
-                        needDelete = false;
-                        break;
-                    }
+        for (int i = 0; i < deletePhotos.size(); i++) {
+            //2
+            deletePPCode = deletePhotos.get(i).getPhotoPassCode();
+            PictureAirLog.out("deletePPCode--->" + deletePPCode);
+            //3
+            for (int j = 0; j < ppList.size(); j++) {
+                if (j == position) {
+                    continue;
                 }
 
-                //5
-                if (needDelete) {//需要删除
-                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).getPhotoId()});
-                } else {
-                    needDelete = true;
+                //4
+                if (deletePPCode.contains(ppList.get(j).getPpCode())) {
+                    needDelete = false;
+                    break;
                 }
             }
 
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+            //5
+            if (needDelete) {//需要删除
+                PhotoInfo photoInfo = photoInfoDao.queryBuilder()
+                        .where(PhotoInfoDao.Properties.PhotoId.eq(deletePhotos.get(i).getPhotoId())).build().unique();
+                if (photoInfo != null) {
+                    photoInfoDao.delete(photoInfo);
+                }
+            } else {
+                needDelete = true;
+            }
         }
     }
 
@@ -656,33 +580,32 @@ public class PictureAirDbManager {
      * @return
      */
     public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean exceptVideo, String deleteTime) {
-        ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
-        database = DBManager.getInstance().writData();
+        ArrayList<PhotoInfo> resultArrayList;
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         //根据当前时间，删除超过30天并且未支付的数据信息
         /**
          * 1.获取当前时间，以毫秒为单位
          * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
          */
-        database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
+        resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+        PictureAirLog.d("size--> " + resultArrayList.size());
+        if (resultArrayList.size() > 0) {
+            photoInfoDao.deleteInTx(resultArrayList);
+        }
 
+        resultArrayList.clear();
         //删除过期的数据之后，再查询photo表的信息
         PictureAirLog.out("cursor open ---> getAllPhotoFromPhotoPassInfo");
-        Cursor cursor;
         if (exceptVideo) {
-            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isVideo = 0 order by shootOn desc", null);
+            resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                    .where(PhotoInfoDao.Properties.IsVideo.eq(0))
+                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
         } else{
-            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " order by shootOn desc", null);
-        }
-        PhotoInfo photoInfo;
-        if (cursor.moveToFirst()) {//判断是否photo数据
-            do {
-                photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
-                resultArrayList.add(photoInfo);
-            } while (cursor.moveToNext());
+            resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
         }
         PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo" + resultArrayList.size());
-        cursor.close();
-        DBManager.getInstance().closeDatabase();
         return resultArrayList;
     }
 
@@ -692,26 +615,25 @@ public class PictureAirDbManager {
      * @return
      */
     public ArrayList<PhotoInfo> getPhotoFromPhotoPassInfo(String deleteTime, boolean hasBought) {
-        ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
-        database = DBManager.getInstance().writData();
+        ArrayList<PhotoInfo> resultArrayList;
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         //根据当前时间，删除超过30天并且未支付的数据信息
         /**
          * 1.获取当前时间，以毫秒为单位
          * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
          */
-        database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
+        resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+        if (resultArrayList.size() > 0) {
+            photoInfoDao.deleteInTx(resultArrayList);
+        }
+
+        resultArrayList.clear();
 
         //删除过期的数据之后，再查询photo表的信息
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = ? order by shootOn desc", new String[]{hasBought ? "1" : "0"});
-        PhotoInfo photoInfo;
-        if (cursor.moveToFirst()) {//判断是否photo数据
-            do {
-                photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
-                resultArrayList.add(photoInfo);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        DBManager.getInstance().closeDatabase();
+        resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.IsPaid.eq(hasBought ? "1" : "0"))
+                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
         return resultArrayList;
     }
 
@@ -721,23 +643,9 @@ public class PictureAirDbManager {
      * @return
      */
     public boolean needGetLastestVideoInfoFromNetwork(String photoId) {
-        database = DBManager.getInstance().writData();
-        Cursor cursor = null;
-        PhotoInfo photoInfo = null;
-        try {
-            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photoId});
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        PhotoInfo photoInfo = photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoId.eq(photoId)).build().unique();
         return AppUtil.isOldVersionOfTheVideo(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_128());
     }
 

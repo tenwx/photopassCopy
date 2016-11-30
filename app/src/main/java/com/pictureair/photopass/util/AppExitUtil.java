@@ -40,7 +40,7 @@ public class AppExitUtil {
                     MyApplication.getInstance().setPushViedoCount(0);
                     MyApplication.getInstance().scanMagicFinish = false;
                     MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
-                    pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
+                    pictureAirDbManager.deleteAllInfoFromTable();
 
                     MyApplication.clearTokenId();
 

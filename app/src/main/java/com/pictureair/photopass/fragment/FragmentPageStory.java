@@ -684,7 +684,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     PictureAirLog.out("start save json in thread");
                     if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据，需要先清空数据库，反之，插入到后面
                         PictureAirLog.d(TAG, "delete all data from table");
-                        pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
+                        pictureAirDbManager.deleteAllInfoFromTable();
                     } else {
                         PictureAirLog.d(TAG, "need not delete all data");
                     }

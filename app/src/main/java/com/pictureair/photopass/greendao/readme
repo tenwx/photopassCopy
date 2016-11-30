@@ -1,4 +1,4 @@
-GreenDao 教程
+GreenDao 解析
 
 1.主项目的build.gradle中添加
     buildscript { 
@@ -67,3 +67,47 @@ GreenDao 教程
 
     getEncryptedWritableDb：获取加密数据库
     getWritableDb：获取正常数据库
+
+6.数据库操作
+
+    升级数据库：
+        自定义OpenHelper，在OnUpgrade中实现升级操作
+
+    增：
+        insert：添加一条数据
+
+    删：
+        delete：删除一条数据
+        deleteByKey：按照指定列名删除
+        deleteAll：删除全部数据
+        deleteInTx：使用事务，删除数据
+
+    改：
+        update：修改数据, 前提是先按照条件找到对应的对象，再修改这个对象，最后update
+        updateInTx：使用事务，更新数据
+
+    查：
+        和ppcode类似，并且按照strshooton降序排列，并且返回list。如果多个where条件，where(a, b, c, d)
+        (ArrayList) Dao.queryBuilder()
+            .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
+            .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+        le：小于
+        lt：小于等于
+        eq：等于
+        notEq：不等于
+        gt：大于
+        ge：大于等于
+        like：相似
+        between（a，b）：在a和b之间
+        isNull：为空
+        isNotNull：不为空
+        limit：限制数量
+        unique：值返回一条结果
+        list：返回列表
+        orderDesc：降序
+        orderAsc：升序
+        queryRaw：使用sql语句 所有字段前面，都要加 T. ，如：T.'IS_PAID'
+        StringCondition：使用sql语句自定义where条件
+
+
+

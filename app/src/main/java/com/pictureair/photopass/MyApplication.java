@@ -115,7 +115,7 @@ public class MyApplication extends Application {
         // 所以，在正式的项目中，你还应该做一层封装，来实现数据库的安全升级。
 
         //创建表
-        DaoMaster.DevOpenHelper mHelper = new DaoMaster.DevOpenHelper(this, "photopass_info.db3");
+        DaoMaster.DevOpenHelper mHelper = new DaoMaster.DevOpenHelper(this, Common.PHOTOPASS_INFO_NAME);
         //打开对应的数据库，此处应该使用加密的数据库
         Database db = Common.USE_ENCRYPTED_DATABASE ? mHelper.getEncryptedWritableDb(PWJniUtil.getSqlCipherKey(Common.APP_TYPE_SHDRPP)) : mHelper.getWritableDb();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
