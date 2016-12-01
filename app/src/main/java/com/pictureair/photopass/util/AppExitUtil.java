@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.widget.PWToast;
@@ -22,7 +22,6 @@ import com.pictureair.photopass.widget.PWToast;
  */
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
-    private static PictureAirDbManager pictureAirDbManager;
     private static PWToast newToast;
 
     private Handler myHandler = new Handler(new Handler.Callback() {
@@ -40,7 +39,7 @@ public class AppExitUtil {
                     MyApplication.getInstance().setPushViedoCount(0);
                     MyApplication.getInstance().scanMagicFinish = false;
                     MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
-                    pictureAirDbManager.deleteAllInfoFromTable();
+                    PictureAirDbManager.deleteAllInfoFromTable();
 
                     MyApplication.clearTokenId();
 
@@ -77,7 +76,6 @@ public class AppExitUtil {
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
-            pictureAirDbManager = new PictureAirDbManager();
             newToast = new PWToast(MyApplication.getInstance());
         }
         return appExitUtil;

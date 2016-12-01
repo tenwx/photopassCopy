@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.networkbench.agent.impl.NBSAppAgent;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
@@ -41,7 +41,6 @@ public class StartActivity extends BaseActivity implements Callback {
     private TextView versionTextView;
     private Handler handler;
     private Class tarClass;
-    private PictureAirDbManager pictureAirDbManager;
     private static final int UPDATE_SUCCESS = 1111;
     private long updateTime = 0;
     private long curTime = 0;
@@ -62,7 +61,6 @@ public class StartActivity extends BaseActivity implements Callback {
         spinner = (AnimationDrawable) img_update.getBackground();
         handler = new Handler(this);
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
-        pictureAirDbManager = new PictureAirDbManager();
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();
@@ -128,7 +126,7 @@ public class StartActivity extends BaseActivity implements Callback {
                     MyApplication.getInstance().setPushViedoCount(0);
                     MyApplication.getInstance().scanMagicFinish = false;
                     MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
-                    pictureAirDbManager.deleteAllInfoFromTable();
+                    PictureAirDbManager.deleteAllInfoFromTable();
 
                     MyApplication.clearTokenId();
 
@@ -178,11 +176,11 @@ public class StartActivity extends BaseActivity implements Callback {
         @Override
         public void run() {
             try {
-                List<String> users = pictureAirDbManager.getAllUsers();
+                List<String> users = PictureAirDbManager.getAllUsers();
                 if (users.size() >0) {
                     for (int k = 0;k<users.size();k++) {
                         String userId = users.get(k);
-                        List<PhotoDownLoadInfo> list = pictureAirDbManager.getAllPhotos(userId);
+                        List<PhotoDownLoadInfo> list = PictureAirDbManager.getAllPhotos(userId);
                         Collections.sort(list, new PhotoDownLoadInfoSortUtil());
                         if (list != null && list.size() > 0) {
                             int len = list.size();
@@ -191,7 +189,7 @@ public class StartActivity extends BaseActivity implements Callback {
                                 for (int j = i + 1; j < len; j++) {
                                     PhotoDownLoadInfo infoj = list.get(j);
                                     if (infoi.getPhotoId().equalsIgnoreCase(infoj.getPhotoId())) {
-                                        pictureAirDbManager.deleteRepeatPhoto(userId, infoj);
+                                        PictureAirDbManager.deleteRepeatPhoto(userId, infoj);
                                         list.remove(j);
                                         j--;
                                         len--;

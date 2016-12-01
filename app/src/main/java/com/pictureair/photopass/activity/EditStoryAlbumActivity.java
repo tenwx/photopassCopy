@@ -21,7 +21,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
@@ -74,7 +74,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private int tabIndex = 0;
 	private int selectCount = 0;
 	private PWToast myToast;
-	private PictureAirDbManager pictureAirDbManager;
 	private SettingUtil settingUtil;
 	private boolean editMode = false;
 	private boolean deleteLocalPhotoDone = false;
@@ -251,8 +250,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		//初始化数据
 		albumArrayList = new ArrayList<>();
-		pictureAirDbManager = new PictureAirDbManager();
-		settingUtil = new SettingUtil(pictureAirDbManager);
+		settingUtil = new SettingUtil();
 		ppCode = getIntent().getStringExtra("ppCode");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
@@ -260,7 +258,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				originalAlbumArrayList = pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
+				originalAlbumArrayList = PictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
 				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList, false));
 				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
 			}
@@ -510,7 +508,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 * 1.删除数据库的操作（照片表和收藏表都要删除），同时需要判断是否输入多张PP卡
 		 * 2.删除本地列表操作
 		 */
-		pictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist, ppCode + ",");
+		PictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist, ppCode + ",");
 
 		for (int i = 0; i < photopassPhotoslist.size(); i++) {
 			Iterator<PhotoInfo> iterator = albumArrayList.iterator();

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.db;
+package com.pictureair.photopass.greendao;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -19,13 +19,6 @@ import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.greendao.ADLocationInfoDao;
-import com.pictureair.photopass.greendao.FirstStartInfoDao;
-import com.pictureair.photopass.greendao.FrameOrStikerInfoDao;
-import com.pictureair.photopass.greendao.PaymentOrderInfoDao;
-import com.pictureair.photopass.greendao.PhotoDownLoadInfoDao;
-import com.pictureair.photopass.greendao.PhotoInfoDao;
-import com.pictureair.photopass.greendao.ThreadInfoDao;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -61,7 +54,7 @@ public class PictureAirDbManager {
      * @param settingType 设置类型
      * @param userInfoId  用户ID
      */
-    public void insertSettingStatus(String settingType, String userInfoId) {
+    public static void insertSettingStatus(String settingType, String userInfoId) {
         FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
         firstStartInfoDao.insert(new FirstStartInfo(null, settingType, userInfoId));
     }
@@ -72,7 +65,7 @@ public class PictureAirDbManager {
      * @param settingType 设置类型
      * @param userInfoId  用户ID
      */
-    public void deleteSettingStatus(String settingType, String userInfoId) {
+    public static void deleteSettingStatus(String settingType, String userInfoId) {
         FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
         QueryBuilder<FirstStartInfo> queryBuilder = firstStartInfoDao.queryBuilder()
                 .where(FirstStartInfoDao.Properties.Event.eq(settingType), FirstStartInfoDao.Properties.UserId.eq(userInfoId));
@@ -92,7 +85,7 @@ public class PictureAirDbManager {
      * @param userInfoId  用户ID
      * @return
      */
-    public boolean checkFirstBuyPhoto(String settingType, String userInfoId) {
+    public static boolean checkFirstBuyPhoto(String settingType, String userInfoId) {
         FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
         long count = firstStartInfoDao.queryBuilder()
                 .where(FirstStartInfoDao.Properties.Event.eq(settingType), FirstStartInfoDao.Properties.UserId.eq(userInfoId)).count();
@@ -106,7 +99,7 @@ public class PictureAirDbManager {
      * @param settingType
      * @param userInfoId
      */
-    public boolean checkFirstTimeStartActivity(String settingType, String userInfoId) {
+    public static boolean checkFirstTimeStartActivity(String settingType, String userInfoId) {
         FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
         boolean result = false;
         long count = firstStartInfoDao.queryBuilder()
@@ -126,7 +119,7 @@ public class PictureAirDbManager {
      * @param type       1 代表直接进入的 PP 页面， 2 代表是从selectPP进入，这个情况只显示模糊图
      * @return
      */
-    public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(Context c, ArrayList<PPinfo> ppCodeList, int type) {
+    public static ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(Context c, ArrayList<PPinfo> ppCodeList, int type) {
         ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
         //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
         if (type == 1) {
@@ -210,7 +203,7 @@ public class PictureAirDbManager {
      * 根据ppCode获取对应的PP照片列表
      * @param ppCode
      */
-    public ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
+    public static ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"))
@@ -243,7 +236,7 @@ public class PictureAirDbManager {
      * 更新照片的信息
      * @param photo
      */
-    public void updatePhotoInfo(PhotoInfo photo) {
+    public static void updatePhotoInfo(PhotoInfo photo) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().forCurrentThread().unique();
@@ -275,7 +268,7 @@ public class PictureAirDbManager {
      *
      * @param selectedPhotoId 指定照片ID
      */
-    public void updatePhotoBought(String selectedPhotoId, boolean isDelete) {
+    public static void updatePhotoBought(String selectedPhotoId, boolean isDelete) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.PhotoId.eq(selectedPhotoId)).build().forCurrentThread().unique();
@@ -298,7 +291,7 @@ public class PictureAirDbManager {
      * @param ppCode    pp码
      * @param shootDate 绑定时间
      */
-    public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, boolean isDelete) {
+    public static void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, boolean isDelete) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> photos;
         if (isDelete) {//删除操作
@@ -326,7 +319,7 @@ public class PictureAirDbManager {
      * 删除photopassInfo中的内容
      *
      */
-    public void deleteAllInfoFromTable() {
+    public static void deleteAllInfoFromTable() {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         photoInfoDao.deleteAll();
     }
@@ -337,7 +330,7 @@ public class PictureAirDbManager {
      * @param responseArray
      * @param type         是否是刷新信息
      */
-    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type) {
+    public static synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();//返回的数据列表
         ArrayList<PhotoInfo> dbPhotoList = new ArrayList<>();//插入数据库的列表
@@ -454,7 +447,7 @@ public class PictureAirDbManager {
      * @param list
      * @param ppCode
      */
-    public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list, String ppCode) {
+    public static void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list, String ppCode) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo;
         try {
@@ -490,7 +483,7 @@ public class PictureAirDbManager {
      * @param position 删除的position
      * @param ppList   原始ppCode列表
      */
-    public void removePhotosFromUserByPPCode(int position, ArrayList<PPinfo> ppList) {
+    public static void removePhotosFromUserByPPCode(int position, ArrayList<PPinfo> ppList) {
         /**
          * 删除步骤
          * 1.获取删除ppcode对应的所有图片
@@ -541,7 +534,7 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean exceptVideo, String deleteTime) {
+    public static synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean exceptVideo, String deleteTime) {
         ArrayList<PhotoInfo> resultArrayList;
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         //根据当前时间，删除超过30天并且未支付的数据信息
@@ -576,7 +569,7 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public ArrayList<PhotoInfo> getPhotoFromPhotoPassInfo(String deleteTime, boolean hasBought) {
+    public static ArrayList<PhotoInfo> getPhotoFromPhotoPassInfo(String deleteTime, boolean hasBought) {
         ArrayList<PhotoInfo> resultArrayList;
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         //根据当前时间，删除超过30天并且未支付的数据信息
@@ -604,7 +597,7 @@ public class PictureAirDbManager {
      * @param photoId
      * @return
      */
-    public boolean needGetLastestVideoInfoFromNetwork(String photoId) {
+    public static boolean needGetLastestVideoInfoFromNetwork(String photoId) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.PhotoId.eq(photoId)).build().forCurrentThread().unique();
@@ -617,7 +610,7 @@ public class PictureAirDbManager {
      * @param frame 边框的话为1，饰品的话为0
      * @return
      */
-    public ArrayList<FrameOrStikerInfo> getLastContentDataFromDB(int frame) {
+    public static ArrayList<FrameOrStikerInfo> getLastContentDataFromDB(int frame) {
         FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
         ArrayList<FrameOrStikerInfo> resultArrayList = (ArrayList<FrameOrStikerInfo>) frameOrStikerInfoDao.queryBuilder()
                 .where(FrameOrStikerInfoDao.Properties.IsActive.eq(1), FrameOrStikerInfoDao.Properties.FileType.eq(frame)).build().forCurrentThread().list();
@@ -631,7 +624,7 @@ public class PictureAirDbManager {
      * @param isFrame   是不是边框
      * @throws JSONException
      */
-    private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
+    private static void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
         FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
         ArrayList<FrameOrStikerInfo> frameOrStikerInfos = new ArrayList<>();
         FrameOrStikerInfo frameOrStikerInfo;
@@ -672,7 +665,7 @@ public class PictureAirDbManager {
      *
      * @param jsonObject
      */
-    public void insertFrameAndStickerIntoDB(JSONObject jsonObject) {
+    public static void insertFrameAndStickerIntoDB(JSONObject jsonObject) {
         if (jsonObject.containsKey("frames")) {
             insertFrameAndSticker(jsonObject.getJSONArray("frames"), true);
         }
@@ -687,7 +680,7 @@ public class PictureAirDbManager {
      * @param name  边框名字
      * @param frame 边框为1，饰品为0
      */
-    public void updateFrameAndStickerDownloadStatus(String name, int frame) {
+    public static void updateFrameAndStickerDownloadStatus(String name, int frame) {
         FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
         QueryBuilder<FrameOrStikerInfo> queryBuilder = frameOrStikerInfoDao.queryBuilder()
                 .where(FrameOrStikerInfoDao.Properties.FrameName.eq(name), FrameOrStikerInfoDao.Properties.FileType.eq(frame));
@@ -701,7 +694,7 @@ public class PictureAirDbManager {
     /**
      * 添加已支付的订单ID
      */
-    public void insertPaymentOrderIdDB(String userId, String orderId) {
+    public static void insertPaymentOrderIdDB(String userId, String orderId) {
         PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
         paymentOrderInfoDao.insert(new PaymentOrderInfo(null, orderId, userId));
     }
@@ -711,7 +704,7 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public List<PaymentOrderInfo> searchPaymentOrderIdDB() {
+    public static List<PaymentOrderInfo> searchPaymentOrderIdDB() {
         PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
         List<PaymentOrderInfo> orderInfos = paymentOrderInfoDao.queryBuilder().build().forCurrentThread().list();
         if (orderInfos == null) {
@@ -724,7 +717,7 @@ public class PictureAirDbManager {
     /**
      * 删除已支付的订单ID
      */
-    public void removePaymentOrderIdDB(String orderId) {
+    public static void removePaymentOrderIdDB(String orderId) {
         PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
         List<PaymentOrderInfo> orderInfos = paymentOrderInfoDao.queryBuilder()
                 .where(PaymentOrderInfoDao.Properties.OrderId.eq(orderId)).build().forCurrentThread().list();
@@ -740,7 +733,7 @@ public class PictureAirDbManager {
      *
      * @param jsonArray
      */
-    public void insertADLocations(JSONArray jsonArray) {
+    public static void insertADLocations(JSONArray jsonArray) {
         ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
         adLocationInfoDao.deleteAll();
 
@@ -760,7 +753,7 @@ public class PictureAirDbManager {
      * @param jsonArray
      * @return 返回当前locationId的广告词
      */
-    public String insertADLocations(JSONArray jsonArray, String photoLocationId, String language) {
+    public static String insertADLocations(JSONArray jsonArray, String photoLocationId, String language) {
         ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
         String result = "";
         adLocationInfoDao.deleteAll();
@@ -790,7 +783,7 @@ public class PictureAirDbManager {
      * @param language
      * @return
      */
-    public String getADByLocationId(String locationId, String language) {
+    public static String getADByLocationId(String locationId, String language) {
         String ad = "";
         ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
         QueryBuilder<ADLocationInfo> queryBuilder = adLocationInfoDao.queryBuilder()
@@ -815,7 +808,7 @@ public class PictureAirDbManager {
      * @param threadId
      * @return
      */
-    public boolean isExistsThread(String url, int threadId) {
+    public static boolean isExistsThread(String url, int threadId) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
                 .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
@@ -827,7 +820,7 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public boolean isExistsThread() {
+    public static boolean isExistsThread() {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder();
         return queryBuilder.count() > 0;
@@ -838,7 +831,7 @@ public class PictureAirDbManager {
      *
      * @param url
      */
-    public List<ThreadInfo> getTreads(String url) {
+    public static List<ThreadInfo> getTreads(String url) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         List<ThreadInfo> list = threadInfoDao.queryBuilder()
                 .where(ThreadInfoDao.Properties.Url.eq(url)).build().forCurrentThread().list();
@@ -853,7 +846,7 @@ public class PictureAirDbManager {
      * @param threadId
      * @param finished
      */
-    public void updateThread(String url, int threadId, int finished) {
+    public static void updateThread(String url, int threadId, int finished) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
                 .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
@@ -871,7 +864,7 @@ public class PictureAirDbManager {
      * @param url
      * @param threadId
      */
-    public void deleteThread(String url, int threadId) {
+    public static void deleteThread(String url, int threadId) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
                 .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
@@ -885,7 +878,7 @@ public class PictureAirDbManager {
      *
      * @param threadInfo
      */
-    public void insertThread(ThreadInfo threadInfo) {
+    public static void insertThread(ThreadInfo threadInfo) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         threadInfoDao.insert(threadInfo);
     }
@@ -895,7 +888,7 @@ public class PictureAirDbManager {
      * @param userId
      * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
      * */
-    public List<PhotoDownLoadInfo> getPhotos(String userId, String success){
+    public static List<PhotoDownLoadInfo> getPhotos(String userId, String success){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
 
@@ -913,7 +906,7 @@ public class PictureAirDbManager {
      * @param userId
      * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
      * */
-    public List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId, String success){
+    public static List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId, String success){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
 
@@ -932,7 +925,7 @@ public class PictureAirDbManager {
      * @param status1 状态有 成功 “true”  失败 “false”  下载中 “load” 原图上传中 upload
      * @param status2 状态有 成功 “true”  失败 “false”  下载中 “load” 原图上传中 upload
      * */
-    public List<PhotoDownLoadInfo> getPhotos(String userId, String status1, String status2){
+    public static List<PhotoDownLoadInfo> getPhotos(String userId, String status1, String status2){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
 
@@ -952,7 +945,7 @@ public class PictureAirDbManager {
      * 获取所有userId
      *
      * */
-    public List<String> getAllUsers(){
+    public static List<String> getAllUsers(){
         List<String> users = new ArrayList<>();
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
@@ -975,7 +968,7 @@ public class PictureAirDbManager {
     /**
      * 获取所有的照片信息
      * */
-    public List<PhotoDownLoadInfo> getAllPhotos(String userId){
+    public static List<PhotoDownLoadInfo> getAllPhotos(String userId){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
 
@@ -992,7 +985,7 @@ public class PictureAirDbManager {
      * 根据photid获取下载成功的图片信息
      *
      * */
-    public List<PhotoDownLoadInfo> getPhotosByPhotoId(String photoId){
+    public static List<PhotoDownLoadInfo> getPhotosByPhotoId(String photoId){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
 
@@ -1013,7 +1006,7 @@ public class PictureAirDbManager {
      * @param status 下载状态
      *
      * */
-    public synchronized void insertPhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list, String loadTime, String status){
+    public static synchronized void insertPhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list, String loadTime, String status){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         ArrayList<PhotoDownLoadInfo> photoDownLoadInfos = new ArrayList<>();
         PhotoDownLoadInfo photoDownLoadInfo;
@@ -1042,7 +1035,7 @@ public class PictureAirDbManager {
     }
 
 
-    public synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
+    public static synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photoList;
         QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
@@ -1061,7 +1054,7 @@ public class PictureAirDbManager {
      * 删除所有下载照片
      *
      * */
-    public synchronized int deleteDownloadPhoto(String userId){
+    public static synchronized int deleteDownloadPhoto(String userId){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photoList = new ArrayList<>();
         QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder()
@@ -1080,7 +1073,7 @@ public class PictureAirDbManager {
      * 根据用户id删除所有失败照片
      *
      * */
-    public synchronized void deleteDownloadFailPhotoByUserId(String userId){
+    public static synchronized void deleteDownloadFailPhotoByUserId(String userId){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
         queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId),
@@ -1096,7 +1089,7 @@ public class PictureAirDbManager {
      * 删除重复的照片
      *
      * */
-    public synchronized void deleteRepeatPhoto(String userId,PhotoDownLoadInfo info){
+    public static synchronized void deleteRepeatPhoto(String userId,PhotoDownLoadInfo info){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
                 .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.Id.eq(info.getId()));
@@ -1111,7 +1104,7 @@ public class PictureAirDbManager {
      * 根据xxx删除图片
      *
      * */
-    public synchronized void deletePhotoByPhotoId(String userId,String photoId){
+    public static synchronized void deletePhotoByPhotoId(String userId,String photoId){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
                 .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId));
@@ -1126,7 +1119,7 @@ public class PictureAirDbManager {
      * 更新状态为load的图片信息
      *
      * */
-    public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String failedTime){
+    public static synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String failedTime){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
                 .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId));
@@ -1151,7 +1144,7 @@ public class PictureAirDbManager {
      * 用列表循环更新状态为load的图片信息，较单个的更新速度更快
      *
      * */
-    public synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
+    public static synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder();
 
@@ -1174,7 +1167,7 @@ public class PictureAirDbManager {
         }
     }
 
-    public synchronized CopyOnWriteArrayList<PhotoDownLoadInfo> getExistPhoto(String userId){
+    public static synchronized CopyOnWriteArrayList<PhotoDownLoadInfo> getExistPhoto(String userId){
         CopyOnWriteArrayList<PhotoDownLoadInfo> list = new CopyOnWriteArrayList<>();
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()

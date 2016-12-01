@@ -35,7 +35,7 @@ import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
@@ -173,7 +173,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private String userId;
     private PWToast myToast;
     private ScanPhotosThread scanPhotosThread;
-    private PictureAirDbManager pictureAirDbManager;
     private PWDialog pwDialog;
     private DealingInfo dealingInfo;
     private boolean getPhotoInfoDone = false;
@@ -241,7 +240,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                  * 2.在application中记录结果
                  */
                 JSONObject adJsonObject = (JSONObject) msg.obj;
-                pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"));
+                PictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"));
                 app.setGetADLocationSuccess(true);
                 break;
 
@@ -684,7 +683,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     PictureAirLog.out("start save json in thread");
                     if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据，需要先清空数据库，反之，插入到后面
                         PictureAirLog.d(TAG, "delete all data from table");
-                        pictureAirDbManager.deleteAllInfoFromTable();
+                        PictureAirDbManager.deleteAllInfoFromTable();
                     } else {
                         PictureAirLog.d(TAG, "need not delete all data");
                     }
@@ -698,7 +697,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type);
+                    ArrayList<PhotoInfo> resultPhotoList = PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type);
                     PictureAirLog.out("-----------------> finish insert photo data into database");
                     if (type == API1.GET_NEW_PHOTOS) {
                         refreshDataCount = resultPhotoList.size();
@@ -765,8 +764,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
-        pictureAirDbManager = new PictureAirDbManager();
-        settingUtil = new SettingUtil(pictureAirDbManager);
+        settingUtil = new SettingUtil();
         app = (MyApplication) context.getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
@@ -1091,7 +1089,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void loadDataFromDataBase() {
         PictureAirLog.out("load data from database");
         long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-        ArrayList<PhotoInfo> resultPhotoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
+        ArrayList<PhotoInfo> resultPhotoArrayList = PictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
         PictureAirLog.out("photo from db ---->" + resultPhotoArrayList.size());
         ppPhotoCount = resultPhotoArrayList.size();
         photoPassPicList.addAll(resultPhotoArrayList);

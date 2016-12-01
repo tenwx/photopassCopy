@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -40,7 +40,6 @@ import java.util.HashMap;
 public class SelectPPActivity extends BaseActivity implements View.OnClickListener, PWDialog.OnPWDialogClickListener{
     private TextView tvTitle,ok;
     private ImageView back;
-    private PictureAirDbManager pictureAirDbManager;
     private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
     private PPPinfo dppp;
     private final int GET_SELECT_PP_SUCCESS = 2222;
@@ -114,7 +113,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(this);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
-        pictureAirDbManager = new PictureAirDbManager();
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
@@ -150,7 +148,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                         PPlist.add(pPinfo);
                     }
                 }
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, PPlist, 2);
+                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, PPlist, 2);
 
                 dppp = new PPPinfo();
                 dppp.capacity = 1;

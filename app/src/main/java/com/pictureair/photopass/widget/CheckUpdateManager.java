@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
 import com.pictureair.photopass.entity.FileInfo;
 import com.pictureair.photopass.service.BreakpointDownloadService;
@@ -52,7 +52,6 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     public static final int APK_NEED_NOT_UPDATE = 204;
     public static final int APK_NEED_UPDATE = 205;
     private static final int UPDATE_DIALOG = 206;
-    private PictureAirDbManager dbDAO = null;
 
     /**
      * 接受广播
@@ -297,7 +296,6 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
      */
     public void init(){
         baseCheckUpdate = CheckUpdate.getInstance();
-        dbDAO = new PictureAirDbManager();
     }
 
     /**
@@ -350,7 +348,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
         PictureAirLog.out("apk yes --->" + fileName);
         downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH + fileName);
 
-        if (downloadAPKFile.exists() && !dbDAO.isExistsThread()) {//文件已经存在
+        if (downloadAPKFile.exists() && !PictureAirDbManager.isExistsThread()) {//文件已经存在
             PictureAirLog.out("apk exist");
             insertAPK();
         } else {//文件不存在，需要去下载
@@ -371,7 +369,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
             fileInfo.setLength(0);
 
             if (!downloadAPKFile.exists()) {//如果文件不存在，需要把数据库中对应的记录删除
-                dbDAO.deleteThread(downloadURL, 0);
+                PictureAirDbManager.deleteThread(downloadURL, 0);
             }
 
             Intent intent = new Intent(context, BreakpointDownloadService.class);

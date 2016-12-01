@@ -32,7 +32,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.BitmapUtils;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.editPhoto.Matrix3;
@@ -140,7 +140,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private int curFramePosition = 0;
 
-	private PictureAirDbManager pictureAirDbManager;
 	private LocationUtil locationUtil;
 
 	private static final String TAG = "EditPhotoActivity: ";
@@ -252,7 +251,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				try {
 					com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
 					if (resultJsonObject.containsKey("assets")) {
-						pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
+						PictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
 					}
 
 					if (resultJsonObject.containsKey("time")) {
@@ -264,14 +263,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 				//写入数据库之后，再从数据库拿数据
-				frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
+				frameFromDBInfos = PictureAirDbManager.getLastContentDataFromDB(1);
 				for (int i = 0; i < frameFromDBInfos.size(); i++) {
 					if (frameFromDBInfos.get(i).getLocationId().equals("common")) {//通用边框
 						frameInfos.add(frameFromDBInfos.get(i));
 					}
 				}
 				//从数据库获取饰品信息
-				stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
+				stickerFromDBInfos = PictureAirDbManager.getLastContentDataFromDB(0);
 				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
 					if (stickerFromDBInfos.get(j).getLocationId().equals("common")) {//通用饰品
 						stikerInfos.add(stickerFromDBInfos.get(j));
@@ -373,7 +372,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		if (!tempFile.isDirectory()) {
 			tempFile.mkdirs();// 创建根目录文件夹
 		}
-		pictureAirDbManager = new PictureAirDbManager();
 
 		addFilterImages(FILTERPATH);
 		addFrameImages(FRAMEPATH);

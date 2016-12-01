@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
@@ -38,7 +38,6 @@ public class SocketUtil {
     private Intent intent;
     private long exitTime = 0;
     private Context mContext;
-    private PictureAirDbManager pictureAirDbManager;
     private ArrayList<String> syncMessageList = new ArrayList<>();
     private MyApplication application = MyApplication.getInstance();
     private Handler handler;
@@ -52,7 +51,6 @@ public class SocketUtil {
     public SocketUtil(Context mContext, Handler handler) {
         this.mContext = mContext;
         this.handler = handler;
-        pictureAirDbManager = new PictureAirDbManager();
         userId = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         //获得震动服务
         vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -108,11 +106,11 @@ public class SocketUtil {
                 socketType = SocketEvent.SOCKET_PHOTOPASS;
                 ppCode = updateJsonObject.getString("customerId");
                 shootDate = updateJsonObject.optString("shootDate");
-                pictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, isDelete);
+                PictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, isDelete);
             } else if (updateJsonObject.has("id")) {//照片购买，删除照片推送
                 socketType = SocketEvent.SOCKET_PHOTO;
                 photoId = updateJsonObject.getString("id");
-                pictureAirDbManager.updatePhotoBought(photoId, isDelete);
+                PictureAirDbManager.updatePhotoBought(photoId, isDelete);
             }
         } catch (JSONException e) {
             e.printStackTrace();

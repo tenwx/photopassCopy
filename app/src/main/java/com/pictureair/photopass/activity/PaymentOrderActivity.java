@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
@@ -73,7 +73,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private MyApplication myApplication;
     private PWToast newToast;
-    private PictureAirDbManager pictureAirDbManager;
     private boolean paySyncResult = false;
     private org.json.JSONObject payAsyncResultJsonObject;
 
@@ -209,7 +208,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 if (!isSuccess) {
                     dismissPWProgressDialog();
                     if (payAsyncResultJsonObject == null) {
-                        pictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
+                        PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
                     }
                     SuccessAfterPayment();
                     finish();
@@ -221,7 +220,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + msg.arg1);
                 if (payAsyncResultJsonObject == null) {
-                    pictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
+                    PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
                 }
                 SuccessAfterPayment();
                 finish();
@@ -290,7 +289,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         masterCardLayout = (RelativeLayout) findViewById(R.id.paytype_mc);
         jcbLayout = (RelativeLayout) findViewById(R.id.paytype_jcb);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
-        pictureAirDbManager = new PictureAirDbManager();
     }
 
     private void init() {

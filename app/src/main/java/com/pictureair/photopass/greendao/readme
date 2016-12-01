@@ -75,6 +75,7 @@ GreenDao 解析
 
     增：
         insert：添加一条数据
+        insetInTx：事务增加多条数据
 
     删：
         delete：删除一条数据

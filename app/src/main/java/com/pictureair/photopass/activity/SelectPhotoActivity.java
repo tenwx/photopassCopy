@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
@@ -69,8 +69,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     //底部view
     private TextView tvDisneyNullPhoto;
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
-
-    private PictureAirDbManager pictureAirDbManager;
 
     private static final int GET_PHOTOS_DONE = 10101;
 
@@ -209,7 +207,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
-        pictureAirDbManager = new PictureAirDbManager();
 
         PictureAirLog.out("photocount--->" + photocount);
         okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
@@ -221,7 +218,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 super.run();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
+                photopassList = PictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
                 photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo());
                 PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
                 selectPhotoHandler.sendEmptyMessage(GET_PHOTOS_DONE);

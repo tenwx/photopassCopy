@@ -24,7 +24,7 @@ import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppManager;
@@ -51,8 +51,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private ImageView returnImageView;
 
     private ImageButton shareImgBtn;
-
-    private PictureAirDbManager pictureAirDbManager;
 
     private RelativeLayout titleBar;
     private static final String TAG = "PreviewPhotoActivity";
@@ -202,7 +200,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private void init() {
         // TODO Auto-generated method stub
         previewPhotoHandler = new PreViewHandler(this);
-        pictureAirDbManager = new PictureAirDbManager();
         sharePop = new SharePop(this);
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.download_preview_back);
@@ -235,7 +232,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 photolist = new ArrayList<PhotoInfo>();
 
                 String userId = SPUtils.getString(DownloadPhotoPreviewActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotosOrderByTime(userId,"true");
+                List<PhotoDownLoadInfo> photos = PictureAirDbManager.getPhotosOrderByTime(userId,"true");
                 if (photos != null && photos.size() >0) {
                     for (int i=0;i<photos.size();i++) {
                         PhotoDownLoadInfo downLoadInfo = photos.get(i);

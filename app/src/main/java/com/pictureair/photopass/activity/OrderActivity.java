@@ -22,7 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter2;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
@@ -84,7 +84,6 @@ public class OrderActivity extends BaseFragmentActivity {
 
     private PWProgressDialog pwProgressDialog;
     private PWToast myToast;
-    private PictureAirDbManager pictureAirDbManager;
     private List<PaymentOrderInfo> orderIds;
 
     private int orderType = 0;//订单类型 异步回调使用
@@ -361,7 +360,6 @@ public class OrderActivity extends BaseFragmentActivity {
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
 
         myToast = new PWToast(this);
-        pictureAirDbManager = new PictureAirDbManager();
     }
 
     /**
@@ -402,7 +400,7 @@ public class OrderActivity extends BaseFragmentActivity {
             public void run() {
                 super.run();
                 PictureAirLog.out("runk------>");
-                orderIds = pictureAirDbManager.searchPaymentOrderIdDB();
+                orderIds = PictureAirDbManager.searchPaymentOrderIdDB();
                 PictureAirLog.v(TAG, "getLocalPaymentOrder orderIds:" + orderIds.size());
                 getLocalPaymentDone = true;
             }

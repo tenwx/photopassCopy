@@ -39,7 +39,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
@@ -1317,22 +1317,20 @@ public class AppUtil {
     /**
      * 获取预览图片需要的图片列表
      * @param locationList
-     * @param pictureAirDbManager
      * @param deleteTime
      * @param sdf
      * @param language
      * @return
      * @throws ParseException
      */
-    public static ArrayList<PhotoInfo> getSortedPhotoPassPhotos(ArrayList<DiscoverLocationItemInfo> locationList,
-                                                                PictureAirDbManager pictureAirDbManager, String deleteTime,
+    public static ArrayList<PhotoInfo> getSortedPhotoPassPhotos(ArrayList<DiscoverLocationItemInfo> locationList, String deleteTime,
                                                                 SimpleDateFormat sdf, String language, boolean isBought, boolean isForStickyHeader) throws ParseException {
         //从数据库获取图片
         ArrayList<PhotoInfo> photoList;
         if (isBought) {//获取已经购买的pp照片
-            photoList = pictureAirDbManager.getPhotoFromPhotoPassInfo(deleteTime, true);
+            photoList = PictureAirDbManager.getPhotoFromPhotoPassInfo(deleteTime, true);
         } else {//获取全部照片
-            photoList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
+            photoList = PictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
         }
         //将图片按照地点组合
         ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
@@ -1346,7 +1344,6 @@ public class AppUtil {
      * @param context
      * @param locationList
      * @param targetList
-     * @param pictureAirDbManager
      * @param deleteTime
      * @param sdf
      * @param language
@@ -1354,10 +1351,10 @@ public class AppUtil {
      * @throws ParseException
      */
     public static ArrayList<PhotoInfo> getSortedAllPhotos(Context context, ArrayList<DiscoverLocationItemInfo> locationList,
-                                                          ArrayList<PhotoInfo> targetList, PictureAirDbManager pictureAirDbManager, String deleteTime,
+                                                          ArrayList<PhotoInfo> targetList, String deleteTime,
                                                           SimpleDateFormat sdf, String language, boolean isForStickyHeader) throws ParseException {
         //从数据库获取图片
-        ArrayList<PhotoInfo> photoList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
+        ArrayList<PhotoInfo> photoList = PictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
         //将图片按照地点组合
         ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
         //将本地图片按照地点组合

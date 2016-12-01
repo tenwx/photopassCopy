@@ -35,7 +35,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
 import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo;
@@ -93,7 +93,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private PWToast newToast;
     private SharePop sharePop;
     private MyApplication myApplication;
-    private PictureAirDbManager pictureAirDbManager;
     private PhotoInfo photoInfo;
 
     private RelativeLayout titleBar;
@@ -309,7 +308,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            String adStr = pictureAirDbManager.getADByLocationId(photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
+                            String adStr = PictureAirDbManager.getADByLocationId(photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
                             previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPositon, 0, adStr).sendToTarget();
                         }
                     }).start();
@@ -345,7 +344,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                        String adString = PictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
                             photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
                         previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPosition1, 0, adString).sendToTarget();
                     }
@@ -422,8 +421,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
         previewPhotoHandler = new Handler(this);
-        pictureAirDbManager = new PictureAirDbManager();
-        settingUtil = new SettingUtil(pictureAirDbManager);
+        settingUtil = new SettingUtil();
         newToast = new PWToast(this);
         sharePop = new SharePop(this);
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -498,7 +496,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     try {
                         photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
-                                pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
+                                simpleDateFormat.format(new Date(cacheTime)),
                                 simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -507,7 +505,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else if (tabName.equals("photopass")) {//获取pp图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     try {
-                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false, false));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -519,7 +517,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else if (tabName.equals("bought")) {//获取已经购买的图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     try {
-                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true, false));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -531,7 +529,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     String ppCode = bundle.getString("ppCode");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
-                            pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType()), false));
+                            PictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType()), false));
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list

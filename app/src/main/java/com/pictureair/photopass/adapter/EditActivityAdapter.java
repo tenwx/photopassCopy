@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
@@ -56,7 +56,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private long secondFileProgress = 0;//文件下载进度
     private PWDialog pwDialog;
     private PWToast myToast;
-    private PictureAirDbManager pictureAirDbManager;
     private HolderView holderView;
     private int position;
 
@@ -89,7 +88,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         this.frameInfos = frameInfos;
         this.handler = handler;
         myToast = new PWToast(context);
-        pictureAirDbManager = new PictureAirDbManager();
     }
 
     @Override
@@ -516,7 +514,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
                     secondFileFailOrExist = false;
                     firstFileProgress = 0;
                     secondFileProgress = 0;
-                    pictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).getFrameName(), 1);
+                    PictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).getFrameName(), 1);
                 }
             }
         });
