@@ -3,7 +3,7 @@ package com.pictureair.photopass.controller;
 import android.content.Context;
 import android.os.Handler;
 
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -13,7 +13,6 @@ import com.pictureair.photopass.util.AppUtil;
  */
 public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
     private Context context;
-    private PictureAirDbManager pictureAirDbManager;
     private Handler handler;
     /**
      * 需要从网络获取最新数据
@@ -35,12 +34,8 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
 
     @Override
     public void needGetLastestVideoInfoFromNetByDB(String photoId) {
-        if (pictureAirDbManager == null) {
-            pictureAirDbManager = new PictureAirDbManager(context);
-        }
-
         //查询数据库
-        boolean result = pictureAirDbManager.needGetLastestVideoInfoFromNetwork(photoId);
+        boolean result = PictureAirDbManager.needGetLastestVideoInfoFromNetwork(photoId);
         handler.obtainMessage(NEED_GET_NEW_INFO, result).sendToTarget();
     }
 
@@ -51,14 +46,10 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
 
     @Override
     public void updateLastestVideoInfo(PhotoInfo videoInfo) {
-        if (pictureAirDbManager == null) {
-            pictureAirDbManager = new PictureAirDbManager(context);
-        }
-
-        pictureAirDbManager.updatePhotoInfo(videoInfo);
+        PictureAirDbManager.updatePhotoInfo(videoInfo);
 
         //判断从网络获取的视频数据是否已经制作完成
-        if (AppUtil.isOldVersionOfTheVideo(videoInfo.photoPathOrURL, videoInfo.photoThumbnail_1024, videoInfo.photoThumbnail_512, videoInfo.photoThumbnail)) {
+        if (AppUtil.isOldVersionOfTheVideo(videoInfo.getPhotoOriginalURL(), videoInfo.getPhotoThumbnail_1024(), videoInfo.getPhotoThumbnail_512(), videoInfo.getPhotoThumbnail_128())) {
             //依旧不是最新的url
             handler.sendEmptyMessage(GET_RIGHT_VIDEO_INFO_FAILED);
 

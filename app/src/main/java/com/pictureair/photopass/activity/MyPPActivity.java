@@ -20,7 +20,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -67,8 +67,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private RelativeLayout menuLayout;
     private ListOfPPAdapter listPPAdapter;
     private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
-
-    private PictureAirDbManager pictureAirDbManager;
 
     private static final int UPDATE_UI = 10000;
     private boolean needNotifyStorySync = false;
@@ -146,7 +144,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case UPDATE_UI:
                 PictureAirLog.out("update ui----->" + showPPCodeList.size());
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, showPPCodeList, 1);// 根据条码从数据库获取图片
+                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, showPPCodeList, 1);// 根据条码从数据库获取图片
                 PictureAirLog.out("pp code size --->" + showPPCodeList.size());
                 // 更新界面  查看pp页面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
@@ -182,7 +180,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                         @Override
                         public void run() {
                             super.run();
-                            pictureAirDbManager.removePhotosFromUserByPPCode(deletePosition, showPPCodeList);
+                            PictureAirDbManager.removePhotosFromUserByPPCode(deletePosition, showPPCodeList);
                             showPPCodeList.remove(deletePosition);
                             myPPHandler.sendEmptyMessage(REMOVE_PP_FROM_DB_FINISH);
                         }
@@ -368,7 +366,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
     private void initView() {
         myApplication = (MyApplication) getApplication();
-        pictureAirDbManager = new PictureAirDbManager(this);
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
@@ -465,8 +462,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                             PhotoInfo photoInfo = new PhotoInfo();
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
-                            photoInfo.photoId = showPPCodeList.get(j).getPpCode();
-                            photoInfo.shootTime = showPPCodeList.get(j).getShootDate();
+                            photoInfo.setPhotoId(showPPCodeList.get(j).getPpCode());
+                            photoInfo.setShootDate(showPPCodeList.get(j).getShootDate());
                             tempPhotoLists.add(photoInfo);
                             selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
                         } catch (JSONException e) {
@@ -505,12 +502,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 PictureAirLog.out("deal data after bought photo");
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 //找到之前选择的图片的索引值，并且更新购买信息
-                showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).isPayed = 1;
+                showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).setIsPaid(1);
                 selectedCurrent = -1;
                 selectedTag = -1;
                 listPPAdapter.notifyDataSetChanged();
                 //根据photoId，更新数据库中的字段
-                pictureAirDbManager.updatePhotoBought(selectedPhotoId, false);
+                PictureAirDbManager.updatePhotoBought(selectedPhotoId, false);
                 selectedPhotoId = null;
             }
         }
@@ -529,7 +526,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         new Thread() {
             public void run() {
 //                PictureAirLog.e("","API1.PPlist:"+API1.PPlist.size());
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(MyPPActivity.this, API1.PPlist, 2);
+                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(MyPPActivity.this, API1.PPlist, 2);
 //                PictureAirLog.e("","showPPCodeList.size():"+showPPCodeList.size());
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
@@ -656,7 +653,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             public void run() {
                 PictureAirLog.out("start save json in thread");
                 final JSONArray responseArray = jsonObject.getJSONArray("photos");
-                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, API1.GET_NEW_PHOTOS);
+                PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, API1.GET_NEW_PHOTOS);
                 //通知已经处理完毕
                 myPPHandler.sendEmptyMessage(SAVE_JSON_DONE);
             }

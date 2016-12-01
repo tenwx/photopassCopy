@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.FileInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.service.BreakpointDownloadService;
@@ -25,8 +25,7 @@ public class DownloadTask {
     private final String TAG = "DownloadTask";
     private Context context;
     private FileInfo fileInfo;
-    private PictureAirDbManager dbDAO = null;
-    private long mFinish = 0;
+    private int mFinish = 0;
     public boolean isPause = false;//是否暂停
     public Handler mHandler;
 
@@ -34,16 +33,15 @@ public class DownloadTask {
         this.context = context;
         this.fileInfo = fileInfo;
         this.mHandler = handler;
-        dbDAO = new PictureAirDbManager(context);
     }
 
     public void download() {
         //读取数据库的线程信息
-        List<ThreadInfo> list = dbDAO.getTreads(fileInfo.getUrl());
+        List<ThreadInfo> list = PictureAirDbManager.getTreads(fileInfo.getUrl());
         ThreadInfo threadInfo = null;
         if (null != list && list.size() == 0) {
             //无线程，初始化线程对象，重新添加
-            threadInfo = new ThreadInfo(0, fileInfo.getUrl(), 0, fileInfo.getLength(), 0);
+            threadInfo = new ThreadInfo(null, fileInfo.getUrl(), 0, 0, fileInfo.getLength(), 0);
         } else {
             //有线程存在
             threadInfo = list.get(0);
@@ -65,8 +63,8 @@ public class DownloadTask {
         public void run() {
             super.run();
             //向数据库插入线程信息
-            if (!dbDAO.isExistsThread(threadInfo.getUrl(), threadInfo.getId())) {
-                dbDAO.insertThread(threadInfo);
+            if (!PictureAirDbManager.isExistsThread(threadInfo.getUrl(), threadInfo.getThreadId())) {
+                PictureAirDbManager.insertThread(threadInfo);
             }
 
             HttpURLConnection conn = null;
@@ -81,7 +79,7 @@ public class DownloadTask {
                 conn.setRequestMethod("GET");
 
                 //设置文件写入位置
-                int start = threadInfo.getStart() + threadInfo.getFinished();
+                long start = threadInfo.getStart() + threadInfo.getFinished();
                 //Range 表示下载的位置设置 ，bytes ＝ 开始位置 到 结束位置 ，用“－”表示
                 conn.setRequestProperty("Range", "bytes=" + start + "-" + threadInfo.getEnd());
                 //设置文件写入位置
@@ -124,7 +122,7 @@ public class DownloadTask {
                         }
                     }
                     //下载完后，删除线程信息
-                    dbDAO.deleteThread(threadInfo.getUrl(), threadInfo.getId());
+                    PictureAirDbManager.deleteThread(threadInfo.getUrl(), threadInfo.getThreadId());
                     mHandler.sendEmptyMessage(BreakpointDownloadService.SERVICE_STOP);
                 }
             } catch (Exception e) {
@@ -154,8 +152,8 @@ public class DownloadTask {
         /**
          * 保存下载进度
          */
-        private void saveThreadInfo(long finish){
-            dbDAO.updateThread(threadInfo.getUrl(), threadInfo.getId(), finish);
+        private void saveThreadInfo(int finish){
+            PictureAirDbManager.updateThread(threadInfo.getUrl(), threadInfo.getThreadId(), finish);
         }
     }
 }

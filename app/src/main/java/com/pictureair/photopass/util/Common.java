@@ -287,17 +287,8 @@ public class Common {
     public static final String CACHE_LOCATION_TIMER = "cache_location_time";//计时器
 
     //photo sqlite数据库字段
+    public static final boolean USE_ENCRYPTED_DATABASE = true;//是否使用加密的数据库
     public static final String PHOTOPASS_INFO_NAME = "photopass_info.db3";
-    public static final String PHOTOPASS_INFO_TABLE = "photopassinfo";
-    public static final String FAVORITE_INFO_TABLE = "favoriteinfo";
-    public static final String FIRST_START_ACTIVITY_INFO_TABLE = "first_start_activity";
-    public static final String HELP_QUESTION_TABLE = "help_question";
-    public static final String FRAME_STICKER_TABLES = "frame_sticker";
-    public static final int PHOTOPASS_INFO_VERSION = 3;
-    public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
-    public static final String AD_LOCATION = "ad_location";
-    public static final String THREAD_INFO = "thread_info";
-    public static final String PHOTOS_LOAD = "photo_load";
 
     //相册名称字段
     public static final String ALBUM_MAGIC = "Magic";

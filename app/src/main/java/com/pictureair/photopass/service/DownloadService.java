@@ -18,7 +18,7 @@ import android.text.TextUtils;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -75,7 +75,6 @@ public class DownloadService extends Service {
     private PWToast myToast;
     private PhotoBind photoBind = new PhotoBind();
     private Handler adapterHandler;
-    private PictureAirDbManager pictureAirDbManager;
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
     private boolean hasPhotos = false;
@@ -98,7 +97,6 @@ public class DownloadService extends Service {
         PictureAirLog.out("downloadService ---------> onCreate" + downed_num.get() + "_" + failed_num.get());
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         myToast = new PWToast(getApplicationContext());
-        pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
         fixedThreadPool = Executors.newFixedThreadPool(1);
         userId = SPUtils.getString(getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         fixedThreadPool.execute(new ChangeLoadToFailTask());
@@ -143,10 +141,10 @@ public class DownloadService extends Service {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
                                 DownloadFileStatus fileStatus = downloadList.get(j);
-                                if (fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                                if (fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).getPhotoId()) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
-                                }else if(fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).photoId) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
+                                }else if(fileStatus != null && fileStatus.getPhotoId().equals(photos.get(i).getPhotoId()) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
                                 }
@@ -163,19 +161,19 @@ public class DownloadService extends Service {
                         }
                     }
                 } else {//正常下载走这个
-                    CopyOnWriteArrayList<PhotoDownLoadInfo> infos = pictureAirDbManager.getExistPhoto(userId);
+                    CopyOnWriteArrayList<PhotoDownLoadInfo> infos = PictureAirDbManager.getExistPhoto(userId);
                     if (photos.size() >0) {
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
                             DownloadFileStatus fileStatus = null;
-                            if (photoInfo.isVideo == 0) {
-                                fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
-                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
-                                        photoInfo.videoWidth, photoInfo.videoHeight);
+                            if (photoInfo.getIsVideo() == 0) {
+                                fileStatus = new DownloadFileStatus(photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_1024(),
+                                        photoInfo.getPhotoOriginalURL(), "0", "0", "0", photoInfo.getPhotoId(), photoInfo.getIsVideo(), photoInfo.getPhotoThumbnail_128(),
+                                        photoInfo.getStrShootOn(), "", photoInfo.getVideoWidth(), photoInfo.getVideoHeight());
                             }else{
-                                fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, photoInfo.photoThumbnail_512, photoInfo.photoThumbnail_1024,
-                                        photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "",
-                                        photoInfo.videoWidth, photoInfo.videoHeight);
+                                fileStatus = new DownloadFileStatus(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_1024(),
+                                        photoInfo.getPhotoOriginalURL(), "0", "0", "0", photoInfo.getPhotoId(), photoInfo.getIsVideo(), photoInfo.getPhotoThumbnail_128(),
+                                        photoInfo.getStrShootOn(), "", photoInfo.getVideoWidth(), photoInfo.getVideoHeight());
                             }
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
@@ -222,12 +220,12 @@ public class DownloadService extends Service {
                         }
 
                         if (deleteList.size() >0){
-                            pictureAirDbManager.deletePhotos(userId,deleteList);
+                            PictureAirDbManager.deletePhotos(userId,deleteList);
                             deleteList.clear();
                         }
 
                         if (tempList.size() >0){
-                            pictureAirDbManager.insertPhotos(userId,tempList,"","load");
+                            PictureAirDbManager.insertPhotos(userId,tempList,"","load");
                             tempList.clear();
                         }
 
@@ -275,7 +273,7 @@ public class DownloadService extends Service {
         }
         if (!mIsErrorsAdd) {
             mIsErrorsAdd = true;
-            List<PhotoDownLoadInfo> infos = pictureAirDbManager.getPhotos(userId, "false", "upload");
+            List<PhotoDownLoadInfo> infos = PictureAirDbManager.getPhotos(userId, "false", "upload");
             if (infos != null && infos.size() > 0) {
 
                 for (int i = 0; i < infos.size(); i++) {
@@ -417,9 +415,9 @@ public class DownloadService extends Service {
                                     taskList.remove(failStatus.getPhotoId());
                                     if (failStatus.isVideo() == 0 && failStatus.status == DownloadFileStatus.DOWNLOAD_STATE_UPLOADING) {
                                         PictureAirLog.out("downloadService----------->DOWNLOAD_PHOTO_FAILED errCode == 404 or url empty");
-                                        pictureAirDbManager.updateLoadPhotos(userId, "upload", "", "", failStatus.getPhotoId(), "");
+                                        PictureAirDbManager.updateLoadPhotos(userId, "upload", "", "", failStatus.getPhotoId(), "");
                                     }else {
-                                        pictureAirDbManager.updateLoadPhotos(userId, "false", "", "", failStatus.getPhotoId(), "");
+                                        PictureAirDbManager.updateLoadPhotos(userId, "false", "", "", failStatus.getPhotoId(), "");
                                     }
                                     if (adapterHandler != null) {
                                         adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
@@ -495,7 +493,7 @@ public class DownloadService extends Service {
                             fixedThreadPool.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    pictureAirDbManager.deleteDownloadFailPhotoByUserId(userId);
+                                    PictureAirDbManager.deleteDownloadFailPhotoByUserId(userId);
                                     if (adapterHandler != null) {
                                         adapterHandler.sendEmptyMessage(DownLoadingFragment.REMOVE_FAILED_PHOTOS);
                                     }
@@ -677,7 +675,7 @@ public class DownloadService extends Service {
                             }
                         }
 
-                        pictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId(),fileStatus.getFailedTime());
+                        PictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId(),fileStatus.getFailedTime());
                         if (adapterHandler != null) {
                             adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,fileStatus).sendToTarget();
                         }else {
@@ -817,7 +815,7 @@ public class DownloadService extends Service {
                         while (iterator.hasNext()) {
                             DownloadFileStatus deleteStatus = iterator.next();
                             if (deleteStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT && deleteStatus.select == 1) {
-                                pictureAirDbManager.deletePhotoByPhotoId(userId,deleteStatus.getPhotoId());
+                                PictureAirDbManager.deletePhotoByPhotoId(userId,deleteStatus.getPhotoId());
                                 downloadList.remove(deleteStatus);
                             }
                         }
@@ -835,10 +833,10 @@ public class DownloadService extends Service {
         @Override
         public void run() {
             countDownLatch = new CountDownLatch(1);
-            List<PhotoDownLoadInfo> loadPhotos = pictureAirDbManager.getPhotos(userId,"load");
+            List<PhotoDownLoadInfo> loadPhotos = PictureAirDbManager.getPhotos(userId,"load");
 
             if (loadPhotos != null && loadPhotos.size() >0) {
-                pictureAirDbManager.updateLoadPhotoList(userId,"false","","",loadPhotos);
+                PictureAirDbManager.updateLoadPhotoList(userId,"false","","",loadPhotos);
             }
             countDownLatch.countDown();
         }

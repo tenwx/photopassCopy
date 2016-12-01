@@ -209,10 +209,10 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 				position = 0;
 			} else {
 				photoInfo = photoInfoArrayList.get(position);
-				position -= photoInfo.sectionId + 1;
+				position -= photoInfo.getSectionId() + 1;
 			}
 
-			if (photoInfo.isVideo == 1 && photoInfo.isPayed == 0) {//广告视频
+			if (photoInfo.getIsVideo() == 1 && photoInfo.getIsPaid() == 0) {//广告视频
 				PictureAirLog.v(TAG, "点击了广告视频");
 
 				Intent intent = new Intent(getContext(), ADVideoDetailProductActivity.class);
@@ -229,7 +229,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 				i.setClass(getContext(), PreviewPhotoActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
-				bundle.putString("photoId", photoInfo.photoId);
+				bundle.putString("photoId", photoInfo.getPhotoId());
 				bundle.putString("tab", tabName[tab]);
 				i.putExtra("bundle", bundle);
 				getContext().startActivity(i);

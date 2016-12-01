@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
@@ -56,7 +56,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private long secondFileProgress = 0;//文件下载进度
     private PWDialog pwDialog;
     private PWToast myToast;
-    private PictureAirDbManager pictureAirDbManager;
     private HolderView holderView;
     private int position;
 
@@ -89,7 +88,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         this.frameInfos = frameInfos;
         this.handler = handler;
         myToast = new PWToast(context);
-        pictureAirDbManager = new PictureAirDbManager(context);
     }
 
     @Override
@@ -162,10 +160,10 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             layoutParams1.height = ScreenUtil.dip2px(mContext, 50);
             holderView.editImageview.setLayoutParams(layoutParams1);
 
-            if (frameInfos.get(position).onLine == 1) {//网络图片
-                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+            if (frameInfos.get(position).getOnLine() == 1) {//网络图片
+                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             } else {//本地assets图片
-                GlideUtil.load(mContext, frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                GlideUtil.load(mContext, frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             }
             holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
 
@@ -217,27 +215,27 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
             holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
-            if (frameInfos.get(position).onLine == 1) {
+            if (frameInfos.get(position).getOnLine() == 1) {
                 // 网络边框。 3.0版本
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }else{
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
-                if (frameInfos.get(position).isDownload == 0) {
+                if (frameInfos.get(position).getIsDownload() == 0) {
 					holderView.maskImageView.setVisibility(View.VISIBLE);
 					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
+					holderView.fileSizeTextView.setText(frameInfos.get(position).getFileSize() / 1024 / 1024 + "M");
 				}else {
 					holderView.maskImageView.setVisibility(View.GONE);
 					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
 				}
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 } else {
-                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
             }
@@ -273,7 +271,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 
         @Override
         public void onClick(View v) {
-            if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
+            if (frameInfos.get(position).getOnLine() == 1 && frameInfos.get(position).getIsDownload() == 0) {//网络图片，并且未下载
 				holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
 				holderView.fileSizeTextView.setVisibility(View.VISIBLE);
 				holderView.progressBar.setProgress(0);
@@ -357,14 +355,14 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         String downloadNameString = null;
         String url = null;
         if (firstTime) {
-            url = frameInfos.get(position).frameOriginalPathLandscape;
+            url = frameInfos.get(position).getOriginalPathLandscape();
             if (url == null || url.equals("")) {//文件不存在
                 firstFileFailOrExist = true;
                 return;
             }
             downloadNameString = "frame_landscape_" + AppUtil.getReallyFileName(url,0);
         } else {
-            url = frameInfos.get(position).frameOriginalPathPortrait;
+            url = frameInfos.get(position).getOriginalPathPortrait();
             if (url == null || url.equals("")) {//文件不存在
                 secondFileFailOrExist = true;
                 return;
@@ -511,12 +509,12 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
                     holderView.progressBar.setVisibility(View.GONE);
                     holderView.maskImageView.setVisibility(View.GONE);
                     holderView.fileSizeTextView.setVisibility(View.GONE);
-                    frameInfos.get(position).isDownload = 1;
+                    frameInfos.get(position).setIsDownload(1);
                     firstFileFailOrExist = false;
                     secondFileFailOrExist = false;
                     firstFileProgress = 0;
                     secondFileProgress = 0;
-                    pictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).frameName, 1);
+                    PictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).getFrameName(), 1);
                 }
             }
         });

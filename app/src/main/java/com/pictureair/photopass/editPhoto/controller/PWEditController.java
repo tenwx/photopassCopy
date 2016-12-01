@@ -123,7 +123,7 @@ public class PWEditController implements PWEditViewListener, PWDialog.OnPWDialog
     public void leftBackClik() {
         pwEditViewInterface.leftBackClik();
         if (curEditType == PhotoCommon.EditFrame){
-            pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+            pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).getThumbnailPathH160());
         }else if(curEditType == PhotoCommon.EditRotate){
             loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
         }
@@ -166,7 +166,7 @@ public class PWEditController implements PWEditViewListener, PWDialog.OnPWDialog
                             pwEditViewInterface.showReallySave();
                         }
                         if(curEditType == PhotoCommon.EditFrame){
-                            pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+                            pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).getThumbnailPathH160());
                         }
                     }
                 });
@@ -330,23 +330,23 @@ public class PWEditController implements PWEditViewListener, PWDialog.OnPWDialog
                     curFramePosition = msg.arg1;
 
                     if (curFramePosition !=0 ){
-                        if (pwEditUtil.getFrameInfos().get(curFramePosition).onLine == 1) { // 网络图片
+                        if (pwEditUtil.getFrameInfos().get(curFramePosition).getOnLine() == 1) { // 网络图片
                             if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
                                 pwEditViewInterface.showPhotoFrame("file://" + mActivity.getFilesDir().toString() + "/frames/frame_portrait_" +
-                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait,0));
+                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).getOriginalPathPortrait(),0));
                             }else{
                                 pwEditViewInterface.showPhotoFrame("file://" + mActivity.getFilesDir().toString() + "/frames/frame_landscape_" +
-                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape,0));
+                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).getOriginalPathLandscape(),0));
                             }
                         }else {  // 本地图片
                             if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
-                                  pwEditViewInterface.showPhotoFrame(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait);
+                                  pwEditViewInterface.showPhotoFrame(pwEditUtil.getFrameInfos().get(curFramePosition).getOriginalPathPortrait());
                             }else{
-                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape);
+                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getFrameInfos().get(curFramePosition).getOriginalPathLandscape());
                             }
                         }
                     }else{
-                        pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+                        pwEditViewInterface.hidePhotoFrame(pwEditUtil.getFrameInfos().get(0).getThumbnailPathH160());
                     }
                     break;
 

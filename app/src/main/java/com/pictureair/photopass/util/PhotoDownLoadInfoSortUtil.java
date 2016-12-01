@@ -21,8 +21,8 @@ public class PhotoDownLoadInfoSortUtil implements Comparator<PhotoDownLoadInfo> 
             return 1;
         }else{
             if (info1.getStatus().equalsIgnoreCase("true") && info2.getStatus().equalsIgnoreCase("true")){
-                Date date1 = AppUtil.getDateFromStr2(info1.getLoadTime());
-                Date date2 = AppUtil.getDateFromStr2(info2.getLoadTime());
+                Date date1 = AppUtil.getDateFromStr2(info1.getDownLoadTime());
+                Date date2 = AppUtil.getDateFromStr2(info2.getDownLoadTime());
                 return date1.compareTo(date2)*(-1);
             }else{
                 return 0;

@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.widget.PWToast;
@@ -22,7 +22,6 @@ import com.pictureair.photopass.widget.PWToast;
  */
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
-    private static PictureAirDbManager pictureAirDbManager;
 
     private Handler myHandler = new Handler(new Handler.Callback() {
         @Override
@@ -30,32 +29,7 @@ public class AppExitUtil {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
-                    SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
-
-                    ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
-                    ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
-
-                    MyApplication.getInstance().setPushPhotoCount(0);
-                    MyApplication.getInstance().setPushViedoCount(0);
-                    MyApplication.getInstance().scanMagicFinish = false;
-                    MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
-                    pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
-
-                    MyApplication.clearTokenId();
-
-                    Installation.clearId(MyApplication.getInstance());
-
-                    //取消通知
-                    Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
-                    intent.putExtra("status", "disconnect");
-                    MyApplication.getInstance().startService(intent);
-
-                    //关闭下载
-                    Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("logout",true);
-                    intent1.putExtras(bundle);
-                    MyApplication.getInstance().startService(intent1);
+                    exit();
 
                     Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -78,7 +52,6 @@ public class AppExitUtil {
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
-            pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
         }
         return appExitUtil;
     }
@@ -98,5 +71,34 @@ public class AppExitUtil {
     public void AppLogout() {
         //断开推送
         API1.noticeSocketDisConnect(myHandler);
+    }
+
+    public void exit() {
+        SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
+
+        ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
+        ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
+
+        MyApplication.getInstance().setPushPhotoCount(0);
+        MyApplication.getInstance().setPushViedoCount(0);
+        MyApplication.getInstance().scanMagicFinish = false;
+        MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
+        PictureAirDbManager.deleteAllInfoFromTable();
+
+        MyApplication.clearTokenId();
+
+        Installation.clearId(MyApplication.getInstance());
+
+        //取消通知
+        Intent intent = new Intent(MyApplication.getInstance(), NotificationService.class);
+        intent.putExtra("status", "disconnect");
+        MyApplication.getInstance().startService(intent);
+
+        //关闭下载
+        Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("logout",true);
+        intent1.putExtras(bundle);
+        MyApplication.getInstance().startService(intent1);
     }
 }

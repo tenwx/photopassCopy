@@ -74,31 +74,31 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             return convertView;
         }
         String photoUrl;
-        if (list.get(position).onLine == 1) {
-            if (list.get(position).isPayed == 1) {
-                photoUrl = Common.PHOTO_URL + list.get(position).photoThumbnail_512;
+        if (list.get(position).getIsOnLine() == 1) {
+            if (list.get(position).getIsPaid() == 1) {
+                photoUrl = Common.PHOTO_URL + list.get(position).getPhotoThumbnail_512();
             } else {
-                photoUrl = list.get(position).photoThumbnail;
+                photoUrl = list.get(position).getPhotoThumbnail_128();
             }
-            if (list.get(position).isVideo == 1) {
-                PictureAirLog.out("load video--->512 " + list.get(position).photoThumbnail_512);
-                PictureAirLog.out("load video--->128 " + list.get(position).photoThumbnail);
+            if (list.get(position).getIsVideo() == 1) {
+                PictureAirLog.out("load video--->512 " + list.get(position).getPhotoThumbnail_512());
+                PictureAirLog.out("load video--->128 " + list.get(position).getPhotoThumbnail_128());
                 mViewHolder.videoImageView.setVisibility(View.VISIBLE);
                 LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
                 params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
                 params2.height = params2.width;
                 mViewHolder.videoImageView.setLayoutParams(params2);
             } else {
-                PictureAirLog.out("load online photo--->" + list.get(position).photoPathOrURL);
+                PictureAirLog.out("load online photo--->" + list.get(position).getPhotoOriginalURL());
                 mViewHolder.videoImageView.setVisibility(View.GONE);
             }
         } else {
-            photoUrl = "file://" + list.get(position).photoPathOrURL;
+            photoUrl = "file://" + list.get(position).getPhotoOriginalURL();
             mViewHolder.videoImageView.setVisibility(View.GONE);
         }
 
         if (mViewHolder.mImageView.getTag(R.id.glide_image_tag) == null || !mViewHolder.mImageView.getTag(R.id.glide_image_tag).equals(photoUrl)) {//加载图片
-            GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(list.get(position).isEncrypted), mViewHolder.mImageView);
+            GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(list.get(position).getIsEnImage()), mViewHolder.mImageView);
             mViewHolder.mImageView.setTag(R.id.glide_image_tag, photoUrl);
         }
 
@@ -122,10 +122,10 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         if (list.size() == 0) {
             return convertView;
         }
-        String headerTime = list.get(position).shootOn;
+        String headerTime = list.get(position).getStrShootOn();
         for (int i = position; i >= 0; i--) {
-            if (list.get(position).sectionId == list.get(i).sectionId) {//当前的
-                headerTime = list.get(i).shootOn;
+            if (list.get(position).getSectionId() == list.get(i).getSectionId()) {//当前的
+                headerTime = list.get(i).getStrShootOn();
             } else {
                 break;
             }
@@ -156,6 +156,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
     @Override
     public long getHeaderId(int position) {
-        return list.get(position).sectionId;
+        return list.get(position).getSectionId();
     }
 }

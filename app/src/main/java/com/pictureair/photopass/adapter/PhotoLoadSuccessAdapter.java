@@ -76,12 +76,12 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             }
             holder.tv_shootTime.setText(info.getShootTime());
             holder.tv_size.setText(info.getSize()+"MB");
-            holder.tv_loadTime.setText(info.getLoadTime());
+            holder.tv_loadTime.setText(info.getDownLoadTime());
             if (!select){
                 holder.img_select.setVisibility(View.GONE);
             }else{
                 holder.img_select.setVisibility(View.VISIBLE);
-                if (!info.isSelect){
+                if (!info.isSelect()){
                     holder.img_select.setImageResource(R.drawable.nosele);
                 }else{
                     holder.img_select.setImageResource(R.drawable.sele);

@@ -28,14 +28,13 @@ import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
 import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ import de.greenrobot.event.EventBus;
 public class LoadSuccessFragment extends BaseFragment implements View.OnClickListener,AdapterView.OnItemClickListener{
 
     private ListView lv_success;
-    private PictureAirDbManager pictureAirDbManager;
     private String userId = "";
     private final Handler photoLoadSuccessHandler= new PhotoLoadSuccessHandler(this);
     public static final int LOAD_FROM_DATABASE = 1111;
@@ -89,14 +87,14 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         }else{
             if (photos.size() > position){
                 PhotoDownLoadInfo info = photos.get(position);
-                info.selectPos = position;
-                if (!info.isSelect){
-                    info.isSelect = true;
+                info.setSelectPos(position);
+                if (!info.isSelect()){
+                    info.setSelect(true);
                     adapter.setPhotos(photos);
                     adapter.notifyDataSetChanged();
                     selectPhotos.add(info);
                 }else{
-                    info.isSelect = false;
+                    info.setSelect(false);
                     adapter.setPhotos(photos);
                     adapter.notifyDataSetChanged();
                     removeInfo(position);
@@ -128,7 +126,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             Iterator<PhotoDownLoadInfo> iterator = selectPhotos.iterator();
             while (iterator.hasNext()) {
                 PhotoDownLoadInfo info = iterator.next();
-                if (info.selectPos == pos) {
+                if (info.getSelectPos() == pos) {
                     selectPhotos.remove(info);
                 }
             }
@@ -268,7 +266,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             }
         });
         ll_pop.setVisibility(View.GONE);
-        pictureAirDbManager = new PictureAirDbManager(getContext());
         if (TextUtils.isEmpty(userId)) {
             userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         }
@@ -318,7 +315,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         public void run() {
 //                            isLoading = true;
                             if (selectAll){
-                                pictureAirDbManager.deleteDownloadPhoto(userId);
+                                PictureAirDbManager.deleteDownloadPhoto(userId);
                                 loadPhotos(RELOAD_DATABASE);
                             }else {
                                 removeSelectPhotosFromDB();
@@ -362,7 +359,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             for (int i=0;i<selectPhotos.size();i++){
                 String photoId = selectPhotos.get(i).getPhotoId();
                 PictureAirLog.e("removeSelectPhotosFromDB","photoId:"+photoId);
-                pictureAirDbManager.deletePhotoByPhotoId(userId,photoId);
+                PictureAirDbManager.deletePhotoByPhotoId(userId,photoId);
             }
         }
     }
@@ -371,8 +368,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         if (selectPhotos.size() >0) selectPhotos.clear();
         for (int i=0;i<photos.size();i++){
             PhotoDownLoadInfo info = photos.get(i);
-            info.isSelect = true;
-            info.selectPos = i;
+            info.setSelect(true);
+            info.setSelectPos(i);
             selectPhotos.add(info);
         }
 
@@ -383,8 +380,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private void reversePhotoSelect(){
         for (int i=0;i<photos.size();i++){
             PhotoDownLoadInfo info = photos.get(i);
-            info.isSelect = false;
-            info.selectPos = 0;
+            info.setSelect(false);
+            info.setSelectPos(0);
         }
         adapter.setPhotos(photos);
         adapter.notifyDataSetChanged();
@@ -414,8 +411,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private void loadPhotos(int what){
         try{
             List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
-            if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
-                photos = pictureAirDbManager.getPhotosOrderByTime(userId, "true");
+            if (!TextUtils.isEmpty(userId)) {
+                photos = PictureAirDbManager.getPhotosOrderByTime(userId, "true");
             }
             if (photoLoadSuccessHandler != null){
                 photoLoadSuccessHandler.obtainMessage(what, photos).sendToTarget();
@@ -456,8 +453,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         if (photos.size() >0) {
             for (int i = 0; i < photos.size(); i++) {
                 PhotoDownLoadInfo info = photos.get(i);
-                info.isSelect = false;
-                info.selectPos = 0;
+                info.setSelect(false);
+                info.setSelectPos(0);
             }
             adapter.setPhotos(photos);
         }

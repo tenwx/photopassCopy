@@ -73,13 +73,8 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
         PhotoInfo selectPhotoItemInfo;
         for (int i = 0; i < arrayList.size(); i++) {
             selectPhotoItemInfo = arrayList.get(i);
-            selectPhotoItemInfo.isChecked = isChecked;
-            selectPhotoItemInfo.isSelected = isSelected;
-            if (isSelected == 0) {
-                selectPhotoItemInfo.showMask = 0;//遮罩层；0:不显示；1:显示
-            } else {
-                selectPhotoItemInfo.showMask = 1;//遮罩层；0:不显示；1:显示
-            }
+            selectPhotoItemInfo.setIsChecked(isChecked);
+            selectPhotoItemInfo.setIsSelected(isSelected);
         }
         notifyDataSetChanged();
     }
@@ -94,7 +89,7 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
     public void refreshView(int index, View view, int mode) {
         HolderView holder = (HolderView) view.getTag();
         if (mode == 0) {
-            if (arrayList.get(index).isChecked == 1) {
+            if (arrayList.get(index).getIsChecked() == 1) {
                 holder.imageview_select.setImageResource(R.drawable.sel2);
                 holder.imageview_select.setVisibility(View.VISIBLE);
                 holder.imageview_select.setBackgroundColor(Color.TRANSPARENT);
@@ -103,8 +98,8 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
 //				holder.imageview_maskImageView.setVisibility(View.INVISIBLE);
             }
         } else if (mode == 1) {
-            if (arrayList.get(index).isChecked == 1) {
-                if (arrayList.get(index).isSelected == 1) {//选中
+            if (arrayList.get(index).getIsChecked() == 1) {
+                if (arrayList.get(index).getIsSelected() == 1) {//选中
                     holder.imageview_select.setImageResource(R.drawable.sel2);
                 } else {//未选中
                     holder.imageview_select.setImageResource(R.drawable.sel3);
@@ -113,7 +108,7 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
             }
         }
 
-        if (arrayList.get(index).showMask == 0) {//隐藏遮罩
+        if (arrayList.get(index).getIsSelected() == 0) {//隐藏遮罩
             holder.imageview_maskImageView.setVisibility(View.GONE);
         } else {//显示遮罩
             holder.imageview_maskImageView.setVisibility(View.VISIBLE);
@@ -151,15 +146,15 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
         holderView.imageview_maskImageView.setLayoutParams(params);//设置蒙版的大小
         holderView.imageView_photo.setScaleType(ScaleType.CENTER_CROP);
         holderView.imageView_photo.setVisibility(View.VISIBLE);
-        if (selectPhotoItemInfo.isChecked == 1) {//如果已经有点过了
+        if (selectPhotoItemInfo.getIsChecked() == 1) {//如果已经有点过了
             holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
             holderView.imageview_select.setVisibility(View.VISIBLE);
-            PictureAirLog.out(selectPhotoItemInfo.isChecked + "_______");
-            if (selectPhotoItemInfo.isSelected == 1) {
+            PictureAirLog.out(selectPhotoItemInfo.getIsChecked() + "_______");
+            if (selectPhotoItemInfo.getIsSelected() == 1) {
                 holderView.imageview_select.setImageResource(R.drawable.sel2);
-                PictureAirLog.out("isSelected------>" + selectPhotoItemInfo.isSelected);
+                PictureAirLog.out("isSelected------>" + selectPhotoItemInfo.getIsSelected());
             } else {
-                PictureAirLog.out("no select--》" + selectPhotoItemInfo.isSelected);
+                PictureAirLog.out("no select--》" + selectPhotoItemInfo.getIsSelected());
                 holderView.imageview_select.setImageResource(R.drawable.sel3);
             }
             holderView.imageview_select.setBackgroundColor(Color.TRANSPARENT);
@@ -168,29 +163,29 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
             holderView.imageview_select.setVisibility(View.INVISIBLE);
         }
         String photoUrl = null;
-        if (selectPhotoItemInfo.onLine == 0) {
+        if (selectPhotoItemInfo.getIsOnLine() == 0) {
             PictureAirLog.out("开始加载图片");
-            PictureAirLog.out("加载原图---------->" + selectPhotoItemInfo.photoPathOrURL);
-            photoUrl = "file://" + selectPhotoItemInfo.photoPathOrURL;
+            PictureAirLog.out("加载原图---------->" + selectPhotoItemInfo.getPhotoOriginalURL());
+            photoUrl = "file://" + selectPhotoItemInfo.getPhotoOriginalURL();
             PictureAirLog.out("-------->原图加载完毕");
-        } else if (selectPhotoItemInfo.onLine == 1) {
-            if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
-                PictureAirLog.out("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
-                photoUrl = Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512;
+        } else if (selectPhotoItemInfo.getIsOnLine() == 1) {
+            if (selectPhotoItemInfo.getIsPaid() == 1) {//如果已经购买，显示512的缩略图
+                PictureAirLog.out("开始加载512图片" + selectPhotoItemInfo.getPhotoThumbnail_512());
+                photoUrl = Common.PHOTO_URL + selectPhotoItemInfo.getPhotoThumbnail_512();
 
             } else {//反之显示128的缩略图
-                PictureAirLog.out("开始加载128图片" + selectPhotoItemInfo.photoThumbnail);
-                photoUrl = selectPhotoItemInfo.photoThumbnail;
+                PictureAirLog.out("开始加载128图片" + selectPhotoItemInfo.getPhotoThumbnail_128());
+                photoUrl = selectPhotoItemInfo.getPhotoThumbnail_128();
 
             }
         }
 
         if (holderView.imageView_photo.getTag(R.id.glide_image_tag) == null || !holderView.imageView_photo.getTag(R.id.glide_image_tag).toString().equals(photoUrl)) {
-            GlideUtil.load(c, photoUrl, AppUtil.isEncrypted(selectPhotoItemInfo.isEncrypted), holderView.imageView_photo);
+            GlideUtil.load(c, photoUrl, AppUtil.isEncrypted(selectPhotoItemInfo.getIsEnImage()), holderView.imageView_photo);
             holderView.imageView_photo.setTag(R.id.glide_image_tag, photoUrl);
         }
 
-        if (selectPhotoItemInfo.showMask == 0) {//隐藏遮罩
+        if (selectPhotoItemInfo.getIsSelected() == 0) {//隐藏遮罩
             holderView.imageview_maskImageView.setVisibility(View.GONE);
         } else {//显示遮罩
             holderView.imageview_maskImageView.setVisibility(View.VISIBLE);

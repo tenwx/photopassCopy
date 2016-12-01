@@ -1,98 +1,147 @@
 package com.pictureair.photopass.entity;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * Created by pengwu on 16/7/8.
  */
-public class PhotoDownLoadInfo{
+
+@Entity
+public class PhotoDownLoadInfo {
+    @Id
+    private Long id;//自增长id
     private String photoId;
-    private String size;
-    private String shootTime;
-    private String loadTime;
     private String url;
+    private String size;
+    private String previewUrl;
+    private String shootTime;
+    private String downLoadTime;
+    private String failedTime = "";
+    private String userId;
+    private String status;
     private String photoThumbnail_512;
     private String photoThumbnail_1024;
-    private String previewUrl;
-    private int isVideo;
-    private String failedTime = "";
-    private String status;
-    public boolean isSelect;//表示是否被勾选
-    public int selectPos;
-    private int id;
     private int videoWidth;
     private int videoHeight;
+    private int isVideo;
 
-    public PhotoDownLoadInfo(){
+    @Transient
+    private boolean isSelect;//表示是否被勾选
+    @Transient
+    private int selectPos;
 
-    }
-
-    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl,
-                             String photoThumbnail_512, String photoThumbnail_1024, int isVideo, String failedTime,String status,
-                             int videoWidth, int videoHeight) {
+    @Generated(hash = 423114192)
+    public PhotoDownLoadInfo(Long id, String photoId, String url, String size,
+                             String previewUrl, String shootTime, String downLoadTime,
+                             String failedTime, String userId, String status,
+                             String photoThumbnail_512, String photoThumbnail_1024, int videoWidth,
+                             int videoHeight, int isVideo) {
+        this.id = id;
         this.photoId = photoId;
-        this.size = size;
-        this.shootTime = shootTime;
-        this.loadTime = loadTime;
         this.url = url;
+        this.size = size;
         this.previewUrl = previewUrl;
+        this.shootTime = shootTime;
+        this.downLoadTime = downLoadTime;
+        this.failedTime = failedTime;
+        this.userId = userId;
+        this.status = status;
         this.photoThumbnail_512 = photoThumbnail_512;
         this.photoThumbnail_1024 = photoThumbnail_1024;
-        this.isVideo = isVideo;
-        this.failedTime = failedTime;
-        this.status = status;
         this.videoWidth = videoWidth;
         this.videoHeight = videoHeight;
+        this.isVideo = isVideo;
     }
 
-    public int getId() {
-        return id;
+    @Generated(hash = 73030779)
+    public PhotoDownLoadInfo() {
     }
 
-    public void setId(int id) {
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
     public String getPhotoId() {
-        return photoId;
+        return this.photoId;
     }
 
     public void setPhotoId(String photoId) {
         this.photoId = photoId;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getShootTime() {
-        return shootTime;
-    }
-
-    public void setShootTime(String shootTime) {
-        this.shootTime = shootTime;
-    }
-
-    public String getLoadTime() {
-        return loadTime;
-    }
-
-    public void setLoadTime(String loadTime) {
-        this.loadTime = loadTime;
-    }
-
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    public String getSize() {
+        return this.size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getPreviewUrl() {
+        return this.previewUrl;
+    }
+
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
+    }
+
+    public String getShootTime() {
+        return this.shootTime;
+    }
+
+    public void setShootTime(String shootTime) {
+        this.shootTime = shootTime;
+    }
+
+    public String getDownLoadTime() {
+        return this.downLoadTime;
+    }
+
+    public void setDownLoadTime(String downLoadTime) {
+        this.downLoadTime = downLoadTime;
+    }
+
+    public String getFailedTime() {
+        return this.failedTime;
+    }
+
+    public void setFailedTime(String failedTime) {
+        this.failedTime = failedTime;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getPhotoThumbnail_512() {
-        return photoThumbnail_512;
+        return this.photoThumbnail_512;
     }
 
     public void setPhotoThumbnail_512(String photoThumbnail_512) {
@@ -100,47 +149,15 @@ public class PhotoDownLoadInfo{
     }
 
     public String getPhotoThumbnail_1024() {
-        return photoThumbnail_1024;
+        return this.photoThumbnail_1024;
     }
 
     public void setPhotoThumbnail_1024(String photoThumbnail_1024) {
         this.photoThumbnail_1024 = photoThumbnail_1024;
     }
 
-    public String getPreviewUrl() {
-        return previewUrl;
-    }
-
-    public void setPreviewUrl(String previewUrl) {
-        this.previewUrl = previewUrl;
-    }
-
-    public int getIsVideo() {
-        return isVideo;
-    }
-
-    public void setIsVideo(int isVideo) {
-        this.isVideo = isVideo;
-    }
-
-    public String getFailedTime() {
-        return failedTime;
-    }
-
-    public void setFailedTime(String failedTime) {
-        this.failedTime = failedTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public int getVideoWidth() {
-        return videoWidth;
+        return this.videoWidth;
     }
 
     public void setVideoWidth(int videoWidth) {
@@ -148,10 +165,34 @@ public class PhotoDownLoadInfo{
     }
 
     public int getVideoHeight() {
-        return videoHeight;
+        return this.videoHeight;
     }
 
     public void setVideoHeight(int videoHeight) {
         this.videoHeight = videoHeight;
+    }
+
+    public int getIsVideo() {
+        return this.isVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
+    public int getSelectPos() {
+        return selectPos;
+    }
+
+    public void setSelectPos(int selectPos) {
+        this.selectPos = selectPos;
     }
 }

@@ -122,7 +122,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
 
                 case API1.GET_NEW_PHOTOS_INFO_SUCCESS:
                     PhotoInfo photoInfo = (PhotoInfo) msg.obj;
-                    imageUrl = photoInfo.photoThumbnail_1024;
+                    imageUrl = photoInfo.getPhotoThumbnail_1024();
                     startShare(msg.arg1);
                     break;
 
@@ -192,17 +192,17 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
      * @param handler
      */
     public void setshareinfo(PhotoInfo photoInfo, Handler handler) {
-        isOnline = photoInfo.onLine == 1;
-        isVideo = photoInfo.isVideo == 1;
+        isOnline = photoInfo.getIsOnLine() == 1;
+        isVideo = photoInfo.getIsVideo() == 1;
         if (isOnline || isVideo) {//网络或者视频
             imagePath = null;
-            imageUrl = photoInfo.photoThumbnail_1024;
-            thumbnailUrl = photoInfo.photoThumbnail;
-            photoId = photoInfo.photoId;
-            isEncrypted = photoInfo.isEncrypted;
+            imageUrl = photoInfo.getPhotoThumbnail_1024();
+            thumbnailUrl = photoInfo.getPhotoThumbnail_128();
+            photoId = photoInfo.getPhotoId();
+            isEncrypted = photoInfo.getIsEnImage();
 
         } else {//本地
-            imagePath = photoInfo.photoPathOrURL;
+            imagePath = photoInfo.getPhotoOriginalURL();
             imageUrl = null;
             thumbnailUrl = null;
             photoId = null;

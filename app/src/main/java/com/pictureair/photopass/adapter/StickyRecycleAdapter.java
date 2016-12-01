@@ -83,13 +83,13 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (photoList.size() == 0 || position >= photoList.size()) {
                 return;
             }
-            if (photoList.get(position).onLine == 1) {
-                if (photoList.get(position).isPayed == 1) {
-                    photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
+            if (photoList.get(position).getIsOnLine() == 1) {
+                if (photoList.get(position).getIsPaid() == 1) {
+                    photoUrl = Common.PHOTO_URL + photoList.get(position).getPhotoThumbnail_512();
                 } else {
-                    photoUrl = photoList.get(position).photoThumbnail;
+                    photoUrl = photoList.get(position).getPhotoThumbnail_128();
                 }
-                if (photoList.get(position).isVideo == 1) {
+                if (photoList.get(position).getIsVideo() == 1) {
                     recyclerViewHolder.videoImageView.setVisibility(View.VISIBLE);
                     ViewGroup.LayoutParams params2 = recyclerViewHolder.videoImageView.getLayoutParams();
                     params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 6 * 2)) / (4 * COLUMN_COUNT);
@@ -99,12 +99,12 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                     recyclerViewHolder.videoImageView.setVisibility(View.GONE);
                 }
             } else {
-                photoUrl = GlideUtil.getFileUrl(photoList.get(position).photoPathOrURL);
+                photoUrl = GlideUtil.getFileUrl(photoList.get(position).getPhotoOriginalURL());
                 recyclerViewHolder.videoImageView.setVisibility(View.GONE);
             }
 
             if (recyclerViewHolder.mImageView.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.mImageView.getTag(R.id.glide_image_tag).equals(photoUrl)) {//加载图片
-                GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(photoList.get(position).isEncrypted), recyclerViewHolder.mImageView);
+                GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(photoList.get(position).getIsEnImage()), recyclerViewHolder.mImageView);
                 recyclerViewHolder.mImageView.setTag(R.id.glide_image_tag, photoUrl);
             }
 
@@ -188,7 +188,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     public int getItemViewType(int position) {
         if (position == getItemCount() - 1) {
             return LOAD_MORE_VIEW_TYPE;
-        } else if (position == 0 || (photoList.get(position).sectionId != photoList.get(position - 1).sectionId)){
+        } else if (position == 0 || (photoList.get(position).getSectionId() != photoList.get(position - 1).getSectionId())){
             return LOAD_HEADER_VIEW_TYPE;
         }
         return super.getItemViewType(position);

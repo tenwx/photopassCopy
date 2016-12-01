@@ -234,8 +234,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 photoIdString = result.getString("photoId");
                 PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
                 PhotoInfo itemInfo = updatephotolist.get(0);
-                itemInfo.photoId = photoIdString;
-                itemInfo.photoPathOrURL = photoUrlString;
+                itemInfo.setPhotoId(photoIdString);
+                itemInfo.setPhotoOriginalURL(photoUrlString);
                 PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
                 updatephotolist.set(0, itemInfo);
                 break;

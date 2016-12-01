@@ -112,16 +112,16 @@ public class PWEditUtil {
         Bitmap frameBitmap;
         String photoUrl;
         if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
-            if(frameInfos.get(curFramePosition).onLine == 1){
-                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
+            if(frameInfos.get(curFramePosition).getOnLine() == 1){
+                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).getOriginalPathPortrait(),0);
             }else{
-                photoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
+                photoUrl = frameInfos.get(curFramePosition).getOriginalPathPortrait();
             }
         }else{
-            if(frameInfos.get(curFramePosition).onLine == 1){
-                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
+            if(frameInfos.get(curFramePosition).getOnLine() == 1){
+                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).getOriginalPathLandscape(),0);
             }else{
-                photoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
+                photoUrl = frameInfos.get(curFramePosition).getOriginalPathLandscape();
             }
         }
         Canvas canvas = new Canvas(heBitmap);
@@ -322,16 +322,16 @@ public class PWEditUtil {
             for (int i=0; i < EditPhotoActivity.FRAMECOUNT; i++){
                 FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
                 if (i == 0){
-                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
-                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
-                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
-                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
+                    frameInfo.setThumbnailPathH160(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]));
+                    frameInfo.setThumbnailPathV160(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]));
+                    frameInfo.setOriginalPathLandscape(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]));
+                    frameInfo.setOriginalPathPortrait(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]));
                 }else{
                     int index = (i - 1) * 4;
-                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+1]);
-                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+2]);
-                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+3]);
-                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+4]);
+                    frameInfo.setOriginalPathLandscape(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index + 1]));
+                    frameInfo.setThumbnailPathH160(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index + 2]));
+                    frameInfo.setOriginalPathPortrait(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index + 3]));
+                    frameInfo.setThumbnailPathV160(GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index + 4]));
                 }
                 frameInfos.add(frameInfo);
             }
@@ -382,10 +382,10 @@ public class PWEditUtil {
                     .list(PhotoCommon.StickerPath);
             for (String name : files) {
                 frameOrStikerInfo = new FrameOrStikerInfo();
-                frameOrStikerInfo.frameOriginalPathPortrait = "assets://" + PhotoCommon.StickerPath + File.separator + name;
-                frameOrStikerInfo.locationId = "common";
-                frameOrStikerInfo.isActive = 1;
-                frameOrStikerInfo.onLine = 0;
+                frameOrStikerInfo.setOriginalPathPortrait("assets://" + PhotoCommon.StickerPath + File.separator + name);
+                frameOrStikerInfo.setLocationId("common");
+                frameOrStikerInfo.setIsActive(1);
+                frameOrStikerInfo.setOnLine(0);
                 stikerInfos.add(frameOrStikerInfo);
             }
         } catch (IOException e) {

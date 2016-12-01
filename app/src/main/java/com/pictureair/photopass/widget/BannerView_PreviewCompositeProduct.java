@@ -73,25 +73,25 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
         String photopathString = null;
         for (int i = 0; i < count; i++) {//加载图片
             //需要判断是否已经上传过了，如果图片上传过了，直接拿网络上的照片
-            if (list.get(i).isUploaded == 1) {//说明是已经上传了得照片，直接取网络图片
-                photopathString = Common.PHOTO_URL + list.get(i).photoPathOrURL;
+            if (list.get(i).getIsUploaded() == 1) {//说明是已经上传了得照片，直接取网络图片
+                photopathString = Common.PHOTO_URL + list.get(i).getPhotoOriginalURL();
 
             } else {//没有上传过，要判断是否是photopass的相册
                 //获取对应的图片路径
-                if (list.get(i).onLine == 1) {
-                    if (list.get(i).isPayed == 1) {
-                        photopathString = Common.PHOTO_URL + list.get(i).photoThumbnail_512;
+                if (list.get(i).getIsOnLine() == 1) {
+                    if (list.get(i).getIsPaid() == 1) {
+                        photopathString = Common.PHOTO_URL + list.get(i).getPhotoThumbnail_512();
                         PictureAirLog.out("payed url----->" + photopathString);
                     } else {
-                        photopathString = list.get(i).photoThumbnail;
+                        photopathString = list.get(i).getPhotoThumbnail_128();
                         PictureAirLog.out("unpayed url----->" + photopathString);
                     }
                 } else {
-                    photopathString = "file://" + list.get(i).photoPathOrURL;
+                    photopathString = "file://" + list.get(i).getPhotoOriginalURL();
                 }
             }
 
-            boolean isEncrypted = AppUtil.isEncrypted(list.get(i).isEncrypted);
+            boolean isEncrypted = AppUtil.isEncrypted(list.get(i).getIsEnImage());
 
             PictureAirLog.v(TAG, "good name--------->" + goodName);
             PictureAirLog.v(TAG, "photo path--------->" + photopathString);

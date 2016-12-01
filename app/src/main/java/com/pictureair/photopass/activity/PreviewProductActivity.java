@@ -94,19 +94,19 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         photoIdString = result.getString("photoId");
                         PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
                         PhotoInfo info = list.get(upload_index - 1);
-                        info.isUploaded = 1;
-                        info.photoId = photoIdString;
-                        info.photoPathOrURL = photoUrlString;
+                        info.setIsUploaded(1);
+                        info.setPhotoId(photoIdString);
+                        info.setPhotoOriginalURL(photoUrlString);
                         list.set(upload_index - 1, info);
                     }
                     if (upload_index < list.size()) {
-                        if (list.get(upload_index).onLine == 0) {//需要将图片上传
+                        if (list.get(upload_index).getIsOnLine() == 0) {//需要将图片上传
 
-                            if (list.get(upload_index).isUploaded == 1) {//已经上传过了
+                            if (list.get(upload_index).getIsUploaded() == 1) {//已经上传过了
                                 PictureAirLog.v(TAG, "has already uploaded");
                                 PhotoInfo selectPhotoItemInfo = list.get(upload_index);
-                                selectPhotoItemInfo.photoId = list.get(upload_index).photoId;
-                                selectPhotoItemInfo.photoPathOrURL = list.get(upload_index).photoPathOrURL;
+                                selectPhotoItemInfo.setPhotoId(list.get(upload_index).getPhotoId());
+                                selectPhotoItemInfo.setPhotoOriginalURL(list.get(upload_index).getPhotoOriginalURL());
                                 list.set(upload_index, selectPhotoItemInfo);
                                 Message message = handler.obtainMessage();
                                 message.what = API1.UPLOAD_PHOTO_SUCCESS;
@@ -114,7 +114,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 handler.sendMessage(message);
                             } else {//还没有上传
                                 PictureAirLog.v(TAG, "not uploaded, starting upload");
-                                String photourl = list.get(upload_index).photoPathOrURL;
+                                String photourl = list.get(upload_index).getPhotoOriginalURL();
                                 PictureAirLog.v(TAG, "上传的图片URL" + photourl);
                                 // 需要上传选择的图片
                                 File file = new File(photourl);
@@ -132,8 +132,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                             }
                         } else {//服务器上获取的图片，只需要将photoid获取就行
                             PhotoInfo info = list.get(upload_index);
-                            info.photoId = list.get(upload_index).photoId;
-                            info.photoPathOrURL = list.get(upload_index).photoThumbnail_512;
+                            info.setPhotoId(list.get(upload_index).getPhotoId());
+                            info.setPhotoOriginalURL(list.get(upload_index).getPhotoThumbnail_512());
                             list.set(upload_index, info);
                             Message message = handler.obtainMessage();
                             message.what = API1.UPLOAD_PHOTO_SUCCESS;
@@ -154,7 +154,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
                                 JSONArray embedPhotos = new JSONArray();
                                 JSONObject embedPhoto = new JSONObject();
-                                embedPhoto.put(Common.PHOTO_ID, list.get(i).photoId);
+                                embedPhoto.put(Common.PHOTO_ID, list.get(i).getPhotoId());
                                 embedPhotos.add(embedPhoto);
 
                                 goodsObject.put(Common.EMBEDPHOTOS, embedPhotos);
@@ -168,7 +168,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                             JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
                             for (int i = 0; i < list.size(); i++) {
                                 JSONObject photoid = new JSONObject();
-                                photoid.put("photoId", list.get(i).photoId);
+                                photoid.put("photoId", list.get(i).getPhotoId());
                                 embedPhotos.add(photoid);
                             }
                             PictureAirLog.v(TAG, embedPhotos.toString());
@@ -462,17 +462,17 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 if (isBatch) {
                     cartPhotosInfo = new CartPhotosInfo();
                     if (i < list.size()) {
-                        cartPhotosInfo.setPhotoUrl(list.get(i).photoPathOrURL);
-                        cartPhotosInfo.setPhotoId(list.get(i).photoId);
-                        cartPhotosInfo.setIsEncrypted(list.get(i).isEncrypted);
+                        cartPhotosInfo.setPhotoUrl(list.get(i).getPhotoOriginalURL());
+                        cartPhotosInfo.setPhotoId(list.get(i).getPhotoId());
+                        cartPhotosInfo.setIsEncrypted(list.get(i).getIsEnImage());
                     }
                     listAfterUploaded.add(cartPhotosInfo);
                 } else {
                     for (int j = 0; j < list.size(); j++) {
                         cartPhotosInfo = new CartPhotosInfo();
-                        cartPhotosInfo.setPhotoUrl(list.get(j).photoPathOrURL);
-                        cartPhotosInfo.setPhotoId(list.get(j).photoId);
-                        cartPhotosInfo.setIsEncrypted(list.get(j).isEncrypted);
+                        cartPhotosInfo.setPhotoUrl(list.get(j).getPhotoOriginalURL());
+                        cartPhotosInfo.setPhotoId(list.get(j).getPhotoId());
+                        cartPhotosInfo.setIsEncrypted(list.get(j).getIsEnImage());
                         listAfterUploaded.add(cartPhotosInfo);
                     }
                 }

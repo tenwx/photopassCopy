@@ -61,7 +61,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		PictureAirLog.out("ppcode---->" + photoList.get(position).photoPassCode);
+		PictureAirLog.out("ppcode---->" + photoList.get(position).getPhotoPassCode());
 		ViewHolder viewHolder = null;
 		if (convertView == null) {
 			viewHolder = new ViewHolder();
@@ -86,40 +86,40 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 			return convertView;
 		}
 		String photoUrl;
-		if (photoList.get(position).onLine == 1) {
-			if (photoList.get(position).isPayed == 1) {
-				photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
+		if (photoList.get(position).getIsOnLine() == 1) {
+			if (photoList.get(position).getIsPaid() == 1) {
+				photoUrl = Common.PHOTO_URL + photoList.get(position).getPhotoThumbnail_512();
 			} else {
-				photoUrl = photoList.get(position).photoThumbnail;
+				photoUrl = photoList.get(position).getPhotoThumbnail_128();
 			}
-			if (photoList.get(position).isVideo == 1) {
-				PictureAirLog.out("load video--->" + photoList.get(position).photoThumbnail_512);
+			if (photoList.get(position).getIsVideo() == 1) {
+				PictureAirLog.out("load video--->" + photoList.get(position).getPhotoThumbnail_512());
 				viewHolder.videoImageView.setVisibility(View.VISIBLE);
 				ViewGroup.LayoutParams params2 = viewHolder.videoImageView.getLayoutParams();
 				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (4 * COLUMN_COUNT);
 				params2.height = params2.width;
 				viewHolder.videoImageView.setLayoutParams(params2);
 			} else {
-				PictureAirLog.out("load online photo--->" + photoList.get(position).photoPathOrURL);
+				PictureAirLog.out("load online photo--->" + photoList.get(position).getPhotoOriginalURL());
 				viewHolder.videoImageView.setVisibility(View.GONE);
 			}
 		} else {
-			photoUrl = "file://" + photoList.get(position).photoPathOrURL;
+			photoUrl = "file://" + photoList.get(position).getPhotoOriginalURL();
 			viewHolder.videoImageView.setVisibility(View.GONE);
 		}
 		if (viewHolder.imageView.getTag(R.id.glide_image_tag) == null || !viewHolder.imageView.getTag(R.id.glide_image_tag).equals(photoUrl)) {//加载图片
-			GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(photoList.get(position).isEncrypted), viewHolder.imageView);
+			GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(photoList.get(position).getIsEnImage()), viewHolder.imageView);
 			viewHolder.imageView.setTag(R.id.glide_image_tag, photoUrl);
 		}
 		if (editMode) {
 			viewHolder.selectImageView.setVisibility(View.VISIBLE);
-			if (photoList.get(position).isSelected == 1) {
+			if (photoList.get(position).getIsSelected() == 1) {
 				viewHolder.selectImageView.setImageResource(R.drawable.sel2);
 			} else {
 				viewHolder.selectImageView.setImageResource(R.drawable.sel3);
 			}
 
-			viewHolder.maskImageView.setVisibility(photoList.get(position).showMask == 1 ? View.VISIBLE : View.GONE);
+			viewHolder.maskImageView.setVisibility(photoList.get(position).getIsSelected() == 1 ? View.VISIBLE : View.GONE);
 		} else {
 			viewHolder.selectImageView.setVisibility(View.GONE);
 			viewHolder.maskImageView.setVisibility(View.GONE);
@@ -148,7 +148,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		}
 
 		try {
-			viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(photoList.get(position).shootOn, context));
+			viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(photoList.get(position).getStrShootOn(), context));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,7 +159,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	@Override
 	public long getHeaderId(int position) {
-		return photoList.get(position).sectionId;
+		return photoList.get(position).getSectionId();
 	}
 
 

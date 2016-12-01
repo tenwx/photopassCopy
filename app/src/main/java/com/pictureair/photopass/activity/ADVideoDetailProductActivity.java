@@ -108,7 +108,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     String cartId = jsonObject.getString("cartId");
                     dismissPWProgressDialog();
                     if (isBuyNow) {
-                        MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.photoPassCode, videoInfo.shootTime);
+                        MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.getPhotoPassCode(), videoInfo.getShootDate());
                         MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
 
                         //生成订单
@@ -145,8 +145,8 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                         SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
 
                         Intent intent = new Intent(ADVideoDetailProductActivity.this, SelectPPActivity.class);
-                        intent.putExtra("photoPassCode", videoInfo.photoPassCode);
-                        intent.putExtra("shootTime", videoInfo.shootTime);
+                        intent.putExtra("photoPassCode", videoInfo.getPhotoPassCode());
+                        intent.putExtra("shootTime", videoInfo.getShootDate());
                         startActivity(intent);
                     } else {
                         pwToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
@@ -251,7 +251,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     return;
                 }else{
                     showPWProgressDialog();
-                    API1.getPPPsByShootDate(adVideoHandler, videoInfo.shootTime);
+                    API1.getPPPsByShootDate(adVideoHandler, videoInfo.getShootDate());
                 }
                 break;
 

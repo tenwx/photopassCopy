@@ -1,6 +1,6 @@
 package com.pictureair.photopass.util;
 
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 
 
 /**
@@ -12,11 +12,9 @@ import com.pictureair.photopass.db.PictureAirDbManager;
  */
 public class SettingUtil {
     private final String TAG = "SettingUtil";
-	private PictureAirDbManager pictureAirDbManager;
 
-	public SettingUtil(PictureAirDbManager pictureAirDbManager) {
+	public SettingUtil() {
 		super();
-		this.pictureAirDbManager = pictureAirDbManager;
 	}
 	
 	//     tips 1 , 网络下载模式流程。 start
@@ -26,7 +24,7 @@ public class SettingUtil {
 	 * @return
 	 */
 	public boolean isOnlyWifiDownload(String userInfoId) {
-		return pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI, userInfoId);// 是否仅wifi下载。
+		return PictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI, userInfoId);// 是否仅wifi下载。
 	}
 	
 	/**
@@ -35,7 +33,7 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void deleteSettingOnlyWifiStatus(String userInfoId) {
-		pictureAirDbManager.deleteSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
+		PictureAirDbManager.deleteSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
 	}
 
 	/**
@@ -44,7 +42,7 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void insertSettingOnlyWifiStatus(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
+		PictureAirDbManager.insertSettingStatus(Common.SETTING_ONLY_WIFI, userInfoId);
 	}
 
    //  tips 2 , 推广AirPass+ 弹窗流程。 start
@@ -54,7 +52,7 @@ public class SettingUtil {
 	 * @return
 	 */
 	public boolean isFirstPP10(String userInfoId){
-		return !(pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_FIRST_PP10, userInfoId));
+		return !(PictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_FIRST_PP10, userInfoId));
 	}
 	
 	/**
@@ -63,7 +61,7 @@ public class SettingUtil {
 	 * @param userInfoId
 	 */
 	public void insertSettingFirstPP10Status(String userInfoId) {
-		pictureAirDbManager.insertSettingStatus(Common.SETTING_FIRST_PP10, userInfoId);
+		PictureAirDbManager.insertSettingStatus(Common.SETTING_FIRST_PP10, userInfoId);
 	}
 
 }

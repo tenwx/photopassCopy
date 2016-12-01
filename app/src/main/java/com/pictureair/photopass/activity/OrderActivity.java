@@ -22,10 +22,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter2;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
+import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
 import com.pictureair.photopass.fragment.OrderFragment;
 import com.pictureair.photopass.util.API1;
@@ -83,8 +84,7 @@ public class OrderActivity extends BaseFragmentActivity {
 
     private PWProgressDialog pwProgressDialog;
     private PWToast myToast;
-    private PictureAirDbManager pictureAirDbManager;
-    private List<String> orderIds;
+    private List<PaymentOrderInfo> orderIds;
 
     private int orderType = 0;//订单类型 异步回调使用
     private String currency;
@@ -184,9 +184,9 @@ public class OrderActivity extends BaseFragmentActivity {
                         }
                     } else if (orderInfo.orderStatus == 1) {//1等待买家付款
                         if (orderIds != null && orderIds.size() > 0) {
-                            for (String orderId : orderIds) {
+                            for (PaymentOrderInfo paymentOrderInfo : orderIds) {
                                 //判断orderId是否相同，且状态是否为1（未付款）
-                                if (orderId.equals(orderInfo.orderNumber + "")) {
+                                if (paymentOrderInfo.getOrderId().equals(orderInfo.orderNumber + "")) {
                                     orderInfo.orderStatus = 6;
                                     break;
                                 }
@@ -360,7 +360,6 @@ public class OrderActivity extends BaseFragmentActivity {
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
 
         myToast = new PWToast(this);
-        pictureAirDbManager = new PictureAirDbManager(this);
     }
 
     /**
@@ -401,7 +400,7 @@ public class OrderActivity extends BaseFragmentActivity {
             public void run() {
                 super.run();
                 PictureAirLog.out("runk------>");
-                orderIds = pictureAirDbManager.searchPaymentOrderIdDB();
+                orderIds = PictureAirDbManager.searchPaymentOrderIdDB();
                 PictureAirLog.v(TAG, "getLocalPaymentOrder orderIds:" + orderIds.size());
                 getLocalPaymentDone = true;
             }
