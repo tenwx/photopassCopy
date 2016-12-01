@@ -77,7 +77,7 @@ public class AppExitUtil {
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
-            pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+            pictureAirDbManager = new PictureAirDbManager();
             newToast = new PWToast(MyApplication.getInstance());
         }
         return appExitUtil;

@@ -74,7 +74,7 @@ repositories {
 }
 
 greendao {
-    schemaVersion 3 //指定数据库版本号
+    schemaVersion 4 //指定数据库版本号
     targetGenDir 'src/main/java' //生成数据库文件的目录
     daoPackage 'com.pictureair.photopass.greendao' //dao的包名
 }

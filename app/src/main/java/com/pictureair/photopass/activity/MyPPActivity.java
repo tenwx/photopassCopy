@@ -357,7 +357,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     }
 
     private void initView() {
-        pictureAirDbManager = new PictureAirDbManager(this);
+        pictureAirDbManager = new PictureAirDbManager();
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);

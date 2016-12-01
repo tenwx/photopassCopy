@@ -36,7 +36,7 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
     @Override
     public void needGetLastestVideoInfoFromNetByDB(String photoId) {
         if (pictureAirDbManager == null) {
-            pictureAirDbManager = new PictureAirDbManager(context);
+            pictureAirDbManager = new PictureAirDbManager();
         }
 
         //查询数据库
@@ -52,7 +52,7 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
     @Override
     public void updateLastestVideoInfo(PhotoInfo videoInfo) {
         if (pictureAirDbManager == null) {
-            pictureAirDbManager = new PictureAirDbManager(context);
+            pictureAirDbManager = new PictureAirDbManager();
         }
 
         pictureAirDbManager.updatePhotoInfo(videoInfo);

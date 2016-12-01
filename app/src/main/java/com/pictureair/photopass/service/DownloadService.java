@@ -98,7 +98,7 @@ public class DownloadService extends Service {
         PictureAirLog.out("downloadService ---------> onCreate" + downed_num.get() + "_" + failed_num.get());
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         myToast = new PWToast(getApplicationContext());
-        pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
+        pictureAirDbManager = new PictureAirDbManager();
         fixedThreadPool = Executors.newFixedThreadPool(1);
         userId = SPUtils.getString(getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         fixedThreadPool.execute(new ChangeLoadToFailTask());

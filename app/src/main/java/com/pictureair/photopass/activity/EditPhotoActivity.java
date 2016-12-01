@@ -266,14 +266,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				//写入数据库之后，再从数据库拿数据
 				frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
 				for (int i = 0; i < frameFromDBInfos.size(); i++) {
-					if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
+					if (frameFromDBInfos.get(i).getLocationId().equals("common")) {//通用边框
 						frameInfos.add(frameFromDBInfos.get(i));
 					}
 				}
 				//从数据库获取饰品信息
 				stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
 				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
-					if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
+					if (stickerFromDBInfos.get(j).getLocationId().equals("common")) {//通用饰品
 						stikerInfos.add(stickerFromDBInfos.get(j));
 					}
 				}
@@ -373,7 +373,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		if (!tempFile.isDirectory()) {
 			tempFile.mkdirs();// 创建根目录文件夹
 		}
-		pictureAirDbManager = new PictureAirDbManager(this);
+		pictureAirDbManager = new PictureAirDbManager();
 
 		addFilterImages(FILTERPATH);
 		addFrameImages(FRAMEPATH);
@@ -555,10 +555,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						btn_onedit_save.setVisibility(View.VISIBLE);
 						editType = 3;
 						String stickerUrl = "";
-						if (stikerInfos.get(position).onLine == 1) {//网络图片
-							stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).frameOriginalPathPortrait;
+						if (stikerInfos.get(position).getOnLine() == 1) {//网络图片
+							stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).getOriginalPathPortrait();
 						}else {
-							stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
+							stickerUrl = stikerInfos.get(position).getOriginalPathPortrait();
 						}
 						//ImageLoader 加载
 						GlideUtil.load(EditPhotoActivity.this, stickerUrl, new SimpleTarget<Bitmap>() {
@@ -740,10 +740,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					.list(folderPath);
 			for (String name : files) {
 				frameOrStikerInfo = new FrameOrStikerInfo();
-				frameOrStikerInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + name);
-				frameOrStikerInfo.locationId = "common";
-				frameOrStikerInfo.isActive = 1;
-				frameOrStikerInfo.onLine = 0;
+				frameOrStikerInfo.setOriginalPathPortrait(GlideUtil.getAssetUrl(folderPath + File.separator + name));
+				frameOrStikerInfo.setLocationId("common");
+				frameOrStikerInfo.setIsActive(1);
+				frameOrStikerInfo.setOnLine(0);
 				stikerInfos.add(frameOrStikerInfo);
 			}
 		} catch (IOException e) {
@@ -775,16 +775,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			for (int i=0; i< FRAMECOUNT; i++){
 				FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
 				if (i == 0){
-					frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
-					frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
-					frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
-					frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
+					frameInfo.setThumbnailPathH160(GlideUtil.getAssetUrl(folderPath + File.separator + files[i]));
+					frameInfo.setThumbnailPathV160(GlideUtil.getAssetUrl(folderPath + File.separator + files[i]));
+					frameInfo.setOriginalPathLandscape(GlideUtil.getAssetUrl(folderPath + File.separator + files[i]));
+					frameInfo.setOriginalPathPortrait(GlideUtil.getAssetUrl(folderPath + File.separator + files[i]));
 				}else{
 					int index = (i - 1) * 4;
-					frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+1]);
-					frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+2]);
-					frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+3]);
-					frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+4]);
+					frameInfo.setOriginalPathLandscape(GlideUtil.getAssetUrl(folderPath + File.separator + files[index + 1]));
+					frameInfo.setThumbnailPathH160(GlideUtil.getAssetUrl(folderPath + File.separator + files[index + 2]));
+					frameInfo.setOriginalPathPortrait(GlideUtil.getAssetUrl(folderPath + File.separator + files[index + 3]));
+					frameInfo.setThumbnailPathV160(GlideUtil.getAssetUrl(folderPath + File.separator + files[index + 4]));
 				}
 				frameInfos.add(frameInfo);
 			}
@@ -966,16 +966,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				Bitmap frameBitmap;
 				String loadPhotoUrl;
 				if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
-					if(frameInfos.get(curFramePosition).onLine == 1){
-						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
+					if(frameInfos.get(curFramePosition).getOnLine() == 1){
+						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).getOriginalPathPortrait(),0);
 					}else{
-						loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
+						loadPhotoUrl = frameInfos.get(curFramePosition).getOriginalPathPortrait();
 					}
 				}else{
-					if(frameInfos.get(curFramePosition).onLine == 1){
-						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
+					if(frameInfos.get(curFramePosition).getOnLine() == 1){
+						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).getOriginalPathLandscape(),0);
 					}else{
-						loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
+						loadPhotoUrl = frameInfos.get(curFramePosition).getOriginalPathLandscape();
 					}
 				}
 
@@ -1113,21 +1113,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 */
 	private void loadframe(int position) {
 		if (position != 0) {// 如果不为0，表示有边框
-			if (frameInfos.get(position).onLine == 1) {//网络图片，这个时候已经下载，所以直接取本地图片路径
+			if (frameInfos.get(position).getOnLine() == 1) {//网络图片，这个时候已经下载，所以直接取本地图片路径
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
+					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(position).getOriginalPathPortrait(),0),
 							new ImageloaderListener());
 				}else{
-					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
+					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(position).getOriginalPathLandscape(),0),
 							new ImageloaderListener());
 				}
 			}else {//本地图片
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathPortrait, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).getOriginalPathPortrait(), new ImageloaderListener());
 				}else{
-					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathLandscape, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).getOriginalPathLandscape(), new ImageloaderListener());
 				}
 			}
 		} else {// 没有边框
@@ -1227,8 +1227,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				//1.根据locationIds来判断需要显示或者隐藏的边框
 //				frameInfos.addAll(frameFromDBInfos);
 				for (int i = 0; i < frameFromDBInfos.size(); i++) {
-					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+frameFromDBInfos.get(i).locationId);
-					if (locationIds.contains(frameFromDBInfos.get(i).locationId)) {//有属于特定地点的边框
+					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+frameFromDBInfos.get(i).getLocationId());
+					if (locationIds.contains(frameFromDBInfos.get(i).getLocationId())) {//有属于特定地点的边框
 						if (in) {//进入
 							frameInfos.add(frameFromDBInfos.get(i));
 						}else {//离开
@@ -1238,8 +1238,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 //				stikerInfos.addAll(stickerFromDBInfos);
 				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
-					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+stickerFromDBInfos.get(j).locationId);
-					if (locationIds.contains(stickerFromDBInfos.get(j).locationId)) {//有属于特定地点的边框
+					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+stickerFromDBInfos.get(j).getLocationId());
+					if (locationIds.contains(stickerFromDBInfos.get(j).getLocationId())) {//有属于特定地点的边框
 						if (in) {//进入
 							stikerInfos.add(stickerFromDBInfos.get(j));
 						}else {//离开
@@ -1340,16 +1340,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		Bitmap frameBmp;
 		String loadPhotoUrl;
 		if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-			if(frameInfos.get(currentFramePosition).onLine == 1){
-				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(currentFramePosition).frameOriginalPathPortrait,0);
+			if(frameInfos.get(currentFramePosition).getOnLine() == 1){
+				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(currentFramePosition).getOriginalPathPortrait(),0);
 			}else{
-				loadPhotoUrl = frameInfos.get(currentFramePosition).frameOriginalPathPortrait;
+				loadPhotoUrl = frameInfos.get(currentFramePosition).getOriginalPathPortrait();
 			}
 		}else{
-			if(frameInfos.get(currentFramePosition).onLine == 1){
-				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(currentFramePosition).frameOriginalPathLandscape,0);
+			if(frameInfos.get(currentFramePosition).getOnLine() == 1){
+				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(currentFramePosition).getOriginalPathLandscape(),0);
 			}else{
-				loadPhotoUrl = frameInfos.get(currentFramePosition).frameOriginalPathLandscape;
+				loadPhotoUrl = frameInfos.get(currentFramePosition).getOriginalPathLandscape();
 			}
 		}
 		Canvas canvas = new Canvas(heBitmap);

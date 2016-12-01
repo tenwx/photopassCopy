@@ -114,7 +114,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(this);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
-        pictureAirDbManager = new PictureAirDbManager(this);
+        pictureAirDbManager = new PictureAirDbManager();
         myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);

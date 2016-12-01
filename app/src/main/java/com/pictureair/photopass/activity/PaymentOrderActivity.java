@@ -290,7 +290,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         masterCardLayout = (RelativeLayout) findViewById(R.id.paytype_mc);
         jcbLayout = (RelativeLayout) findViewById(R.id.paytype_jcb);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
-        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+        pictureAirDbManager = new PictureAirDbManager();
     }
 
     private void init() {

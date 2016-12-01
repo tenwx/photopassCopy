@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.entity.ADLocationInfo;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
@@ -674,40 +675,37 @@ public class JsonUtil {
     public static FrameOrStikerInfo getFrameInfo(JSONObject frameJsonObject) {
         FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
         try {
-            frameInfo.onLine = 1;
-            frameInfo.isDownload = 0;
-//			frameInfo.needShow = 0;
+            frameInfo.setOnLine(1);
+            frameInfo.setIsDownload(0);
             if (frameJsonObject.containsKey("assetName")) {
-                frameInfo.frameName = frameJsonObject.getString("assetName");
+                frameInfo.setFrameName(frameJsonObject.getString("assetName"));
             }
             if (frameJsonObject.containsKey("imgUrl_H")) {
-                frameInfo.frameOriginalPathLandscape = frameJsonObject.getString("imgUrl_H");
+                frameInfo.setOriginalPathLandscape(frameJsonObject.getString("imgUrl_H"));
             }
             if (frameJsonObject.containsKey("imgUrl_V")) {
-                frameInfo.frameOriginalPathPortrait = frameJsonObject.getString("imgUrl_V");
+                frameInfo.setOriginalPathPortrait(frameJsonObject.getString("imgUrl_V"));
             }
             if (frameJsonObject.containsKey("locationId")) {//特定场馆
-                frameInfo.locationId = frameJsonObject.getString("locationId");
+                frameInfo.setLocationId(frameJsonObject.getString("locationId"));
             } else {
-                frameInfo.locationId = "common";//通用边框
+                frameInfo.setLocationId("common");//通用边框
             }
             if (frameJsonObject.containsKey("active_H")) {
-                frameInfo.isActive = frameJsonObject.getBoolean("active_H") ? 1 : 0;
+                frameInfo.setIsActive(frameJsonObject.getBoolean("active_H") ? 1 : 0);
             }
             if (frameJsonObject.containsKey("thumbnail_H")) {
                 JSONObject thumbnailJsonObject = frameJsonObject.getJSONObject("thumbnail_H");
                 if (thumbnailJsonObject.containsKey("x400")) {
                     JSONObject x400JsonObject = thumbnailJsonObject.getJSONObject("x400");
                     if (x400JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathLandscape400 = x400JsonObject.getString("url");
+                        frameInfo.setThumbnailPathLandscape400(x400JsonObject.getString("url"));
                     }
                 }
                 if (thumbnailJsonObject.containsKey("x160")) {
-                    JSONObject x160JsonObject = thumbnailJsonObject
-                            .getJSONObject("x160");
+                    JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathH160 = x160JsonObject
-                                .getString("url");
+                        frameInfo.setThumbnailPathH160(x160JsonObject.getString("url"));
                     }
                 }
 
@@ -717,23 +715,23 @@ public class JsonUtil {
                 if (thumbNailPortraritJsonObject.containsKey("x300")) {
                     JSONObject x400JsonObject = thumbNailPortraritJsonObject.getJSONObject("x300");
                     if (x400JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathPortrait400 = x400JsonObject.getString("url");
+                        frameInfo.setThumbnailPathPortrait400(x400JsonObject.getString("url"));
                     }
                 }
                 if (thumbNailPortraritJsonObject.containsKey("x120")) {
                     JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathV160 = x160JsonObject.getString("url");
+                        frameInfo.setThumbnailPathV160(x160JsonObject.getString("url"));
                     }
                 }
             }
             if (frameJsonObject.containsKey("fileSize_V")) {
-                frameInfo.fileSize = frameJsonObject.getIntValue("fileSize_V");
+                frameInfo.setFileSize(frameJsonObject.getIntValue("fileSize_V"));
             } else {
-                frameInfo.fileSize = 0;
+                frameInfo.setFileSize(0);
             }
             if (frameJsonObject.containsKey("fileSize_H")) {
-                frameInfo.fileSize += frameJsonObject.getIntValue("fileSize_H");
+                frameInfo.setFileSize(frameInfo.getFileSize() + frameJsonObject.getIntValue("fileSize_H"));
             }
 
         } catch (Exception e) {
@@ -751,33 +749,33 @@ public class JsonUtil {
     public static FrameOrStikerInfo getStickerInfo(JSONObject stickerJsonObject) {
         FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
         try {
-            frameInfo.onLine = 1;
-            frameInfo.isDownload = 0;
+            frameInfo.setOnLine(1);
+            frameInfo.setIsDownload(0);
             if (stickerJsonObject.containsKey("assetName")) {
-                frameInfo.frameName = stickerJsonObject.getString("assetName");
+                frameInfo.setFrameName(stickerJsonObject.getString("assetName"));
             }
             if (stickerJsonObject.containsKey("imgUrl")) {
-                frameInfo.frameOriginalPathPortrait = stickerJsonObject.getString("imgUrl");
+                frameInfo.setOriginalPathPortrait(stickerJsonObject.getString("imgUrl"));
             }
             if (stickerJsonObject.containsKey("locationId")) {//特定场馆
-                frameInfo.locationId = stickerJsonObject.getString("locationId");
+                frameInfo.setLocationId(stickerJsonObject.getString("locationId"));
             } else {
-                frameInfo.locationId = "common";//通用边框
+                frameInfo.setLocationId("common");//通用边框
             }
             if (stickerJsonObject.containsKey("active")) {
-                frameInfo.isActive = stickerJsonObject.getBoolean("active") ? 1 : 0;
+                frameInfo.setIsActive(stickerJsonObject.getBoolean("active") ? 1 : 0);
             }
             if (stickerJsonObject.containsKey("thumbnail")) {
                 JSONObject thumbnailJsonObject = stickerJsonObject.getJSONObject("thumbnail");
                 if (thumbnailJsonObject.containsKey("x160")) {
                     JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
+                        frameInfo.setThumbnailPathH160(x160JsonObject.getString("url"));//测试代码，需要修改。
                     }
                 }
             }
             if (stickerJsonObject.containsKey("fileSize")) {
-                frameInfo.fileSize = stickerJsonObject.getIntValue("fileSize");
+                frameInfo.setFileSize(stickerJsonObject.getIntValue("fileSize"));
             }
 
         } catch (Exception e) {
@@ -1147,6 +1145,19 @@ public class JsonUtil {
             }
         }
         return goodsInfo;
+    }
+
+    /**
+     * 解析广告json
+     * @param jsonObject
+     * @return
+     */
+    public static ADLocationInfo getAdLocationInfo(JSONObject jsonObject) {
+        ADLocationInfo adLocationInfo = new ADLocationInfo();
+        adLocationInfo.setLocationId(jsonObject.getString("locationId"));
+        adLocationInfo.setDescriptionCH(jsonObject.getJSONObject("adWords").getString("CN"));
+        adLocationInfo.setDescriptionEN(jsonObject.getJSONObject("adWords").getString("EN"));
+        return adLocationInfo;
     }
 
 }

@@ -108,6 +108,13 @@ GreenDao 解析
         orderAsc：升序
         queryRaw：使用sql语句 所有字段前面，都要加 T. ，如：T.'IS_PAID'
         StringCondition：使用sql语句自定义where条件
+        or(a, b)：或者a或者b
+        and(a, b)：a和b
+        forCurrentThread：线程安全，在build之后调用，建议和build连用
+        setParameter：如果查询条件有变更，可以用此方法设置参数
+
+    注意：
+        不支持查找单列，官方回答，greendao已经够快
 
 
 

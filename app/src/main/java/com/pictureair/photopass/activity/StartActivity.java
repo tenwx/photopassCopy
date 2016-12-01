@@ -62,7 +62,7 @@ public class StartActivity extends BaseActivity implements Callback {
         spinner = (AnimationDrawable) img_update.getBackground();
         handler = new Handler(this);
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
-        pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
+        pictureAirDbManager = new PictureAirDbManager();
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();

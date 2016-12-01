@@ -209,7 +209,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
-        pictureAirDbManager = new PictureAirDbManager(this);
+        pictureAirDbManager = new PictureAirDbManager();
 
         PictureAirLog.out("photocount--->" + photocount);
         okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));

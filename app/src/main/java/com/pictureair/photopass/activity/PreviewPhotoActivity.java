@@ -422,7 +422,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
         previewPhotoHandler = new Handler(this);
-        pictureAirDbManager = new PictureAirDbManager(this);
+        pictureAirDbManager = new PictureAirDbManager();
         settingUtil = new SettingUtil(pictureAirDbManager);
         newToast = new PWToast(this);
         sharePop = new SharePop(this);

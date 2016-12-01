@@ -297,7 +297,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
      */
     public void init(){
         baseCheckUpdate = CheckUpdate.getInstance();
-        dbDAO = new PictureAirDbManager(context);
+        dbDAO = new PictureAirDbManager();
     }
 
     /**

@@ -134,7 +134,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         ibWifiOnlyDownload.setOnClickListener(this);
 //        ibAutoUpdate.setOnClickListener(this);
 
-        settingUtil = new SettingUtil(new PictureAirDbManager(this));
+        settingUtil = new SettingUtil(new PictureAirDbManager());
         userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         showPWProgressDialog(true);

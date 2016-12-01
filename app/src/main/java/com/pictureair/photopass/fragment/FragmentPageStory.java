@@ -765,7 +765,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
-        pictureAirDbManager = new PictureAirDbManager(getActivity());
+        pictureAirDbManager = new PictureAirDbManager();
         settingUtil = new SettingUtil(pictureAirDbManager);
         app = (MyApplication) context.getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);

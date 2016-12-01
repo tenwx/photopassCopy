@@ -251,7 +251,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		//初始化数据
 		albumArrayList = new ArrayList<>();
-		pictureAirDbManager = new PictureAirDbManager(this);
+		pictureAirDbManager = new PictureAirDbManager();
 		settingUtil = new SettingUtil(pictureAirDbManager);
 		ppCode = getIntent().getStringExtra("ppCode");
 

@@ -1,6 +1,5 @@
 package com.pictureair.photopass.db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -9,15 +8,24 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.ADLocationInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
+import com.pictureair.photopass.entity.FirstStartInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.photopass.greendao.ADLocationInfoDao;
+import com.pictureair.photopass.greendao.FirstStartInfoDao;
+import com.pictureair.photopass.greendao.FrameOrStikerInfoDao;
+import com.pictureair.photopass.greendao.PaymentOrderInfoDao;
+import com.pictureair.photopass.greendao.PhotoDownLoadInfoDao;
 import com.pictureair.photopass.greendao.PhotoInfoDao;
+import com.pictureair.photopass.greendao.ThreadInfoDao;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -26,10 +34,9 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 
-import net.sqlcipher.Cursor;
 import net.sqlcipher.SQLException;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,18 +52,8 @@ import de.greenrobot.event.EventBus;
  * @author bauer_bao
  */
 public class PictureAirDbManager {
-    private static final String TAG = "PictureAirDbManager";
-    private SQLiteOpenHelper photoInfoDBHelper;
-    private SQLiteDatabase database;
     public static final long DAY_TIME = 24 * 60 * 60 * 1000;//一天的毫秒数
     public static final int CACHE_DAY = 30;//30天的有效期
-
-    public PictureAirDbManager(Context context) {
-        if (photoInfoDBHelper == null) {
-            photoInfoDBHelper = SQLiteHelperFactory.create(context);
-            DBManager.initializeInstance(photoInfoDBHelper);//初始化数据库操作类
-        }
-    }
 
     /**
      * 插入设置中的状态
@@ -65,17 +62,8 @@ public class PictureAirDbManager {
      * @param userInfoId  用户ID
      */
     public void insertSettingStatus(String settingType, String userInfoId) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{settingType, userInfoId});
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-        }
+        FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
+        firstStartInfoDao.insert(new FirstStartInfo(null, settingType, userInfoId));
     }
 
     /**
@@ -85,16 +73,13 @@ public class PictureAirDbManager {
      * @param userInfoId  用户ID
      */
     public void deleteSettingStatus(String settingType, String userInfoId) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("delete from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
+        QueryBuilder<FirstStartInfo> queryBuilder = firstStartInfoDao.queryBuilder()
+                .where(FirstStartInfoDao.Properties.Event.eq(settingType), FirstStartInfoDao.Properties.UserId.eq(userInfoId));
+
+        if (queryBuilder.count() > 0) {
+            FirstStartInfo firstStartInfo = queryBuilder.build().forCurrentThread().unique();
+            firstStartInfoDao.delete(firstStartInfo);
         }
     }
 
@@ -108,21 +93,28 @@ public class PictureAirDbManager {
      * @return
      */
     public boolean checkFirstBuyPhoto(String settingType, String userInfoId) {
-        Cursor cursor = null;
+        FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
+        long count = firstStartInfoDao.queryBuilder()
+                .where(FirstStartInfoDao.Properties.Event.eq(settingType), FirstStartInfoDao.Properties.UserId.eq(userInfoId)).count();
+
+        return count > 0;
+    }
+
+    /**
+     * 检查是不是第一次
+     *
+     * @param settingType
+     * @param userInfoId
+     */
+    public boolean checkFirstTimeStartActivity(String settingType, String userInfoId) {
+        FirstStartInfoDao firstStartInfoDao = MyApplication.getInstance().getDaoSession().getFirstStartInfoDao();
         boolean result = false;
-        try {
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> checkFirstBuyPhoto");
-            cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
-            result = (cursor.getCount() > 0) ? true : false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> checkFirstBuyPhoto");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+        long count = firstStartInfoDao.queryBuilder()
+                .where(FirstStartInfoDao.Properties.Event.eq(settingType), FirstStartInfoDao.Properties.UserId.eq(userInfoId)).count();
+
+        if (count == 0){
+            firstStartInfoDao.insert(new FirstStartInfo(null, settingType, userInfoId));
+            result = true;
         }
         return result;
     }
@@ -159,13 +151,13 @@ public class PictureAirDbManager {
             if (type == 1) {
                 selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                         .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
-                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
             } else {
                 selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                         .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"),
                                 PhotoInfoDao.Properties.IsPaid.eq(0),
                                 PhotoInfoDao.Properties.ShootDate.eq(ppInfo.getShootDate()))
-                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
             }
 
             for (PhotoInfo photoInfo : selectPhotoItemInfos) {
@@ -222,7 +214,7 @@ public class PictureAirDbManager {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"))
-                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
 
         for (PhotoInfo photoInfo: selectPhotoItemInfos) {
             // 获取图片路径
@@ -254,7 +246,7 @@ public class PictureAirDbManager {
     public void updatePhotoInfo(PhotoInfo photo) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().unique();
+                .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().forCurrentThread().unique();
 
         if (photoInfo == null) {
             return;
@@ -286,7 +278,7 @@ public class PictureAirDbManager {
     public void updatePhotoBought(String selectedPhotoId, boolean isDelete) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoId.eq(selectedPhotoId)).build().unique();
+                .where(PhotoInfoDao.Properties.PhotoId.eq(selectedPhotoId)).build().forCurrentThread().unique();
 
         if (photoInfo == null) {
             return;
@@ -311,7 +303,7 @@ public class PictureAirDbManager {
         ArrayList<PhotoInfo> photos;
         if (isDelete) {//删除操作
             photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%")).build().list();
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%")).build().forCurrentThread().list();
             if (photos != null && photos.size() > 0) {
                 photoInfoDao.deleteInTx(photos);
             }
@@ -319,7 +311,7 @@ public class PictureAirDbManager {
         } else {//同步
             photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                     .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate))
-                    .build().list();
+                    .build().forCurrentThread().list();
             if (photos == null && photos.size() == 0) {
                 return;
             }
@@ -328,36 +320,6 @@ public class PictureAirDbManager {
             }
             photoInfoDao.updateInTx(photos);
         }
-    }
-
-    /**
-     * 检查是不是第一次
-     *
-     * @param activity
-     * @param userID
-     */
-    public boolean checkFirstTimeStartActivity(String activity, String userID) {
-        boolean result = false;
-        Cursor cursor = null;
-        try {
-            //第一次进入，判断数据库中是否存在当前UserId，如果不存在，则第一次进入
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> checkFirstTimeStartActivity");
-            cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{activity, userID});
-            if (cursor.getCount() == 0) {//说明没有数据，则为第一次进入
-                database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{activity, userID});
-                result = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> checkFirstTimeStartActivity");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return result;
     }
 
     /**
@@ -414,7 +376,7 @@ public class PictureAirDbManager {
                 //1.先查询数据库是否有新的数据，如果有，则更新信息
                 //2.如果没有，则插入
                 PhotoInfo dbPhotoInfo = photoInfoDao.queryBuilder()
-                        .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().unique();
+                        .where(PhotoInfoDao.Properties.PhotoId.eq(photo.getPhotoId())).build().forCurrentThread().unique();
                 if (dbPhotoInfo != null) {//说明存在此数据，需要更新下数据
                     dbPhotoInfo.setPhotoPassCode(photo.getPhotoPassCode());
                     dbPhotoInfo.setShootDate(photo.getShootDate());
@@ -500,7 +462,7 @@ public class PictureAirDbManager {
                 if (list.get(i).getPhotoPassCode().equals(ppCode)) {//只有一张卡
                     photoInfo = photoInfoDao.queryBuilder()
                             .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()), PhotoInfoDao.Properties.PhotoPassCode.eq(ppCode))
-                            .build().unique();
+                            .build().forCurrentThread().unique();
                     if (photoInfo != null) {
                         photoInfoDao.delete(photoInfo);
                     }
@@ -508,7 +470,7 @@ public class PictureAirDbManager {
                 } else {//有多张卡
                     String newPPCode = list.get(i).getPhotoPassCode().replace(ppCode, "");
                     photoInfo = photoInfoDao.queryBuilder()
-                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId())).build().unique();
+                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId())).build().forCurrentThread().unique();
                     if (photoInfo == null) {
                         return;
                     }
@@ -564,7 +526,7 @@ public class PictureAirDbManager {
             //5
             if (needDelete) {//需要删除
                 PhotoInfo photoInfo = photoInfoDao.queryBuilder()
-                        .where(PhotoInfoDao.Properties.PhotoId.eq(deletePhotos.get(i).getPhotoId())).build().unique();
+                        .where(PhotoInfoDao.Properties.PhotoId.eq(deletePhotos.get(i).getPhotoId())).build().forCurrentThread().unique();
                 if (photoInfo != null) {
                     photoInfoDao.delete(photoInfo);
                 }
@@ -600,10 +562,10 @@ public class PictureAirDbManager {
         if (exceptVideo) {
             resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                     .where(PhotoInfoDao.Properties.IsVideo.eq(0))
-                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
         } else{
             resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                    .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
         }
         PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo" + resultArrayList.size());
         return resultArrayList;
@@ -633,7 +595,7 @@ public class PictureAirDbManager {
         //删除过期的数据之后，再查询photo表的信息
         resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                 .where(PhotoInfoDao.Properties.IsPaid.eq(hasBought ? "1" : "0"))
-                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().list();
+                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
         return resultArrayList;
     }
 
@@ -645,7 +607,7 @@ public class PictureAirDbManager {
     public boolean needGetLastestVideoInfoFromNetwork(String photoId) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         PhotoInfo photoInfo = photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoId.eq(photoId)).build().unique();
+                .where(PhotoInfoDao.Properties.PhotoId.eq(photoId)).build().forCurrentThread().unique();
         return AppUtil.isOldVersionOfTheVideo(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_128());
     }
 
@@ -656,33 +618,10 @@ public class PictureAirDbManager {
      * @return
      */
     public ArrayList<FrameOrStikerInfo> getLastContentDataFromDB(int frame) {
-        ArrayList<FrameOrStikerInfo> resultArrayList = new ArrayList<FrameOrStikerInfo>();
-        database = DBManager.getInstance().writData();
-        PictureAirLog.out("cursor open ---> getLastContentDataFromDB");
-        Cursor cursor = database.rawQuery("select * from " + Common.FRAME_STICKER_TABLES + " where isActive = ? and fileType = ?", new String[]{"1", frame + ""});
-        FrameOrStikerInfo frameInfo;
-        if (cursor.moveToFirst()) {//判断是否有数据
-            do {
-                frameInfo = new FrameOrStikerInfo();
-                frameInfo.frameName = cursor.getString(cursor.getColumnIndex("frameName"));
-                frameInfo.frameOriginalPathLandscape = cursor.getString(cursor.getColumnIndex("originalPathLandscape"));
-                frameInfo.frameOriginalPathPortrait = cursor.getString(cursor.getColumnIndex("originalPathPortrait"));
-                frameInfo.frameThumbnailPathLandscape400 = cursor.getString(cursor.getColumnIndex("thumbnailPathLandscape400"));
-                frameInfo.frameThumbnailPathPortrait400 = cursor.getString(cursor.getColumnIndex("thumbnailPathPortrait400"));
-                frameInfo.frameThumbnailPathH160 = cursor.getString(cursor.getColumnIndex("thumbnailPathH160"));
-                frameInfo.frameThumbnailPathV160 = cursor.getString(cursor.getColumnIndex("thumbnailPathV160"));
-                frameInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
-                frameInfo.isActive = cursor.getInt(cursor.getColumnIndex("isActive"));
-                frameInfo.onLine = cursor.getInt(cursor.getColumnIndex("onLine"));
-                frameInfo.isDownload = cursor.getInt(cursor.getColumnIndex("isDownload"));
-                frameInfo.fileSize = cursor.getInt(cursor.getColumnIndex("fileSize"));
-                resultArrayList.add(frameInfo);
-            } while (cursor.moveToNext());
-        }
-        PictureAirLog.out("cursor close ---> getLastContentDataFromDB");
-        cursor.close();
-        DBManager.getInstance().closeDatabase();
-        return resultArrayList;
+        FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
+        ArrayList<FrameOrStikerInfo> resultArrayList = (ArrayList<FrameOrStikerInfo>) frameOrStikerInfoDao.queryBuilder()
+                .where(FrameOrStikerInfoDao.Properties.IsActive.eq(1), FrameOrStikerInfoDao.Properties.FileType.eq(frame)).build().forCurrentThread().list();
+        return resultArrayList == null ? new ArrayList<FrameOrStikerInfo>() : resultArrayList;
     }
 
     /**
@@ -693,35 +632,38 @@ public class PictureAirDbManager {
      * @throws JSONException
      */
     private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
-        FrameOrStikerInfo frameInfo = null;
-        try {
-            if (jsonArray.size() > 0) {
-                PictureAirLog.d(TAG, "frames or sticker length is " + jsonArray.size());
-                //开始解析数据，并且将数据写入数据库
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    //解析json
-                    if (isFrame) {
-                        frameInfo = JsonUtil.getFrameInfo(jsonArray.getJSONObject(i));
+        FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
+        ArrayList<FrameOrStikerInfo> frameOrStikerInfos = new ArrayList<>();
+        FrameOrStikerInfo frameOrStikerInfo;
 
-                    } else {
-                        frameInfo = JsonUtil.getStickerInfo(jsonArray.getJSONObject(i));
-                    }
-                    //插入数据
-                    if (frameInfo.isActive == 1) {
-                        database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-                                frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
-                                , frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160, frameInfo.frameThumbnailPathV160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
-                                frameInfo.isDownload + "", frameInfo.fileSize + "", isFrame ? "1" : "0"});//测试代码，需要修改。
-                    } else {//如果为0，说明需要修改以前的数据状态
-                        //根据边框或者饰品名字修改使用状态
-                        database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isActive = 0 where frameName = ? and fileType = ?", new String[]{frameInfo.frameName, isFrame ? "1" : "0"});
+        if (jsonArray.size() > 0) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                //解析json
+                if (isFrame) {
+                    frameOrStikerInfo = JsonUtil.getFrameInfo(jsonArray.getJSONObject(i));
+
+                } else {
+                    frameOrStikerInfo = JsonUtil.getStickerInfo(jsonArray.getJSONObject(i));
+                }
+
+                if (frameOrStikerInfo.getIsActive() == 1) {//新数据
+                    frameOrStikerInfo.setFileType(isFrame ? 1 : 0);
+                    frameOrStikerInfos.add(frameOrStikerInfo);
+                } else {//如果为0，说明需要修改以前的数据状态
+                    QueryBuilder<FrameOrStikerInfo> queryBuilder = frameOrStikerInfoDao.queryBuilder()
+                            .where(FrameOrStikerInfoDao.Properties.FrameName.eq(frameOrStikerInfo.getFrameName()), FrameOrStikerInfoDao.Properties.FileType.eq(isFrame ? "1" : "0"));
+
+                    if (queryBuilder.count() > 0) {
+                        FrameOrStikerInfo oldFrameOrStikerInfo = queryBuilder.build().forCurrentThread().unique();
+                        oldFrameOrStikerInfo.setIsActive(0);
+                        frameOrStikerInfoDao.update(oldFrameOrStikerInfo);
                     }
                 }
-            } else {
-                PictureAirLog.d(TAG, "has no any frames or stickers");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (frameOrStikerInfos.size() > 0) {
+                frameOrStikerInfoDao.updateInTx(frameOrStikerInfos);
+
+            }
         }
     }
 
@@ -731,22 +673,11 @@ public class PictureAirDbManager {
      * @param jsonObject
      */
     public void insertFrameAndStickerIntoDB(JSONObject jsonObject) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            if (jsonObject.containsKey("frames")) {
-                insertFrameAndSticker(jsonObject.getJSONArray("frames"), true);
-            }
-            if (jsonObject.containsKey("cliparts")) {
-                insertFrameAndSticker(jsonObject.getJSONArray("cliparts"), false);
-            }
-            database.setTransactionSuccessful();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        if (jsonObject.containsKey("frames")) {
+            insertFrameAndSticker(jsonObject.getJSONArray("frames"), true);
+        }
+        if (jsonObject.containsKey("cliparts")) {
+            insertFrameAndSticker(jsonObject.getJSONArray("cliparts"), false);
         }
     }
 
@@ -757,16 +688,13 @@ public class PictureAirDbManager {
      * @param frame 边框为1，饰品为0
      */
     public void updateFrameAndStickerDownloadStatus(String name, int frame) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isDownload = 1 where frameName = ? and fileType = ?", new String[]{name, frame + ""});
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        FrameOrStikerInfoDao frameOrStikerInfoDao = MyApplication.getInstance().getDaoSession().getFrameOrStikerInfoDao();
+        QueryBuilder<FrameOrStikerInfo> queryBuilder = frameOrStikerInfoDao.queryBuilder()
+                .where(FrameOrStikerInfoDao.Properties.FrameName.eq(name), FrameOrStikerInfoDao.Properties.FileType.eq(frame));
+        if (queryBuilder.count() > 0) {
+            FrameOrStikerInfo frameOrStikerInfo = queryBuilder.build().forCurrentThread().unique();
+            frameOrStikerInfo.setIsDownload(1);
+            frameOrStikerInfoDao.update(frameOrStikerInfo);
         }
     }
 
@@ -774,18 +702,8 @@ public class PictureAirDbManager {
      * 添加已支付的订单ID
      */
     public void insertPaymentOrderIdDB(String userId, String orderId) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("insert into " + Common.PAYMENT_ORDER + " values(null,?,?)", new String[]{userId, orderId});
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-        }
-
+        PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
+        paymentOrderInfoDao.insert(new PaymentOrderInfo(null, orderId, userId));
     }
 
     /**
@@ -793,43 +711,26 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public List<String> searchPaymentOrderIdDB() {
-        List<String> orderIds = new ArrayList<>();
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().readData();
-            PictureAirLog.out("cursor open ---> searchPaymentOrderIdDB");
-            cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    orderIds.add(cursor.getString(cursor.getColumnIndex("orderId")));
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> searchPaymentOrderIdDB");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+    public List<PaymentOrderInfo> searchPaymentOrderIdDB() {
+        PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
+        List<PaymentOrderInfo> orderInfos = paymentOrderInfoDao.queryBuilder().build().forCurrentThread().list();
+        if (orderInfos == null) {
+            return new ArrayList<>();
+        } else {
+            return orderInfos;
         }
-        return orderIds;
     }
 
     /**
      * 删除已支付的订单ID
      */
     public void removePaymentOrderIdDB(String orderId) {
-        try {
-            database = DBManager.getInstance().writData();
-            database.execSQL("delete from " + Common.PAYMENT_ORDER + " where orderId = ? ", new String[]{orderId});
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
+        PaymentOrderInfoDao paymentOrderInfoDao = MyApplication.getInstance().getDaoSession().getPaymentOrderInfoDao();
+        List<PaymentOrderInfo> orderInfos = paymentOrderInfoDao.queryBuilder()
+                .where(PaymentOrderInfoDao.Properties.OrderId.eq(orderId)).build().forCurrentThread().list();
+        if (orderInfos != null && orderInfos.size() > 0) {
+            paymentOrderInfoDao.deleteInTx(orderInfos);
         }
-
     }
 
     /**
@@ -840,29 +741,15 @@ public class PictureAirDbManager {
      * @param jsonArray
      */
     public void insertADLocations(JSONArray jsonArray) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("delete from " + Common.AD_LOCATION);
-            JSONObject jsonObject;
-            String locationId, adCH, adEN;
-            JSONObject adJsonObject;
-            for (int i = 0; i < jsonArray.size(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                locationId = jsonObject.getString("locationId");
-                adJsonObject = jsonObject.getJSONObject("adWords");
-                adCH = adJsonObject.getString("CN");
-                adEN = adJsonObject.getString("EN");
-                database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
-                        new String[]{locationId, adCH, adEN});
-            }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
+        adLocationInfoDao.deleteAll();
+
+        ArrayList<ADLocationInfo> adLocationInfos = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            adLocationInfos.add(JsonUtil.getAdLocationInfo(jsonArray.getJSONObject(i)));
         }
+
+        adLocationInfoDao.insertInTx(adLocationInfos);
     }
 
     /**
@@ -871,39 +758,28 @@ public class PictureAirDbManager {
      * 2.再插入广告数据
      *
      * @param jsonArray
+     * @return 返回当前locationId的广告词
      */
     public String insertADLocations(JSONArray jsonArray, String photoLocationId, String language) {
+        ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
         String result = "";
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("delete from " + Common.AD_LOCATION);
-            JSONObject jsonObject;
-            String locationId, adCH, adEN;
-            JSONObject adJsonObject;
-            for (int i = 0; i < jsonArray.size(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                locationId = jsonObject.getString("locationId");
-                adJsonObject = jsonObject.getJSONObject("adWords");
-                adCH = adJsonObject.getString("CN");
-                adEN = adJsonObject.getString("EN");
-                database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
-                        new String[]{locationId, adCH, adEN});
-                if (photoLocationId.equals(locationId)) {
-                    if (language.equals(Common.SIMPLE_CHINESE)) {
-                        result = adCH;
-                    } else {
-                        result = adEN;
-                    }
+        adLocationInfoDao.deleteAll();
+
+        ArrayList<ADLocationInfo> adLocationInfos = new ArrayList<>();
+        ADLocationInfo adLocationInfo;
+        for (int i = 0; i < jsonArray.size(); i++) {
+            adLocationInfo = JsonUtil.getAdLocationInfo(jsonArray.getJSONObject(i));
+            if (photoLocationId.equals(adLocationInfo.getLocationId())) {
+                if (language.equals(Common.SIMPLE_CHINESE)) {
+                    result = adLocationInfo.getDescriptionCH();
+                } else {
+                    result = adLocationInfo.getDescriptionEN();
                 }
             }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+            adLocationInfos.add(adLocationInfo);
         }
+
+        adLocationInfoDao.insertInTx(adLocationInfos);
         return result;
     }
 
@@ -916,26 +792,17 @@ public class PictureAirDbManager {
      */
     public String getADByLocationId(String locationId, String language) {
         String ad = "";
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            PictureAirLog.out("cursor open ---> getADByLocationId");
-            cursor = database.rawQuery("select * from " + Common.AD_LOCATION + " where locationId = ?", new String[]{locationId});
-            if (cursor.moveToFirst()) {
-                if (language.equals(Common.SIMPLE_CHINESE)) {
-                    ad = cursor.getString(cursor.getColumnIndex("descriptionCH"));
-                } else {
-                    ad = cursor.getString(cursor.getColumnIndex("descriptionEN"));
-                }
+        ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
+        QueryBuilder<ADLocationInfo> queryBuilder = adLocationInfoDao.queryBuilder()
+                .where(ADLocationInfoDao.Properties.LocationId.eq(locationId));
+
+        if (queryBuilder.count() > 0) {
+            ADLocationInfo adLocationInfo = queryBuilder.build().forCurrentThread().unique();
+            if (language.equals(Common.SIMPLE_CHINESE)) {
+                ad = adLocationInfo.getDescriptionCH();
+            } else {
+                ad = adLocationInfo.getDescriptionEN();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                PictureAirLog.out("cursor close ---> getADByLocationId");
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
         }
         return ad;
     }
@@ -949,21 +816,10 @@ public class PictureAirDbManager {
      * @return
      */
     public boolean isExistsThread(String url, int threadId) {
-        Cursor cursor = null;
-        boolean exists = false;
-        try {
-            database = DBManager.getInstance().writData();
-            cursor = database.rawQuery("select * from " + Common.THREAD_INFO + " where url = ? and thread_id = ?", new String[]{url, threadId + ""});
-            exists = cursor.moveToNext();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return exists;
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
+                .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
+        return queryBuilder.count() > 0;
     }
 
     /**
@@ -972,21 +828,9 @@ public class PictureAirDbManager {
      * @return
      */
     public boolean isExistsThread() {
-        Cursor cursor = null;
-        boolean exists = false;
-        try {
-            database = DBManager.getInstance().writData();
-            cursor = database.rawQuery("select * from " + Common.THREAD_INFO,null);
-            exists = cursor.moveToNext();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return exists;
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder();
+        return queryBuilder.count() > 0;
     }
 
     /**
@@ -995,29 +839,10 @@ public class PictureAirDbManager {
      * @param url
      */
     public List<ThreadInfo> getTreads(String url) {
-        List<ThreadInfo> list = new ArrayList<ThreadInfo>();
-        Cursor cursor = null;
-        try {
-            database = DBManager.getInstance().writData();
-            cursor = database.rawQuery("select * from " + Common.THREAD_INFO + " where url = ?", new String[]{url});
-            while (cursor.moveToNext()) {
-                ThreadInfo threadInfo = new ThreadInfo();
-                threadInfo.setId(cursor.getInt(cursor.getColumnIndex("thread_id")));
-                threadInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                threadInfo.setFinished(cursor.getInt(cursor.getColumnIndex("finished")));
-                threadInfo.setEnd(cursor.getInt(cursor.getColumnIndex("end")));
-                threadInfo.setStart(cursor.getInt(cursor.getColumnIndex("start")));
-                list.add(threadInfo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return list;
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        List<ThreadInfo> list = threadInfoDao.queryBuilder()
+                .where(ThreadInfoDao.Properties.Url.eq(url)).build().forCurrentThread().list();
+        return list == null ? new ArrayList<ThreadInfo>() : list;
     }
 
 
@@ -1028,15 +853,14 @@ public class PictureAirDbManager {
      * @param threadId
      * @param finished
      */
-    public void updateThread(String url, int threadId, long finished) {
-        database = DBManager.getInstance().writData();
-        try {
-            database.execSQL("update " + Common.THREAD_INFO + " set finished = ? where url = ? and thread_id = ?",
-                    new Object[]{finished, url, threadId});
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
+    public void updateThread(String url, int threadId, int finished) {
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
+                .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
+        if (queryBuilder.count() > 0) {
+            ThreadInfo threadInfo = queryBuilder.build().forCurrentThread().unique();
+            threadInfo.setFinished(finished);
+            threadInfoDao.update(threadInfo);
         }
     }
 
@@ -1048,14 +872,12 @@ public class PictureAirDbManager {
      * @param threadId
      */
     public void deleteThread(String url, int threadId) {
-        database = DBManager.getInstance().writData();
-        try {
-            database.execSQL("delete from " + Common.THREAD_INFO + " where url = ? and thread_id = ?",
-                    new Object[]{url, threadId});
-        }catch (Exception e){
-            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
-        }finally {
-            DBManager.getInstance().closeDatabase();
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
+                .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));
+        if (queryBuilder.count() > 0) {
+            ThreadInfo threadInfo = queryBuilder.build().forCurrentThread().unique();
+            threadInfoDao.delete(threadInfo);
         }
     }
 
@@ -1064,20 +886,8 @@ public class PictureAirDbManager {
      * @param threadInfo
      */
     public void insertThread(ThreadInfo threadInfo) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.execSQL("insert into " + Common.THREAD_INFO + "(thread_id,url,start,end,finished) values(?,?,?,?,?)",
-                    new Object[]{threadInfo.getId(), threadInfo.getUrl(), threadInfo.getStart(), threadInfo.getEnd(), threadInfo.getFinished()});
-            database.setTransactionSuccessful();
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-        }
+        ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
+        threadInfoDao.insert(threadInfo);
     }
 
     /**
@@ -1085,37 +895,33 @@ public class PictureAirDbManager {
      * @param userId
      * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
      * */
-    public List<PhotoDownLoadInfo> getPhotos(String userId,String  success){
+    public List<PhotoDownLoadInfo> getPhotos(String userId, String success){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getPhotos");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime", new String[]{userId,success});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
-                    photos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.Status.eq(success))
+                .orderDesc(PhotoDownLoadInfoDao.Properties.DownLoadTime);
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
+        }
+        return photos;
+    }
+
+    /**
+     * 获取对应状态的photo信息
+     * @param userId
+     * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
+     * */
+    public List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId, String success){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        List<PhotoDownLoadInfo> photos = new ArrayList<>();
+
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.Status.eq(success))
+                .orderDesc(PhotoDownLoadInfoDao.Properties.DownLoadTime);
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
         }
         return photos;
     }
@@ -1127,77 +933,16 @@ public class PictureAirDbManager {
      * @param status2 状态有 成功 “true”  失败 “false”  下载中 “load” 原图上传中 upload
      * */
     public List<PhotoDownLoadInfo> getPhotos(String userId, String status1, String status2){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getPhotos");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? or success = ? order by downloadTime", new String[]{userId,status1,status2});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
-                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
-                    photos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
-        }
-        return photos;
-    }
 
-    /**
-     * 获取对应状态的photo信息
-     * @param userId
-     * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
-     * */
-    public List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId,String  success){
-        List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getPhotosOrderByTime");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime desc", new String[]{userId,success});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
-                    photos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
+        queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId),
+                queryBuilder.or(PhotoDownLoadInfoDao.Properties.Status.eq(status1), PhotoDownLoadInfoDao.Properties.Status.eq(status2)))
+                .orderDesc(PhotoDownLoadInfoDao.Properties.DownLoadTime);
+
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
         }
         return photos;
     }
@@ -1209,23 +954,19 @@ public class PictureAirDbManager {
      * */
     public List<String> getAllUsers(){
         List<String> users = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        Cursor cursor = database.rawQuery("select distinct userId from " + Common.PHOTOS_LOAD, null);
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    String user = cursor.getString(cursor.getColumnIndex("userId"));
-                    users.add(user);
-                } while (cursor.moveToNext());
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        List<PhotoDownLoadInfo> photos = new ArrayList<>();
+
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
+
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
+        }
+
+        for (PhotoDownLoadInfo photoDownLoadInfo : photos) {
+            if (!users.contains(photoDownLoadInfo.getUserId())) {
+                users.add(photoDownLoadInfo.getUserId());
             }
-            PictureAirLog.out("cursor close ---> getAllUsers");
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
         }
         return users;
     }
@@ -1235,38 +976,14 @@ public class PictureAirDbManager {
      * 获取所有的照片信息
      * */
     public List<PhotoDownLoadInfo> getAllPhotos(String userId){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getAllPhotos");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setId(cursor.getInt(cursor.getColumnIndex("_id")));
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
-                    photos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId));
+
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
         }
         return photos;
     }
@@ -1276,36 +993,14 @@ public class PictureAirDbManager {
      *
      * */
     public List<PhotoDownLoadInfo> getPhotosByPhotoId(String photoId){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getPhotosByPhotoId");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where photoId = ? and success = 'true'", new String[]{photoId});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                do {
-                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
-                    photos.add(photoInfo);
-                } while (cursor.moveToNext());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId), PhotoDownLoadInfoDao.Properties.Status.eq("true"));
+
+        if (queryBuilder.count() > 0) {
+            photos = queryBuilder.build().forCurrentThread().list();
         }
         return photos;
     }
@@ -1319,54 +1014,44 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void insertPhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list, String loadTime, String status){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        ArrayList<PhotoDownLoadInfo> photoDownLoadInfos = new ArrayList<>();
+        PhotoDownLoadInfo photoDownLoadInfo;
+        for (int i=0;i<list.size();i++) {
+            DownloadFileStatus fileStatus = list.get(i);
+            photoDownLoadInfo = new PhotoDownLoadInfo();
+            photoDownLoadInfo.setUserId(userId);
+            photoDownLoadInfo.setPhotoId(fileStatus.getPhotoId());
+            photoDownLoadInfo.setUrl(fileStatus.getUrl());
+            photoDownLoadInfo.setSize(fileStatus.getTotalSize());
+            photoDownLoadInfo.setPreviewUrl(fileStatus.getPhotoThumbnail());
+            photoDownLoadInfo.setShootTime(fileStatus.getShootOn());
+            photoDownLoadInfo.setDownLoadTime(loadTime);
+            photoDownLoadInfo.setIsVideo(fileStatus.getIsVideo());
+            photoDownLoadInfo.setStatus(status);
+            photoDownLoadInfo.setFailedTime(fileStatus.getFailedTime());
+            photoDownLoadInfo.setPhotoThumbnail_512(fileStatus.getPhotoThumbnail_512());
+            photoDownLoadInfo.setPhotoThumbnail_1024(fileStatus.getPhotoThumbnail_1024());
+            photoDownLoadInfo.setVideoWidth(fileStatus.getVideoWidth());
+            photoDownLoadInfo.setVideoHeight(fileStatus.getVideoHeight());
 
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-
-        try {
-            for (int i=0;i<list.size();i++) {
-                DownloadFileStatus fileStatus = list.get(i);
-                ContentValues values = new ContentValues();
-                values.put("userId", userId);
-                values.put("photoId", fileStatus.getPhotoId());
-                values.put("url", fileStatus.getUrl());
-                values.put("size", fileStatus.getTotalSize());
-                values.put("previewUrl", fileStatus.getPhotoThumbnail());
-                values.put("shootTime", fileStatus.getShootOn());
-                values.put("downloadTime", loadTime);
-                values.put("isVideo", fileStatus.getIsVideo());
-                values.put("success", status);
-                values.put("failedTime", fileStatus.getFailedTime());
-                values.put("photoThumbnail_512", fileStatus.getPhotoThumbnail_512());
-                values.put("photoThumbnail_1024", fileStatus.getPhotoThumbnail_1024());
-                values.put("videoWidth", fileStatus.getVideoWidth());
-                values.put("videoHeight", fileStatus.getVideoHeight());
-                database.insert(Common.PHOTOS_LOAD, "", values);
-            }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+            photoDownLoadInfos.add(photoDownLoadInfo);
         }
+
+        photoDownLoadInfoDao.insertInTx(photoDownLoadInfos);
     }
 
 
     public synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            for (int i=0;i<list.size();i++) {
-                DownloadFileStatus fileStatus = list.get(i);
-                database.delete(Common.PHOTOS_LOAD,"userId = ? and photoId=?",new String[]{userId,fileStatus.getPhotoId()});
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        List<PhotoDownLoadInfo> photoList;
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()));
+            if (queryBuilder.count() > 0) {
+                photoList = queryBuilder.build().forCurrentThread().list();
+                photoDownLoadInfoDao.deleteInTx(photoList);
             }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
         }
 
     }
@@ -1377,20 +1062,17 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized int deleteDownloadPhoto(String userId){
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        int res = 0;
-        try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success=?",new String[]{userId,"true"});
-            PictureAirLog.e("deleteDownloadPhoto","count:" + res);
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-            return res;
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        List<PhotoDownLoadInfo> photoList = new ArrayList<>();
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.Status.eq("true"));
+
+        if (queryBuilder.count() > 0) {
+            photoList = queryBuilder.build().forCurrentThread().list();
+            photoDownLoadInfoDao.deleteInTx(photoList);
+
         }
+        return photoList.size();
     }
 
     /**
@@ -1399,18 +1081,14 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void deleteDownloadFailPhotoByUserId(String userId){
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        int res;
-        try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ? or success = ?",new String[]{userId,"false","upload"});
-            PictureAirLog.e("deleteDownloadFailPhotoByUserId","count:" + res);
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
+        queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId),
+                queryBuilder.or(PhotoDownLoadInfoDao.Properties.Status.eq("false"), PhotoDownLoadInfoDao.Properties.Status.eq("upload")));
+
+        if (queryBuilder.count() > 0) {
+            List<PhotoDownLoadInfo> photos = queryBuilder.build().forCurrentThread().list();
+            photoDownLoadInfoDao.deleteInTx(photos);
         }
     }
 
@@ -1419,18 +1097,13 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void deleteRepeatPhoto(String userId,PhotoDownLoadInfo info){
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        int res = 0;
-        try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and _id=?",new String[]{userId,String.valueOf(info.getId())});
-            PictureAirLog.e("deleteRepeatPhoto","count:" + res);
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.Id.eq(info.getId()));
+
+        if (queryBuilder.count() > 0) {
+            PhotoDownLoadInfo photoDownLoadInfo = queryBuilder.build().forCurrentThread().unique();
+            photoDownLoadInfoDao.delete(photoDownLoadInfo);
         }
     }
 
@@ -1439,18 +1112,13 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void deletePhotoByPhotoId(String userId,String photoId){
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        int res = 0;
-        try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and photoId = ?",new String[]{userId,photoId});
-            PictureAirLog.e("deletePhotoByPhotoId","count:" + res);
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId));
+
+        if (queryBuilder.count() > 0) {
+            List<PhotoDownLoadInfo> photoDownLoadInfos = queryBuilder.build().forCurrentThread().list();
+            photoDownLoadInfoDao.deleteInTx(photoDownLoadInfos);
         }
     }
 
@@ -1459,20 +1127,24 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String failedTime){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId));
 
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> updateLoadPhotos");
-        try {
-            database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{failedTime, status, downloadTime, size, userId, photoId});
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0,0,true));
+        if (queryBuilder.count() > 0) {
+            List<PhotoDownLoadInfo> photoDownLoadInfos = queryBuilder.build().forCurrentThread().list();
+            for (int i = 0; i < photoDownLoadInfos.size(); i++) {
+                PhotoDownLoadInfo photoDownLoadInfo = photoDownLoadInfos.get(i);
+                photoDownLoadInfo.setFailedTime(failedTime);
+                photoDownLoadInfo.setStatus(status);
+                photoDownLoadInfo.setDownLoadTime(downloadTime);
+                photoDownLoadInfo.setSize(size);
+
+            }
+            photoDownLoadInfoDao.updateInTx(photoDownLoadInfos);
         }
+
+        EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 0, true));
     }
 
     /**
@@ -1480,61 +1152,36 @@ public class PictureAirDbManager {
      *
      * */
     public synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder();
 
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> updateLoadPhotoList");
-        try {
-            for (int i=0;i<list.size();i++) {
-                PhotoDownLoadInfo info = list.get(i);
-                database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{"", status, downloadTime, size, userId, info.getPhotoId()});
+        for (int i = 0; i < list.size(); i++) {
+            PhotoDownLoadInfo info = list.get(i);
+            queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(info.getPhotoId()));
+
+            if (queryBuilder.count() > 0) {
+                List<PhotoDownLoadInfo> photoDownLoadInfos = queryBuilder.build().forCurrentThread().list();
+                for (int j = 0; j < photoDownLoadInfos.size(); j++) {
+                    PhotoDownLoadInfo photoDownLoadInfo = photoDownLoadInfos.get(j);
+                    photoDownLoadInfo.setFailedTime("");
+                    photoDownLoadInfo.setStatus(status);
+                    photoDownLoadInfo.setDownLoadTime(downloadTime);
+                    photoDownLoadInfo.setSize(size);
+
+                }
+                photoDownLoadInfoDao.updateInTx(photoDownLoadInfos);
             }
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
         }
     }
 
     public synchronized CopyOnWriteArrayList<PhotoDownLoadInfo> getExistPhoto(String userId){
-        int count = 0;
-        PhotoDownLoadInfo photoInfo = null;
         CopyOnWriteArrayList<PhotoDownLoadInfo> list = new CopyOnWriteArrayList<>();
-        database = DBManager.getInstance().readData();
-        PictureAirLog.out("cursor open ---> getExistPhoto");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
-        try {
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                count = cursor.getInt(0);
-                do {
-                    photoInfo = new PhotoDownLoadInfo();
-                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
-                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
-                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
-                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
-                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
-                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
-                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
-                    photoInfo.setPhotoThumbnail_512(cursor.getString(cursor.getColumnIndex("photoThumbnail_512")));
-                    photoInfo.setPhotoThumbnail_1024(cursor.getString(cursor.getColumnIndex("photoThumbnail_1024")));
-                    photoInfo.setVideoWidth(cursor.getInt(cursor.getColumnIndex("videoWidth")));
-                    photoInfo.setVideoHeight(cursor.getInt(cursor.getColumnIndex("videoHeight")));
+        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
+        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
+                .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId));
 
-                    list.add(photoInfo);
-                }while (cursor.moveToNext());
-            }
-            PictureAirLog.out("ExistPhoto --->count: "+count);
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            DBManager.getInstance().closeDatabase();
+        if (queryBuilder.count() > 0) {
+            list.addAll(queryBuilder.build().forCurrentThread().list());
         }
         return list;
     }

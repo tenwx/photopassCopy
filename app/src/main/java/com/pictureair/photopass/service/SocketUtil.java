@@ -52,7 +52,7 @@ public class SocketUtil {
     public SocketUtil(Context mContext, Handler handler) {
         this.mContext = mContext;
         this.handler = handler;
-        pictureAirDbManager = new PictureAirDbManager(mContext);
+        pictureAirDbManager = new PictureAirDbManager();
         userId = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         //获得震动服务
         vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);

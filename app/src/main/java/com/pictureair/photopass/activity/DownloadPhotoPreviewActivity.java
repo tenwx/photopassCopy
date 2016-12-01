@@ -202,7 +202,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private void init() {
         // TODO Auto-generated method stub
         previewPhotoHandler = new PreViewHandler(this);
-        pictureAirDbManager = new PictureAirDbManager(this);
+        pictureAirDbManager = new PictureAirDbManager();
         sharePop = new SharePop(this);
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.download_preview_back);
