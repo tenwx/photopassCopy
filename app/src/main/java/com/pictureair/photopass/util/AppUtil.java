@@ -834,6 +834,7 @@ public class AppUtil {
                 temp2 = list.get(i).list.get(j);
                 temp = new PhotoInfo();
                 temp.setSectionId(i);
+                temp.setId(temp2.getId());
                 temp.setPhotoId(temp2.getPhotoId());
                 temp.setPhotoOriginalURL(temp2.getPhotoOriginalURL());
                 temp.setPhotoThumbnail_128(temp2.getPhotoThumbnail_128());

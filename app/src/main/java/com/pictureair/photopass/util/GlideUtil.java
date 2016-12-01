@@ -164,6 +164,24 @@ public class GlideUtil {
     }
 
     /**
+     * 加载url，获取bitmap，设置监听
+     * @param context
+     * @param url
+     * @param simpleTarget
+     */
+    public static void loadTarget(Context context, String url, int width, int height, SimpleTarget simpleTarget) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.ic_loading)
+                .error(R.drawable.ic_failed)
+                .dontAnimate()
+                .override(width, height)
+                .into(simpleTarget);
+    }
+
+    /**
      * 加载url，获取bitmap，定制占位图，设置监听
      * @param context
      * @param url

@@ -122,6 +122,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     }
                     ArrayList<PhotoInfo> photos = new ArrayList<>();
                     PhotoInfo info = new PhotoInfo();
+                    info.setId(1l);
                     info.setIsVideo(reconnecFile.isVideo());
                     info.setPhotoOriginalURL(reconnecFile.getUrl());
                     info.setPhotoId(reconnecFile.getPhotoId());

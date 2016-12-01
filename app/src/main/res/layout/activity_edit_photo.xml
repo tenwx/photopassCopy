@@ -26,7 +26,7 @@
             android:src="@drawable/back_white" />
 
         <TextView
-            android:id="@+id/title_edit"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -55,7 +55,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/btn_cancel"
+                android:id="@+id/btn_last_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
@@ -64,7 +64,7 @@
                 android:src="@drawable/cancel1" />
 
             <ImageButton
-                android:id="@+id/btn_forward"
+                android:id="@+id/btn_next_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
@@ -74,7 +74,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/preview_save"
+            android:id="@+id/tv_really_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -87,7 +87,7 @@
             android:visibility="gone" />
 
         <ImageButton
-            android:id="@+id/btn_onedit_save"
+            android:id="@+id/ib_temp_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -124,20 +124,20 @@
             android:layout_centerInParent="true"
             android:background="@color/pp_light_gray_background" />
 
-        <com.pictureair.photopass.editPhoto.StickerView
-            android:id="@+id/sticker_panel"
+        <com.pictureair.photopass.editPhoto.widget.StickerView
+            android:id="@+id/sticker_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
         <!-- 字体 view -->
-        <com.pictureair.photopass.editPhoto.FontView
-            android:id="@+id/font_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerInParent="true"
-            android:visibility="invisible" />
+        <!--<com.pictureair.photopass.editPhoto.FontView-->
+            <!--android:id="@+id/font_panel"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:visibility="invisible" />-->
 
 
         <!--    <ImageView
@@ -149,36 +149,36 @@
 
         <!-- 相框 -->
         <ImageView
-            android:id="@+id/framephoto_imageView1"
+            android:id="@+id/iv_photoframe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent"
             android:visibility="invisible" />
 
 
-        <GridView
-            android:id="@+id/fontList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_cover"
-            android:listSelector="@color/transparent"
-            android:paddingBottom="@dimen/pp_dp_10"
-            android:paddingTop="@dimen/pp_dp_10"
-            android:scrollbars="none"
-            android:visibility="gone"></GridView>
+        <!--<GridView-->
+            <!--android:id="@+id/fontList"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/gray_cover"-->
+            <!--android:listSelector="@color/transparent"-->
+            <!--android:paddingBottom="@dimen/pp_padding_10"-->
+            <!--android:paddingTop="@dimen/pp_padding_10"-->
+            <!--android:scrollbars="none"-->
+            <!--android:visibility="gone"></GridView>-->
 
-        <GridView
-            android:id="@+id/colorList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_cover"
-            android:listSelector="@color/transparent"
-            android:paddingBottom="@dimen/pp_dp_10"
-            android:paddingTop="@dimen/pp_dp_10"
-            android:scrollbars="none"
-            android:visibility="gone"></GridView>
+        <!--<GridView-->
+            <!--android:id="@+id/colorList"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/gray_cover"-->
+            <!--android:listSelector="@color/transparent"-->
+            <!--android:paddingBottom="@dimen/pp_padding_10"-->
+            <!--android:paddingTop="@dimen/pp_padding_10"-->
+            <!--android:scrollbars="none"-->
+            <!--android:visibility="gone"></GridView>-->
 
     </RelativeLayout>
 
@@ -194,7 +194,7 @@
         android:paddingTop="@dimen/pp_dp_5">
 
         <TextView
-            android:id="@+id/edit_frame"
+            android:id="@+id/tv_edit_frame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -206,7 +206,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/edit_filter"
+            android:id="@+id/tv_edit_filter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -218,7 +218,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/edit_accessory"
+            android:id="@+id/tv_edit_sticker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -230,7 +230,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/edit_text"
+            android:id="@+id/tv_edit_rotate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -252,7 +252,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/font_bar"
+        android:id="@+id/ll_rotate_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -231,6 +231,7 @@
     <!-- download end -->
 
     <!-- edit start -->
+    <string name="load_photo_error">加载照片出错, 请重新加载此照片</string>
     <string name="save">保存</string>
     <string name="frames">相框</string>
     <string name="magicbrush">滤镜</string>

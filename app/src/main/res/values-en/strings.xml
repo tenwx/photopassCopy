@@ -231,6 +231,7 @@
     <!-- download end -->
 
     <!-- edit start -->
+    <string name="load_photo_error">Please reload this photo</string>
     <string name="save">Save</string>
     <string name="frames">Frames</string>
     <string name="magicbrush">Filter</string>
