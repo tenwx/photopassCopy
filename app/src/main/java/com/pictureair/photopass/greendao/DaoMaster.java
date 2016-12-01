@@ -21,24 +21,24 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        PhotoInfoDao.createTable(db, ifNotExists);
-        FirstStartInfoDao.createTable(db, ifNotExists);
         ADLocationInfoDao.createTable(db, ifNotExists);
-        PaymentOrderInfoDao.createTable(db, ifNotExists);
+        FirstStartInfoDao.createTable(db, ifNotExists);
         FrameOrStikerInfoDao.createTable(db, ifNotExists);
-        ThreadInfoDao.createTable(db, ifNotExists);
+        PaymentOrderInfoDao.createTable(db, ifNotExists);
         PhotoDownLoadInfoDao.createTable(db, ifNotExists);
+        PhotoInfoDao.createTable(db, ifNotExists);
+        ThreadInfoDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        PhotoInfoDao.dropTable(db, ifExists);
-        FirstStartInfoDao.dropTable(db, ifExists);
         ADLocationInfoDao.dropTable(db, ifExists);
-        PaymentOrderInfoDao.dropTable(db, ifExists);
+        FirstStartInfoDao.dropTable(db, ifExists);
         FrameOrStikerInfoDao.dropTable(db, ifExists);
-        ThreadInfoDao.dropTable(db, ifExists);
+        PaymentOrderInfoDao.dropTable(db, ifExists);
         PhotoDownLoadInfoDao.dropTable(db, ifExists);
+        PhotoInfoDao.dropTable(db, ifExists);
+        ThreadInfoDao.dropTable(db, ifExists);
     }
 
     /**
@@ -57,13 +57,13 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(PhotoInfoDao.class);
-        registerDaoClass(FirstStartInfoDao.class);
         registerDaoClass(ADLocationInfoDao.class);
-        registerDaoClass(PaymentOrderInfoDao.class);
+        registerDaoClass(FirstStartInfoDao.class);
         registerDaoClass(FrameOrStikerInfoDao.class);
-        registerDaoClass(ThreadInfoDao.class);
+        registerDaoClass(PaymentOrderInfoDao.class);
         registerDaoClass(PhotoDownLoadInfoDao.class);
+        registerDaoClass(PhotoInfoDao.class);
+        registerDaoClass(ThreadInfoDao.class);
     }
 
     public DaoSession newSession() {
