@@ -117,7 +117,9 @@ public class PWStickySectionRecyclerView extends FrameLayout {
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position > 0 && position < photoInfoArrayList.size() && photoInfoArrayList.get(position) != null
+                if (photoInfoArrayList.size() == 0) {
+                    return 1;
+                } else if (position > 0 && position < photoInfoArrayList.size() && photoInfoArrayList.get(position) != null
                         && photoInfoArrayList.get(position).sectionId == photoInfoArrayList.get(position - 1).sectionId) {
                     return 1;
                 } else {
