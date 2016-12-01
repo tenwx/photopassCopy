@@ -170,6 +170,10 @@
     <string name="disney_video_about_null_photo_note">If you wish to create your very own “My Disney Story”, please purchase Disney PhotoPass+</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="start">Start</string>
+    <string name="story_unbound">解绑</string>
+    <string name="story_myphotopass">我的乐拍通</string>
+    <string name="story_slide_open"></string>
+    <string name="story_slide_close"></string>
     <!-- disney story end -->
 
     <!-- me start -->

@@ -320,6 +320,13 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <!-- 客服系统 -->
+        <activity
+            android:name=".activity.OpinionsActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+        <!-- 客服系统 -->
+
         <receiver android:name="net.sourceforge.simcpux.AppRegister">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
@@ -426,6 +433,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

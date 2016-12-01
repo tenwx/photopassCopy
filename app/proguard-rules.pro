@@ -252,3 +252,22 @@ public static java.lang.String TABLENAME;
 -keep class butterknife.*
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
+
+#udesk
+-keep class udesk.** {*;}
+-keep class cn.udesk.**{*; }
+#七牛
+-keep class com.qiniu.android.dns.** {*; }
+-keep class com.qiniu.android.** {*;}
+#smack
+-keep class org.jxmpp.** {*;}
+-keep class de.measite.** {*;}
+-keep class org.jivesoftware.** {*;}
+-keep class org.xmlpull.** {*;}
+#Android M 权限
+-keep class rx.** {*;}
+-keep class com.tbruyelle.rxpermissions.** {*;}
+
+#其它
+-keep class com.tencent.bugly.** {*; }
+-keep class de.hdodenhof.circleimageview.** {*;}

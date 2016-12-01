@@ -101,6 +101,21 @@ Eclipse projects. Here's how the projects were restructured:
 * src/com/pictureAir/adapter/.DS_Store => app/src/main/resources/com/pictureAir/adapter/.DS_Store
 * src/com/pictureAir/entity/.DS_Store => app/src/main/resources/com/pictureAir/entity/.DS_Store
 * src/com/pictureAir/wxapi/.DS_Store => app/src/main/resources/com/pictureAir/wxapi/.DS_Store
+* AndroidManifest.xml => udesk_Separate_UI/src/main/AndroidManifest.xml
+* assets/ => udesk_Separate_UI/src/main/assets
+* libs/bugly_crash_release__2.1.jar => udesk_Separate_UI/libs/bugly_crash_release__2.1.jar
+* libs/happy-dns-0.2.7.jar => udesk_Separate_UI/libs/happy-dns-0.2.7.jar
+* libs/okhttp-3.2.0.jar => udesk_Separate_UI/libs/okhttp-3.2.0.jar
+* libs/okio-1.6.0.jar => udesk_Separate_UI/libs/okio-1.6.0.jar
+* libs/qiniu-android-sdk-7.2.2.jar => udesk_Separate_UI/libs/qiniu-android-sdk-7.2.2.jar
+* libs/rxjava-1.1.8.jar => udesk_Separate_UI/libs/rxjava-1.1.8.jar
+* libs/udesk-asmack-8-4.0.6.jar => udesk_Separate_UI/libs/udesk-asmack-8-4.0.6.jar
+* libs/udesk_sdk_3.3.2.jar => udesk_Separate_UI/libs/udesk_sdk_3.3.2.jar
+* libs/universal-image-loader-1.9.4.jar => udesk_Separate_UI/libs/universal-image-loader-1.9.4.jar
+* lint.xml => udesk_Separate_UI/lint.xml
+* res/ => udesk_Separate_UI/src/main/res/
+* src/ => udesk_Separate_UI/src/main/java/
+
 
 Next Steps:
 -----------

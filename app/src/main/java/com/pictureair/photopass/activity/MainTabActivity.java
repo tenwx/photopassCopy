@@ -4,23 +4,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.adapter.SlideListAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.DealingInfo;
+import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
@@ -47,6 +55,8 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -58,7 +68,7 @@ import de.greenrobot.event.Subscribe;
  * 通过扫描或者登录之后会来到此页面
  */
 public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback,
-        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener {
+        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener{
     private FragmentPageStory fragmentPageStory;
     private FragmentPageDiscover fragmentPageDiscover;
     private FragmentPageShop fragmentPageShop;
@@ -124,7 +134,16 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     private int expolredAnimFrameIndex = 0;
 
+    private static List<PPinfo> ppList;
+
     private static final String REFLECTION_RESOURCE = "explored";
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ListView slidList;
+    private SlideListAdapter adapter;
+    private LinearLayout slideLayout;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,6 +195,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         newToast = new PWToast(this);
 
+        findViewById(R.id.fab).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainTabActivity.this, OpinionsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage);
@@ -198,9 +226,44 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         explored.setAdjustViewBounds(true);
         parentLayout.addView(explored);
 
+        intiData();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.story_slide_open, R.string.story_slide_close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        slideLayout = (LinearLayout) findViewById(R.id.main_slide_layout);
+        slidList = (ListView) findViewById(R.id.slid_listview);
+        adapter = new SlideListAdapter(MainTabActivity.this, ppList);
+        slidList.setAdapter(adapter);
+        slidList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PPinfo info = ppList.get(position);
+                if (info.getIsSelected() == 0) {
+                    info.setIsSelected(1);
+                } else {
+                    info.setIsSelected(0);
+                }
+                adapter.setPPlist(ppList);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
+    }
+
+    private void intiData() {
+        ppList = new ArrayList<PPinfo>();
+        for (int i =0; i<7;i++) {
+            PPinfo ppInfo = new PPinfo();
+            ppInfo.setPhotoCount(180);
+            ppInfo.setShootDate("2016-01-01");
+            ppInfo.setPpCode("SHDRH3H3H3H3H3H3H");
+            ppInfo.setIsSelected(0);
+            ppList.add(ppInfo);
+        }
     }
 
     private void initLeadView() {
@@ -222,6 +285,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             leadViewIV.setImageResource(R.drawable.story_lead_zh);
         }
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onPostCreate(savedInstanceState, persistentState);
+        if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
 
     @Override
@@ -276,7 +345,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (application.getPushPhotoCount() + application.getPushViedoCount() > 0) {//显示红点
             waterDropView.setVisibility(View.VISIBLE);
         }
-
     }
 
 
@@ -557,6 +625,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     //双击退出app
     private void exitApp() {
+
+        if (mDrawerLayout.isDrawerOpen(slideLayout)) {
+            mDrawerLayout.closeDrawer(slideLayout);
+            return;
+        }
+
         if ((System.currentTimeMillis() - exitTime) > 1000) {
             newToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             exitTime = System.currentTimeMillis();

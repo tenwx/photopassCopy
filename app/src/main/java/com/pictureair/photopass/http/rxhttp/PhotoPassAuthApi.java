@@ -3,6 +3,9 @@ package com.pictureair.photopass.http.rxhttp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.entity.BasicResult;
+import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
+import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.util.Map;
 
@@ -12,6 +15,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -39,7 +43,7 @@ public interface PhotoPassAuthApi {
      *  @GET("auth/path")方法使用不方便
      * */
     @GET
-    Observable<BasicResult<JSONObject>> get(@Url String url);
+    Observable<BasicResult<JSONObject>> get(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步get请求，有请求参数
@@ -48,7 +52,7 @@ public interface PhotoPassAuthApi {
      * @param params 请求参数 hashmap键值对
      * */
     @GET
-    Observable<BasicResult<JSONObject>> get(@Url String url, @QueryMap Map<String, Object> params);
+    Observable<BasicResult<JSONObject>> get(@Url String url, @QueryMap Map<String, Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
 
     /**
@@ -57,7 +61,7 @@ public interface PhotoPassAuthApi {
      * @param  url 请求url
      * */
     @POST
-    Observable<BasicResult<JSONObject>> post(@Url String url);
+    Observable<BasicResult<JSONObject>> post(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步post请求，有请求参数
@@ -67,7 +71,7 @@ public interface PhotoPassAuthApi {
      * */
     @FormUrlEncoded
     @POST
-    Observable<BasicResult<JSONObject>> post(@Url String url, @FieldMap Map<String, Object> params);
+    Observable<BasicResult<JSONObject>> post(@Url String url, @FieldMap Map<String, Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步delete请求，有请求参数
@@ -76,7 +80,7 @@ public interface PhotoPassAuthApi {
      * @param params 请求参数 hashmap键值对
      * */
     @DELETE
-    Observable<BasicResult<JSONObject>> delete(@Url String url, @QueryMap Map<String, Object> params);
+    Observable<BasicResult<JSONObject>> delete(@Url String url, @QueryMap Map<String, Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步put请求，有请求参数
@@ -86,7 +90,7 @@ public interface PhotoPassAuthApi {
      * */
     @FormUrlEncoded
     @PUT
-    Observable<BasicResult<JSONObject>> put(@Url String url, @FieldMap Map<String, Object> params);
+    Observable<BasicResult<JSONObject>> put(@Url String url, @FieldMap Map<String, Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
 
     /**
@@ -96,7 +100,7 @@ public interface PhotoPassAuthApi {
      * */
     @Streaming
     @GET
-    Observable<ResponseBody> download(@Url String url);
+    Observable<ResponseBody> download(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步get请求，有请求参数
@@ -106,9 +110,9 @@ public interface PhotoPassAuthApi {
      * */
     @Streaming
     @GET
-    Observable<ResponseBody> download(@Url String url, @QueryMap Map<String, Object> params);
+    Observable<ResponseBody> download(@Url String url, @QueryMap Map<String, Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     @Multipart
     @POST
-    Observable<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String, RequestBody> params);
+    Observable<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String, RequestBody> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
 }
