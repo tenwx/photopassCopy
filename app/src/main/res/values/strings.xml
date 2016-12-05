@@ -6,13 +6,15 @@
     <!-- start activity end-->
     <!-- login activity start-->
     <string name="user_login">用户登录</string>
-    <string name="country">国家/地区</string>
+    <string name="user_register">用户注册</string>
+    <string name="country">国家 / 地区</string>
     <string name="china">中国大陆</string>
     <string name="pwd">密码</string>
     <string name="forget_pwd">忘记密码？</string>
     <string name="login">登录</string>
     <string name="sign">注册</string>
     <string name="otherLogin">电子邮箱账户登录</string>
+    <string name="msgLogin">手机验证码快捷登录</string>
     <string name="pwd_no_all_space">密码首或尾不能为空格</string>
     <string name="pwd_head_or_foot_space">密码首或尾不能为空格</string>
     <string name="modify_password_empty_hint">请输入密码</string>
@@ -582,10 +584,12 @@
     <!-- 我的优惠券 end-->
 
     <!--SMSSDK-->
-    <string name="smssdk_regist">用户登录</string>
+    <string name="smssdk_regist">用户注册</string>
     <string name="smssdk_pwd2">再次输入密码</string>
     <string name="smssdk_pwd_forget">请输入新密码</string>
-    <string name="smssdk_send_verification_code">发送验证码</string>
+    <string name="smssdk_verification">验证码</string>
+    <string name="smssdk_send_verification_code">获取验证码</string>
+    <string name="smssdk_send_verification_code2">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
     <string name="smssdk_explain_briefly">我已阅读并同意接受<a href="5">使用条款</a>、<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
     <string name="please_agree">请确认同意使用条款、补充条款及细则和隐私政策</string>
@@ -595,7 +599,8 @@
     <string name="smssdk_make_sure_mobile_detail">我们将发送验证码短信到这个号码:\n%1$s</string>
     <string name="smssdk_write_mobile_phone">手机号码</string>
     <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
-    <string name="smssdk_write_identify_code">填写验证码</string>
+    <string name="smssdk_write_identify_code">请输入短信验证码</string>
+    <string name="smssdk_write_identify_code2">填写验证码</string>
     <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
     <string name="is_loading">正在加载中，请稍后&#8230;</string>
     <string name="smssdk_pw_is_inconsistency">密码输入不一致</string>

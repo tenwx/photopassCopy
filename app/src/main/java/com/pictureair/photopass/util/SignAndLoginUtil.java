@@ -20,7 +20,7 @@ import com.pictureair.photopass.widget.PWToast;
 public class SignAndLoginUtil implements Handler.Callback {
     private String pwd;
     private String account;
-    private String name, birthday, gender, country;
+    private String name, birthday, gender, country, loginType, verificationCode;
     private PWToast myToast;
     private Context context;
     private PWProgressDialog pwProgressDialog;
@@ -61,7 +61,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                                     SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null),
                                     PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler);
                 } else {
-                    API1.Login(context, account, pwd, handler);
+                    API1.Login(context, account, pwd, loginType, verificationCode, handler);
                 }
                 break;
 
@@ -125,7 +125,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 break;
 
             case API1.SIGN_SUCCESS://注册成功
-                API1.Login(context, account, pwd, handler);
+                API1.Login(context, account, pwd, loginType, verificationCode, handler);
                 break;
 
 
@@ -190,7 +190,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     }
 
     public void start(String account, String pwdStr, boolean isSign, boolean needModifyInfo,
-                            String name, String birthday, String gender, String country) {
+                            String name, String birthday, String gender, String country, String loginType, String verificationCode) {
         this.account = account;
         this.pwd = pwdStr;
         this.isSign = isSign;
@@ -199,7 +199,11 @@ public class SignAndLoginUtil implements Handler.Callback {
         this.gender = gender;
         this.country = country;
         this.needModifyInfo = needModifyInfo;
-        PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
+        this.loginType = loginType;
+        this.verificationCode = verificationCode;
+        if (loginType == null) {
+            PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
+        }
         myToast = new PWToast(context);
         pwProgressDialog = new PWProgressDialog(context)
                 .setPWProgressDialogMessage(R.string.is_loading)

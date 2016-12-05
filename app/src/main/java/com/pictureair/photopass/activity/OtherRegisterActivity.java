@@ -1,12 +1,14 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -166,7 +168,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         signAndLoginUtil = new SignAndLoginUtil(this, this);
 //		getDateYMD();
         setTopLeftValueAndShow(R.drawable.back_white,true);
-        setTopTitleShow(R.string.smssdk_regist);
+//        setTopTitleShow(R.string.smssdk_regist);
         etEmail = (EditTextWithClear) findViewById(R.id.other_sign_email);
         etPwd = (EditTextWithClear) findViewById(R.id.other_sign_password);
         etPwd2 = (EditTextWithClear) findViewById(R.id.other_sign_password2);
@@ -296,7 +298,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                                 myToast.setTextAndShow(R.string.name_is_empty,
                                         Common.TOAST_SHORT_TIME);
                             } else if (isAgree) {
-                                signAndLoginUtil.start(email, pwd, true, true, name, birthday, sex, countryCode);
+                                signAndLoginUtil.start(email, pwd, true, true, name, birthday, sex, countryCode,null, null);
                             } else {
                                 myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
                             }
@@ -402,6 +404,11 @@ public class OtherRegisterActivity extends BaseActivity implements
             intent.putExtra("key", Integer.valueOf(mUrl));
             intent.setClass(OtherRegisterActivity.this, WebViewActivity.class);
             startActivity(intent);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(Color.parseColor("#ff4605"));
         }
     }
 

@@ -6,13 +6,15 @@
     <!-- start activity end-->
     <!-- login activity start-->
     <string name="user_login">Account</string>
-    <string name="country">Country/Region</string>
+    <string name="user_register">用户注册</string>
+    <string name="country">Country / Region</string>
     <string name="china">China (mainland)</string>
     <string name="pwd">Password</string>
     <string name="forget_pwd">Forgot Password?</string>
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
     <string name="otherLogin">Email Account Login</string>
+    <string name="msgLogin">手机验证码快捷登录</string>
     <string name="pwd_no_all_space">Please omit any space</string>
     <string name="pwd_head_or_foot_space">Please omit any space</string>
     <string name="modify_password_empty_hint">Please enter a password</string>
@@ -585,7 +587,9 @@
     <string name="smssdk_regist">New Account</string>
     <string name="smssdk_pwd2">Retype Password</string>
     <string name="smssdk_pwd_forget">Please enter new password</string>
-    <string name="smssdk_send_verification_code">Verify</string>
+    <string name="smssdk_verification">验证码</string>
+    <string name="smssdk_send_verification_code">获取验证码</string>
+    <string name="smssdk_send_verification_code2">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
     <string name="smssdk_explain_briefly">I have read and agree to the <a href = "5">Terms of Use</a>, the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
     <string name="please_agree">Please agree to Terms of Use, Supplemental Terms and Conditions &amp; Privacy Policy</string>
@@ -595,7 +599,8 @@
     <string name="smssdk_make_sure_mobile_detail">We will send verification code messages to this number:\n%1$s</string>
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
     <string name="smssdk_write_right_mobile_phone">Incorrect Mobile Number</string>
-    <string name="smssdk_write_identify_code">Code</string>
+    <string name="smssdk_write_identify_code">请输入短信验证码</string>
+    <string name="smssdk_write_identify_code2">Code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="is_loading">Loading&#8230;</string>
     <string name="smssdk_pw_is_inconsistency">Password does not match</string>
