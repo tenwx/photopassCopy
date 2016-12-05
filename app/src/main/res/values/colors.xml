@@ -3,7 +3,7 @@
     <!-- 白色-->
     <color name="white">#FFFFFF</color>
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
-    <color name="pp_blue">#1994d7</color>
+    <color name="pp_blue">#6799ca</color>
     <!-- 深蓝，比如深色的字体颜色-->
     <color name="pp_dark_blue">#253b56</color>
     <!-- 浅灰，比如输入框的文字，较深的分割线-->
@@ -17,7 +17,7 @@
     <!-- 紫色，比如编辑页面的字体颜色-->
     <color name="pp_purple">#5f23c4</color>
     <!-- 红色和橙色，都是这个颜色值-->
-    <color name="pp_red">#ff4605</color>
+    <color name="pp_red">#f27242</color>
     <!-- 进度条播放的进度 -->
     <color name="seekbar_progress">#E25B3C</color>
     <!-- 进度条预加载的进度-->

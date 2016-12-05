@@ -1900,11 +1900,41 @@ public class AppUtil {
         return headerTime;
     }
 
+    /**
+     * 获取通知栏的图标
+     * @return
+     */
     public static int getNotificationIcon() {
         if (Build.VERSION.SDK_INT < 21) {
             return R.drawable.pp_icon4;
         }
 
         return R.drawable.pp_icon5;
+    }
+
+    /**
+     * 获取图片的有效日期
+     * @param photoInfo
+     * @return
+     */
+    public static String getExpiredTime(Context context, PhotoInfo photoInfo) {
+        String result = photoInfo.getShootDate();
+        if (photoInfo.getIsPaid() == 0) {//未购买
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+            try {
+                Date date = sdf.parse(photoInfo.getShootDate());
+                long time = date.getTime() + PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+                date = new Date(time);
+                result = sdf.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        } else {//已购买
+            int year = Integer.valueOf(photoInfo.getShootDate().substring(0, 4));
+            year++;
+            result = year + photoInfo.getShootDate().substring(4, 10);
+        }
+        return photoInfo.getShootDate() + String.format(context.getString(R.string.gallery_expire_time), result);
     }
 }

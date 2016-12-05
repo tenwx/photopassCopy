@@ -40,7 +40,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
     protected void onResume() {
         super.onResume();
         // 统计页面、时长
-        if (context.getClass() == MainTabActivity.class) {
+        if (context.getClass().equals(MainTabActivity.class)) {
             UmengUtil.onResume(context, true);
         } else {
             UmengUtil.onResume(context, false);
@@ -50,7 +50,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (context.getClass() == MainTabActivity.class) {
+        if (context.getClass().equals(MainTabActivity.class)) {
             UmengUtil.onPause(context, true);
         } else {
             UmengUtil.onPause(context, false);

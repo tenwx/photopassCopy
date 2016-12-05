@@ -172,6 +172,7 @@
     <string name="start">Start</string>
     <string name="story_unbound">解绑</string>
     <string name="story_myphotopass">我的乐拍通</string>
+    <string name="story_photo_count">(%1$d)</string>
     <string name="story_slide_open"></string>
     <string name="story_slide_close"></string>
     <!-- disney story end -->
@@ -215,9 +216,13 @@
     <string name="local_photo_cannot_edit_content">Sorry, your pictures does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
+    <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
+    <string name="gallery_expire_time">（有效期至%1$s）</string>
     <!-- preview photo end -->
 
     <!-- blur start -->
+    <string name="preview_blur_dialog_select_goods">商品选择</string>
+    <string name="preview_blur_dialog_buy">确认购买</string>
     <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card within the day</string>
     <string name="up_ppp_money">Yes, I want to Buy PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>

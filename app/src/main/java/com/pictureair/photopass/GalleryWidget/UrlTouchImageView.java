@@ -20,15 +20,20 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -49,13 +54,32 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 import java.io.File;
 
-public class UrlTouchImageView extends RelativeLayout implements TouchImageView.OnTouchClearListener {
+public class UrlTouchImageView extends RelativeLayout implements TouchImageView.OnTouchClearListener, TouchImageView.OnLongTouchListener {
     protected TouchImageView mImageView;
     protected ImageView progressImageView, videoPlayImageView, touchClearImageView;
+    protected TextView timeTextView;//时间文案
+    protected TextView touchClearTextView;//touchClear提示文案
+    protected TextView adTextView;//广告文案
+    protected TextView buyBlurTextView;//购买模糊图文案
+    protected Button buyButton;//购买按钮
+    protected RelativeLayout cardRl, bottomBarRl, photoContainerRl;
 
     protected Context mContext;
 
+    /**
+     * 卡片模式，默认为false
+     */
+    protected boolean cardMode = false;
+
+    protected int clearMode;
+
     private int defaultType;
+
+    private int position;
+
+    private int margin;
+
+    private boolean fullScreenMode;
 
     //模糊
     private File dirFile;
@@ -127,13 +151,24 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
     public UrlTouchImageView(Context ctx) {
         super(ctx);
         mContext = ctx;
+        cardMode = true;
         init();
 
+    }
+
+    public UrlTouchImageView(Context ctx, int clearMode, int position, boolean cardMode) {
+        super(ctx);
+        mContext = ctx;
+        this.cardMode = cardMode;
+        this.position = position;
+        this.clearMode = clearMode;
+        init();
     }
 
     public UrlTouchImageView(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
         mContext = ctx;
+        cardMode = true;
         init();
     }
 
@@ -141,23 +176,142 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         return mImageView;
     }
 
+    /**
+     * 设置有效时间
+     * @param text
+     */
+    public void setTimeText(String text) {
+        timeTextView.setText(text);
+    }
+
+    /**
+     * 设置广告文案
+     * @param text
+     */
+    public void setADText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            adTextView.setVisibility(GONE);
+        } else {
+            adTextView.setText(text);
+            if (fullScreenMode) {
+                adTextView.setVisibility(GONE);
+            } else {
+                adTextView.setVisibility(VISIBLE);
+
+            }
+        }
+    }
+
+    /**
+     * 设置全屏模式
+     */
+    public void setFullScreenMode(boolean fullScreen) {
+        if (fullScreenMode & fullScreen) {//两个变量一样
+            return;
+        }
+
+        //两个变量不一样, 更新控件
+        fullScreenMode = fullScreen;
+        LayoutParams layoutParams = (LayoutParams) cardRl.getLayoutParams();
+        LayoutParams layoutParams2 = (LayoutParams) photoContainerRl.getLayoutParams();
+
+        if (fullScreen) {//横屏
+            timeTextView.setVisibility(GONE);
+            bottomBarRl.setVisibility(GONE);
+            adTextView.setVisibility(GONE);
+            cardRl.setBackgroundColor(Color.BLACK);
+            layoutParams.setMargins(0, 0, 0, 0);
+            cardRl.setLayoutParams(layoutParams);
+            layoutParams2.setMargins(0, 0, 0, 0);
+            photoContainerRl.setLayoutParams(layoutParams2);
+
+        } else {//竖屏
+            if (clearMode == 0) {//模糊图片
+                bottomBarRl.setVisibility(VISIBLE);
+
+            } else {
+                bottomBarRl.setVisibility(GONE);
+
+            }
+            timeTextView.setVisibility(VISIBLE);
+            if (!TextUtils.isEmpty(adTextView.getText().toString())) {
+                adTextView.setVisibility(VISIBLE);
+            }
+            cardRl.setBackgroundColor(Color.WHITE);
+
+            layoutParams.setMargins(margin, margin, margin, margin);
+            cardRl.setLayoutParams(layoutParams);
+
+            layoutParams2.setMargins(margin * 2, margin * 2, margin * 2, margin * 2);
+            photoContainerRl.setLayoutParams(layoutParams2);
+
+        }
+    }
+
     protected void init() {
+        inflate(mContext, R.layout.gallery_item_view, this);
+
+        timeTextView = (TextView) findViewById(R.id.gallery_item_time_tv);
+        mImageView = (TouchImageView) findViewById(R.id.gallery_item_photo_iv);
+        touchClearTextView = (TextView) findViewById(R.id.gallery_item_blur_tip_tv);
+        adTextView = (TextView) findViewById(R.id.gallery_item_ad_intro_tv);
+        buyBlurTextView = (TextView) findViewById(R.id.gallery_item_buy_info_tv);
+        buyButton = (Button) findViewById(R.id.gallery_item_buy_btn);
+        cardRl = (RelativeLayout) findViewById(R.id.gallery_item_photo_rl);
+        bottomBarRl = (RelativeLayout) findViewById(R.id.gallery_item_bottom_bar_rl);
+        touchClearImageView = (ImageView) findViewById(R.id.gallery_item_clear_iv);
+        photoContainerRl = (RelativeLayout) findViewById(R.id.gallery_item_photo_parent_rl);
+
+        if (cardMode) {//卡片模式
+            //设置卡片背景
+            cardRl.setBackgroundColor(Color.WHITE);
+            //设置时间
+            timeTextView.setVisibility(VISIBLE);
+        } else {
+            //设置时间
+            timeTextView.setVisibility(GONE);
+
+            LayoutParams layoutParams = (LayoutParams) cardRl.getLayoutParams();
+            LayoutParams layoutParams2 = (LayoutParams) photoContainerRl.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, 0);
+            cardRl.setLayoutParams(layoutParams);
+            cardRl.setBackgroundColor(Color.TRANSPARENT);
+            layoutParams2.setMargins(0, 0, 0, 0);
+            photoContainerRl.setLayoutParams(layoutParams2);
+
+
+        }
+
+        if (clearMode == 0) {//模糊图片
+            touchClearTextView.setVisibility(VISIBLE);
+            touchClearTextView.setShadowLayer(2, 2, 2, ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+            bottomBarRl.setVisibility(VISIBLE);
+            buyButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    photoEventListener.buyClick(position);
+                }
+            });
+        } else {
+            touchClearTextView.setVisibility(GONE);
+            bottomBarRl.setVisibility(GONE);
+
+        }
+
         //设置图片
-        mImageView = new TouchImageView(mContext);
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mImageView.setLayoutParams(params);
-        this.addView(mImageView);
         mImageView.setVisibility(GONE);
+        mImageView.setOnLongTouchListener(this);
 
         //设置进度条
         progressImageView = new ImageView(mContext);
 
         int screenW = ScreenUtil.getPortraitScreenWidth(mContext);
-        params = new LayoutParams(screenW / 3, screenW / 3);
+        margin = ScreenUtil.dip2px(mContext, 5);
+        LayoutParams params = new LayoutParams(screenW / 3, screenW / 3);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         progressImageView.setLayoutParams(params);
         progressImageView.setImageResource(R.drawable.loading_0);
-        this.addView(progressImageView);
+        photoContainerRl.addView(progressImageView);
 
         //设置视频播放按钮
         videoPlayImageView = new ImageView(mContext);
@@ -165,14 +319,14 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         videoPlayImageView.setLayoutParams(params);
         videoPlayImageView.setImageResource(R.drawable.play);
-        this.addView(videoPlayImageView);
+        photoContainerRl.addView(videoPlayImageView);
         videoPlayImageView.setVisibility(GONE);
     }
 
     /**
      * 显示视频图标，并且需要回调点击事件
      */
-    public void setVideoType(final int position, final PhotoEventListener photoEventListener) {
+    public void setVideoType(final PhotoEventListener photoEventListener) {
         videoPlayImageView.setVisibility(VISIBLE);
         videoPlayImageView.setOnClickListener(new OnClickListener() {
             @Override
@@ -313,9 +467,6 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         mImageView.setDrawingCacheEnabled(true);
         setProgressImageViewVisible(false);
 
-        touchClearImageView = new ImageView(mContext);
-        this.addView(touchClearImageView);
-        touchClearImageView.setVisibility(GONE);
         touchClearRadius = ScreenUtil.dip2px(mContext, 45);
     }
 
@@ -343,12 +494,15 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
 
     public void setDefaultType(int defaultType) {
         this.defaultType = defaultType;
+        if (defaultType == 1) {//预览页面，不需要广告
+            adTextView.setVisibility(GONE);
+        }
     }
 
     @Override
     public void onTouchClear(float positionX, float positionY, int matrixX, int matrixY, float scale, boolean hasReset, boolean visible) {
-        photoEventListener.touchClear(visible);
         if (visible) {
+            touchClearTextView.setVisibility(GONE);
             if (lastScale != scale || hasReset) {//缩放尺寸不一样，或者旋转过手机图片被重置过，需要重新获取对应的bitmap
                 PictureAirLog.out("touch need new bmp");
                 lastScale = scale;
@@ -369,6 +523,12 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
             touchClearImageView.setImageBitmap(touchClearBmp);
         } else {
             touchClearImageView.setVisibility(GONE);
+            touchClearTextView.setVisibility(VISIBLE);
         }
+    }
+
+    @Override
+    public void onLongTouch() {
+        photoEventListener.longClick(position);
     }
 }

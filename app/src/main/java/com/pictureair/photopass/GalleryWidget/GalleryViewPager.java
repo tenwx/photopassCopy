@@ -99,10 +99,12 @@ public class GalleryViewPager extends ViewPager {
                 }
                 if (difference != null && mCurrentView.onRightSide && difference[0] < 0) //move right
                 {
+                    mCurrentView.cancelTimer();
                     return super.onTouchEvent(event);
                 }
                 if (difference != null && mCurrentView.onLeftSide && difference[0] > 0) //move left
                 {
+                    mCurrentView.cancelTimer();
                     return super.onTouchEvent(event);
                 }
                 if (difference == null && (mCurrentView.onLeftSide || mCurrentView.onRightSide)) {
@@ -145,10 +147,12 @@ public class GalleryViewPager extends ViewPager {
                 }
                 if (difference != null && mCurrentView.onRightSide && difference[0] < 0) //move right
                 {
+                    mCurrentView.cancelTimer();
                     return super.onInterceptTouchEvent(event);
                 }
                 if (difference != null && mCurrentView.onLeftSide && difference[0] > 0) //move left
                 {
+                    mCurrentView.cancelTimer();
                     return super.onInterceptTouchEvent(event);
                 }
                 if (difference == null && (mCurrentView.onLeftSide || mCurrentView.onRightSide)) {

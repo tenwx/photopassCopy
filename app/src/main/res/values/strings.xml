@@ -204,7 +204,7 @@
     <!-- preview photo start -->
     <string name="edit">编辑</string>
     <string name="makegift">打印</string>
-    <string name="touchtoclean">亲，长按触摸即可马上预览您的高清图片哦！</string>
+    <string name="touchtoclean">长按即可马上预览您的高清图片！</string>
     <string name="know">我知道了</string>
     <string name="like_and_buy">点击查看清晰图，喜欢购买吧！</string>
     <string name="reloadphoto">请重新加载此照片</string>
@@ -216,13 +216,17 @@
     <string name="local_photo_cannot_edit_content">对不起，您的此张照片暂不支持编辑！</string>
     <string name="photo_cannot_edit_no">取消</string>
     <string name="photo_cannot_edit_yes">确定</string>
+    <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
+    <string name="gallery_expire_time">（有效期至%1$s）</string>
     <!-- preview photo end -->
 
     <!-- blur start -->
+    <string name="preview_blur_dialog_select_goods">商品选择</string>
+    <string name="preview_blur_dialog_buy">确认购买</string>
     <string name="blur_intro">迪士尼乐拍通一卡通可让您下载已关联在此乐拍通卡内同一天的所有高清照片</string>
     <string name="up_ppp_money">我要购买迪士尼乐拍通一卡通</string>
     <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
-    <string name="buythisphoto">购买单张数码照片</string>
+    <string name="buythisphoto">我要购买单张数码照片</string>
     <string name="cancel1">取消</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <!-- blur end -->

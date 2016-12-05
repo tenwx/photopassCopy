@@ -787,7 +787,8 @@ public class PictureAirDbManager {
         String ad = "";
         ADLocationInfoDao adLocationInfoDao = MyApplication.getInstance().getDaoSession().getADLocationInfoDao();
         QueryBuilder<ADLocationInfo> queryBuilder = adLocationInfoDao.queryBuilder()
-                .where(ADLocationInfoDao.Properties.LocationId.eq(locationId));
+                .where(ADLocationInfoDao.Properties.LocationId.eq(locationId))
+                .distinct();
 
         if (queryBuilder.count() > 0) {
             ADLocationInfo adLocationInfo = queryBuilder.build().forCurrentThread().unique();

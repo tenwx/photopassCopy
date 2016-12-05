@@ -32,13 +32,21 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
     private int defaultType;
     private PhotoEventListener photoEventListener;
+    private boolean fullScreenMode = false;
+
+    /**
+     * 卡片模式
+     */
+    private boolean cardMode;
+
     public UrlPagerAdapter(Context context,List<PhotoInfo> resources){
         super(context, resources);
         this.defaultType = 0;
     }
-    public UrlPagerAdapter(Context context, List<PhotoInfo> resources,int defaultType) {
+    public UrlPagerAdapter(Context context, List<PhotoInfo> resources, int defaultType, boolean cardMode) {
         super(context, resources);
         this.defaultType = defaultType;
+        this.cardMode = cardMode;
     }
 
     @Override
@@ -49,7 +57,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
-        UrlTouchImageView iv = new UrlTouchImageView(mContext);
+        UrlTouchImageView iv = new UrlTouchImageView(mContext, mResources.get(position).getIsPaid(), position, cardMode);
         iv.setDefaultType(defaultType);
         if (mResources.get(position).getIsOnLine() == 1 && mResources.get(position).getIsPaid() == 1) {//网络图
             iv.setProgressImageViewVisible(true);
@@ -70,7 +78,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
                 PictureAirLog.out("show video info");
                 iv.setUrl(Common.PHOTO_URL + mResources.get(position).getPhotoThumbnail_512(), AppUtil.isEncrypted(mResources.get(position).getIsEnImage()));
                 iv.disableZoom();
-                iv.setVideoType(position, photoEventListener);
+                iv.setVideoType(photoEventListener);
             }
 
         } else if (mResources.get(position).getIsOnLine() == 0) {//本地图
@@ -82,21 +90,29 @@ public class UrlPagerAdapter extends BasePagerAdapter {
             }else{//视频
                 iv.setUrl(Common.PHOTO_URL + mResources.get(position).getPhotoThumbnail_512(), AppUtil.isEncrypted(mResources.get(position).getIsEnImage()));
                 iv.disableZoom();
-                iv.setVideoType(position, photoEventListener);
+                iv.setVideoType(photoEventListener);
             }
 
         } else {//模糊图
             iv.setBlurImageUrl(mResources.get(position).getPhotoThumbnail_1024(), mResources.get(position).getPhotoId());
-            iv.setOnPhotoEventListener(photoEventListener);
             iv.setProgressImageViewVisible(true);
         }
-
+        iv.setOnPhotoEventListener(photoEventListener);
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        iv.setId(position);
+        if (cardMode) {
+            iv.setTimeText(AppUtil.getExpiredTime(mContext, mResources.get(position)));
+            iv.setFullScreenMode(fullScreenMode);
+        }
         collection.addView(iv, 0);
         return iv;
     }
 
     public void setOnPhotoEventListener(PhotoEventListener listener) {
         photoEventListener = listener;
+    }
+
+    public void setFullScreenMode(boolean fullScreenMode) {
+        this.fullScreenMode = fullScreenMode;
     }
 }

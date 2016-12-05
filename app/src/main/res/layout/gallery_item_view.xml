@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/gallery_item_bottom_bar_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/gallery_item_buy_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@color/pp_red"
+            android:paddingBottom="@dimen/pp_dp_10"
+            android:paddingLeft="@dimen/pp_dp_20"
+            android:paddingRight="@dimen/pp_dp_20"
+            android:paddingTop="@dimen/pp_dp_10"
+            android:text="@string/buy_good"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/gallery_item_buy_info_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/gallery_item_buy_btn"
+            android:layout_alignTop="@+id/gallery_item_buy_btn"
+            android:layout_toLeftOf="@+id/gallery_item_buy_btn"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pp_dp_20"
+            android:text="@string/gallery_buy_blur_photo"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/gallery_item_photo_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/gallery_item_bottom_bar_rl"
+        android:layout_margin="@dimen/pp_dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/gallery_item_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_10"
+            android:layout_marginRight="@dimen/pp_dp_10"
+            android:layout_marginTop="@dimen/pp_dp_10"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/gallery_item_ad_intro_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:autoLink="web"
+            android:background="@color/pp_light_gray_background"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/pp_dp_11"
+            android:paddingLeft="@dimen/pp_dp_16"
+            android:paddingRight="@dimen/pp_dp_16"
+            android:paddingTop="@dimen/pp_dp_16"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/gallery_item_photo_parent_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/gallery_item_ad_intro_tv"
+            android:layout_below="@+id/gallery_item_time_tv"
+            android:layout_margin="@dimen/pp_dp_10">
+
+            <com.pictureair.photopass.GalleryWidget.TouchImageView
+                android:id="@+id/gallery_item_photo_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/gallery_item_clear_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/gallery_item_blur_tip_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/pp_dp_32"
+            android:text="@string/touchtoclean"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

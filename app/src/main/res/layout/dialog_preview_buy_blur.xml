@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_white_corners">
+
+    <ImageView
+        android:id="@+id/preview_blur_dialog_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/pp_dp_5"
+        android:src="@drawable/dialog_preview_blur_close" />
+
+    <TextView
+        android:id="@+id/preview_blur_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pp_dp_10"
+        android:gravity="center"
+        android:padding="@dimen/pp_dp_16"
+        android:text="@string/preview_blur_dialog_select_goods"
+        android:textColor="@color/pp_dark_blue"
+        android:textSize="@dimen/text_size_20" />
+
+    <LinearLayout
+        android:id="@+id/preview_blur_dialog_buy_photo_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_title"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_20">
+
+        <ImageView
+            android:id="@+id/preview_blur_dialog_buy_photo_select_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/check_box_nor" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_photo_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_weight="5"
+            android:text="@string/buythisphoto"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_photo_price_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="59"
+            android:textColor="@color/pp_red"
+            android:textSize="@dimen/text_size_16" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/preview_blur_dialog_buy_photo_intro_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_buy_photo_ll"
+        android:layout_marginLeft="@dimen/pp_dp_20"
+        android:layout_marginRight="@dimen/pp_dp_20"
+        android:background="@drawable/button_white_with_line"
+        android:padding="@dimen/pp_dp_16"
+        android:text="ddddd"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_16" />
+
+    <LinearLayout
+        android:id="@+id/preview_blur_dialog_buy_ppp_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_buy_photo_intro_tv"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_20">
+
+        <ImageView
+            android:id="@+id/preview_blur_dialog_buy_ppp_select_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/check_box_nor" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_pppo_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_weight="5"
+            android:text="@string/up_ppp_money"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_ppp_price_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="159"
+            android:textColor="@color/pp_red"
+            android:textSize="@dimen/text_size_16" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/preview_blur_dialog_buy_ppp_intro_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_buy_ppp_ll"
+        android:layout_marginLeft="@dimen/pp_dp_20"
+        android:layout_marginRight="@dimen/pp_dp_20"
+        android:background="@drawable/button_white_with_line"
+        android:padding="@dimen/pp_dp_16"
+        android:text="ddddd"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_16" />
+
+    <LinearLayout
+        android:id="@+id/preview_blur_dialog_upgrade_photo_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_buy_ppp_intro_tv"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_20">
+
+        <ImageView
+            android:id="@+id/preview_blur_dialog_upgrade_photo_select_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/check_box_nor" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_upgrade_photo_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_weight="1"
+            android:text="@string/use_ppp"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/preview_blur_dialog_buy_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/preview_blur_dialog_upgrade_photo_ll"
+        android:layout_margin="@dimen/pp_dp_16"
+        android:background="@drawable/button_orange"
+        android:padding="@dimen/pp_dp_10"
+        android:text="@string/preview_blur_dialog_buy"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
+
+
+</RelativeLayout>

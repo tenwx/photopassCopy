@@ -95,7 +95,12 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     }
 
     @Override
-    public void touchClear(boolean visible) {
+    public void buyClick(int position) {
+
+    }
+
+    @Override
+    public void longClick(int position) {
 
     }
 
@@ -146,7 +151,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
-                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist,1);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist, 1, false);
                 pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
@@ -253,6 +258,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         }else{
                             photoInfo.setPhotoOriginalURL(downLoadInfo.getUrl());
                         }
+                        photoInfo.setId(1l);
                         photoInfo.setPhotoThumbnail_128(downLoadInfo.getPreviewUrl());
                         photoInfo.setPhotoThumbnail_512(downLoadInfo.getPhotoThumbnail_512());
                         photoInfo.setPhotoThumbnail_1024(downLoadInfo.getPhotoThumbnail_1024());
