@@ -44,10 +44,9 @@ import java.util.List;
 public class LoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     private static final String TAG = "LoginActivity";
     // 申明控件
-    private RelativeLayout parentRelativeLayout;
     private TextView tv_country, tv_country_num;// 国家，区号
-    private TextView otherLogin;// 其他方式登录
-    private Button login, sign;
+    private TextView otherLogin, sign, shorMsgLogin;// 其他方式登录
+    private Button login;
     private TextView forgot;
     private EditTextWithClear userName, password;
     private LinearLayout rl_country;// 国家
@@ -136,7 +135,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 break;
 
             case API1.FIND_PWD_SUCCESS:
-                signAndLoginUtil.start(forGetphoto, forGetPwd, false, false, null, null, null, null);// 登录
+                signAndLoginUtil.start(forGetphoto, forGetPwd, false, false, null, null, null, null, null, null);// 登录
                 break;
 
             case START_AGREEMENT_WEBVIEW:
@@ -184,13 +183,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private void initview() {
         myToast = new PWToast(LoginActivity.this);// 获取toast
         signAndLoginUtil = new SignAndLoginUtil(this, this);
-        parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
         login = (Button) findViewById(R.id.login);// 登录按钮
-        sign = (Button) findViewById(R.id.sign);// 注册按钮
+        sign = (TextView) findViewById(R.id.sign);// 注册按钮
         userName = (EditTextWithClear) findViewById(R.id.login_username);// 文本框
         password = (EditTextWithClear) findViewById(R.id.login_password);// 密码框
         forgot = (TextView) findViewById(R.id.forgot);// 忘记密码？
         otherLogin = (TextView) findViewById(R.id.otherLogin);// 其他方式登录
+        shorMsgLogin = (TextView) findViewById(R.id.msgLogin);
         rl_country = (LinearLayout) findViewById(R.id.rl_country);// 国家
         tv_country = (TextView) findViewById(R.id.tv_country);
         tv_country_num = (TextView) findViewById(R.id.tv_country_num);
@@ -203,6 +202,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         sign.setOnClickListener(this);
         forgot.setOnClickListener(this);
         otherLogin.setOnClickListener(this);
+        shorMsgLogin.setOnClickListener(this);
 
         // 自动检查更新
         checkUpdateManager = new CheckUpdateManager(this,
@@ -289,7 +289,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                     case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
                         signAndLoginUtil.start(countryCode + userName.getText().toString().trim(),
-                                password.getText().toString(), false, false, null, null, null, null);// 登录
+                                password.getText().toString(), false, false, null, null, null, null, null, null);// 登录
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
@@ -320,9 +320,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 PictureAirLog.v(TAG, "tap other login 其他方式登录");
                 Intent intent2 = new Intent(LoginActivity.this,
                         OtherLoginActivity.class);
+                intent2.putExtra("msgLogin", false);
                 startActivity(intent2);
                 break;
 
+            case R.id.msgLogin:
+                Intent intent3 = new Intent(LoginActivity.this,
+                        OtherLoginActivity.class);
+                intent3.putExtra("msgLogin", true);
+                startActivity(intent3);
+                break;
             default:
                 break;
         }

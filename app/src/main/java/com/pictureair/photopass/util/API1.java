@@ -348,14 +348,20 @@ public class API1 {
      * @param password
      * @param handler
      */
-    public static BasicResultCallTask Login(final Context context, final String userName, String password, final Handler handler) {
+    public static BasicResultCallTask Login(final Context context, final String userName, String password, String loginType, String verificationCode, final Handler handler) {
         Map<String,Object> params = new HashMap<>();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (userName != null) {
             params.put(Common.USERINFO_USERNAME, userName);
         }
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        if (loginType != null) {
+            params.put(Common.LOGINTYPE, "verificationCodeLogin");
+            params.put(Common.VERIFICATIONCODE, verificationCode);
+        }
+        if (password != null) {
+            params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        }
         BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

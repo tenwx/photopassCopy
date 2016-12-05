@@ -163,6 +163,8 @@ public class Common {
     public static final String USERINFO_WECHAT = "wechat";
     public static final String USERINFO_TWITTER = "twitter";
     public static final String USERINFO_ACCOUNT = "account";
+    public static final String LOGINTYPE = "loginType";
+    public static final String VERIFICATIONCODE = "verificationCode";
     public static final String NEED_DELETE = "need_delete";
     public static final String SOCKETPUSHCONNECTED = "isConnected";
     public static final String NEW_PASSWORD = "newPwd";

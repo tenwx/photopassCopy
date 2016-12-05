@@ -3,23 +3,30 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -46,7 +53,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private String languageType;
     private PWToast myToast;
     private Context context;
-    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_put_identify_centen;
+    private RelativeLayout ll_put_identify_centen;
+    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen;
     private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain,dialogTvPhone;//country textview
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
     private CustomButtonFont btn_next, sure;
@@ -60,6 +68,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private ImageView agreeIv;
     private boolean isAgree = false;
     private PWDialog pictureWorksDialog;
+    private TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +101,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         tv_explain = (CustomTextView) findViewById(R.id.tv_explain);
         ll_pwd_centen = (LinearLayout) findViewById(R.id.ll_pwd_centen);
         ll_mobile_centen = (LinearLayout) findViewById(R.id.ll_mobile_centen);
-        ll_put_identify_centen = (LinearLayout) findViewById(R.id.ll_put_identify_centen);
+        ll_put_identify_centen = (RelativeLayout) findViewById(R.id.ll_put_identify_centen);
+        title = (TextView) findViewById(R.id.regist_title);
 
         tv_otherRegistered.setOnClickListener(this);
         rlCountry.setOnClickListener(this);
@@ -124,13 +134,15 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         agreeIv.setOnClickListener(this);
 
         if (signActivity.equals(whatActivity)) {
-            setTopTitleShow(R.string.smssdk_regist);
+//            setTopTitleShow(R.string.smssdk_regist);
+            title.setText(R.string.smssdk_regist);
         } else if (forgetActivity.equals(whatActivity)) {
             tv_explain.setVisibility(View.GONE);
             ll_pwd_centen.setVisibility(View.GONE);
             tv_otherRegistered.setVisibility(View.GONE);
             sure.setText(R.string.smssdk_next);
-            setTopTitleShow(R.string.reset_pwd);
+//            setTopTitleShow(R.string.reset_pwd);
+            title.setText(R.string.reset_pwd);
             agreeIv.setVisibility(View.GONE);
             isAgree = true;
         }
@@ -152,6 +164,34 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
             registerTool.onDestroy();
         registerTool = null;
         super.onDestroy();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (AppUtil.isShouldHideInput(v, ev)) {
+                hideInputMethodManager(v);
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    private void hideInputMethodManager(View v) {
+		/* 隐藏软键盘 */
+        InputMethodManager imm = (InputMethodManager) v.getContext()
+                .getSystemService(INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+        }
     }
 
     @Override
@@ -423,6 +463,11 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
             intent.putExtra("key", Integer.valueOf(mUrl));
             intent.setClass(context, WebViewActivity.class);
             startActivity(intent);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(Color.parseColor("#ff4605"));
         }
     }
 

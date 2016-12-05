@@ -87,9 +87,9 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
     private void validateSuccess() {
         if (whatActivity.equals(SIGN_ACTIVITY))
-            signAndLoginUtil.start(phone, pwd, true, false, null, null, null, null);
+            signAndLoginUtil.start(phone, pwd, true, false, null, null, null, null, null, null);
         else if (whatActivity.equals(FORGET_ACTIVITY))
-            signAndLoginUtil.start(phone, pwd, false, false, null, null, null, null);// 登录
+            signAndLoginUtil.start(phone, pwd, false, false, null, null, null, null, null, null);// 登录
     }
 
     public RegisterTool(String tokenId, Context context, RegisterOrForgetCallback registerView, String languageType) {
