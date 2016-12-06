@@ -80,7 +80,6 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
-import retrofit2.http.HEAD;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -561,6 +560,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case PPPPop.POP_INPUT://进入手动输入页面
                 Intent intent2 = new Intent(context, InputCodeActivity.class);
+                intent2.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent2);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();

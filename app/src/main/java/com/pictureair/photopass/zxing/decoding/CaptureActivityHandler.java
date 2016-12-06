@@ -73,6 +73,11 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
 
     public void setScanType (int scanType) {
         decodeThread.setScanType(scanType);
+        if (scanType == 1) {//之前有扫描ocr，因此整个流程不会断，现在没有了ocr，导致切换到手动输入页面之后，流程断了，因此切换回来需要重新开始流程
+            PictureAirLog.d("state--> " + state);
+            state = State.SUCCESS;
+            restartPreviewAndDecode();
+        }
     }
 
     public void setOnDealCodeListener(OnDealCodeListener onDealCodeListener) {

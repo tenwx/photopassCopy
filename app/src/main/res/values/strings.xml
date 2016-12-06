@@ -126,6 +126,7 @@
 
     <!-- scan start -->
     <string name="auto">扫描</string>
+    <string name="auto_scan">自动扫描</string>
     <string name="scan_qr_code">二维码</string>
     <string name="scan_ppp_code">迪士尼乐拍通一卡通</string>
     <string name="scan_intro">请扫描您的上海迪士尼乐园门票或者迪士尼乐拍通卡上的二维码，更快获得您的游玩照片。</string>
@@ -139,9 +140,11 @@
 
     <!-- manual input start -->
     <string name="manual">手动输入</string>
+    <string name="active">激活</string>
     <string name="ok">确定</string>
-    <string name="manul_input_intro">请输入您的上海迪士尼乐园门票、迪士尼乐拍通卡或迪士尼乐拍通一卡通卡背后的数字码</string>
+    <string name="manul_input_intro">请输入您的迪士尼乐拍通一卡通卡背后的数字码！</string>
     <string name="nocontext">输入您的编码</string>
+    <string name="input_code">手动输入卡号</string>
     <string name="wrong_length">请检查您的迪士尼乐拍通卡片</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->

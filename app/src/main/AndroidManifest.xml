@@ -186,7 +186,8 @@
             android:name=".activity.OrderActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme2"/>
         <activity
             android:name=".activity.OrderDetailActivity"
             android:configChanges="keyboard|orientation"

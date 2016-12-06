@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
@@ -43,7 +42,7 @@ import de.greenrobot.event.Subscribe;
  * 优惠卷view
  * bass
  */
-public class CouponActivity extends BaseActivity implements CouponViewInterface, PWDialog.OnCustomerViewCallBack, PWDialog.OnPWDialogClickListener{
+public class CouponActivity extends BaseActivity implements CouponViewInterface{
     private final String TAG = "CouponActivity";
     private static final int INPUT_EDITTEXT_DIALOG = 101;
 
@@ -58,7 +57,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     private CouponTool couponTool;
     private String whatPege = "";//是从什么页面进来的
-    private PWDialog pictureWorksDialog;
     private EditTextWithClear editTextWithClear;
     private DealCodeUtil dealCodeUtil;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
@@ -84,7 +82,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private void initViews() {
         myToast = new PWToast(context);
         pppPop = new PPPPop(this, myHandler, PPPPop.MENU_TYPE_PP);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow("");
         setTopRightValueAndShow(R.drawable.add_righttop, true);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
@@ -211,25 +209,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                     netWorkOrNoCountView.setVisibility(View.GONE);
                     break;
 
+                case PPPPop.POP_INPUT:
                 case PPPPop.POP_SCAN:
                     Intent intent = new Intent(CouponActivity.this, MipCaptureActivity.class);
                     intent.putExtra("type", "coupon");//只扫描pp
                     startActivity(intent);
-                    if (pppPop.isShowing()) {
-                        pppPop.dismiss();
-                    }
-                    break;
-
-                case PPPPop.POP_INPUT:
-                    if (pictureWorksDialog == null) {
-                        pictureWorksDialog = new PWDialog(context, INPUT_EDITTEXT_DIALOG)
-                                .setPWDialogNegativeButton(R.string.cancel1)
-                                .setPWDialogPositiveButton(R.string.ok)
-                                .setOnPWDialogClickListener(CouponActivity.this)
-                                .setPWDialogContentView(R.layout.dialog_edittext, CouponActivity.this)
-                                .pwDialogCreate();
-                    }
-                    pictureWorksDialog.pwDilogShow();
                     if (pppPop.isShowing()) {
                         pppPop.dismiss();
                     }
@@ -386,14 +370,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         mRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
-    public void initCustomerView(View view, int dialogId) {
-        if (dialogId == INPUT_EDITTEXT_DIALOG) {
-            editTextWithClear = (EditTextWithClear) view.findViewById(R.id.et_text);
-        }
-    }
-
-    @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
