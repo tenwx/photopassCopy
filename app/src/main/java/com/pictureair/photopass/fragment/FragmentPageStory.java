@@ -28,7 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.InputCodeActivity;
+import com.pictureair.photopass.activity.AddPPPCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
@@ -559,7 +559,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case PPPPop.POP_INPUT://进入手动输入页面
-                Intent intent2 = new Intent(context, InputCodeActivity.class);
+                Intent intent2 = new Intent(context, AddPPPCodeActivity.class);
                 intent2.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent2);
                 if (pppPop.isShowing()) {

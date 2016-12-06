@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,11 +52,7 @@ import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.decoding.OnDealCodeListener;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
 
@@ -78,7 +72,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
     private AmbientLightManager ambientLightManager;
-    private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
     private View navigationView;
     private String code;
@@ -153,15 +146,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     @Override
     public void decodeOCRSuccess(Bundle bundle) {
-        if (bundle.getString("text") != null){ //跳转到确认的界面。
-            beepManager.playBeepSoundAndVibrate();
-            Intent intent = new Intent();
-            intent.putExtra("text", bundle.getString("text"));
-            intent.putExtra("type", getIntent().getStringExtra("type"));
-            intent.putExtra("bmpData", bundle.getByteArray("data"));
-            intent.setClass(this, PPPCodeActivity.class);
-            startActivity(intent);
-        }
     }
 
 
@@ -499,12 +483,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             PictureAirLog.out("meiyou dakai xiangji1");
             return;
         } catch (RuntimeException e) {
-            newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
-            Intent intent = new Intent();
-            intent.setClass(this, InputCodeActivity.class);
-            intent.putExtra("type", getIntent().getStringExtra("type"));
-            startActivity(intent);
-            finish();
+            newToast.setTextAndShow(R.string.camera_closed, Common.TOAST_SHORT_TIME);
             return;
         }
         if (handler == null) {
@@ -541,16 +520,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         return handler;
     }
 
-    /**
-     * When the beep has finished playing, rewind to queue up another one.
-     */
-    private final OnCompletionListener beepListener = new OnCompletionListener() {
-        public void onCompletion(MediaPlayer mediaPlayer) {
-            mediaPlayer.seekTo(0);
-        }
-    };
-
-
     @Override
     public void TopViewClick(View view) {
         super.TopViewClick(view);
@@ -558,56 +527,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             case R.id.topLeftView:
                 finish();
                 break;
-            case R.id.topRightView:
-                //跳转到输入  code 的界面。
-                Intent i = new Intent(MipCaptureActivity.this, InputCodeActivity.class);
-                i.putExtra("type", getIntent().getStringExtra("type"));
-                startActivity(i);
             default:
                 break;
         }
     }
 
-    /**
-     * 复制文件 到 SD 卡中
-     * @param strOutFileName
-     * @throws IOException
-     */
-    private void copyDataToSD(String strOutFileName) throws IOException
-    {
-        InputStream myInput;
-        OutputStream myOutput = new FileOutputStream(strOutFileName);
-        myInput = this.getAssets().open("ocrdata/eng.traineddata");
-        byte[] buffer = new byte[1024];
-        int length = myInput.read(buffer);
-        while(length > 0)
-        {
-            myOutput.write(buffer, 0, length);
-            length = myInput.read(buffer);
-        }
-        myOutput.flush();
-        myInput.close();
-        myOutput.close();
-    }
-
-    private void copyOCRDataToStorage() {
-        File tessdata = new File(Common.OCR_PATH); //创建文件夹。
-        if (!tessdata.exists()){
-            tessdata.mkdirs();
-        }
-        // 移动OCR 需要的data 到SD卡上。
-        if (!(new File(Common.OCR_DATA_PATH)).exists()){
-            try {
-                copyDataToSD(Common.OCR_DATA_PATH);
-            }catch (Exception e){
-
-            }
-        }
-    }
-
     private void checkStoragePermissionAndCopyData() {
         if (AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            copyOCRDataToStorage();
             mNoStoragePermission = true;
         }else{
             mNoStoragePermission = false;
@@ -630,12 +556,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 if (Manifest.permission.CAMERA.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initCamera(surfaceView.getHolder());
                 } else {
-                    newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
-                    Intent intent = new Intent();
-                    intent.setClass(this, InputCodeActivity.class);
-                    intent.putExtra("type", getIntent().getStringExtra("type"));
-                    startActivity(intent);
-                    finish();
+                    newToast.setTextAndShow(R.string.camera_closed, Common.TOAST_SHORT_TIME);
                 }
                 break;
             default:

@@ -26,7 +26,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 手动输入条码的页面
  */
-public class InputCodeActivity extends BaseActivity implements OnClickListener{
+public class AddPPPCodeActivity extends BaseActivity implements OnClickListener{
     private Button ok;
     private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
@@ -36,9 +36,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private final Handler inputCodeHandler = new InputCodeHandler(this);
 
     private static class InputCodeHandler extends Handler {
-        private final WeakReference<InputCodeActivity> mActivity;
+        private final WeakReference<AddPPPCodeActivity> mActivity;
 
-        public InputCodeHandler(InputCodeActivity activity) {
+        public InputCodeHandler(AddPPPCodeActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -73,7 +73,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                         EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), null));
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
-                        intent2.setClass(InputCodeActivity.this, MyPPPActivity.class);
+                        intent2.setClass(AddPPPCodeActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
                         startActivity(intent2);
 
@@ -98,7 +98,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inputcode);
+        setContentView(R.layout.activity_add_ppp_code);
         newToast = new PWToast(this);
         initview();
 
@@ -140,9 +140,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                 }
                 break;
 
-            case R.id.btn_re_scan_ppp_code:
-                this.finish();
-                break;
             default:
                 break;
         }

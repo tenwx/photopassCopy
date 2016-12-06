@@ -325,7 +325,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 break;
 
             case PPPPop.POP_INPUT://手动输入
-                Intent intent1 = new Intent(MyPPActivity.this, InputCodeActivity.class);
+                Intent intent1 = new Intent(MyPPActivity.this, AddPPPCodeActivity.class);
                 intent1.putExtra("type", "pp");//只扫描pp
                 startActivity(intent1);
                 if (pppPop.isShowing()) {

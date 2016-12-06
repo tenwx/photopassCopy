@@ -115,12 +115,8 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.InputCodeActivity"
+            android:name=".activity.AddPPPCodeActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.PPPCodeActivity"
-            android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.PreviewProductActivity"

@@ -188,7 +188,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case PPPPop.POP_INPUT://手动输入
-                intent = new Intent(MyPPPActivity.this, InputCodeActivity.class);
+                intent = new Intent(MyPPPActivity.this, AddPPPCodeActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent);
                 if (pppPop.isShowing()) {
