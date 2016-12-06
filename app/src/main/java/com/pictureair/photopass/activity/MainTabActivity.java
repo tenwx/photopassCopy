@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SlideListAdapter;
@@ -143,6 +144,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private ListView slidList;
     private SlideListAdapter adapter;
     private LinearLayout slideLayout;
+    private ImageView img_float_hide;
+    private FloatingActionButton fab;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -195,14 +198,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         newToast = new PWToast(this);
 
-        findViewById(R.id.fab).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainTabActivity.this, OpinionsActivity.class);
-                startActivity(intent);
-            }
-        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        img_float_hide = (ImageView) findViewById(R.id.float_hide);
+        fab.setOnClickListener(this);
+        img_float_hide.setOnClickListener(this);
 
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
@@ -377,6 +376,17 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case R.id.special_dialog_deal_close_iv:
                 EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, true, false));
                 pwDialog.pwDialogDismiss();
+                break;
+
+            case R.id.fab:
+
+                Intent intent = new Intent(MainTabActivity.this, OpinionsActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.float_hide:
+                fab.setVisibility(View.GONE);
+                img_float_hide.setVisibility(View.GONE);
                 break;
 
             default:
