@@ -308,6 +308,16 @@ public class DealCodeUtil {
 	}
 
 	/**
+	 * 处理正常的二维码
+	 * @param code
+	 */
+	public void startDealCode(String code, boolean isInputAct){
+		this.code = code;
+		this.isInputAct = isInputAct;
+		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler2);
+	}
+
+	/**
 	 * 处理递推二维码
 	 * 1.获取商品数据
 	 * 2.获取ppp数据

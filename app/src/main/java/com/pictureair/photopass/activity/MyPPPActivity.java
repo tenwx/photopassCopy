@@ -98,6 +98,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private static final int BIND_PP_DIALOG = 444;
     private static final int UPDATE_TIPS_DIALOG = 555;
     private static final int BUY_PPP_AND_UPDATE_TIP_DIALOG = 666;
+    private static final int SCAN_PPP_AND_UPDATE_TIP_DIALOG = 777;
 
     private boolean isOnResume = false;
 
@@ -872,7 +873,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private void showDialog(){
         boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
         if (isGuide) {
-            if (!TextUtils.isEmpty(MyApplication.getInstance().getBuyPPPStatus())) {
+            if (getIntent().getBooleanExtra("upgradePP", false)) {//需要选择pp进行升级
+                pictureWorksDialog.setPWDialogId(SCAN_PPP_AND_UPDATE_TIP_DIALOG)
+                        .setPWDialogMessage(getString(R.string.scan_ppp_upgrade))
+                        .setPWDialogNegativeButton(null)
+                        .setPWDialogPositiveButton(R.string.use_ppp_upgrade_ok)
+                        .setPWDialogContentCenter(false)
+                        .pwDilogShow();
+
+            } else if (!TextUtils.isEmpty(MyApplication.getInstance().getBuyPPPStatus())) {
                 String photoCode = MyApplication.getInstance().getIsBuyingPhotoPassCode();
                 String[] codes = photoCode.split(",");
                 String shootTime = MyApplication.getInstance().getIsBuyingPhotoShootTime();
@@ -925,6 +934,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     }
                     break;
 
+                case SCAN_PPP_AND_UPDATE_TIP_DIALOG://扫描完ppp，选择pp升级
                 case BUY_PPP_AND_UPDATE_TIP_DIALOG://购买完ppp之后，去选择pp升级
                     if (list1.size() == 0) {
                         return;

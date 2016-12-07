@@ -174,10 +174,6 @@
     public <methods>;
 }
 
-# OCR文字识别 混淆
--keep class com.pictureair.photopass.zxing.**{*;}
--keep class com.googlecode.**{*;}
-
 ### greenDAO 3
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
 public static java.lang.String TABLENAME;

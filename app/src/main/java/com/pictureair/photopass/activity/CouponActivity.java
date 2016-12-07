@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,20 +16,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
-import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CouponViewInterface;
-import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
@@ -43,10 +37,7 @@ import de.greenrobot.event.Subscribe;
  * 优惠卷view
  * bass
  */
-public class CouponActivity extends BaseActivity implements CouponViewInterface, PWDialog.OnCustomerViewCallBack, PWDialog.OnPWDialogClickListener{
-    private final String TAG = "CouponActivity";
-    private static final int INPUT_EDITTEXT_DIALOG = 101;
-
+public class CouponActivity extends BaseActivity implements CouponViewInterface{
     private RecyclerView mRecyclerView;
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
@@ -58,11 +49,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     private CouponTool couponTool;
     private String whatPege = "";//是从什么页面进来的
-    private PWDialog pictureWorksDialog;
-    private EditTextWithClear editTextWithClear;
-    private DealCodeUtil dealCodeUtil;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
-    private PPPPop pppPop;
 
     private Intent mOerderIntent = null;
     private CouponInfo newAddCoupon = null;//在订单页面进入优惠卷页面添加的新优惠卷
@@ -73,9 +60,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         setContentView(R.layout.activity_coupon);
         context = this;
         couponTool = new CouponTool(this);
-        Intent intent = new Intent();
-        intent.putExtra("type", "coupon");//只扫描coupon
-        dealCodeUtil = new DealCodeUtil(this, intent, false, myHandler);
         initViews();
         mOerderIntent = getIntent();
         couponTool.getIntentActivity(mOerderIntent);
@@ -83,10 +67,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     private void initViews() {
         myToast = new PWToast(context);
-        pppPop = new PPPPop(this, myHandler, PPPPop.MENU_TYPE_PP);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow("");
-        setTopRightValueAndShow(R.drawable.add_righttop, true);
+        setTopRightValueAndShow(R.drawable.scan_blue, true);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
         llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
@@ -135,7 +118,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                 break;
 
             case R.id.topRightView:
-                pppPop.showAsDropDown(getTopRightImageView(), 0, ScreenUtil.dip2px(this, 15) - 10);
+                Intent intent = new Intent(CouponActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "coupon");//只扫描pp
+                startActivity(intent);
                 break;
 
             default:
@@ -172,36 +157,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case DealCodeUtil.DEAL_CODE_FAILED:
-                    goneProgressBar();
-                    break;
-
-                case DealCodeUtil.DEAL_CODE_SUCCESS:
-                    Bundle bundle = (Bundle) msg.obj;
-                    CouponInfo couponInfo = (CouponInfo) bundle.getSerializable("coupon");
-
-                    if (couponInfo != null) {
-                        if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//从订单页面进行添加抵用劵
-                            PictureAirLog.out("coupon----> add success （order page）");
-                            newAddCoupon = couponInfo;
-                            couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
-                        } else {//从me中进行添加抵用劵
-                            PictureAirLog.out("coupon----> add success （me page）");
-                            goneProgressBar();
-                            PictureAirLog.out("coupon no null" + mAllData.size());
-                            mAllData.add(0, couponInfo);
-                            PictureAirLog.out("coupon no null" + mAllData.size());
-                            sortCoupon(mAllData, false);
-                        }
-                    } else {
-                        goneProgressBar();
-                    }
-                    break;
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-//                    if (null != refreshLayout && refreshLayout.isRefreshing()) {
-//                        refreshLayout.setEnabled(true);
-//                        refreshLayout.setRefreshing(false);
-//                    }
                     //重新加载购物车数据
                     if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
                         myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
@@ -209,30 +165,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                     }
                     couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
                     netWorkOrNoCountView.setVisibility(View.GONE);
-                    break;
-
-                case PPPPop.POP_SCAN:
-                    Intent intent = new Intent(CouponActivity.this, MipCaptureActivity.class);
-                    intent.putExtra("type", "coupon");//只扫描pp
-                    startActivity(intent);
-                    if (pppPop.isShowing()) {
-                        pppPop.dismiss();
-                    }
-                    break;
-
-                case PPPPop.POP_INPUT:
-                    if (pictureWorksDialog == null) {
-                        pictureWorksDialog = new PWDialog(context, INPUT_EDITTEXT_DIALOG)
-                                .setPWDialogNegativeButton(R.string.cancel1)
-                                .setPWDialogPositiveButton(R.string.ok)
-                                .setOnPWDialogClickListener(CouponActivity.this)
-                                .setPWDialogContentView(R.layout.dialog_edittext, CouponActivity.this)
-                                .pwDialogCreate();
-                    }
-                    pictureWorksDialog.pwDilogShow();
-                    if (pppPop.isShowing()) {
-                        pppPop.dismiss();
-                    }
                     break;
 
                 default:
@@ -386,30 +318,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         mRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
-    public void initCustomerView(View view, int dialogId) {
-        if (dialogId == INPUT_EDITTEXT_DIALOG) {
-            editTextWithClear = (EditTextWithClear) view.findViewById(R.id.et_text);
-        }
-    }
-
-    @Override
-    public void onPWDialogButtonClicked(int which, int dialogId) {
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE:
-                if (dialogId == INPUT_EDITTEXT_DIALOG) {
-                    String result = editTextWithClear.getText().toString().trim();
-                    if (result.length() == 0) {
-                        myToast.setTextAndShow(R.string.conpon_input_hint, Common.TOAST_SHORT_TIME);
-                    } else {
-                        showProgressBar();
-                        dealCodeUtil.startDealCode(result);
-                    }
-                }
-                break;
-        }
-    }
-
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
         if (baseBusEvent instanceof ScanInfoEvent) {
@@ -417,11 +325,17 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
             CouponInfo couponInfo = scanInfoEvent.getCouponInfo();
 
             if (couponInfo != null) {
-                PictureAirLog.out("coupon----> add success （from scan page）");
-                PictureAirLog.out("coupon no null" + mAllData.size());
-                mAllData.add(0, couponInfo);
-                PictureAirLog.out("coupon no null" + mAllData.size());
-                sortCoupon(mAllData, false);
+                if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//从订单页面进行添加抵用劵
+                    PictureAirLog.out("coupon----> add success （order page）");
+                    newAddCoupon = couponInfo;
+                    couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
+                } else {
+                    PictureAirLog.out("coupon----> add success （from scan page）");
+                    PictureAirLog.out("coupon no null" + mAllData.size());
+                    mAllData.add(0, couponInfo);
+                    PictureAirLog.out("coupon no null" + mAllData.size());
+                    sortCoupon(mAllData, false);
+                }
             }
 
             EventBus.getDefault().removeStickyEvent(scanInfoEvent);

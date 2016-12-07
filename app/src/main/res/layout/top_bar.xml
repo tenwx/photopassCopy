@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/pp_top_bar_height"
     android:layout_alignParentTop="true"
-    android:background="@color/pp_blue">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/topLeftView"
@@ -26,7 +26,7 @@
             android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white"
+            android:src="@drawable/back_blue"
             android:visibility="gone" />
 
         <TextView
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textColor="@color/white"
+        android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_16" />
 
     <LinearLayout
@@ -68,8 +68,8 @@
             android:layout_height="match_parent"
             android:clickable="false"
             android:layout_marginBottom="@dimen/pp_dp_15"
-            android:layout_marginLeft="@dimen/pp_dp_8"
-            android:layout_marginRight="@dimen/pp_dp_8"
+            android:layout_marginLeft="@dimen/pp_dp_14"
+            android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/preview_save"
