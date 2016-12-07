@@ -141,6 +141,7 @@
     <!-- manual input start -->
     <string name="manual">手动输入</string>
     <string name="active">激活</string>
+    <string name="active_ppp">激活迪士尼\n乐拍通一卡通</string>
     <string name="ok">确定</string>
     <string name="manul_input_intro">请输入您的迪士尼乐拍通一卡通卡背后的数字码！</string>
     <string name="nocontext">输入您的编码</string>
@@ -412,6 +413,7 @@
     <string name="use_ppp_upgrade_read_photo">以下迪士尼门票／乐拍通卡包含清晰照片。\n%1$s\n\n您可激活此卡查看您的清晰照片！</string>
     <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
     <string name="use_ppp_upgrade_ok">我知道了</string>
+    <string name="scan_ppp_upgrade">立即去绑定pp</string>
     <!-- ppp end -->
 
     <!-- pp start -->

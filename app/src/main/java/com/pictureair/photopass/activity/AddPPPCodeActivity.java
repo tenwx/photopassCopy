@@ -10,28 +10,29 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.eventbus.ScanInfoEvent;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
-import de.greenrobot.event.EventBus;
-
 /**
  * 手动输入条码的页面
  */
-public class AddPPPCodeActivity extends BaseActivity implements OnClickListener{
+public class AddPPPCodeActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener{
     private Button ok;
     private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
 
     private EditTextWithClear inputCodeEdit;
+
+    private PWDialog pwDialog;
+
+    private static final int TYPE_NOT_SAME_DIALOG = 333;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
 
@@ -67,30 +68,50 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener{
                 dismissPWProgressDialog();
 
                 if (msg.obj != null) {
-                    Intent intent2 = new Intent();
                     Bundle bundle = (Bundle) msg.obj;
-                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), null));
+                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {//需要当前页面提示用户扫描结果
+                        String result = bundle.getString("result");
+                        if (result.equals("pppOK")) {//添加ppp成功
+                            addPPPSuccess();
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
-                        intent2.setClass(AddPPPCodeActivity.this, MyPPPActivity.class);
-                        API1.PPPlist.clear();
-                        startActivity(intent2);
+                        } else {//失败，卡片类型不一致
+                            //初始化dialog
+                            if (pwDialog == null) {
+                                pwDialog = new PWDialog(this)
+                                        .setOnPWDialogClickListener(this)
+                                        .pwDialogCreate();
+                            }
+                            pwDialog.setPWDialogId(TYPE_NOT_SAME_DIALOG)
+                                    .setPWDialogMessage(R.string.not_ppp_card)
+                                    .setPWDialogNegativeButton(null)
+                                    .setPWDialogPositiveButton(R.string.dialog_ok1)
+                                    .setPWDialogContentCenter(true)
+                                    .pwDilogShow();
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
-                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-                        int currentPPcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0);
-                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, currentPPcount + 1);
-
+                        }
+//                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {//添加ppp成功
+//                        addPPPSuccess();
                     }
                 }
-                AppManager.getInstance().killActivity(MipCaptureActivity.class);
-                finish();
                 break;
 
             default:
                 break;
         }
+    }
+
+    /**
+     * 添加ppp成功
+     */
+    private void addPPPSuccess() {
+        //进入ppp页面
+        Intent intent2 = new Intent();
+        intent2.setClass(AddPPPCodeActivity.this, MyPPPActivity.class);
+        intent2.putExtra("upgradePP", true);
+        API1.PPPlist.clear();
+        startActivity(intent2);
+        AppManager.getInstance().killActivity(MipCaptureActivity.class);
+        finish();
     }
 
 
@@ -136,7 +157,7 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener{
                     //如果有键盘显示，把键盘取消掉
                     hideInputMethodManager(v);
                     showPWProgressDialog();
-                    dealCodeUtil.startDealCode(inputCodeEdit.getText().toString().toUpperCase());
+                    dealCodeUtil.startDealCode(inputCodeEdit.getText().toString().toUpperCase(), true);
                 }
                 break;
 
@@ -161,6 +182,11 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener{
     protected void onDestroy() {
         super.onDestroy();
         inputCodeHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+
     }
 
 }

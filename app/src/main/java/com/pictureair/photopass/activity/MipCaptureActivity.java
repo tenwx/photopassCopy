@@ -175,10 +175,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             case DealCodeUtil.DEAL_CODE_FAILED:
                 dismissPWProgressDialog();
                 PictureAirLog.out("scan failed----->");
-                if (msg.obj != null) {//从ppp,PP页面过来，需要返回
-                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false, getIntent().getStringExtra("type"), null));
-                    finish();
-                } else {
+                if (scanType == 1) {//如果是扫描tab，则返回上一个页面
                     mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 }
                 break;
@@ -193,8 +190,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                         EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), (CouponInfo) bundle.getSerializable("coupon")));
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
+                        //进入ppp页面
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
+                        intent2.putExtra("upgradePP", true);
                         startActivity(intent2);
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
@@ -204,8 +203,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
                     }
                     finish();
-                } else {
-                    mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
+//                } else {
+//                    mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 }
                 break;
 
@@ -369,9 +368,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     }
 
     private void changeIndexTab(int mode) {
-//        if (mode == 1) {//0---1
-//        } else if (mode == 2){//1---0
-//        }
+        //mode 为1，说明是第0个位置，是从第1个位置过来
+        //mode 为2，说明是第1个位置，是从第0个位置过来
+        //mode ，说明是第（mode - 1）个位置，是从第（Math.abs(1 - (mode - 1))）个位置过来
         Animation animation = new TranslateAnimation(offset * Math.abs(1 - (mode - 1)), offset * (mode - 1), 0, 0);
         animation.setFillAfter(true);
         animation.setDuration(300);

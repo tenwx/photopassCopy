@@ -10,7 +10,7 @@
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/tab_story"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <RelativeLayout
@@ -27,8 +27,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_8"
-            android:paddingRight="@dimen/pp_dp_8"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15">
 
             <ImageView
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/add_righttop" />
+                android:src="@drawable/add_blue" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -141,6 +141,7 @@
     <!-- manual input start -->
     <string name="manual">Manual</string>
     <string name="active">激活</string>
+    <string name="active_ppp">Activate Disney\nPhotoPass+</string>
     <string name="ok">OK</string>
     <string name="manul_input_intro">请输入您的迪士尼乐拍通一卡通卡背后的数字码！</string>
     <string name="nocontext">Input your code</string>
@@ -412,6 +413,7 @@
     <string name="use_ppp_upgrade_read_photo">The following Disney Park Ticket/PhotoPass card(s) includes PhotoPass Photo(s).\n%1$s\n\nYou can activate to view them!</string>
     <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
     <string name="use_ppp_upgrade_ok">Okay, got it!</string>
+    <string name="scan_ppp_upgrade">立即去绑定pp</string>
     <!-- ppp end -->
 
     <!-- pp start -->
