@@ -40,7 +40,6 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.pullloadlayout.MyListView;
 import com.pictureair.photopass.widget.pullloadlayout.OnRefreshListener;
@@ -78,7 +77,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private int currentPosition = 0;//记录选中的项的索引值
 
     private String errorMessage = "";
-    private PPPPop pppPop;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private PPPinfo ppp;
 
@@ -164,35 +162,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     dealPPPresult();
                 } else {
                     myPPPHandler.sendEmptyMessageDelayed(SCAN_PPP_CODE_SUCCESS, 50);
-                }
-                break;
-
-            case PPPPop.POP_BUY://购买PPP
-                showPWProgressDialog();
-                //购买PP+，先获取商品 然后进入订单界面
-                //获取商品（以后从缓存中取）
-                getGoods();
-                if (pppPop.isShowing()) {
-                    pppPop.dismiss();
-                }
-                break;
-
-            case PPPPop.POP_SCAN://扫描
-                intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
-                intent.putExtra("type", "ppp");//只扫描ppp
-                intent.putExtra("mode", "ocr");//默认ocr扫描
-                startActivity(intent);
-                if (pppPop.isShowing()) {
-                    pppPop.dismiss();
-                }
-                break;
-
-            case PPPPop.POP_INPUT://手动输入
-                intent = new Intent(MyPPPActivity.this, InputCodeActivity.class);
-                intent.putExtra("type", "ppp");//只扫描ppp
-                startActivity(intent);
-                if (pppPop.isShowing()) {
-                    pppPop.dismiss();
                 }
                 break;
 
@@ -556,7 +525,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         }
     }
     private void initViewCommon(){
-        pppPop = new PPPPop(this, myPPPHandler, PPPPop.MENU_TYPE_PPP);
         //初始化
         newToast = new PWToast(this);
 
@@ -724,7 +692,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case R.id.ppp_rl://设置按钮   + 按钮
-                pppPop.showAsDropDown(setting, 0, ScreenUtil.dip2px(MyPPPActivity.this, 15) - 10);
+
+                Intent i = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
+                i.putExtra("souvenir", true);
+                startActivity(i);
+
                 break;
 
             case R.id.button_buy_ppp:

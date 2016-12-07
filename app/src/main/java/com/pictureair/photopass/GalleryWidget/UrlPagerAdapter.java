@@ -39,14 +39,17 @@ public class UrlPagerAdapter extends BasePagerAdapter {
      */
     private boolean cardMode;
 
+    private boolean isSouvenir;
+
     public UrlPagerAdapter(Context context,List<PhotoInfo> resources){
         super(context, resources);
         this.defaultType = 0;
     }
-    public UrlPagerAdapter(Context context, List<PhotoInfo> resources, int defaultType, boolean cardMode) {
+    public UrlPagerAdapter(Context context, List<PhotoInfo> resources, int defaultType, boolean cardMode, boolean isSouvenir) {
         super(context, resources);
         this.defaultType = defaultType;
         this.cardMode = cardMode;
+        this.isSouvenir = isSouvenir;
     }
 
     @Override
@@ -101,7 +104,11 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         iv.setId(position);
         if (cardMode) {
-            iv.setTimeText(AppUtil.getExpiredTime(mContext, mResources.get(position)));
+            if (!isSouvenir) {
+                iv.setTimeText(AppUtil.getExpiredTime(mContext, mResources.get(position)));
+            } else {
+                iv.setTimeText(mResources.get(position).getShootDate());
+            }
             iv.setFullScreenMode(fullScreenMode);
         }
         collection.addView(iv, 0);

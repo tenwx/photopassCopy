@@ -304,6 +304,7 @@
                     android:layout_toRightOf="@id/other_login_image"
                     android:layout_toLeftOf="@+id/other_btn_next"
                     android:layout_width="match_parent"
+                    android:layout_marginRight="@dimen/pp_dp_10"
                     android:layout_height="@dimen/pp_dp_30"
                     android:background="@null"
                     android:gravity="center_vertical|left"

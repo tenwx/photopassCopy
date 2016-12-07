@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,12 +50,14 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 
@@ -151,6 +154,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     //点击视频播放的处理对象
     private GetLastestVideoInfoPresenter lastestVideoInfoPresenter;
+
+    /**是否为预览纪念照的状态*/
+    private boolean isSouvenir;
+    private NoNetWorkOrNoCountView netWorkOrNoCountView;
+    /**没有纪念照时的布局*/
+    private LinearLayout noSouvenirLayout;
+
 
     /**
      * 处理Message
@@ -261,7 +271,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case 7://操作比较耗时，会影响oncreate绘制
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
-                pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist, 0, true);
+                pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist, 0, true, isSouvenir);
                 pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
@@ -376,6 +386,76 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 finish();
                 break;
 
+            case API1.GET_SOUVENIR_PHOTO_SUCCESS:
+
+                JSONObject jsonObject1 = (JSONObject) msg.obj;
+                if (jsonObject1 != null) {
+                    JSONArray responseArray = jsonObject1.getJSONArray("photos");
+                    photolist = new ArrayList<>();
+                    if (responseArray.size() > 0) {
+                        ACache.get(PreviewPhotoActivity.this).put(Common.SOUVENIR, responseArray);
+                        noSouvenirLayout.setVisibility(View.GONE);
+                        netWorkOrNoCountView.setVisibility(View.GONE);
+                        photoFraRelativeLayout.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < responseArray.size(); i++) {
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i));
+                            if (photoInfo != null) {
+                                photolist.add(photoInfo);
+                            }
+                        }
+                        currentPosition = 0;
+                        previewPhotoHandler.sendEmptyMessage(7);
+                    } else {
+
+                        netWorkOrNoCountView.setVisibility(View.GONE);
+                        photoFraRelativeLayout.setVisibility(View.GONE);
+                        noSouvenirLayout.setVisibility(View.VISIBLE);
+                        locationTextView.setText(R.string.souvenir_photo);
+                        dismissPWProgressDialog();
+                    }
+                } else {
+                    netWorkOrNoCountView.setVisibility(View.GONE);
+                    photoFraRelativeLayout.setVisibility(View.GONE);
+                    noSouvenirLayout.setVisibility(View.VISIBLE);
+                    locationTextView.setText(R.string.souvenir_photo);
+                    dismissPWProgressDialog();
+                }
+                break;
+
+            case API1.GET_SOUVENIR_PHOTO_FAILED:
+                Object object = ACache.get(PreviewPhotoActivity.this).getAsObject(Common.SOUVENIR);
+                if (object != null) {
+                    if (object instanceof JSONArray) {
+                        photolist = new ArrayList<>();
+                        noSouvenirLayout.setVisibility(View.GONE);
+                        netWorkOrNoCountView.setVisibility(View.GONE);
+                        photoFraRelativeLayout.setVisibility(View.VISIBLE);
+                        JSONArray jsonArray = (JSONArray) object;
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i));
+                            if (photoInfo != null) {
+                                photolist.add(photoInfo);
+                            }
+                        }
+                        currentPosition = 0;
+                        previewPhotoHandler.sendEmptyMessage(7);
+                    }
+                } else {
+                    noSouvenirLayout.setVisibility(View.GONE);
+                    photoFraRelativeLayout.setVisibility(View.GONE);
+                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                    locationTextView.setText(R.string.souvenir_photo);
+                    netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, previewPhotoHandler, true);
+                    dismissPWProgressDialog();
+                }
+                break;
+
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD:
+                    showPWProgressDialog();
+                    String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
+                    API1.getSouvenirPhotos(MyApplication.getTokenId(), previewPhotoHandler, userPPCode);//获取全部图片
+                break;
+
             default:
                 break;
         }
@@ -411,6 +491,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.fra_layout);
 
         titleBar = (RelativeLayout) findViewById(R.id.preview_titlebar);
+        noSouvenirLayout = (LinearLayout) findViewById(R.id.preivew_no_souvenir_layout);
+        netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
 
         previewPhotoHandler.sendEmptyMessage(CREATE_BLUR_DIALOG);
 
@@ -426,7 +508,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         showPWProgressDialog();
-        getPreviewPhotos();
+        isSouvenir = getIntent().getBooleanExtra("souvenir", false);
+        if (!isSouvenir) {
+            getPreviewPhotos();
+        } else {
+            String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
+            API1.getSouvenirPhotos(MyApplication.getTokenId(), previewPhotoHandler, userPPCode);//获取全部图片
+        }
     }
 
     private void getPreviewPhotos() {
@@ -604,18 +692,24 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             photoInfo = photolist.get(currentPosition);
         }
 
-        //更新title地点名称
-        locationTextView.setText(photoInfo.getLocationName());
+        if (!isSouvenir) {
 
-        //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
-        if (photoInfo.getIsPaid() == 0 && photoInfo.getIsOnLine() == 1) {//未购买的图片
-            PictureAirLog.v(TAG, "need show blur view");
-            dismissPWProgressDialog();
-        } else if (photoInfo.getIsPaid() == 1 && photoInfo.getIsOnLine() == 1) {
-            previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
-            PictureAirLog.out("set enable in get ad");
+            //更新title地点名称
+            locationTextView.setText(photoInfo.getLocationName());
+
+            //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
+            if (photoInfo.getIsPaid() == 0 && photoInfo.getIsOnLine() == 1) {//未购买的图片
+                PictureAirLog.v(TAG, "need show blur view");
+                dismissPWProgressDialog();
+            } else if (photoInfo.getIsPaid() == 1 && photoInfo.getIsOnLine() == 1) {
+                previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
+                PictureAirLog.out("set enable in get ad");
+            } else {
+                PictureAirLog.out("set enable in other conditions");
+                dismissPWProgressDialog();
+            }
         } else {
-            PictureAirLog.out("set enable in other conditions");
+            locationTextView.setText(R.string.souvenir_photo);
             dismissPWProgressDialog();
         }
 
@@ -865,7 +959,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);
                 //3.修改viewPager中的值为targetList
-                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true);
+                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true, isSouvenir);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(0, true);
                 currentPosition = 0;

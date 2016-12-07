@@ -287,6 +287,7 @@ public class Common {
     public static final String ACACHE_ADDRESS = "address";//收货地址缓存
     public static final String UPDATE_INFO = "updateInfo";//更新信息
     public static final String CACHE_LOCATION_TIMER = "cache_location_time";//计时器
+    public static final String SOUVENIR = "souvenir";
 
     //photo sqlite数据库字段
     public static final boolean USE_ENCRYPTED_DATABASE = true;//是否使用加密的数据库

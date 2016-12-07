@@ -187,12 +187,13 @@
     <string name="mypage_pp">迪士尼乐拍通</string>
     <string name="mypage_ppp">迪士尼乐拍通一卡通</string>
     <string name="mypage_pp1">迪士尼\n乐拍通</string>
-    <string name="mypage_ppp1">迪士尼\n乐拍通一卡通</string>
+    <string name="mypage_ppp1">迪士尼乐拍通一卡通</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
     <string name="mypage_download">下载管理</string>
     <string name="mypage_opinions">联系我们</string>
+    <string name="mypage_customer">乐拍通客服</string>
     <string name="code_tips">请向迪士尼乐拍通摄影师出示此二维码关联您的照片，即可轻松预览照片。</string>
     <!-- me end -->
 
@@ -220,6 +221,8 @@
     <string name="photo_cannot_edit_yes">确定</string>
     <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
     <string name="gallery_expire_time">（有效期至%1$s）</string>
+    <string name="souvenir_not_exist">您还没纪念照哦!</string>
+    <string name="souvenir_photo">纪念照</string>
     <!-- preview photo end -->
 
     <!-- blur start -->
