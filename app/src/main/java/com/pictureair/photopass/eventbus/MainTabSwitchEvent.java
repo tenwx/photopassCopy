@@ -11,6 +11,7 @@ public class MainTabSwitchEvent implements BaseBusEvent {
 //    public static final int DISNEY_STORY_TAB = 2;//我的迪士尼故事（视频）页面
     public static final int SHOP_TAB = 3;//商品页面
     public static final int ME_TAB = 4;//我的页面
+    public static final int DRAGER_VIEW = 5;//侧边栏
 
     private int mainTabSwitchIndex;
 

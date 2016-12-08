@@ -96,7 +96,7 @@
     <string name="story_tab_favorite">收藏</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或迪士尼乐拍通卡预览您的照片。</string>
+    <string name="story_no_pp">请扫一扫您的乐拍通/迪士尼门票背后二维码，当有您的照片出现时即可在App内免费预览哦！</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_photo_in_magiccam">收藏全部的已编辑图片</string>
@@ -119,7 +119,7 @@
     <string name="five_days_ago">5天前</string>
     <string name="six_days_ago">6天前</string>
     <string name="video_location">My Disney Story</string>
-    <string name="download_share_bought_photo">您要下载及分享您已拍的照片吗？</string>
+    <string name="download_share_bought_photo">快用起来吧！</string>
     <string name="story_buy_ppp">购买迪士尼乐拍通一卡通</string>
     <string name="story_scan_ppp">激活您已购买的乐拍通一卡通</string>
     <!-- story end -->
@@ -179,8 +179,8 @@
     <string name="story_unbound">解绑</string>
     <string name="story_myphotopass">我的乐拍通</string>
     <string name="story_photo_count">(%1$d)</string>
-    <string name="story_slide_open"></string>
-    <string name="story_slide_close"></string>
+    <string name="story_slide_open">1</string>
+    <string name="story_slide_close">2</string>
     <!-- disney story end -->
 
     <!-- me start -->

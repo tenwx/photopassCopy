@@ -266,6 +266,11 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".activity.GifPlayActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+
         <!-- download photo begin -->
         <activity
             android:name=".activity.LoadManageActivity"
