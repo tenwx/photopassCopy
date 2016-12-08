@@ -151,7 +151,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
-                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist, 1, false, false);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist, 1, false);
                 pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);

@@ -469,6 +469,19 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         transaction.commitAllowingStateLoss();
     }
 
+    /**
+     * 设置打开或者关闭手势滑动
+     * */
+    private void setDrawerLayoutState(boolean openOrClose) {
+        if (mDrawerLayout != null) {
+            if (openOrClose) {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            } else {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+        }
+    }
+
     private void setTabSelection(int index, boolean needHide) {
 
         if (checkCurrentSelection(index)) {//如果正在显示，不需要做任何处理
@@ -491,6 +504,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 // 当点击了照片tab时，改变控件的图片和文字颜色
                 storyIV.setImageResource(R.drawable.icon_photos_sel);
                 storyTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                setDrawerLayoutState(true);
                 if (fragmentPageStory == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
                     fragmentPageStory = new FragmentPageStory();
@@ -505,6 +519,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 // 当点击了发现tab时，改变控件的图片和文字颜色
                 discoverIV.setImageResource(R.drawable.icon_discover_sel);
                 discoverTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                setDrawerLayoutState(false);
                 if (fragmentPageDiscover == null) {
                     // 如果ContactsFragment为空，则创建一个并添加到界面上
                     fragmentPageDiscover = new FragmentPageDiscover();
@@ -519,6 +534,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 // 当点击了商店tab时，改变控件的图片和文字颜色
                 shopIV.setImageResource(R.drawable.icon_shop_sel);
                 shopTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                setDrawerLayoutState(false);
                 if (fragmentPageShop == null) {
                     // 如果NewsFragment为空，则创建一个并添加到界面上
                     fragmentPageShop = new FragmentPageShop();
@@ -533,6 +549,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 // 当点击了我的tab时，改变控件的图片和文字颜色
                 meIV.setImageResource(R.drawable.icon_me_sel);
                 meTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                setDrawerLayoutState(false);
                 if (fragmentPageMe == null) {
                     PictureAirLog.out("fragment me is null");
                     // 如果SettingFragment为空，则创建一个并添加到界面上

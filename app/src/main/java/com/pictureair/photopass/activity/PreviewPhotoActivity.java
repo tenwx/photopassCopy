@@ -271,7 +271,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case 7://操作比较耗时，会影响oncreate绘制
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
-                pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist, 0, true, isSouvenir);
+                pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist, 0, true);
                 pagerAdapter.setOnPhotoEventListener(this);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
@@ -959,7 +959,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);
                 //3.修改viewPager中的值为targetList
-                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true, isSouvenir);
+                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(0, true);
                 currentPosition = 0;
