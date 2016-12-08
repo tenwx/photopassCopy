@@ -144,20 +144,21 @@ public class PictureAirDbManager {
             if (type == 1) {
                 selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                         .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
-                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
+                        .orderAsc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
             } else {
                 selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                         .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"),
                                 PhotoInfoDao.Properties.IsPaid.eq(0),
                                 PhotoInfoDao.Properties.ShootDate.eq(ppInfo.getShootDate()))
-                        .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
+                        .orderAsc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
             }
 
             for (PhotoInfo photoInfo : selectPhotoItemInfos) {
                 // 获取图片路径
                 map = new HashMap<>();
-                map.put("url", photoInfo.getPhotoThumbnail_128());
+                map.put("url", Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512());
                 map.put("isVideo", photoInfo.getIsVideo() + "");
+                map.put("isEnImage", photoInfo.getIsEnImage()+"");
                 urlList.add(map);
             }
 
@@ -171,6 +172,7 @@ public class PictureAirDbManager {
                     map = new HashMap<>();
                     map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
                     map.put("isVideo", "0");
+                    map.put("isEnImage", "0");
                     urlList.add(map);
                 }
             } else if (count < 12) {
@@ -178,6 +180,7 @@ public class PictureAirDbManager {
                     map = new HashMap<>();
                     map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
                     map.put("isVideo", "0");
+                    map.put("isEnImage", "0");
                     urlList.add(map);
                 }
             }

@@ -2,6 +2,10 @@
 <resources>
     <!-- 白色-->
     <color name="white">#FFFFFF</color>
+
+    <!-- 白色半透明-->
+    <color name="transparent_white">#AAFFFFFF</color>
+
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
     <color name="pp_blue">#6799ca</color>
     <!-- 深蓝，比如深色的字体颜色-->

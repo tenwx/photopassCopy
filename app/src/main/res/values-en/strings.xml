@@ -431,8 +431,11 @@
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="select_pp_right_date">You have chosen to activate this Disney Park Ticket/PhotoPass card:\n%1$s\nDisney PhotoPass+ allows you to activate 3 Park Tickets/PhotoPass cards in one single day, OR 1 Park Ticket/PhotoPass card on 3 consecutive days.\n\nPlease confirm to continue the activation of the above Park Ticket/PhotoPass card.</string>
     <string name="pp_tip">Below are your Disney Park Tickets/PhotoPass cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
+    <string name="pp_tip1">温馨提示：</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
+    <string name="pp_cardcode_tip">卡号：</string>
+    <string name="pp_clear_card">选择高清此卡</string>
     <!-- select pp end -->
 
     <!-- select ppp start -->

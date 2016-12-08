@@ -2,13 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/pp_dp_16"
+    android:padding="@dimen/pp_dp_10"
     android:background="@color/gray_light">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/pp_tip"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pp_tip1"
+        android:layout_marginTop="2dp"
+        android:textSize="@dimen/text_size_14"
+        android:textColor="@color/pp_dark_blue"
+        android:layout_marginLeft="5dp"
+        />
 
     <TextView
         android:layout_width="match_parent"
