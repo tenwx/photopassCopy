@@ -61,54 +61,45 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/pp_dp_14"
+            android:padding="@dimen/pp_dp_5"
             android:text="@string/pp_ok"
             android:textColor="@color/white"
-            android:padding="@dimen/pp_dp_5"
-            android:visibility="gone"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
-    <!--<com.pictureair.photopass.widget.BannerView_PPPIntroduce-->
-        <!--android:id="@+id/nopppinfo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/head"-->
-        <!--android:visibility="visible" />-->
     <ScrollView
         android:id="@+id/nopppinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/head"
         android:layout_above="@+id/ll_button_area"
-        android:scrollbars="none"
-        android:fillViewport="true">
+        android:layout_below="@id/head"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
         <LinearLayout
-            android:background="@color/pp_light_gray_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/pp_light_gray_background"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-
             <ImageView
-                android:layout_weight="5"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:src="@drawable/ppp_introduce1"/>
-
+                android:layout_weight="5"
+                android:src="@drawable/ppp_introduce1" />
 
             <TextView
-                android:layout_weight="2"
-                android:layout_margin="20dp"
-                android:text="@string/instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:textColor="@color/pp_dark_blue"/>
-
+                android:layout_margin="20dp"
+                android:layout_weight="2"
+                android:text="@string/instruction"
+                android:textColor="@color/pp_dark_blue" />
         </LinearLayout>
     </ScrollView>
-
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"
@@ -148,25 +139,23 @@
             android:text="@string/scan_ppp_text"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/pp_dp_16" />
-
     </LinearLayout>
-
 
     <com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout
         android:id="@+id/ppp_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/head"
-        android:visibility="gone"
-        >
-            <com.pictureair.photopass.widget.pullloadlayout.MyListView
-                android:id="@+id/list_ppp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        android:visibility="gone">
 
-                android:divider="@color/gray_light"
-                android:dividerHeight="@dimen/pp_dp_5"
-                android:scrollbars="none" />
+        <com.pictureair.photopass.widget.pullloadlayout.MyListView
+            android:id="@+id/list_ppp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:divider="@color/gray_light"
+            android:dividerHeight="@dimen/pp_dp_5"
+            android:scrollbars="none" />
     </com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout>
 
     <LinearLayout
@@ -174,16 +163,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/guide_background"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <ImageView
             android:id="@+id/ppp_img_guide_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:scaleType="fitXY"/>
+            android:layout_marginTop="52dp"
+            android:scaleType="fitXY" />
     </LinearLayout>
 
 </RelativeLayout>

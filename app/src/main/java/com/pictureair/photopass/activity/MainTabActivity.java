@@ -503,7 +503,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case 0:
                 // 当点击了照片tab时，改变控件的图片和文字颜色
                 storyIV.setImageResource(R.drawable.icon_photos_sel);
-                storyTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                storyTV.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 setDrawerLayoutState(true);
                 if (fragmentPageStory == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
@@ -518,7 +518,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case 1:
                 // 当点击了发现tab时，改变控件的图片和文字颜色
                 discoverIV.setImageResource(R.drawable.icon_discover_sel);
-                discoverTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                discoverTV.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 setDrawerLayoutState(false);
                 if (fragmentPageDiscover == null) {
                     // 如果ContactsFragment为空，则创建一个并添加到界面上
@@ -533,7 +533,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case 3:
                 // 当点击了商店tab时，改变控件的图片和文字颜色
                 shopIV.setImageResource(R.drawable.icon_shop_sel);
-                shopTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                shopTV.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 setDrawerLayoutState(false);
                 if (fragmentPageShop == null) {
                     // 如果NewsFragment为空，则创建一个并添加到界面上
@@ -548,7 +548,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case 4:
                 // 当点击了我的tab时，改变控件的图片和文字颜色
                 meIV.setImageResource(R.drawable.icon_me_sel);
-                meTV.setTextColor(ContextCompat.getColor(this, R.color.pp_purple));
+                meTV.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 setDrawerLayoutState(false);
                 if (fragmentPageMe == null) {
                     PictureAirLog.out("fragment me is null");
@@ -825,9 +825,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             EventBus.getDefault().removeStickyEvent(redPointControlEvent);
         } else if (baseBusEvent instanceof MainTabSwitchEvent) {//切换到对应的tab
             MainTabSwitchEvent mainTabSwitchEvent = (MainTabSwitchEvent) baseBusEvent;
-            setTabSelection(mainTabSwitchEvent.getMainTabSwitchIndex(), true);
-            application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
-            last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
+            if (mainTabSwitchEvent.getMainTabSwitchIndex() == MainTabSwitchEvent.DRAGER_VIEW) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            } else {
+                setTabSelection(mainTabSwitchEvent.getMainTabSwitchIndex(), true);
+                application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
+                last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
+            }
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
 
         } else if (baseBusEvent instanceof StoryLoadCompletedEvent) {//显示引导层

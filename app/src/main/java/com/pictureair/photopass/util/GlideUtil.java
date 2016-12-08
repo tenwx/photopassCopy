@@ -295,6 +295,21 @@ public class GlideUtil {
     }
 
     /**
+     * 加载gif的url，但是也按照图片显示
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    public static void loadGifAsImage(Context context, String url, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .into(imageView);
+    }
+
+    /**
      * 获取文件url
      * @param path
      * @return

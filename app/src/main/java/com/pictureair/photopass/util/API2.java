@@ -16,13 +16,14 @@ import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
-import com.pictureair.photopass.http.rxhttp.*;
+import com.pictureair.photopass.http.rxhttp.APIException;
+import com.pictureair.photopass.http.rxhttp.ApiFactory;
 import com.pictureair.photopass.http.rxhttp.HttpCallback;
+import com.pictureair.photopass.http.rxhttp.PhotoPassAuthApi;
+import com.pictureair.photopass.http.rxhttp.RxHelper;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ import java.util.Map;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -121,6 +121,9 @@ public class API2 {
 
     public static final int DELETE_PHOTOS_SUCCESS = 2101;
     public static final int DELETE_PHOTOS_FAILED = 2100;
+
+    public static final int GET_BANNER_PHOTOS_SUCCESS = 2111;
+    public static final int GET_BANNER_PHOTOS_FAILED = 2110;
 
     /**
      * 发现
@@ -854,6 +857,35 @@ public class API2 {
 //            }
 //        });
 //        return task;
+    }
+
+    /**
+     * 获取首页轮播照片
+     *
+     * @param tokenId
+     */
+    public static Observable<JSONObject> getBannerPhotos(String tokenId, final HttpCallback callback) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable = request.get(Common.BASE_URL_TEST + Common.GET_BANNER_PHOTOS, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
     }
 
     /**
