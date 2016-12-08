@@ -2,34 +2,87 @@
     android:id="@+id/layout_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:gravity="bottom" >
+    android:gravity="center_vertical">
 
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/user_name"
+    <RelativeLayout
+        android:id="@+id/user_head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        >
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/user_photo_bg"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/nn"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16"
+            android:gravity="left|bottom"/>
+
+        <ImageView
+            android:layout_width="@dimen/pp_dp_15"
+            android:layout_height="@dimen/pp_dp_15"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/user_name"
+            android:src="@drawable/back_white"
+            android:rotation="180"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            />
+
+        <com.pictureair.photopass.widget.CircleImageView
+            android:id="@+id/user_photo_bg"
+            android:layout_width="@dimen/pp_dp_80"
+            android:layout_height="@dimen/pp_dp_80"
+            android:layout_centerVertical="true"
+            android:src="@drawable/user_photo_bg"
+            android:layout_marginLeft="@dimen/pp_dp_30"
+            android:layout_alignParentLeft="true"
+            />
+
+        <com.pictureair.photopass.widget.CircleImageView
+            android:id="@+id/user_photo"
+            android:layout_width="@dimen/pp_dp_60"
+            android:layout_height="@dimen/pp_dp_60"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_photo"
+            android:layout_marginLeft="@dimen/pp_dp_40"
+            android:layout_alignParentLeft="true"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/user_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_toRightOf="@+id/user_photo_bg"
-        android:layout_marginLeft="5dp"
-        android:text="@string/nn"
-        android:textColor="@color/pp_dark_blue"
-        android:textSize="@dimen/text_size_16" />
+        android:padding="@dimen/pp_dp_10"
+        android:adjustViewBounds="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/pp_dp_30"
+        android:src="@drawable/float_customer"
+        />
 
-    <com.pictureair.photopass.widget.CircleImageView
-        android:id="@+id/user_photo_bg"
-        android:layout_width="@dimen/pp_dp_80"
-        android:layout_height="@dimen/pp_dp_80"
-        android:layout_marginLeft="@dimen/pp_dp_20"
-        android:layout_marginTop="@dimen/pp_dp_20_"
-        android:src="@drawable/user_photo_bg" />
 
-    <com.pictureair.photopass.widget.CircleImageView
-        android:id="@+id/user_photo"
-        android:layout_width="@dimen/pp_dp_60"
-        android:layout_height="@dimen/pp_dp_60"
-        android:layout_marginLeft="@dimen/pp_dp_30"
-        android:layout_marginTop="@dimen/pp_dp_10_"
-        android:src="@drawable/default_photo" />
+    <!--<com.pictureair.photopass.widget.CircleImageView-->
+        <!--android:id="@+id/user_photo_bg"-->
+        <!--android:layout_width="@dimen/pp_dp_80"-->
+        <!--android:layout_height="@dimen/pp_dp_80"-->
+        <!--android:layout_marginLeft="@dimen/pp_dp_20"-->
+        <!--android:layout_marginTop="@dimen/pp_dp_20_"-->
+        <!--android:src="@drawable/user_photo_bg" />-->
+
+    <!--<com.pictureair.photopass.widget.CircleImageView-->
+        <!--android:id="@+id/user_photo"-->
+        <!--android:layout_width="@dimen/pp_dp_60"-->
+        <!--android:layout_height="@dimen/pp_dp_60"-->
+        <!--android:layout_marginLeft="@dimen/pp_dp_30"-->
+        <!--android:layout_marginTop="@dimen/pp_dp_10_"-->
+        <!--android:src="@drawable/default_photo" />-->
 
 </RelativeLayout>

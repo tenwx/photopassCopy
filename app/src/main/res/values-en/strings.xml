@@ -191,12 +191,13 @@
     <string name="mypage_pp">Disney PhotoPass</string>
     <string name="mypage_ppp">Disney PhotoPass+</string>
     <string name="mypage_pp1">Disney\nPhotoPass</string>
-    <string name="mypage_ppp1">Disney\nPhotoPass+</string>
+    <string name="mypage_ppp1">Disney PhotoPass+</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
     <string name="mypage_download">Downloads</string>
     <string name="mypage_opinions">Contact Us</string>
+    <string name="mypage_customer">乐拍通客服</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
 
@@ -224,6 +225,8 @@
     <string name="photo_cannot_edit_yes">OK</string>
     <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
     <string name="gallery_expire_time">（有效期至%1$s）</string>
+    <string name="souvenir_not_exist">您还没纪念照哦!</string>
+    <string name="souvenir_photo">纪念照</string>
     <!-- preview photo end -->
 
     <!-- blur start -->

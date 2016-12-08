@@ -257,8 +257,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 break;
 
             case R.id.other_login_sign:
-                Intent intent = new Intent(this, OtherRegisterActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(OtherLoginActivity.this,
+                        RegisterOrForgetActivity.class).putExtra("activity","sign"));
+//                Intent intent = new Intent(this, OtherRegisterActivity.class);
+//                startActivity(intent);
                 break;
 
             case R.id.other_btn_next:

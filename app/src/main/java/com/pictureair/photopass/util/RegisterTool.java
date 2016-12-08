@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.R;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 
 
@@ -23,6 +26,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     public static final String FORGET_ACTIVITY = "forget";
     private String whatActivity = "";
     private SignAndLoginUtil signAndLoginUtil;
+    private PWToast myToast;
 
     private Handler handler = new Handler() {
         @Override
@@ -52,6 +56,15 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
                     break;
                 case SEND_TIME:
                     registerOrForgetView.countDown(time);
+                    break;
+                case API1.GET_TOKEN_ID_SUCCESS:
+                    tokenId = MyApplication.getTokenId();
+                    API1.sendSMSValidateCode(handler, tokenId, phone, languageType, true);
+                    break;
+
+                case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
+                    registerOrForgetView.goneDialog();
+                    myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
                 default:
                     break;
@@ -98,6 +111,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
         this.registerOrForgetView = registerView;
         this.languageType = languageType;
         signAndLoginUtil = new SignAndLoginUtil(context, this);
+        myToast = new PWToast(context);
     }
 
     public void submit(String validateCode, String phone, String pwd) {
@@ -109,7 +123,11 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
     public void sendSMSValidateCode(String phone) {
         registerOrForgetView.showDialog();
-        API1.sendSMSValidateCode(handler, tokenId, phone, languageType, true);
+        if (null == tokenId) {
+            API1.getTokenId(context, handler);
+        } else {
+            handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+        }
     }
 
     @Override
