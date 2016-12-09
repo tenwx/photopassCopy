@@ -16,6 +16,7 @@ import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.SendAddress;
+import com.pictureair.photopass.http.BasicResultCallTask;
 import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
 import com.pictureair.photopass.http.rxhttp.APIException;
 import com.pictureair.photopass.http.rxhttp.ApiFactory;
@@ -40,6 +41,41 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by pengwu on 16/11/9.
+ *
+ * HttpCallBack中重写 onProgress(数据传输进度) doOnSubscribe(代替Observable 的 doOnSubscribe)
+ * .subscribe方法中需要new一个RXsubScribe,RxSubScribe对返回失败进行了处理
+ *
+ * 示例
+ * API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode, new HttpCallback() {
+ *         @Override
+ *       public void onProgress() {
+ *          super.onProgress();
+ *       }
+ *
+ *       @Override
+ *       public void doOnSubscribe() {
+ *          super.doOnSubscribe();
+ *          showPWProgressDialog();
+ *       }
+ *   }).observeOn(AndroidSchedulers.mainThread())
+ *       .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+ *       .subscribe(new RxSubscribe<JSONObject>() {
+ *           @Override
+ *           public void _onNext(JSONObject jsonObject) {
+ *
+ *           }
+ *
+ *           @Override
+ *           public void _onError(int status) {
+ *
+ *           }
+ *
+ *           @Override
+ *           public void onCompleted() {
+ *
+ *           }
+ *   });
+ *
  */
 
 public class API2 {
@@ -4398,5 +4434,57 @@ public class API2 {
 //
 //        });
 
+    }
+
+    /**
+     * 获取纪念照
+     *
+     * @param tokenId
+     */
+    public static Observable<JSONObject> getSouvenirPhotos(final String tokenId, String ppCode, final HttpCallback callback) {
+        Map<String,Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        if (!TextUtils.isEmpty(ppCode)) {
+            params.put(Common.CUSTOMERID, ppCode);
+        }
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
+
+
+//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new com.pictureair.photopass.util.HttpCallback() {
+//            @Override
+//            public void onSuccess(JSONObject jsonObject) {
+//                super.onSuccess(jsonObject);
+//                //成功获取照片信息
+//
+//                PictureAirLog.json(jsonObject.toString());
+//                handler.obtainMessage(GET_SOUVENIR_PHOTO_SUCCESS, jsonObject).sendToTarget();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                handler.obtainMessage(GET_SOUVENIR_PHOTO_FAILED, status, 0).sendToTarget();
+//            }
+//        });
+//        return task;
     }
 }

@@ -43,9 +43,12 @@ import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.HttpCallback;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -60,6 +63,7 @@ import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
 import java.text.ParseException;
@@ -70,6 +74,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -386,74 +392,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 finish();
                 break;
 
-            case API1.GET_SOUVENIR_PHOTO_SUCCESS:
-
-                JSONObject jsonObject1 = (JSONObject) msg.obj;
-                if (jsonObject1 != null) {
-                    JSONArray responseArray = jsonObject1.getJSONArray("photos");
-                    photolist = new ArrayList<>();
-                    if (responseArray.size() > 0) {
-                        ACache.get(PreviewPhotoActivity.this).put(Common.SOUVENIR, responseArray);
-                        noSouvenirLayout.setVisibility(View.GONE);
-                        netWorkOrNoCountView.setVisibility(View.GONE);
-                        photoFraRelativeLayout.setVisibility(View.VISIBLE);
-                        for (int i = 0; i < responseArray.size(); i++) {
-                            PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i));
-                            if (photoInfo != null) {
-                                photolist.add(photoInfo);
-                            }
-                        }
-                        currentPosition = 0;
-                        previewPhotoHandler.sendEmptyMessage(7);
-                    } else {
-
-                        netWorkOrNoCountView.setVisibility(View.GONE);
-                        photoFraRelativeLayout.setVisibility(View.GONE);
-                        noSouvenirLayout.setVisibility(View.VISIBLE);
-                        locationTextView.setText(R.string.souvenir_photo);
-                        dismissPWProgressDialog();
-                    }
-                } else {
-                    netWorkOrNoCountView.setVisibility(View.GONE);
-                    photoFraRelativeLayout.setVisibility(View.GONE);
-                    noSouvenirLayout.setVisibility(View.VISIBLE);
-                    locationTextView.setText(R.string.souvenir_photo);
-                    dismissPWProgressDialog();
-                }
-                break;
-
-            case API1.GET_SOUVENIR_PHOTO_FAILED:
-                Object object = ACache.get(PreviewPhotoActivity.this).getAsObject(Common.SOUVENIR);
-                if (object != null) {
-                    if (object instanceof JSONArray) {
-                        photolist = new ArrayList<>();
-                        noSouvenirLayout.setVisibility(View.GONE);
-                        netWorkOrNoCountView.setVisibility(View.GONE);
-                        photoFraRelativeLayout.setVisibility(View.VISIBLE);
-                        JSONArray jsonArray = (JSONArray) object;
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i));
-                            if (photoInfo != null) {
-                                photolist.add(photoInfo);
-                            }
-                        }
-                        currentPosition = 0;
-                        previewPhotoHandler.sendEmptyMessage(7);
-                    }
-                } else {
-                    noSouvenirLayout.setVisibility(View.GONE);
-                    photoFraRelativeLayout.setVisibility(View.GONE);
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                    locationTextView.setText(R.string.souvenir_photo);
-                    netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, previewPhotoHandler, true);
-                    dismissPWProgressDialog();
-                }
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD:
-                    showPWProgressDialog();
-                    String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
-                    API1.getSouvenirPhotos(MyApplication.getTokenId(), previewPhotoHandler, userPPCode);//获取全部图片
+                getSouvenirPhotos();
                 break;
 
             default:
@@ -507,14 +447,97 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             landscapeOrientation();
         }
 
-        showPWProgressDialog();
         isSouvenir = getIntent().getBooleanExtra("souvenir", false);
         if (!isSouvenir) {
+            showPWProgressDialog();
             getPreviewPhotos();
         } else {
-            String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
-            API1.getSouvenirPhotos(MyApplication.getTokenId(), previewPhotoHandler, userPPCode);//获取全部图片
+            getSouvenirPhotos();
         }
+    }
+
+
+    private void getSouvenirPhotos() {
+        String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
+        API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode, new HttpCallback() {
+            @Override
+            public void doOnSubscribe() {
+                super.doOnSubscribe();
+                showPWProgressDialog();
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        if (jsonObject != null) {
+                            JSONArray responseArray = jsonObject.getJSONArray("photos");
+                            photolist = new ArrayList<>();
+                            if (responseArray.size() > 0) {
+                                ACache.get(PreviewPhotoActivity.this).put(Common.SOUVENIR, responseArray);
+                                noSouvenirLayout.setVisibility(View.GONE);
+                                netWorkOrNoCountView.setVisibility(View.GONE);
+                                photoFraRelativeLayout.setVisibility(View.VISIBLE);
+                                for (int i = 0; i < responseArray.size(); i++) {
+                                    PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i));
+                                    if (photoInfo != null) {
+                                        photolist.add(photoInfo);
+                                    }
+                                }
+                                currentPosition = 0;
+                                previewPhotoHandler.sendEmptyMessage(7);
+                            } else {
+
+                                netWorkOrNoCountView.setVisibility(View.GONE);
+                                photoFraRelativeLayout.setVisibility(View.GONE);
+                                noSouvenirLayout.setVisibility(View.VISIBLE);
+                                locationTextView.setText(R.string.souvenir_photo);
+                                dismissPWProgressDialog();
+                            }
+                        } else {
+                            netWorkOrNoCountView.setVisibility(View.GONE);
+                            photoFraRelativeLayout.setVisibility(View.GONE);
+                            noSouvenirLayout.setVisibility(View.VISIBLE);
+                            locationTextView.setText(R.string.souvenir_photo);
+                            dismissPWProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        Object object = ACache.get(PreviewPhotoActivity.this).getAsObject(Common.SOUVENIR);
+                        if (object != null) {
+                            if (object instanceof JSONArray) {
+                                photolist = new ArrayList<>();
+                                noSouvenirLayout.setVisibility(View.GONE);
+                                netWorkOrNoCountView.setVisibility(View.GONE);
+                                photoFraRelativeLayout.setVisibility(View.VISIBLE);
+                                JSONArray jsonArray = (JSONArray) object;
+                                for (int i = 0; i < jsonArray.size(); i++) {
+                                    PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i));
+                                    if (photoInfo != null) {
+                                        photolist.add(photoInfo);
+                                    }
+                                }
+                                currentPosition = 0;
+                                previewPhotoHandler.sendEmptyMessage(7);
+                            }
+                        } else {
+                            noSouvenirLayout.setVisibility(View.GONE);
+                            photoFraRelativeLayout.setVisibility(View.GONE);
+                            netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                            locationTextView.setText(R.string.souvenir_photo);
+                            netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, previewPhotoHandler, true);
+                            dismissPWProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });//获取全部图片
+
     }
 
     private void getPreviewPhotos() {

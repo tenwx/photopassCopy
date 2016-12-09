@@ -306,10 +306,6 @@ public class API1 {
     public static final int GET_SHORT_URL_SUCCESS = 6071;
     public static final int GET_SHORT_URL_FAILED = 6070;
 
-    //纪念照
-    public static final int GET_SOUVENIR_PHOTO_SUCCESS = 6081;
-    public static final int GET_SOUVENIR_PHOTO_FAILED = 6080;
-
     /**
      * 发送设备ID获取tokenId
      *
@@ -3019,38 +3015,6 @@ public class API1 {
 
     }
 
-    /**
-     * 获取纪念照
-     *
-     * @param tokenId
-     * @param handler
-     */
-    public static BasicResultCallTask getSouvenirPhotos(final String tokenId, final Handler handler,String ppCode) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (!TextUtils.isEmpty(ppCode)) {
-            params.put(Common.CUSTOMERID, ppCode);
-        }
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                //成功获取照片信息
-
-                PictureAirLog.json(jsonObject.toString());
-                handler.obtainMessage(GET_SOUVENIR_PHOTO_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_SOUVENIR_PHOTO_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
 
     public static void cancelAllRequest() {
         CallTaskManager.getInstance().cancleAllTask();

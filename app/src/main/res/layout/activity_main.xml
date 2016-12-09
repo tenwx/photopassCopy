@@ -26,20 +26,33 @@
                 android:layout_above="@+id/main_bottom_bar"
                 android:background="@color/pp_gray" />
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
+            <com.pictureair.photopass.widget.DraftLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fab:fab_icon="@drawable/float_customer"
-                fab:fab_colorNormal="@color/pp_blue"
-                fab:fab_colorPressed="@color/pp_gray"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="65dp"
-                android:scaleType="fitXY"
+                android:layout_marginBottom="65dp">
 
-                />
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_icon="@drawable/float_customer"
+                    fab:fab_colorNormal="@color/pp_blue"
+                    fab:fab_colorPressed="@color/pp_gray"/>
+
+                <ImageView
+                    android:layout_width="@dimen/pp_dp_30"
+                    android:layout_height="@dimen/pp_dp_30"
+                    android:src="@drawable/float_hide"
+                    android:id="@+id/float_hide"
+                    android:layout_alignTop="@+id/fab"
+                    android:layout_alignRight="@+id/fab"
+                    android:layout_alignEnd="@+id/fab"
+                    android:paddingRight="8dp"
+                    android:paddingTop="5dp"/>
+            </com.pictureair.photopass.widget.DraftLayout>
 
         <LinearLayout
             android:id="@+id/main_bottom_bar"
@@ -198,20 +211,6 @@
                 android:src="@drawable/story_lead_zh" />
 
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="@dimen/pp_dp_30"
-            android:layout_height="@dimen/pp_dp_30"
-            android:src="@drawable/float_hide"
-            android:id="@+id/float_hide"
-            android:layout_alignTop="@+id/fab"
-            android:layout_alignRight="@+id/fab"
-            android:layout_alignEnd="@+id/fab"
-            android:paddingRight="8dp"
-            android:paddingTop="5dp"
-
-            />
-
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/main_slide_layout"

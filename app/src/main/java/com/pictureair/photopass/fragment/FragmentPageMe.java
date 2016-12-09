@@ -17,6 +17,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.HelpActivity;
+import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.OrderActivity;
@@ -39,7 +40,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout orderTV,  pppTV, helpTV,  couponTV, opinionsTV, customerTV;
+    private RelativeLayout orderTV,  pppTV, helpTV,  couponTV, opinionsTV, customerTV, downloadTV;
     private ImageView headPhoto, headSet;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String avatarUrl = "";//用户头像url
@@ -75,6 +76,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         couponTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_coupon);
         opinionsTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_opinions);
         customerTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_customer);
+        downloadTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_download);
 
         orderTV.setOnClickListener(this);
         pppTV.setOnClickListener(this);
@@ -83,6 +85,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         opinionsTV.setOnClickListener(this);
         headSet.setOnClickListener(this);
         customerTV.setOnClickListener(this);
+        downloadTV.setOnClickListener(this);
 
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(activity),
                 (int) (4.0F * (ScreenUtil.getScreenHeight(activity) / 16.0F)) + ScreenUtil.dip2px(activity, 35));
@@ -167,10 +170,10 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //                startActivity(i);
 //                break;
 
-//            case R.id.me_download:
-//                i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
-//                startActivity(i);
-//                break;
+            case R.id.me_download:
+                i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
+                startActivity(i);
+                break;
 
             case R.id.me_coupon:
                 i.setClass(MyApplication.getInstance(), CouponActivity.class);
