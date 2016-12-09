@@ -361,7 +361,7 @@ public class API2 {
         if (userName != null) {
             params.put(Common.USERINFO_USERNAME, userName);
         }
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         Observable<BasicResult<JSONObject>> observable  = request.post(Common.BASE_URL_TEST + Common.LOGIN, params)
