@@ -122,6 +122,9 @@
     <string name="download_share_bought_photo">快用起来吧！</string>
     <string name="story_buy_ppp">Buy Disney PhotoPass+ Now</string>
     <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
+    <string name="story_no_photo_tip">您的乐拍通/迪士尼门票还没有绑定任何照片\n请快速找乐拍通摄影师免费拍照吧！</string>
+    <string name="story_home">上海迪士尼乐拍通家园</string>
+    <string name="story_card">卡号：%1$s</string>
     <!-- story end -->
 
     <!-- scan start -->

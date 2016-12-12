@@ -4,6 +4,7 @@ import com.pictureair.photopass.entity.DealingInfo;
 
 /**
  * Created by bauer_bao on 15/12/29.
+ * 首页的点击，通知给各个fragment tab
  */
 public class MainTabOnClickEvent implements BaseBusEvent {
     public static final int STORY_TAB_CLICK_EVENT = 1;
