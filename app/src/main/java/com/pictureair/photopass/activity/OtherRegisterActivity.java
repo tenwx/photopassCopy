@@ -262,10 +262,10 @@ public class OtherRegisterActivity extends BaseActivity implements
             case R.id.iv_agreement:
                 if (isAgree) {
                     isAgree = false;
-                    agreeIv.setImageResource(R.drawable.gender_normal);
+                    agreeIv.setImageResource(R.drawable.login_check_unselect);
                 } else {
                     isAgree = true;
-                    agreeIv.setImageResource(R.drawable.gender_sele);
+                    agreeIv.setImageResource(R.drawable.login_check_select);
                 }
                 break;
 
@@ -408,7 +408,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setColor(Color.parseColor("#ff4605"));
+            ds.setColor(getResources().getColor(R.color.pp_red));
         }
     }
 

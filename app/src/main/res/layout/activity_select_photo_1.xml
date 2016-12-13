@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/rlrt"
@@ -22,7 +22,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/select_photo_line"/>
 
         <TextView
             android:id="@+id/tv_head"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/select"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -44,6 +45,14 @@
             android:text="@string/selected"
             android:textColor="@color/gray_light5"
             android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:id="@id/select_photo_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
 
     <RelativeLayout

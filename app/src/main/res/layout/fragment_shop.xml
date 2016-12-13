@@ -9,14 +9,14 @@
         android:id="@+id/frag3_rl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/tab_shops"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <ImageView
@@ -30,7 +30,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/cart" />
+            android:src="@drawable/cart"
+            android:layout_above="@+id/shop_list_line"/>
 
         <TextView
             android:id="@+id/textview_cart_count"
@@ -45,6 +46,14 @@
             android:text="0"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12" />
+
+        <View
+            android:id="@id/shop_list_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
 
     </RelativeLayout>
 

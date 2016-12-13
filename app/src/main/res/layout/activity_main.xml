@@ -19,40 +19,12 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/main_divider" />
 
-            <ImageView
-                android:id="@+id/main_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/pp_px_1"
-                android:layout_above="@+id/main_bottom_bar"
-                android:background="@color/pp_gray" />
-
-            <com.pictureair.photopass.widget.DraftLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="65dp">
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fab:fab_icon="@drawable/float_customer"
-                    fab:fab_colorNormal="@color/pp_blue"
-                    fab:fab_colorPressed="@color/pp_gray"/>
-
-                <ImageView
-                    android:layout_width="@dimen/pp_dp_30"
-                    android:layout_height="@dimen/pp_dp_30"
-                    android:src="@drawable/float_hide"
-                    android:id="@+id/float_hide"
-                    android:layout_alignTop="@+id/fab"
-                    android:layout_alignRight="@+id/fab"
-                    android:layout_alignEnd="@+id/fab"
-                    android:paddingRight="8dp"
-                    android:paddingTop="5dp"/>
-            </com.pictureair.photopass.widget.DraftLayout>
+        <ImageView
+            android:id="@+id/main_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_above="@+id/main_bottom_bar"
+            android:background="@color/pp_gray" />
 
         <LinearLayout
             android:id="@+id/main_bottom_bar"
@@ -218,19 +190,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="start"
-        android:background="@color/black"
+        android:background="@color/white"
         >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp"
-            android:background="@color/transparent">
+            android:background="@color/pp_light_gray_background">
 
             <ImageView
                 android:id="@+id/main_slide_logo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/blur_bg_image"
+                android:src="@drawable/my_photopass"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/pp_dp_30"
                 />
@@ -238,11 +210,11 @@
                 android:id="@+id/main_slide_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@color/pp_blue"
                 android:text="@string/story_myphotopass"
                 android:gravity="center"
                 android:layout_below="@id/main_slide_logo"
-                android:layout_marginTop="@dimen/pp_dp_5"
+                android:layout_marginTop="@dimen/pp_dp_10"
                 android:textSize="@dimen/text_size_16"
                 />
             <CheckBox
@@ -255,6 +227,7 @@
                 android:text="@string/story_unbound"
                 android:textSize="@dimen/text_size_12"
                 style="@style/custom_checkbox"
+                android:textColor="@color/pp_blue"
                 />
 
             <CheckBox
@@ -262,22 +235,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/main_slide_text"
-                android:text="@string/select_all"
+                android:text="@string/edit_story_all"
                 android:layout_toLeftOf="@id/main_slide_unbound"
                 android:layout_marginRight="@dimen/pp_dp_20"
                 android:layout_marginTop="@dimen/pp_dp_10"
                 android:textSize="@dimen/text_size_12"
-                style="@style/custom_checkbox"/>
+                style="@style/custom_checkbox"
+                android:textColor="@color/pp_blue"/>
 
         </RelativeLayout>
         <ListView
             android:id="@+id/slid_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/white"
+            android:divider="@color/line_color"
             android:dividerHeight="1px"
             android:scrollbars="none"
-            android:background="@color/transparent"
             />
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

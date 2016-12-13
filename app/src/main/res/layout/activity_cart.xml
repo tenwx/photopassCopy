@@ -9,7 +9,7 @@
         android:id="@+id/tt"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/ret_relyt"
@@ -22,7 +22,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/cart_line"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,8 +32,9 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16"
+            android:layout_above="@+id/cart_line"/>
 
         <TextView
             android:id="@+id/cart_edit"
@@ -43,9 +45,18 @@
             android:layout_marginRight="@dimen/pp_dp_14"
             android:gravity="center"
             android:text="@string/edit"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_above="@+id/cart_line"/>
+
+        <View
+            android:id="@id/cart_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
 
     <RelativeLayout

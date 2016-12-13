@@ -155,7 +155,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow(R.string.profile);
         tvNickName = (TextView) findViewById(R.id.nick_name);
         tvGender = (TextView) findViewById(R.id.sex);

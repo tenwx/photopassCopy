@@ -16,8 +16,9 @@ public class DraftLayout extends RelativeLayout{
 
     private int screenWidth;
     private int screenHeight;
-    int lastX, lastY;
-    int originX, originY;
+    private int lastX, lastY;
+    private int originX, originY;
+    private int oriHeight;
 
     public DraftLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -49,7 +50,7 @@ public class DraftLayout extends RelativeLayout{
                 }
                 if (t < 0) {
                     t = 0;
-                    b = t + getHeight();
+                    b = t + oriHeight;
                 }
                 if (r > screenWidth) {
                     r = screenWidth;
@@ -57,10 +58,10 @@ public class DraftLayout extends RelativeLayout{
                 }
                 if (b > screenHeight) {
                     b = screenHeight;
-                    t = b - getHeight();
+                    t = b - oriHeight;
                 }
                 layout(l, t, r, b);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(getWidth(), getHeight());
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(getWidth(), oriHeight);
                 layoutParams.leftMargin = l;
                 layoutParams.topMargin = t;
                 setLayoutParams(layoutParams);
@@ -81,4 +82,11 @@ public class DraftLayout extends RelativeLayout{
         return false;
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (oriHeight == 0) {
+            oriHeight = b - t;
+        }
+    }
 }

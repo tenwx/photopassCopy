@@ -316,7 +316,7 @@ public class OrderActivity extends BaseFragmentActivity {
         showProgressDialog();
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         setTopTitleShow(R.string.my_order);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         paymentOrderTextView = (TextView) findViewById(R.id.order_payment);
         deliveryOrderTextView = (TextView) findViewById(R.id.order_delivery);
         allOrderTextView = (TextView) findViewById(R.id.order_all);

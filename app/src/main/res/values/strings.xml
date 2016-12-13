@@ -6,7 +6,6 @@
     <!-- start activity end-->
     <!-- login activity start-->
     <string name="user_login">用户登录</string>
-    <string name="user_register">用户注册</string>
     <string name="country">国家 / 地区</string>
     <string name="china">中国大陆</string>
     <string name="pwd">密码</string>
@@ -185,7 +184,7 @@
 
     <!-- me start -->
     <string name="mypage_message">信息</string>
-    <string name="mypage_coupons">抵用券</string>
+    <string name="mypage_coupons">优惠券</string>
     <string name="mypage_myprofile">个人信息</string>
     <string name="mypage_myorder">我的订单</string>
     <string name="mypage_pp">迪士尼乐拍通</string>
@@ -667,4 +666,11 @@
     <string name="special_deal_count_enough">您的购买次数达到上限</string>
     <string name="special_deal_title">特惠活动</string>
     <!--special deal-->
+
+    <!-- customer service -->
+    <string name="opinions_title">乐拍通客服</string>
+    <string name="opinions_questions">常见问题</string>
+    <string name="opinions_online">在线客服</string>
+    <string name="opinions_feedback">意见反馈</string>
+    <!---->
 </resources>

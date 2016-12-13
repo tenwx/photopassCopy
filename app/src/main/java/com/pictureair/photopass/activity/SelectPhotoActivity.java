@@ -402,7 +402,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         if (photoURLlist.size() == photocount ||
                 (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL) && photoURLlist.size() > 0)) {//1.选择的数量和需要的数量一致，2.数码商品
             okButton.setEnabled(true);
-            okButton.setTextColor(getResources().getColor(R.color.white));
+            okButton.setTextColor(getResources().getColor(R.color.pp_blue));
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/pp_blue" >
+        android:background="@color/white" >
 
         <ImageView
             android:id="@+id/button1_shop_rt"
@@ -22,7 +22,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/preview_line"/>
 
         <TextView
             android:id="@+id/preview_location"
@@ -33,7 +34,7 @@
             android:layout_toLeftOf="@+id/preview_love"
             android:layout_toRightOf="@id/button1_shop_rt"
             android:singleLine="true"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <ImageButton
@@ -49,7 +50,17 @@
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:visibility="invisible"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/preview_line"/>
+
+        <View
+            android:id="@id/preview_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
+
     </RelativeLayout>
 
     <RelativeLayout

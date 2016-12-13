@@ -14,7 +14,8 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:onClick="TopViewClick"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_above="@+id/toptitle_line">
 
         <ImageView
             android:id="@+id/topLeft_iv"
@@ -60,7 +61,9 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:onClick="TopViewClick"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_above="@+id/toptitle_line"
+        >
 
         <ImageView
             android:id="@+id/topRight_iv"
@@ -89,4 +92,11 @@
             android:visibility="gone" />
 
     </LinearLayout>
+    <View
+        android:id="@id/toptitle_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_px_1"
+        android:background="@color/pp_gray"
+        android:layout_alignParentBottom="true"
+        />
 </RelativeLayout>

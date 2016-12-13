@@ -16,7 +16,7 @@
         android:text="@string/pp_tip1"
         android:layout_marginTop="2dp"
         android:textSize="@dimen/text_size_14"
-        android:textColor="@color/pp_dark_blue"
+        android:textColor="@color/pp_light_blue"
         android:layout_marginLeft="5dp"
         />
 
@@ -26,6 +26,6 @@
         android:text="@string/pp_tip"
         android:layout_marginTop="2dp"
         android:textSize="@dimen/text_size_14"
-        android:textColor="@color/pp_dark_blue"/>
+        android:textColor="@color/pp_light_blue"/>
 
 </LinearLayout>

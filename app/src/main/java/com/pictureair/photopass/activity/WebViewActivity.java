@@ -67,7 +67,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         key = getIntent().getIntExtra("key", 1);
         webView = (CustomWebView) findViewById(R.id.webView);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);

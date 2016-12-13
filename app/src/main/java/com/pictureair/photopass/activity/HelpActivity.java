@@ -120,7 +120,7 @@ public class HelpActivity extends BaseActivity {
 
     private void initView() {
         myToast = new PWToast(context);
-        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopLeftValueAndShow(R.drawable.back_blue,true);
         setTopTitleShow(R.string.mypage_help);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.storyNoNetWorkView);
         mListView = (ListView) findViewById(R.id.lv_helps);

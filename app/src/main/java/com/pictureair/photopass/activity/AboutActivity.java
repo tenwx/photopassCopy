@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -28,7 +29,7 @@ public class AboutActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow(R.string.mypage_about);
         logo_text = (TextView) findViewById(R.id.logo_text1);
         developTextView = (TextView) findViewById(R.id.develop_version_tv);
@@ -92,6 +93,11 @@ public class AboutActivity extends BaseActivity {
             intent.putExtra("key", Integer.valueOf(mUrl));
             intent.setClass(AboutActivity.this, WebViewActivity.class);
             startActivity(intent);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(getResources().getColor(R.color.pp_red));
         }
     }
 

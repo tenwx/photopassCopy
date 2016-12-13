@@ -80,7 +80,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
 
     private void initView() {
         newToast = new PWToast(this);
-        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopLeftValueAndShow(R.drawable.back_blue,true);
         setTopTitleShow(R.string.modify);
         radio = (ImageButton) findViewById(R.id.modify_password_radio);
         oldPassword = (EditTextWithClear) findViewById(R.id.old_password);

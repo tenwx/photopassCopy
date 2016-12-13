@@ -3,13 +3,16 @@
     <!-- 白色-->
     <color name="white">#FFFFFF</color>
 
-    <!-- 白色半透明-->
+    <!-- 透明白色 -->
     <color name="transparent_white">#AAFFFFFF</color>
+    <color name="transparent_pp_blue">#886799ca</color>
 
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
     <color name="pp_blue">#6799ca</color>
     <!-- 深蓝，比如深色的字体颜色-->
     <color name="pp_dark_blue">#253b56</color>
+    <!-- 淡蓝色，字体颜色 颜色效果间于 pp_gray和pp_dark_blue之间-->
+    <color name="pp_light_blue">#8091a7</color>
     <!-- 浅灰，比如输入框的文字，较深的分割线-->
     <color name="pp_gray">#bac1c6</color>
     <!-- 淡浅灰，比如背景颜色-->

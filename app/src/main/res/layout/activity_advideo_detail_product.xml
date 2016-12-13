@@ -10,7 +10,7 @@
         android:id="@+id/animated_photo_top_rl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/rt"
@@ -23,7 +23,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/animated_photo_line"/>
 
         <TextView
             android:id="@+id/detail_good_name"
@@ -36,7 +37,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="@string/animated_photo_title"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <ImageView
@@ -50,7 +51,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/cart" />
+            android:src="@drawable/cart"
+            android:layout_above="@+id/animated_photo_line"/>
 
         <TextView
             android:id="@+id/textview_cart_count"
@@ -64,7 +66,16 @@
             android:padding="@dimen/pp_dp_1"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12" />
+
+        <View
+            android:id="@id/animated_photo_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
+
 
     <ImageView
         android:id="@+id/animated_photo_iv"
