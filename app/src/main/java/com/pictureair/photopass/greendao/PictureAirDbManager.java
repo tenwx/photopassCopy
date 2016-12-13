@@ -13,6 +13,7 @@ import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.FirstStartInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
@@ -1177,6 +1178,51 @@ public class PictureAirDbManager {
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
                 .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId));
 
+        if (queryBuilder.count() > 0) {
+            list.addAll(queryBuilder.build().forCurrentThread().list());
+        }
+        return list;
+    }
+
+    /**
+     * 更新json数据库
+     * @param jsonArray
+     * @param type json的类型
+     */
+    public static synchronized void updateJsonInfos(JSONArray jsonArray, String type) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        ArrayList<JsonInfo> list = new ArrayList<>();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonType.eq(type));
+        if (queryBuilder.count() > 0) {
+            list.addAll(queryBuilder.build().forCurrentThread().list());
+        }
+        //清除旧数据
+        jsonInfoDao.deleteInTx(list);
+
+        list.clear();
+        JsonInfo jsonInfo;
+        //获取新数据
+        for (int i = 0; i < jsonArray.size(); i++) {
+            jsonInfo = new JsonInfo();
+            jsonInfo.setJsonString(jsonArray.getJSONObject(i).toString());
+            jsonInfo.setJsonType(type);
+            list.add(jsonInfo);
+        }
+        jsonInfoDao.insertInTx(list);
+
+    }
+
+    /**
+     * 获取json存储数据
+     * @param type
+     * @return
+     */
+    public static synchronized ArrayList<JsonInfo> getJsonInfos(String type) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        ArrayList<JsonInfo> list = new ArrayList<>();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonType.eq(type));
         if (queryBuilder.count() > 0) {
             list.addAll(queryBuilder.build().forCurrentThread().list());
         }

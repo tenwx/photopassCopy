@@ -24,6 +24,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ADLocationInfoDao.createTable(db, ifNotExists);
         FirstStartInfoDao.createTable(db, ifNotExists);
         FrameOrStikerInfoDao.createTable(db, ifNotExists);
+        JsonInfoDao.createTable(db, ifNotExists);
         PaymentOrderInfoDao.createTable(db, ifNotExists);
         PhotoDownLoadInfoDao.createTable(db, ifNotExists);
         PhotoInfoDao.createTable(db, ifNotExists);
@@ -35,6 +36,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ADLocationInfoDao.dropTable(db, ifExists);
         FirstStartInfoDao.dropTable(db, ifExists);
         FrameOrStikerInfoDao.dropTable(db, ifExists);
+        JsonInfoDao.dropTable(db, ifExists);
         PaymentOrderInfoDao.dropTable(db, ifExists);
         PhotoDownLoadInfoDao.dropTable(db, ifExists);
         PhotoInfoDao.dropTable(db, ifExists);
@@ -60,6 +62,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(ADLocationInfoDao.class);
         registerDaoClass(FirstStartInfoDao.class);
         registerDaoClass(FrameOrStikerInfoDao.class);
+        registerDaoClass(JsonInfoDao.class);
         registerDaoClass(PaymentOrderInfoDao.class);
         registerDaoClass(PhotoDownLoadInfoDao.class);
         registerDaoClass(PhotoInfoDao.class);

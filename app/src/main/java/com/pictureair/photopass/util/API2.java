@@ -9,16 +9,13 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.http.BasicResultCallTask;
 import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
-import com.pictureair.photopass.http.rxhttp.APIException;
 import com.pictureair.photopass.http.rxhttp.ApiFactory;
 import com.pictureair.photopass.http.rxhttp.HttpCallback;
 import com.pictureair.photopass.http.rxhttp.PhotoPassAuthApi;
@@ -741,36 +738,9 @@ public class API2 {
      * @param context
      */
     public static Observable<JSONObject> getLocationInfo(final Context context, String tokenId) {
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, null)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<BasicResult<JSONObject>, JSONObject>() {
-                    @Override
-                    public JSONObject call(BasicResult<JSONObject> jsonObjectBasicResult) {
-                        if (jsonObjectBasicResult == null) {
-                            throw new APIException(401);
-                        } else {
-                            if (jsonObjectBasicResult.getStatus() == 200) {
-                                return jsonObjectBasicResult.getResult();
-                            } else {
-                                throw new APIException(jsonObjectBasicResult.getStatus());
-                            }
-                        }
-                    }
-                })
-
-                .flatMap(new Func1<JSONObject, Observable<JSONObject>>() {
-                    @Override
-                    public Observable<JSONObject> call(JSONObject jsonObject) {
-                        ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
-                        return Observable.just(jsonObject);
-                    }
-                });
-
-        return observable;
+        return get(params, Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, null);
     }
 
 
@@ -900,28 +870,21 @@ public class API2 {
      *
      * @param tokenId
      */
-    public static Observable<JSONObject> getBannerPhotos(String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> getBannerPhotos(String tokenId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
+        return get(params, Common.BASE_URL_TEST + Common.GET_BANNER_PHOTOS, null);
+    }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.get(Common.BASE_URL_TEST + Common.GET_BANNER_PHOTOS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
+    /**
+     * 获取一卡一天的数据
+     * @param tokenId
+     * @return
+     */
+    public static Observable<JSONObject> getLocationPhoto(String tokenId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        return get(params, Common.BASE_URL_TEST + Common.GET_LOCATION_PHOTOS, null);
     }
 
     /**
@@ -4486,5 +4449,33 @@ public class API2 {
 //            }
 //        });
 //        return task;
+    }
+
+    /**
+     * 公共请求方法
+     * @param params
+     * @param requestUrl
+     * @param callback
+     * @return
+     */
+    private static Observable<JSONObject> get(Map<String, Object> params, String requestUrl, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable = request.get(requestUrl, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
     }
 }

@@ -97,33 +97,6 @@
             android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/story_lead_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/special_deal_ll"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator
-            android:id="@+id/indicator"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_dp_40"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/story_viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/story_lead_bar"
-        android:layout_gravity="center"
-        android:background="@color/white"
-        android:flipInterval="10"
-        android:persistentDrawingCache="animation"
-        android:visibility="gone" />
-
-
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/storyNoNetWorkView"
         android:layout_width="match_parent"
@@ -131,17 +104,22 @@
         android:layout_below="@id/special_deal_ll"
         android:visibility="gone" />
 
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/story_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/special_deal_ll"
-        android:visibility="gone">
+        android:layout_below="@id/special_deal_ll">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/story_fragment_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/pp_light_gray_background"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/story_no_pp_to_scan"
@@ -242,7 +220,6 @@
                 android:layout_height="match_parent"
                 android:background="@color/pp_light_gray_background"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/pp_dp_64"
                 android:visibility="gone">
 
                 <TextView

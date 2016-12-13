@@ -11,6 +11,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import com.pictureair.photopass.entity.ADLocationInfo;
 import com.pictureair.photopass.entity.FirstStartInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -19,6 +20,7 @@ import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.greendao.ADLocationInfoDao;
 import com.pictureair.photopass.greendao.FirstStartInfoDao;
 import com.pictureair.photopass.greendao.FrameOrStikerInfoDao;
+import com.pictureair.photopass.greendao.JsonInfoDao;
 import com.pictureair.photopass.greendao.PaymentOrderInfoDao;
 import com.pictureair.photopass.greendao.PhotoDownLoadInfoDao;
 import com.pictureair.photopass.greendao.PhotoInfoDao;
@@ -36,6 +38,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig aDLocationInfoDaoConfig;
     private final DaoConfig firstStartInfoDaoConfig;
     private final DaoConfig frameOrStikerInfoDaoConfig;
+    private final DaoConfig jsonInfoDaoConfig;
     private final DaoConfig paymentOrderInfoDaoConfig;
     private final DaoConfig photoDownLoadInfoDaoConfig;
     private final DaoConfig photoInfoDaoConfig;
@@ -44,6 +47,7 @@ public class DaoSession extends AbstractDaoSession {
     private final ADLocationInfoDao aDLocationInfoDao;
     private final FirstStartInfoDao firstStartInfoDao;
     private final FrameOrStikerInfoDao frameOrStikerInfoDao;
+    private final JsonInfoDao jsonInfoDao;
     private final PaymentOrderInfoDao paymentOrderInfoDao;
     private final PhotoDownLoadInfoDao photoDownLoadInfoDao;
     private final PhotoInfoDao photoInfoDao;
@@ -62,6 +66,9 @@ public class DaoSession extends AbstractDaoSession {
         frameOrStikerInfoDaoConfig = daoConfigMap.get(FrameOrStikerInfoDao.class).clone();
         frameOrStikerInfoDaoConfig.initIdentityScope(type);
 
+        jsonInfoDaoConfig = daoConfigMap.get(JsonInfoDao.class).clone();
+        jsonInfoDaoConfig.initIdentityScope(type);
+
         paymentOrderInfoDaoConfig = daoConfigMap.get(PaymentOrderInfoDao.class).clone();
         paymentOrderInfoDaoConfig.initIdentityScope(type);
 
@@ -77,6 +84,7 @@ public class DaoSession extends AbstractDaoSession {
         aDLocationInfoDao = new ADLocationInfoDao(aDLocationInfoDaoConfig, this);
         firstStartInfoDao = new FirstStartInfoDao(firstStartInfoDaoConfig, this);
         frameOrStikerInfoDao = new FrameOrStikerInfoDao(frameOrStikerInfoDaoConfig, this);
+        jsonInfoDao = new JsonInfoDao(jsonInfoDaoConfig, this);
         paymentOrderInfoDao = new PaymentOrderInfoDao(paymentOrderInfoDaoConfig, this);
         photoDownLoadInfoDao = new PhotoDownLoadInfoDao(photoDownLoadInfoDaoConfig, this);
         photoInfoDao = new PhotoInfoDao(photoInfoDaoConfig, this);
@@ -85,6 +93,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ADLocationInfo.class, aDLocationInfoDao);
         registerDao(FirstStartInfo.class, firstStartInfoDao);
         registerDao(FrameOrStikerInfo.class, frameOrStikerInfoDao);
+        registerDao(JsonInfo.class, jsonInfoDao);
         registerDao(PaymentOrderInfo.class, paymentOrderInfoDao);
         registerDao(PhotoDownLoadInfo.class, photoDownLoadInfoDao);
         registerDao(PhotoInfo.class, photoInfoDao);
@@ -95,6 +104,7 @@ public class DaoSession extends AbstractDaoSession {
         aDLocationInfoDaoConfig.clearIdentityScope();
         firstStartInfoDaoConfig.clearIdentityScope();
         frameOrStikerInfoDaoConfig.clearIdentityScope();
+        jsonInfoDaoConfig.clearIdentityScope();
         paymentOrderInfoDaoConfig.clearIdentityScope();
         photoDownLoadInfoDaoConfig.clearIdentityScope();
         photoInfoDaoConfig.clearIdentityScope();
@@ -111,6 +121,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public FrameOrStikerInfoDao getFrameOrStikerInfoDao() {
         return frameOrStikerInfoDao;
+    }
+
+    public JsonInfoDao getJsonInfoDao() {
+        return jsonInfoDao;
     }
 
     public PaymentOrderInfoDao getPaymentOrderInfoDao() {

@@ -125,6 +125,9 @@
     <string name="story_no_photo_tip">您的乐拍通/迪士尼门票还没有绑定任何照片\n请快速找乐拍通摄影师免费拍照吧！</string>
     <string name="story_home">上海迪士尼乐拍通家园</string>
     <string name="story_card">卡号：%1$s</string>
+    <string name="story_first_photo_in_disney">我在上海迪士尼的第一张照片</string>
+    <string name="story_blur_expire_time">未付款照片有效期30天</string>
+    <string name="story_expire_time">高清照片1年内有效</string>
     <!-- story end -->
 
     <!-- scan start -->

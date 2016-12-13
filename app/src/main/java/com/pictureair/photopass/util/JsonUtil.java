@@ -17,11 +17,13 @@ import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.entity.DailyPPCardInfo;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.HelpInfo;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -225,6 +227,160 @@ public class JsonUtil {
         }
 
         return info;
+    }
+
+    /**
+     * 获取一卡一天的数据列表
+     * @param jsonObject
+     * @return
+     */
+    public static ArrayList<DailyPPCardInfo> getDailyPPCardInfoList(JSONObject jsonObject, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
+        ArrayList<DailyPPCardInfo> list = new ArrayList<>();
+        if (jsonObject.containsKey("locationP")) {
+            JSONArray locations = jsonObject.getJSONArray("locationP");
+            for (int i = 0; i < locations.size(); i++) {
+                list.addAll(parseLocationPhotoJson(locations.getJSONObject(i), i, locationList, language));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取一卡一天的数据列表
+     * @return
+     */
+    public static ArrayList<DailyPPCardInfo> getDailyPPCardInfoList(ArrayList<JsonInfo> jsonInfos, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
+        ArrayList<DailyPPCardInfo> list = new ArrayList<>();
+        for (int i = 0; i < jsonInfos.size(); i++) {
+            list.addAll(parseLocationPhotoJson(JSONObject.parseObject(jsonInfos.get(i).getJsonString()), i, locationList, language));
+        }
+        return list;
+    }
+
+    /**
+     * 解析首页数据
+     * @param location
+     * @param index
+     * @param locationList
+     * @param language
+     * @return
+     */
+    private static ArrayList<DailyPPCardInfo> parseLocationPhotoJson(JSONObject location, int index, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
+        ArrayList<DailyPPCardInfo> list = new ArrayList<>();
+        DailyPPCardInfo dailyPPCardInfo;
+        String ppCode = null;
+        String shootDate = null;
+        int isActivated = 0;
+        String shootOn = null;
+        PhotoInfo oldestPhotoInfo = null;
+        if (location.containsKey("PPCode")) {
+            ppCode = location.getString("PPCode");
+        }
+
+        if (location.containsKey("shootOnDate")) {
+            shootDate = location.getString("shootOnDate");
+        }
+
+        if (location.containsKey("ifActive")) {
+            isActivated = location.getIntValue("ifActive");
+        }
+
+        if (location.containsKey("shootOn")) {
+            shootOn = location.getString("shootOn");
+        }
+
+        if (location.containsKey("ppOldestPhoto")) {
+            oldestPhotoInfo = getLocationPhoto(location.getJSONObject("ppOldestPhoto"));
+        }
+
+        if (location.containsKey("loc")) {
+            JSONArray photos = location.getJSONArray("loc");
+            PhotoInfo photoInfo;
+            for (int j = 0; j < photos.size(); j++) {
+                dailyPPCardInfo = new DailyPPCardInfo();
+                JSONObject photo = photos.getJSONObject(j);
+                if (photo.containsKey("photoInfos")) {
+                    photoInfo = getLocationPhoto(photo.getJSONObject("photoInfos"));
+                    if (photo.containsKey("locationId")) {
+                        photoInfo.setLocationId(photo.getString("locationId"));
+
+                        //设置地点名称
+                        int resultPosition = AppUtil.findPositionInLocationList(photoInfo, locationList);
+                        if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
+                            resultPosition = locationList.size() - 1;
+                            photoInfo.setLocationId("others");
+                        }
+                        if (resultPosition < 0 ) {
+                            resultPosition = 0;
+                        }
+                        if (language.equals(Common.SIMPLE_CHINESE)) {
+                            photoInfo.setLocationName(locationList.get(resultPosition).placeCHName);
+                        } else {
+                            photoInfo.setLocationName(locationList.get(resultPosition).placeENName);
+                        }
+                    }
+
+                    dailyPPCardInfo.setPpCode(ppCode);
+                    dailyPPCardInfo.setShootDate(shootDate);
+                    dailyPPCardInfo.setActivated(isActivated);
+                    dailyPPCardInfo.setShootOn(shootOn);
+                    dailyPPCardInfo.setAlbumCoverPhoto(oldestPhotoInfo);
+                    dailyPPCardInfo.setLocationPhoto(photoInfo);
+                    dailyPPCardInfo.setSectionId(index);
+                    if (j == 0) {//第一个，为header数据
+                        list.add(dailyPPCardInfo);
+
+                    }
+                    list.add(dailyPPCardInfo);
+                }
+            }
+            if (photos.size() % 2 != 0) {//如果是奇数，需要补一个位置
+                dailyPPCardInfo = new DailyPPCardInfo();
+                dailyPPCardInfo.setPpCode("occupy");
+                dailyPPCardInfo.setSectionId(index);
+                list.add(dailyPPCardInfo);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取一卡一天内的photoInfo
+     * @param photoInfoJO
+     * @return
+     */
+    private static PhotoInfo getLocationPhoto(JSONObject photoInfoJO) {
+        PhotoInfo photoInfo = new PhotoInfo();
+        if (photoInfoJO.containsKey("_id")) {
+            photoInfo.setPhotoId(photoInfoJO.getString("_id"));
+        }
+        if (photoInfoJO.containsKey("presetId")) {
+            photoInfo.setIsPreset(photoInfoJO.getString("presetId").equals("000000000000000000000000") ? 0 : 1);
+        }
+        if (photoInfoJO.containsKey("strShootOn")) {
+            photoInfo.setStrShootOn(photoInfoJO.getString("strShootOn"));
+        }
+        if (photoInfoJO.containsKey("x128")) {
+            photoInfo.setPhotoThumbnail_128(Common.PHOTO_URL + photoInfoJO.getString("x128"));
+        }
+        if (photoInfoJO.containsKey("x512")) {
+            photoInfo.setPhotoThumbnail_512(photoInfoJO.getString("x512"));
+        }
+        if (photoInfoJO.containsKey("x1024")) {
+            photoInfo.setPhotoThumbnail_1024(photoInfoJO.getString("x1024"));
+        }
+        photoInfo.setIsVideo(0);//固定设为0
+        if (photoInfoJO.containsKey("isPaid") && "true".equals(photoInfoJO.getString("isPaid"))) {
+            photoInfo.setIsPaid(1);
+        } else {
+            photoInfo.setIsPaid(0);
+        }
+        if (photoInfoJO.containsKey("enImage")) {
+            photoInfo.setIsEnImage((photoInfoJO.getBooleanValue("enImage")) ? 1 : 0);
+        } else {
+            photoInfo.setIsEnImage(0);
+        }
+        return photoInfo;
     }
 
     /**

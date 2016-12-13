@@ -151,6 +151,7 @@ public class Common {
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static final String GET_ALL_DEALINGS = "/api/dealings";//获取活动数据
     public static final String GET_BANNER_PHOTOS = "/p/rotatePlayPhotos";//获取轮播照片
+    public static final String GET_LOCATION_PHOTOS = "/p/getLocationPhoto";//获取轮播照片
 
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";

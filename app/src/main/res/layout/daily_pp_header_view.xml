@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/daily_pp_header_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pp_dp_10"
+        android:text="@string/story_first_photo_in_disney"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/daily_pp_header_title_tv"
+        android:layout_marginLeft="@dimen/pp_dp_10"
+        android:text="date"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_12" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_card_no_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/daily_pp_header_bottom_tip_tv"
+        android:layout_marginLeft="@dimen/pp_dp_10"
+        android:text="card no"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_bottom_tip_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/pp_dp_5"
+        android:layout_marginLeft="@dimen/pp_dp_10"
+        android:text="tip"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_12" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_preview_download_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/pp_dp_10"
+        android:text="preview"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14" />
+
+    <TextView
+        android:id="@+id/daily_pp_header_buy_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/pp_dp_10"
+        android:layout_toLeftOf="@+id/daily_pp_header_preview_download_tv"
+        android:text="buy"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14" />
+
+</RelativeLayout>

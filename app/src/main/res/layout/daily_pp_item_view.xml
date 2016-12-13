@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/pp_dp_5">
+
+    <ImageView
+        android:id="@+id/daily_pp_item_photo_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/ppp_cover">
+
+        <TextView
+            android:id="@+id/daily_pp_item_location_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/pp_dp_5"
+            android:text="location"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:id="@+id/daily_pp_item_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_alignLeft="@+id/daily_pp_item_time_tv"
+            android:layout_alignRight="@+id/daily_pp_item_time_tv"
+            android:layout_below="@+id/daily_pp_item_location_tv"
+            android:layout_centerHorizontal="true"
+            android:background="@color/white" />
+
+        <TextView
+            android:id="@+id/daily_pp_item_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/daily_pp_item_divider"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/pp_dp_5"
+            android:text="time"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
