@@ -89,7 +89,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/nosele"
+                android:src="@drawable/login_phone"
                 android:layout_marginLeft="@dimen/pp_dp_10"
                 android:adjustViewBounds="true"
                 />
@@ -147,7 +147,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/nosele"
+                android:src="@drawable/login_code"
                 android:layout_marginLeft="@dimen/pp_dp_10"
                 android:adjustViewBounds="true"
                 />

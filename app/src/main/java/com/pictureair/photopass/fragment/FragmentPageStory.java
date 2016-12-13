@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.AddPPPCodeActivity;
@@ -29,6 +30,7 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.GifPlayActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
+import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.DailyPPCardRecycleAdapter;
@@ -132,7 +134,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
     private CustomTextView specialDealDetailTV;
     private LinearLayout specialDealLL;
     private BannerView bannerView;
-    private RelativeLayout gifRL, scanRL;
+    private RelativeLayout gifRL, scanRL, draftLayout;
     private ImageView gifIV;
     private RecyclerView noPhotoRV, dailyPPCardRV;
     private NoPhotoRecycleAdapter noPhotoRecycleAdapter;
@@ -162,6 +164,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
     private SettingUtil settingUtil;
 
     private boolean mIsAskStoragePermission = false;
+
+    private ImageView img_float_hide;
+    private FloatingActionButton fab;
 
     //申明handler消息回调机制
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
@@ -511,6 +516,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
         gifRL.setOnClickListener(this);
         scanRL.setOnClickListener(this);
 
+        draftLayout= (RelativeLayout) view.findViewById(R.id.draft_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        img_float_hide = (ImageView) view.findViewById(R.id.float_hide);
+        fab.setOnClickListener(this);
+        img_float_hide.setOnClickListener(this);
+        String currentLanguage = SPUtils.getString(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
+        if ("zh".equals(currentLanguage)) {
+            fab.setIcon(R.drawable.float_customer);
+        } else if ("en".equals(currentLanguage)){
+            fab.setIcon(R.drawable.float_customer);
+        }
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
@@ -981,6 +997,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                 context.overridePendingTransition(R.anim.activity_fadein, R.anim.activity_fadeout);
                 break;
 
+            case R.id.fab:
+
+                Intent intent = new Intent(context, OpinionsActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.float_hide:
+                draftLayout.setVisibility(View.GONE);
             case R.id.story_no_photo_close_iv:
                 noPhotoTipRL.setVisibility(View.GONE);
                 break;

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -31,33 +32,23 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
 
     private static final String SECRETKEY = "533032866a89ffdcb6340bf2ac0b9d6d";
     private static final String DOMAIN = "13818543871.udesk.cn";
-    private Button btn_man;
-    private Button btn_help;
-    private Button btn_commodity;
-    private Button btn_agent;
-    private Button btn_group;
-    private Button btn_conversation;
+    private RelativeLayout layout_question;
+    private RelativeLayout layout_online;
+    private RelativeLayout layout_feedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opinions);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
+        setTopTitleShow(R.string.mypage_customer);
 
-        btn_man = (Button) findViewById(R.id.btn_man);
-        btn_help = (Button) findViewById(R.id.btn_help);
-        btn_commodity = (Button) findViewById(R.id.btn_commodity_item);
-        btn_agent = (Button) findViewById(R.id.btn_agent);
-        btn_group = (Button) findViewById(R.id.btn_group);
-        btn_conversation = (Button) findViewById(R.id.btn_conversation);
-        btn_man.setOnClickListener(this);
-        btn_help.setOnClickListener(this);
-        btn_commodity.setOnClickListener(this);
-        btn_agent.setOnClickListener(this);
-        btn_group.setOnClickListener(this);
-        btn_conversation.setOnClickListener(this);
-        btn_agent.setEnabled(false);
-        btn_group.setEnabled(false);
-        btn_conversation.setEnabled(false);
+        layout_question = (RelativeLayout) findViewById(R.id.opinions_questions);
+        layout_online = (RelativeLayout) findViewById(R.id.opinions_online);
+        layout_feedback = (RelativeLayout) findViewById(R.id.opinions_feedback);
+        layout_question.setOnClickListener(this);
+        layout_online.setOnClickListener(this);
+        layout_feedback.setOnClickListener(this);
 
         UdeskSDKManager.getInstance().initApiKey(this,DOMAIN,SECRETKEY);
         UdeskSDKManager.getInstance().isShowLog(true);
@@ -82,36 +73,19 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_man:
-                UdeskSDKManager.getInstance().toLanuchChatAcitvity(this);
-                break;
 
-            case R.id.btn_help:
+            case R.id.opinions_questions:
                 UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this);
                 break;
 
-            case R.id.btn_commodity_item:
-//                Map<String, String> info = new HashMap<String, String>();
-//                info.put(UdeskConst.UdeskUserInfo.CELLPHONE, "15601925037");
-//                info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"嚣张");
-//                UdeskSDKManager.getInstance().setUpdateUserinfo(info);
-
-                UdeskCommodityItem item = new UdeskCommodityItem();
-                item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
-                item.setSubTitle("¥ 99.00");//商品描述
-                item.setThumbHttpUrl("http://211.95.27.34:4000/ProductGallery/gift-8r-1.png");//左侧图片
-                item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
-                UdeskSDKManager.getInstance().setCommodity(item);
+            case R.id.opinions_online:
+                UdeskSDKManager.getInstance().toLanuchChatAcitvity(this);
                 break;
-            case R.id.btn_agent:
+
+            case R.id.opinions_feedback:
 
                 break;
-            case R.id.btn_group:
 
-                break;
-            case R.id.btn_conversation:
-
-                break;
         }
     }
 
@@ -135,11 +109,27 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            UdeskSDKManager.getInstance().disConnectXmpp();
-            finish();
+            keyback();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                keyback();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void keyback() {
+        UdeskSDKManager.getInstance().disConnectXmpp();
+        finish();
     }
 
     @Override

@@ -65,7 +65,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/pp_dp_30"
-        android:src="@drawable/float_customer"
+        android:src="@drawable/me_setting"
         />
 
 

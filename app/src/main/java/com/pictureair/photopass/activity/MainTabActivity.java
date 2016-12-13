@@ -17,13 +17,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SlideListAdapter;
@@ -78,7 +78,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private LinearLayout storyTab, discoverTab, shopTab, meTab;
     private ImageView storyIV, discoverIV, shopIV, meIV;
-    private TextView storyTV, discoverTV, shopTV, meTV;
+    private TextView storyTV, discoverTV, shopTV, meTV, slideLogoTV;
+    private CheckBox cb_all, cb_delete;
 
     private RelativeLayout parentLayout;
     private WaterDrop waterDropView;
@@ -143,9 +144,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private ListView slidList;
     private SlideListAdapter adapter;
     private LinearLayout slideLayout;
-    private ImageView img_float_hide;
-    private FloatingActionButton fab;
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,11 +195,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         newToast = new PWToast(this);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        img_float_hide = (ImageView) findViewById(R.id.float_hide);
-        fab.setOnClickListener(this);
-        img_float_hide.setOnClickListener(this);
-
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage);
@@ -225,6 +218,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         parentLayout.addView(explored);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        slideLogoTV = (TextView) mDrawerLayout.findViewById(R.id.main_slide_text);
+        cb_all = (CheckBox) mDrawerLayout.findViewById(R.id.main_slide_select_all);
+        cb_delete = (CheckBox) mDrawerLayout.findViewById(R.id.main_slide_unbound);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.story_slide_open, R.string.story_slide_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -323,6 +319,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             shopTV.setText(R.string.tab_shops);
             meTV.setText(R.string.tab_me);
             setTabSelection(4, false);
+            slideLogoTV.setText(R.string.story_myphotopass);
+            cb_all.setText(R.string.edit_story_all);
+            cb_delete.setText(R.string.story_unbound);
             currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
@@ -361,17 +360,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             case R.id.special_dialog_deal_close_iv:
                 EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, true, false));
                 pwDialog.pwDialogDismiss();
-                break;
-
-            case R.id.fab:
-
-                Intent intent = new Intent(MainTabActivity.this, OpinionsActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.float_hide:
-                fab.setVisibility(View.GONE);
-                img_float_hide.setVisibility(View.GONE);
                 break;
 
             default:

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -294,7 +295,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     }
 
     private void initView() {
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow(R.string.submitorder);
         totalpriceTextView = (TextView) findViewById(R.id.submitorder_textView3);
         currencyTextView = (TextView) findViewById(R.id.textView_currency);
@@ -923,6 +924,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             intent.putExtra("key", Integer.valueOf(mUrl));
             intent.setClass(SubmitOrderActivity.this, WebViewActivity.class);
             startActivity(intent);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(getResources().getColor(R.color.pp_red));
         }
     }
 }

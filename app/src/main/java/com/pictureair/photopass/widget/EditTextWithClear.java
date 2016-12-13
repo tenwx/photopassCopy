@@ -41,10 +41,11 @@ public class EditTextWithClear extends EditText implements OnFocusChangeListener
         if (mClearDrawable == null) {
             // throw new
             // NullPointerException("You can add drawableRight attribute in XML");
-            mClearDrawable = getResources().getDrawable(R.drawable.edittext_clear_icon);
+            mClearDrawable = getResources().getDrawable(R.drawable.float_hide);
         }
 
-        mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());
+        //37是3.0版本之前的图片的宽高
+        mClearDrawable.setBounds(0, 0, 37, 37);
         // 默认设置隐藏图标
         setClearIconVisible(false);
         // 设置焦点改变的监听

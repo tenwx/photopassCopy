@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <RelativeLayout
@@ -19,7 +20,8 @@
             android:paddingBottom="@dimen/pp_dp_15"
             android:paddingLeft="@dimen/pp_dp_14"
             android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15">
+            android:paddingTop="@dimen/pp_dp_15"
+            android:layout_above="@+id/story_list_line">
 
             <ImageView
                 android:id="@+id/story_drawer_iv"
@@ -46,7 +48,8 @@
             android:paddingBottom="@dimen/pp_dp_15"
             android:paddingLeft="@dimen/pp_dp_14"
             android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15">
+            android:paddingTop="@dimen/pp_dp_15"
+            android:layout_above="@+id/story_list_line">
 
             <ImageView
                 android:id="@+id/story_menu_iv"
@@ -56,6 +59,14 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/add_blue" />
         </RelativeLayout>
+
+        <View
+            android:id="@id/story_list_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
 
     <LinearLayout
@@ -275,6 +286,34 @@
             </RelativeLayout>
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.pictureair.photopass.widget.DraftLayout
+        android:id="@+id/draft_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_icon="@drawable/float_customer"
+            fab:fab_colorNormal="@color/transparent_pp_blue"
+            fab:fab_colorPressed="@color/pp_gray"/>
+
+        <ImageView
+            android:layout_width="@dimen/pp_dp_30"
+            android:layout_height="@dimen/pp_dp_30"
+            android:src="@drawable/float_hide"
+            android:id="@+id/float_hide"
+            android:layout_alignTop="@+id/fab"
+            android:layout_alignRight="@+id/fab"
+            android:layout_alignEnd="@+id/fab"
+            android:paddingRight="8dp"
+            android:paddingTop="5dp"/>
+    </com.pictureair.photopass.widget.DraftLayout>
 
 
 </RelativeLayout>

@@ -90,7 +90,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 
     private void initview() {
         myToast = new PWToast(context);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         setTopTitleShow(R.string.reset_pwd);
 
         llFindPwdContent = (LinearLayout) findViewById(R.id.ll_find_pwd_content);

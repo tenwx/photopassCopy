@@ -35,7 +35,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
     }
 
     private void init() {
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         etUserInfo = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         bgUpdateInfo = (RelativeLayout) findViewById(R.id.bg_update_info);
         myToast = new PWToast(this);

@@ -66,7 +66,7 @@ public class SelectCountryActivity extends BaseActivity {
 
         LinearLayout topLeftView = (LinearLayout) this.findViewById(R.id.topLeftView);
         ImageView topLeftIv = (ImageView) this.findViewById(R.id.topLeft_iv);
-        topLeftIv.setImageResource(R.drawable.back_white);
+        topLeftIv.setImageResource(R.drawable.back_blue);
         topLeftIv.setVisibility(View.VISIBLE);
         ((TextView) this.findViewById(R.id.topTitle)).setText(R.string.select_a_country);
         topLeftView.setOnClickListener(new View.OnClickListener() {

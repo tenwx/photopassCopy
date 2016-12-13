@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference;
 public class SettingActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;
     private Button logout;
-    private TextView tvSettingLanguage,tvAbout,tvProfile;
+    private TextView tvSettingLanguage,tvAbout;
     private MyApplication application;
     private ImageView backBtn;
 
@@ -107,7 +107,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         backBtn = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
         tvAbout = (TextView) findViewById(R.id.setting_about);
-        tvProfile = (TextView) findViewById(R.id.setting_profile);
         application = (MyApplication) getApplication();
 
         ibGprWifiDownload = (ImageButton) findViewById(R.id.ib_gprs_wifi_download);
@@ -122,7 +121,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
         ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
 //        ((TextView) findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
-        tvProfile.setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);
         backBtn.setOnClickListener(this);
@@ -134,7 +132,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         ibGprWifiDownload.setOnClickListener(this);
         ibWifiOnlyDownload.setOnClickListener(this);
 //        ibAutoUpdate.setOnClickListener(this);
-        tvProfile.setOnClickListener(this);
 
         settingUtil = new SettingUtil();
         userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
@@ -212,11 +209,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                 startActivity(i);
                 break;
 
-            case R.id.setting_profile:
-
-                Intent intent1 = new Intent(MyApplication.getInstance(), ProfileActivity.class);
-                startActivity(intent1);
-                break;
             default:
                 break;
         }

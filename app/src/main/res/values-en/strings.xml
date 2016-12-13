@@ -6,7 +6,6 @@
     <!-- start activity end-->
     <!-- login activity start-->
     <string name="user_login">Account</string>
-    <string name="user_register">用户注册</string>
     <string name="country">Country / Region</string>
     <string name="china">China (mainland)</string>
     <string name="pwd">Password</string>
@@ -14,7 +13,7 @@
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
     <string name="otherLogin">Email Account Login</string>
-    <string name="msgLogin">手机验证码快捷登录</string>
+    <string name="msgLogin">Mobile Verification Code Login</string>
     <string name="pwd_no_all_space">Please omit any space</string>
     <string name="pwd_head_or_foot_space">Please omit any space</string>
     <string name="modify_password_empty_hint">Please enter a password</string>
@@ -132,7 +131,7 @@
 
     <!-- scan start -->
     <string name="auto">Scan</string>
-    <string name="auto_scan">自动扫描</string>
+    <string name="auto_scan">Scan</string>
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">Disney PhotoPass+</string>
     <string name="scan_intro">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
@@ -146,12 +145,12 @@
 
     <!-- manual input start -->
     <string name="manual">Manual</string>
-    <string name="active">激活</string>
+    <string name="active">Activate</string>
     <string name="active_ppp">Activate Disney\nPhotoPass+</string>
     <string name="ok">OK</string>
-    <string name="manul_input_intro">请输入您的迪士尼乐拍通一卡通卡背后的数字码！</string>
+    <string name="manul_input_intro">Please input the number on the back of your Disney PhotoPass+ card</string>
     <string name="nocontext">Input your code</string>
-    <string name="input_code">手动输入卡号</string>
+    <string name="input_code">Please input the number</string>
     <string name="wrong_length">Please check your card</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->
@@ -182,8 +181,8 @@
     <string name="disney_video_about_null_photo_note">If you wish to create your very own “My Disney Story”, please purchase Disney PhotoPass+</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="start">Start</string>
-    <string name="story_unbound">解绑</string>
-    <string name="story_myphotopass">我的乐拍通</string>
+    <string name="story_unbound">Delete</string>
+    <string name="story_myphotopass">My PhotoPass</string>
     <string name="story_photo_count">(%1$d)</string>
     <string name="story_slide_open">1</string>
     <string name="story_slide_close">2</string>
@@ -203,7 +202,7 @@
     <string name="mypage_about">About</string>
     <string name="mypage_download">Downloads</string>
     <string name="mypage_opinions">Contact Us</string>
-    <string name="mypage_customer">乐拍通客服</string>
+    <string name="mypage_customer">PhotoPass Service</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
 
@@ -230,7 +229,7 @@
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
     <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
-    <string name="gallery_expire_time">（有效期至%1$s）</string>
+    <string name="gallery_expire_time">（Valid till %1$s）</string>
     <string name="souvenir_not_exist">您还没纪念照哦!</string>
     <string name="souvenir_photo">纪念照</string>
     <!-- preview photo end -->
@@ -605,7 +604,7 @@
     <string name="smssdk_pwd2">Retype Password</string>
     <string name="smssdk_pwd_forget">Please enter new password</string>
     <string name="smssdk_verification">验证码</string>
-    <string name="smssdk_send_verification_code">获取验证码</string>
+    <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_send_verification_code2">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
     <string name="smssdk_explain_briefly">I have read and agree to the <a href = "5">Terms of Use</a>, the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
@@ -616,7 +615,7 @@
     <string name="smssdk_make_sure_mobile_detail">We will send verification code messages to this number:\n%1$s</string>
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
     <string name="smssdk_write_right_mobile_phone">Incorrect Mobile Number</string>
-    <string name="smssdk_write_identify_code">请输入短信验证码</string>
+    <string name="smssdk_write_identify_code">Code</string>
     <string name="smssdk_write_identify_code2">Code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="is_loading">Loading&#8230;</string>
@@ -673,4 +672,10 @@
     <string name="special_deal_count_enough">You have reached the maximum number</string>
     <string name="special_deal_title">Special Deal</string>
     <!--special deal-->
+
+    <!-- customer service -->
+    <string name="opinions_questions">常见问题</string>
+    <string name="opinions_online">在线客服</string>
+    <string name="opinions_feedback">意见反馈</string>
+    <!-- customer service end-->
 </resources>

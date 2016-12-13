@@ -8,7 +8,7 @@
         android:id="@+id/rl_load_manage_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/load_manage_back"
@@ -21,7 +21,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/invoice_line"/>
         <ImageView
             android:id="@+id/load_manage_cancle"
             android:layout_width="wrap_content"
@@ -34,7 +35,8 @@
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
             android:src="@drawable/edit_big_cancle"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:layout_above="@+id/invoice_line"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,7 +44,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/mypage_download"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -50,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:textColor="@color/white"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:text="@string/photo_download_select"
             android:gravity="center"
@@ -58,6 +60,14 @@
             android:paddingLeft="@dimen/pp_dp_14"
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
+            android:layout_above="@+id/invoice_line"
+            />
+        <View
+            android:id="@id/invoice_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
             />
     </RelativeLayout>
     <LinearLayout

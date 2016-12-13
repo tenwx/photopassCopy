@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textColor="@color/white"
-                    android:text="@string/user_register"
+                    android:text="@string/smssdk_regist"
                     android:textSize="25sp"
                     android:gravity="center"
                     />
@@ -74,7 +74,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/nosele"
+                        android:src="@drawable/login_email"
                         android:layout_marginLeft="@dimen/pp_dp_10"
                         android:adjustViewBounds="true"
                         />
@@ -112,7 +112,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/nosele"
+                        android:src="@drawable/login_code"
                         android:layout_marginLeft="@dimen/pp_dp_10"
                         android:adjustViewBounds="true"
                         />
@@ -151,7 +151,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/nosele"
+                        android:src="@drawable/login_code"
                         android:layout_marginLeft="@dimen/pp_dp_10"
                         android:adjustViewBounds="true"
                         />
@@ -190,7 +190,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/nosele"
+                        android:src="@drawable/login_nn"
                         android:layout_marginLeft="@dimen/pp_dp_10"
                         android:adjustViewBounds="true"
                         />
@@ -238,7 +238,7 @@
                         android:paddingTop="@dimen/pp_dp_13"
                         android:paddingBottom="@dimen/pp_dp_13"
                         android:paddingRight="5dp"
-                        android:src="@drawable/gender_normal"/>
+                        android:src="@drawable/login_check_unselect"/>
 
                     <TextView
                         android:id="@+id/tv_agreement"

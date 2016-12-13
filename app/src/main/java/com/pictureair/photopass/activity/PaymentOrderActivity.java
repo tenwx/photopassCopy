@@ -275,7 +275,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private void findViewById() {
         setTopTitleShow(R.string.pay);
-        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopLeftValueAndShow(R.drawable.back_blue, true);
         paySv = findViewById(R.id.pay_sv);
         noPayLl = (LinearLayout) findViewById(R.id.no_pay_ll);
         sbmtButton = (TextView) findViewById(R.id.button_smpm);

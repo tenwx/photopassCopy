@@ -40,7 +40,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout orderTV,  pppTV, helpTV,  couponTV, opinionsTV, customerTV, downloadTV;
+    private RelativeLayout orderTV,  pppTV, couponTV, customerTV, downloadTV;
     private ImageView headPhoto, headSet;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String avatarUrl = "";//用户头像url
@@ -72,17 +72,13 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
         orderTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_order);
         pppTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_ppp);
-        helpTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_help);
         couponTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_coupon);
-        opinionsTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_opinions);
         customerTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_customer);
         downloadTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_download);
 
         orderTV.setOnClickListener(this);
         pppTV.setOnClickListener(this);
-        helpTV.setOnClickListener(this);
         couponTV.setOnClickListener(this);
-        opinionsTV.setOnClickListener(this);
         headSet.setOnClickListener(this);
         customerTV.setOnClickListener(this);
         downloadTV.setOnClickListener(this);
@@ -160,10 +156,10 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 startActivity(i);
                 break;
 
-            case R.id.me_help:
-                i.setClass(MyApplication.getInstance(), HelpActivity.class);
-                startActivity(i);
-                break;
+//            case R.id.me_help:
+//                i.setClass(MyApplication.getInstance(), HelpActivity.class);
+//                startActivity(i);
+//                break;
 
 //            case R.id.me_setting:
 //                i.setClass(MyApplication.getInstance(), SettingActivity.class);
@@ -182,15 +178,15 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 startActivity(i);
                 break;
 
-            case R.id.me_opinions:
-                //意见反馈弹出框
-                PictureAirLog.v(TAG, "me_opinions");
-//                UmengUtil.startFeedbackActivity(context);
-                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
-                i.putExtra("key",3);
-                startActivity(i);
-
-                break;
+//            case R.id.me_opinions:
+//                //意见反馈弹出框
+//                PictureAirLog.v(TAG, "me_opinions");
+////                UmengUtil.startFeedbackActivity(context);
+//                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
+//                i.putExtra("key",3);
+//                startActivity(i);
+//
+//                break;
 
             case R.id.me_customer:
 

@@ -25,7 +25,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/pp_dark_blue"
+                android:textColor="@color/pp_light_blue"
                 android:textSize="@dimen/text_size_16"
                 android:text="2016-11-25"
                 android:layout_alignParentBottom="true"
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textColor="@color/pp_dark_blue"
+                android:textColor="@color/pp_light_blue"
                 android:textSize="@dimen/text_size_12"
                 android:layout_alignParentRight="true"
                 android:text="@string/pp_clear_card"
@@ -103,7 +103,7 @@
                 android:layout_alignBottom="@id/pp_img1"
                 android:background="@color/transparent_white"
                 android:paddingLeft="@dimen/pp_dp_16"
-                android:paddingRight="@dimen/pp_dp_16"
+                android:paddingRight="@dimen/pp_dp_5"
                 >
 
                 <TextView
@@ -135,13 +135,13 @@
                     android:adjustViewBounds="true"
                     android:layout_toLeftOf="@+id/pp_photo_count"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/blur_bg_image"
+                    android:src="@drawable/photo_count"
                     android:layout_marginRight="2dp"
                     />
 
                 <TextView
                     android:id="@id/pp_photo_count"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/pp_dp_52"
                     android:layout_height="match_parent"
                     android:textSize="@dimen/text_size_12"
                     android:gravity="center_vertical"

@@ -70,7 +70,7 @@
             android:gravity="center"
             android:padding="@dimen/pp_dp_16"
             android:text="@string/auto_scan"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_light_blue"
             android:textSize="@dimen/text_size_14" />
 
         <View
@@ -87,7 +87,7 @@
             android:gravity="center"
             android:padding="@dimen/pp_dp_16"
             android:text="@string/manual"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_light_blue"
             android:textSize="@dimen/text_size_14" />
     </LinearLayout>
 

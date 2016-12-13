@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/pp_blue">
+        android:background="@color/white">
 
         <LinearLayout
             android:id="@+id/product_name_ll"
@@ -19,7 +19,8 @@
             android:paddingLeft="@dimen/pp_dp_20"
             android:paddingRight="@dimen/pp_dp_20"
             android:layout_centerInParent="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_above="@+id/make_gift_line">
 
             <TextView
                 android:id="@+id/product_name_tv"
@@ -29,7 +30,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="@string/preview"
                 android:paddingRight="@dimen/pp_dp_8"
-                android:textColor="@color/white"
+                android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_16" />
 
             <ImageView
@@ -55,7 +56,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/cart" />
+            android:src="@drawable/cart"
+            android:layout_above="@+id/make_gift_line"/>
 
         <TextView
             android:id="@+id/textview_cart_count"
@@ -81,7 +83,8 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:src="@drawable/back_blue"
+            android:layout_above="@+id/make_gift_line"/>
 
         <ImageView
             android:id="@+id/addimage"
@@ -92,7 +95,17 @@
             android:layout_toLeftOf="@id/button_cart"
             android:scaleType="fitCenter"
             android:src="@drawable/addphoto"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_above="@+id/make_gift_line"/>
+
+        <View
+            android:id="@id/make_gift_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/pp_gray"
+            android:layout_alignParentBottom="true"
+            />
+
     </RelativeLayout>
 
     <com.pictureair.photopass.widget.MyScrollView
