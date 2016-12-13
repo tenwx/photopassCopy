@@ -56,7 +56,6 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +135,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     private int expolredAnimFrameIndex = 0;
 
-    private static List<PPinfo> ppList;
+    private static List<PPinfo> ppList = new ArrayList<>();
 
     private static final String REFLECTION_RESOURCE = "explored";
 
@@ -218,7 +217,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         explored.setAdjustViewBounds(true);
         parentLayout.addView(explored);
 
-        intiData();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         slideLogoTV = (TextView) mDrawerLayout.findViewById(R.id.main_slide_text);
         cb_all = (CheckBox) mDrawerLayout.findViewById(R.id.main_slide_select_all);
@@ -239,7 +237,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 } else {
                     info.setIsSelected(0);
                 }
-                adapter.setPPlist(ppList);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -247,18 +244,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
-    }
-
-    private void intiData() {
-        ppList = new ArrayList<PPinfo>();
-        for (int i =0; i<7;i++) {
-            PPinfo ppInfo = new PPinfo();
-            ppInfo.setPhotoCount(180);
-            ppInfo.setShootDate("2016-01-01");
-            ppInfo.setPpCode("SHDRH3H3H3H3H3H3H");
-            ppInfo.setIsSelected(0);
-            ppList.add(ppInfo);
-        }
     }
 
     private void initLeadView() {
@@ -811,14 +796,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             }
             //刷新列表
             EventBus.getDefault().removeStickyEvent(redPointControlEvent);
-        } else if (baseBusEvent instanceof MainTabSwitchEvent) {//切换到对应的tab
+        } else if (baseBusEvent instanceof MainTabSwitchEvent) {
             MainTabSwitchEvent mainTabSwitchEvent = (MainTabSwitchEvent) baseBusEvent;
-            if (mainTabSwitchEvent.getMainTabSwitchIndex() == MainTabSwitchEvent.DRAGER_VIEW) {
+            if (mainTabSwitchEvent.getMainTabSwitchIndex() == MainTabSwitchEvent.DRAGER_VIEW) {//打开侧边栏
                 mDrawerLayout.openDrawer(GravityCompat.START);
-            } else {
-                setTabSelection(mainTabSwitchEvent.getMainTabSwitchIndex(), true);
-                application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
-                last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
+            } else if (mainTabSwitchEvent.getMainTabSwitchIndex() == MainTabSwitchEvent.DRAGER_VIEW_UPDATE){
+                ppList.clear();
+                ppList.addAll(mainTabSwitchEvent.getArrayList());
+                PictureAirLog.d("update dragerView---->" + ppList.size());
+                adapter.notifyDataSetChanged();
             }
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
 

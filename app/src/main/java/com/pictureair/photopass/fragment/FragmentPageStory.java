@@ -14,6 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +39,13 @@ import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
+import com.pictureair.photopass.adapter.NoPhotoRecycleAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
+import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
@@ -53,6 +57,7 @@ import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
@@ -143,21 +148,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ImageView scanIv;
     private RelativeLayout scanLayout;
     private RelativeLayout menuLayout;
-    private LinearLayout noPhotoView;
+    private RelativeLayout noPhotoTipRL;
+    private RelativeLayout noPhotoViewRL;
+    private ImageView noPhotoViewRLCloseIV;
     private ViewPager storyViewPager;
     private RelativeLayout storyNoPpToScanLinearLayout;
-    private ImageView storyNoPhotoToDiscoverImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PPPPop pppPop;
-    private CustomTextView storyDiscover;
-    private CustomTextView storyNoPhotoTip;
     private CustomTextView specialDealOnTV;
     private CustomTextView specialDealDetailTV;
     private LinearLayout specialDealLL;
     private BannerView bannerView;
     private RelativeLayout gifRL, scanRL, draftLayout;
     private ImageView gifIV;
+    private RecyclerView noPhotoRV;
+    private NoPhotoRecycleAdapter noPhotoRecycleAdapter;
 
     //申明类
     private MyApplication app;
@@ -171,6 +177,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList, localPhotoList;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
+    private ArrayList<PPinfo> pPinfoArrayList = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
     private FragmentAdapter fragmentAdapter;
     private Activity context;
@@ -293,6 +300,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case LOAD_PHOTO_FROM_DB:
+                API1.getPPSByUserId(fragmentPageStoryHandler);
                 if (photoPassPicList.size() == 0 || needfresh) {
                     //数据为0，需要从网上下载
                     PictureAirLog.out("photolist size = 0");
@@ -313,6 +321,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!hasHidden) {
                     showPWProgressDialog();
                     API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
+                    API1.getPPSByUserId(fragmentPageStoryHandler);
 
                 } else {
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
@@ -360,6 +369,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, null),
                         null, Common.LOAD_PHOTO_COUNT);//获取更新信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
+                API1.getPPSByUserId(fragmentPageStoryHandler);
                 showLeadView();
                 break;
 
@@ -603,6 +613,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
+            case API1.GET_PPS_SUCCESS:// 获取pp列表成功
+                pPinfoArrayList.clear();
+                pPinfoArrayList.addAll(JsonUtil.getPPList((JSONObject) msg.obj));
+                if (noPhotoViewRL.isShown()) {//有卡无图页面，需要刷新列表
+                    if (noPhotoRecycleAdapter != null) {
+                        noPhotoRecycleAdapter.notifyDataSetChanged();
+                    }
+
+                }
+                //通知首页更新PP列表
+                EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
+                break;
+
+            case API1.GET_PPS_FAILED:// 获取pp列表失败, 不做任何操作
+                break;
+
             default:
                 break;
         }
@@ -769,10 +795,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
         storyViewPager = (ViewPager) view.findViewById(R.id.story_viewPager);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
-        noPhotoView = (LinearLayout) view.findViewById(R.id.no_photo_view_relativelayout);
-        storyNoPhotoToDiscoverImageView = (ImageView) view.findViewById(R.id.story_to_discover);
-        storyDiscover = (CustomTextView) view.findViewById(R.id.story_discover);
-        storyNoPhotoTip = (CustomTextView) view.findViewById(R.id.story_no_photo_tip);
+        noPhotoTipRL = (RelativeLayout) view.findViewById(R.id.story_no_photo_rl);
+        noPhotoViewRL = (RelativeLayout) view.findViewById(R.id.no_photo_view_relativelayout);
+        noPhotoViewRLCloseIV = (ImageView) view.findViewById(R.id.story_no_photo_close_iv);
+        noPhotoRV = (RecyclerView) view.findViewById(R.id.story_no_photo_rv);
         specialDealLL = (LinearLayout) view.findViewById(R.id.special_deal_ll);
         specialDealDetailTV = (CustomTextView) view.findViewById(R.id.special_deal_detail_tv);
         specialDealOnTV = (CustomTextView) view.findViewById(R.id.special_deal_on);
@@ -819,10 +845,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         favouritePhotoList = new ArrayList<>();
         scanLayout.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
-        storyNoPhotoToDiscoverImageView.setOnClickListener(this);
         specialDealLL.setOnClickListener(this);
-        storyDiscover.setTypeface(app.getFontBold());
-        storyNoPhotoTip.setTypeface(app.getFontBold());
+        noPhotoViewRLCloseIV.setOnClickListener(this);
         specialDealOnTV.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         //初始化数据
         GlideUtil.loadGifAsImage(context, GlideUtil.getDrawableUrl(context, R.drawable.story_pp_intro), gifIV);
@@ -962,7 +986,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             //隐藏空图的情况
-            noPhotoView.setVisibility(View.GONE);
+            noPhotoViewRL.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.GONE);
             //显示有pp的情况
             storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
@@ -1006,26 +1030,28 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<ArrayList<String>>() {
+                        .subscribe(new RxSubscribe<ArrayList<String>>() {
+                            @Override
+                            public void _onNext(ArrayList<String> strings) {
+                                bannerView.setPhotos(strings);
+
+                            }
+
+                            @Override
+                            public void _onError(int status) {
+                                bannerView.bannerStartPlay();
+
+                            }
+
                             @Override
                             public void onCompleted() {
                                 bannerView.bannerStartPlay();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                bannerView.bannerStartPlay();
-                            }
-
-                            @Override
-                            public void onNext(ArrayList<String> strings) {
-                                bannerView.setPhotos(strings);
 
                             }
                         });
                 //显示没有pp的情况
                 storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
-                noPhotoView.setVisibility(View.GONE);
+                noPhotoViewRL.setVisibility(View.GONE);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
 
                 //需要设置为不可见，不然会报空指针异常
@@ -1036,12 +1062,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 
                 //显示空图的情况
-                noPhotoView.setVisibility(View.VISIBLE);
+                noPhotoViewRL.setVisibility(View.VISIBLE);
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
 
                 //需要设置为不可见，不然会报空指针异常
                 storyLeadBarLinearLayout.setVisibility(View.INVISIBLE);
                 storyViewPager.setVisibility(View.INVISIBLE);
+
+                if (noPhotoRecycleAdapter == null) {
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                    noPhotoRecycleAdapter = new NoPhotoRecycleAdapter(context, pPinfoArrayList);
+                    noPhotoRV.setLayoutManager(linearLayoutManager);
+                    noPhotoRV.setAdapter(noPhotoRecycleAdapter);
+                } else {
+                    noPhotoRecycleAdapter.notifyDataSetChanged();
+                }
             }
         }
         PictureAirLog.out("story flow ---> show view done");
@@ -1183,6 +1218,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
             API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
+            API1.getPPSByUserId(fragmentPageStoryHandler);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程
@@ -1785,11 +1821,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 startActivity(i);
                 break;
 
-            case R.id.story_to_discover://跳转到Discover页面
-                PictureAirLog.out("Onclick---->Discover");
-                EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DISCOVER_TAB));
-                break;
-
             case R.id.special_deal_ll:
                 //抢单点击事件，即可进入抢单活动页面
                 PictureAirLog.d("deal url---> " + dealingInfo.getDealingUrl() + "tokenid-->" + MyApplication.getTokenId());
@@ -1813,6 +1844,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case R.id.float_hide:
                 draftLayout.setVisibility(View.GONE);
+            case R.id.story_no_photo_close_iv:
+                noPhotoTipRL.setVisibility(View.GONE);
                 break;
 
             default:
@@ -1822,7 +1855,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     }
 
     private void clickToRefresh() {
-        if (noPhotoView.isShown() || storyNoPpToScanLinearLayout.isShown()) {
+        if (noPhotoViewRL.isShown() || storyNoPpToScanLinearLayout.isShown()) {
             PictureAirLog.out("do refresh when noPhotoView is showing");
             if (!swipeRefreshLayout.isRefreshing()) {
                 noPhotoViewStateRefresh = true;
@@ -1875,7 +1908,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
                 }
 
-            } else if (!noPhotoView.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
+            } else if (!noPhotoViewRL.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
                 syncingBoughtPhotos = true;
                 PictureAirLog.out("start sync------->");
                 fragmentPageStoryHandler.sendEmptyMessageDelayed(SYNC_BOUGHT_PHOTOS, 2000);

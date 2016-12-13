@@ -1182,4 +1182,48 @@ public class JsonUtil {
         return list;
     }
 
+    /**
+     * 获取pp列表信息
+     * @return
+     */
+    public static ArrayList<PPinfo> getPPList(JSONObject jsonObject) {
+        ArrayList<PPinfo> pPinfoArrayList = new ArrayList<>();
+        PictureAirLog.json(jsonObject.toString());
+        if (jsonObject.containsKey("PPList")) {
+            try {
+                JSONArray pplists = jsonObject.getJSONArray("PPList");
+                PPinfo ppCodeInfo;
+                String ppcode;
+                boolean contains;
+                // 遍历所有pplist，去除重复的pp
+                for (int i = 0; i < pplists.size(); i++) {
+                    JSONObject pplist = pplists.getJSONObject(i);
+                    ppcode = pplist.getString("customerId");
+                    contains = false;
+                    // 查看是否有重复的ppcode，需要更新时间和数量
+                    for (int j = 0; j < pPinfoArrayList.size(); j++) {
+                        if (ppcode.equals(pPinfoArrayList.get(j).getPpCode())) {
+                            contains = true;
+                            ppCodeInfo = pPinfoArrayList.get(j);
+                            ppCodeInfo.setShootDate(pplist.getString("shootDate")); //new add 取最新的时间，解决PP排序问题。
+                            ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount() + pplist.getIntValue("photoCount"));
+                            break;
+                        }
+                    }
+                    if (!contains) {
+                        ppCodeInfo = new PPinfo();
+                        ppCodeInfo.setPpCode(pplist.getString("customerId"));
+                        ppCodeInfo.setPhotoCount(pplist.getIntValue("photoCount"));
+                        ppCodeInfo.setShootDate(pplist.getString("shootDate"));
+                        pPinfoArrayList.add(ppCodeInfo);
+                    }
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return pPinfoArrayList;
+    }
+
 }
