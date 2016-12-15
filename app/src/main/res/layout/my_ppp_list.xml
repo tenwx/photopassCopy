@@ -71,40 +71,17 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/pp_dp_5">
 
-            <ImageView
-                android:id="@+id/iv_select"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/pp_dp_5"
-                android:layout_marginRight="@dimen/pp_dp_5"
-                android:clickable="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/nosele"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/ppp_empty_view"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:visibility="gone"/>
-
             <RelativeLayout
                 android:id="@+id/rl_ppp_face"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_select"
-                android:layout_toLeftOf="@id/ppp_empty_view">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/ppp_imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:adjustViewBounds="true" />
+                    android:adjustViewBounds="true"/>
 
 
                 <RelativeLayout
@@ -168,11 +145,19 @@
                 </RelativeLayout>
             </RelativeLayout>
 
+            <ImageView
+                android:id="@+id/iv_select"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/nosele"
+                android:visibility="gone" />
+
             <RelativeLayout
                 android:id="@+id/rl_ppp_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_select"
                 android:background="@drawable/ppp_back"
                 android:orientation="vertical"
                 android:visibility="invisible">

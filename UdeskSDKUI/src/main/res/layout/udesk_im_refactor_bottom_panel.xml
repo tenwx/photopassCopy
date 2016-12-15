@@ -37,7 +37,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="6dp"
-            android:background="@color/udesk_bottom_send1"
+            android:background="#6799ca"
             android:text="@string/udesk_send_message"
             android:textColor="@color/udesk_bottom_send_textcolor2"
             android:textSize="15sp" />

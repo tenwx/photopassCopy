@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
@@ -564,6 +565,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         ok.setTextColor(getResources().getColor(R.color.gray_light5));
         refreshLayout.setVisibility(View.VISIBLE);
         listPPPAdapter = new ListOfPPPAdapter(API1.PPPlist, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
+        View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
+        listPPP.addHeaderView(view);
         listPPP.setAdapter(listPPPAdapter);
     }
 

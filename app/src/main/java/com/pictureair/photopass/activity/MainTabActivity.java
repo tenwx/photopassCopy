@@ -1,29 +1,29 @@
 package com.pictureair.photopass.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SlideListAdapter;
@@ -33,22 +33,30 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
+import com.pictureair.photopass.eventbus.PPDeleteEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
+import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
 import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.HttpCallback;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PPInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CheckUpdateListener;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.PWToast;
@@ -57,10 +65,14 @@ import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -68,7 +80,7 @@ import de.greenrobot.event.Subscribe;
  * 通过扫描或者登录之后会来到此页面
  */
 public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback,
-        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener{
+        PWDialog.OnCustomerViewCallBack, OnClickListener, CheckUpdateListener, PWDialog.OnPWDialogClickListener{
     private FragmentPageStory fragmentPageStory;
     private FragmentPageDiscover fragmentPageDiscover;
     private FragmentPageShop fragmentPageShop;
@@ -79,7 +91,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private LinearLayout storyTab, discoverTab, shopTab, meTab;
     private ImageView storyIV, discoverIV, shopIV, meIV;
     private TextView storyTV, discoverTV, shopTV, meTV, slideLogoTV;
-    private CheckBox cb_all, cb_delete;
+    private Button btn_delete;
 
     private RelativeLayout parentLayout;
     private WaterDrop waterDropView;
@@ -140,10 +152,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private static final String REFLECTION_RESOURCE = "explored";
 
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
     private ListView slidList;
     private SlideListAdapter adapter;
     private LinearLayout slideLayout;
+    private PWDialog pictureWorksDialog;
+    private static final int DELETE_PP_DIALOG = 2222;
+    private int deletePosition = -1;
+    private List<PPinfo> deletedPPList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,31 +234,58 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         slideLogoTV = (TextView) mDrawerLayout.findViewById(R.id.main_slide_text);
-        cb_all = (CheckBox) mDrawerLayout.findViewById(R.id.main_slide_select_all);
-        cb_delete = (CheckBox) mDrawerLayout.findViewById(R.id.main_slide_unbound);
+        btn_delete = (Button) mDrawerLayout.findViewById(R.id.main_slide_unbound);
+        btn_delete.setOnClickListener(this);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.story_slide_open, R.string.story_slide_close);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                if (adapter != null) {
+                    if (adapter.getDeleteStatus()) {
+                        btn_delete.setText(R.string.story_unbound);
+                        adapter.refreshDeleteStatus(false);
+                    }
+                }
+
+                if (deletedPPList != null) {
+                    EventBus.getDefault().post(new PPDeleteEvent(deletedPPList));
+                    deletedPPList = null;
+                }
+
+                super.onDrawerClosed(drawerView);
+
+            }
+        });
         slideLayout = (LinearLayout) findViewById(R.id.main_slide_layout);
         slidList = (ListView) findViewById(R.id.slid_listview);
-        adapter = new SlideListAdapter(MainTabActivity.this, ppList);
-        slidList.setAdapter(adapter);
         slidList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PPinfo info = ppList.get(position);
-                if (info.getIsSelected() == 0) {
-                    info.setIsSelected(1);
-                } else {
-                    info.setIsSelected(0);
-                }
-                adapter.notifyDataSetChanged();
+                onMainItemClick(parent, view, position, id);
             }
         });
+        pictureWorksDialog = new PWDialog(this)
+                .setOnPWDialogClickListener(this)
+                .pwDialogCreate();
 
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
+    }
+
+    private void onMainItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        if (ppList == null || ppList.size() == 0 || adapter == null) return;
+        if (adapter.getDeleteStatus()) {
+            deletePosition = position;
+            pictureWorksDialog.setPWDialogId(DELETE_PP_DIALOG)
+                    .setPWDialogMessage(R.string.delete_pp)
+                    .setPWDialogNegativeButton(R.string.delete_pp_cancel)
+                    .setPWDialogPositiveButton(R.string.delete_pp_ok)
+                    .setPWDialogContentCenter(true)
+                    .pwDilogShow();
+        }
+
     }
 
     private void initLeadView() {
@@ -265,12 +307,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             leadViewIV.setImageResource(R.drawable.story_lead_zh);
         }
-    }
-
-    @Override
-    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onPostCreate(savedInstanceState, persistentState);
-        if (mDrawerToggle != null) mDrawerToggle.syncState();
     }
 
     @Override
@@ -320,8 +356,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             meTV.setText(R.string.tab_me);
             setTabSelection(4, false);
             slideLogoTV.setText(R.string.story_myphotopass);
-            cb_all.setText(R.string.edit_story_all);
-            cb_delete.setText(R.string.story_unbound);
+            if (adapter == null) {
+                btn_delete.setText(R.string.story_unbound);
+            } else {
+                if (adapter.getDeleteStatus()) {
+                    btn_delete.setText(R.string.delete_pp_cancel);
+                } else {
+                    btn_delete.setText(R.string.story_unbound);
+                }
+            }
             currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
@@ -362,9 +405,82 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 pwDialog.pwDialogDismiss();
                 break;
 
+            case R.id.main_slide_unbound: //解绑
+                if (ppList == null || ppList.size() == 0) {
+                    return;
+                }
+                if (adapter != null) {
+                    if (adapter.getDeleteStatus()) {
+                        btn_delete.setText(R.string.story_unbound);
+                        adapter.refreshDeleteStatus(false);
+                    } else {
+                        btn_delete.setText(R.string.delete_pp_cancel);
+                        adapter.refreshDeleteStatus(true);
+                    }
+                }
+
+                break;
+
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            switch (dialogId) {
+                case DELETE_PP_DIALOG:
+                    UmengUtil.onEvent(MainTabActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
+                    removePPFromUser();
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
+    }
+
+    private void removePPFromUser() {
+        final String ppcode = ppList.get(deletePosition).getPpCode();
+        API2.removePPFromUser(ppList.get(deletePosition).getPpCode(), deletePosition, new HttpCallback() {
+            @Override
+            public void doOnSubscribe() {
+                super.doOnSubscribe();
+                showPWProgressDialog();
+            }
+        }).subscribeOn(Schedulers.io())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .map(new Func1<JSONObject, List<PPinfo>>() {
+                    @Override
+                    public List<PPinfo> call(JSONObject jsonObject) {
+                        PictureAirDbManager.removePhotosFromUserByPPCode(deletePosition, (ArrayList<PPinfo>) ppList);
+                        if (deletedPPList == null) {
+                            deletedPPList = new ArrayList<PPinfo>();
+                        }
+                        deletedPPList.add(ppList.get(deletePosition));
+                        ppList.remove(deletePosition);
+                        return ppList;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<List<PPinfo>>() {
+                    @Override
+                    public void _onNext(List<PPinfo> pPinfos) {
+                        adapter.refreshSlideList(ppList);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+                    }
+                });
     }
 
     //tab按钮的点击监听
@@ -803,8 +919,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             } else if (mainTabSwitchEvent.getMainTabSwitchIndex() == MainTabSwitchEvent.DRAGER_VIEW_UPDATE){
                 ppList.clear();
                 ppList.addAll(mainTabSwitchEvent.getArrayList());
+                Collections.sort(ppList, new PPInfoSortUtil());
                 PictureAirLog.d("update dragerView---->" + ppList.size());
-                adapter.notifyDataSetChanged();
+                ppList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, (ArrayList<PPinfo>) ppList, 1);
+                if (adapter == null) {
+                    adapter = new SlideListAdapter(MainTabActivity.this, ppList, false);
+                    slidList.setAdapter(adapter);
+                } else {
+                    adapter.refreshSlideList(ppList);
+                }
             }
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
 

@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.util.AppUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,9 +24,11 @@ public class SlideListAdapter extends BaseAdapter {
 
     private List<PPinfo> ppList;
     private Context mContext;
-    public SlideListAdapter(Context context, List<PPinfo> ppList) {
+    private boolean mDeleteStatus;
+    public SlideListAdapter(Context context, List<PPinfo> ppList, boolean deleteStatus) {
         this.mContext = context;
         this.ppList = ppList;
+        this.mDeleteStatus = deleteStatus;
     }
 
     @Override
@@ -45,6 +50,20 @@ public class SlideListAdapter extends BaseAdapter {
         this.ppList = list;
     }
 
+    public void refreshSlideList(List<PPinfo> ppList) {
+        this.ppList = ppList;
+        notifyDataSetChanged();
+    }
+
+    public void refreshDeleteStatus(boolean status) {
+        this.mDeleteStatus = status;
+        notifyDataSetChanged();
+    }
+
+    public boolean getDeleteStatus() {
+        return this.mDeleteStatus;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder = null;
@@ -61,14 +80,20 @@ public class SlideListAdapter extends BaseAdapter {
         }
 
         PPinfo ppInfo = ppList.get(position);
-        holder.tv_date.setText(ppInfo.getShootDate());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String loadTime = df.format(new Date());
+        if (loadTime.equals(ppInfo.getShootDate())) {
+            holder.tv_date.setText(R.string.today);
+        } else {
+            holder.tv_date.setText(ppInfo.getShootDate());
+        }
         holder.tv_count.setText(String.format(mContext.getString(R.string.story_photo_count), ppInfo.getPhotoCount()));
         holder.tv_num.setText(ppInfo.getPpCode());
 
-        if (ppInfo.getIsSelected() == 0) {
-            holder.img.setImageResource(R.drawable.nosele);
+        if (!mDeleteStatus) {
+            holder.img.setVisibility(View.INVISIBLE);
         } else {
-            holder.img.setImageResource(R.drawable.sele);
+            holder.img.setVisibility(View.VISIBLE);
         }
         return convertView;
     }

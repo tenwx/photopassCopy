@@ -22,6 +22,7 @@ import java.util.Map;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.MsgNotice;
@@ -31,6 +32,8 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
 
 
     private static final String SECRETKEY = "533032866a89ffdcb6340bf2ac0b9d6d";
+
+    //需要更换公司的域名
     private static final String DOMAIN = "13818543871.udesk.cn";
     private RelativeLayout layout_question;
     private RelativeLayout layout_online;
@@ -64,8 +67,6 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
             }
             info.put(UdeskConst.UdeskUserInfo.NICK_NAME,SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""));
             UdeskSDKManager.getInstance().setUserInfo(this, MyApplication.getTokenId(), info);
-            boolean  res = UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
-            PictureAirLog.e("bind",res ? "true" : "false");
             UIStyle1();
         }
     }
@@ -83,26 +84,10 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
                 break;
 
             case R.id.opinions_feedback:
-
+                UdeskSDKManager.getInstance().goToForm(this);
                 break;
 
         }
-    }
-
-    public void OnNewMsgNotice(MsgNotice msgNotice) {
-        if (msgNotice != null) {
-            notifyMsg(this, msgNotice.getContent());
-        }
-    }
-
-    private void notifyMsg(Context context, String content) {
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        Notification notification =new  NotificationCompat.Builder(context).setSmallIcon(AppUtil.getNotificationIcon()).setAutoCancel(true).setContentTitle(getString(R.string.app_name))
-                .setContentText(content).build();
-        notification.vibrate = new long[]{0, 1000};
-
-        manager.notify(1001, notification);
     }
 
 
@@ -135,14 +120,13 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
     }
 
     private void UIStyle1(){
         // 标题栏TitleBar的背景色  通过颜色设置
-        UdeskConfig.udeskTitlebarBgResId = R.color.udesk_titlebar_bg1;
+        UdeskConfig.udeskTitlebarBgResId = R.color.white;
         // 标题栏TitleBar，左右两侧文字的颜色
-        UdeskConfig.udeskTitlebarTextLeftRightResId = R.color.udesk_color_navi_text1;
+        UdeskConfig.udeskTitlebarTextLeftRightResId = R.color.pp_blue;
         //IM界面，右侧文字的字体颜色
         UdeskConfig.udeskIMRightTextColorResId = R.color.udesk_color_im_text_right1;
         //IM界面，左侧文字的字体颜色
@@ -154,7 +138,7 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
         // IM界面，提示语文字的字体颜色，比如客服转移
         UdeskConfig.udeskIMTipTextColorResId = R.color.udesk_color_im_tip_text1;
         // 返回箭头图标资源id
-        UdeskConfig.udeskbackArrowIconResId = R.drawable.udesk_titlebar_back;
+        UdeskConfig.udeskbackArrowIconResId = R.drawable.back_blue;
         // 咨询商品item的背景颜色
         UdeskConfig.udeskCommityBgResId = R.color.udesk_color_im_commondity_bg1;
         // 商品介绍Title的字样颜色
