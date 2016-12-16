@@ -13,6 +13,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.PWProgressDialog;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -27,6 +28,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
     private TextView topLeftTv, topTitle, topRightTv;
     private ImageView topLeftIv, topRightIv;
     private LinearLayout topLeftView, topRightView;
+    private PWProgressDialog pwProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
         AppManager.getInstance().addActivity(this);
         this.context = this;
         AppUtil.initLanguage(context);
+        createPWProgressDialog();
     }
 
     @Override
@@ -183,6 +186,109 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
     }
 
     public void TopViewClick(View view) {
+    }
+
+    /**
+     * dismiss pwProgressDialog
+     */
+    protected void dismissPWProgressDialog(){
+        if (null != pwProgressDialog) {
+            pwProgressDialog.pwProgressDialogDismiss();
+        }
+    }
+
+    /**
+     * dialog是否显示中
+     * @return
+     */
+    protected boolean isPWProgressDialogShowing() {
+        return (null == pwProgressDialog) ? false : pwProgressDialog.isPWProgressDialogShowing();
+    }
+
+    /**
+     * show pwProgressDialog
+     * @param message
+     */
+    protected void showPWProgressDialog(String message){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(message);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * show pwProgressDialog
+     * @param message
+     * @param cancelable
+     */
+    protected void showPWProgressDialog(String message, boolean cancelable){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(message)
+                    .setPWProgressDialogCancelable(cancelable);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * show pwProgressDialog
+     */
+    protected void showPWProgressDialog(){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(R.string.is_loading);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * show pwProgressDialog
+     * @param cancelable
+     */
+    protected void showPWProgressDialog(boolean cancelable){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(R.string.is_loading)
+                    .setPWProgressDialogCancelable(cancelable);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * show pwProgressDialog
+     * @param messageId
+     */
+    protected void showPWProgressDialog(int messageId){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(messageId);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * show pwProgressDialog
+     * @param messageId
+     * @param cancelable
+     */
+    protected void showPWProgressDialog(int messageId, boolean cancelable){
+        createPWProgressDialog();
+        if (null != pwProgressDialog) {//更新message
+            pwProgressDialog.setPWProgressDialogMessage(messageId)
+                    .setPWProgressDialogCancelable(cancelable);
+        }
+        pwProgressDialog.pwProgressDialogShow();
+    }
+
+    /**
+     * 创建对话框
+     */
+    private void createPWProgressDialog(){
+        if (null == pwProgressDialog) {//是否为空
+            pwProgressDialog = new PWProgressDialog(this)
+                    .pwProgressDialogCreate();
+        }
     }
 
 }

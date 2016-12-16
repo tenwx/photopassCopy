@@ -3,7 +3,6 @@
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -193,6 +192,7 @@
         android:background="@color/white"
         >
         <RelativeLayout
+            android:id="@+id/slide_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp"
@@ -217,7 +217,7 @@
                 android:layout_marginTop="@dimen/pp_dp_10"
                 android:textSize="@dimen/text_size_16"
                 />
-            <CheckBox
+            <Button
                 android:layout_marginTop="@dimen/pp_dp_10"
                 android:id="@+id/main_slide_unbound"
                 android:layout_width="wrap_content"
@@ -226,22 +226,10 @@
                 android:layout_alignParentRight="true"
                 android:text="@string/story_unbound"
                 android:textSize="@dimen/text_size_12"
-                style="@style/custom_checkbox"
                 android:textColor="@color/pp_blue"
+                android:background="@null"
                 />
 
-            <CheckBox
-                android:id="@+id/main_slide_select_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/main_slide_text"
-                android:text="@string/edit_story_all"
-                android:layout_toLeftOf="@id/main_slide_unbound"
-                android:layout_marginRight="@dimen/pp_dp_20"
-                android:layout_marginTop="@dimen/pp_dp_10"
-                android:textSize="@dimen/text_size_12"
-                style="@style/custom_checkbox"
-                android:textColor="@color/pp_blue"/>
 
         </RelativeLayout>
         <ListView

@@ -186,8 +186,6 @@
     <string name="story_unbound">解绑</string>
     <string name="story_myphotopass">我的乐拍通</string>
     <string name="story_photo_count">(%1$d)</string>
-    <string name="story_slide_open">1</string>
-    <string name="story_slide_close">2</string>
     <!-- disney story end -->
 
     <!-- me start -->
@@ -424,6 +422,7 @@
     <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
     <string name="use_ppp_upgrade_ok">我知道了</string>
     <string name="scan_ppp_upgrade">立即去绑定pp</string>
+    <string name="ppp_tips">温馨提示：请选择一张迪士尼乐拍通一卡通，高清您的照片哦！</string>
     <!-- ppp end -->
 
     <!-- pp start -->

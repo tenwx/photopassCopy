@@ -115,8 +115,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
             groupHolderView.orderTimeTextView = (TextView) convertView.findViewById(R.id.order_time);
             groupHolderView.orderNumberTextView = (TextView) convertView.findViewById(R.id.order_number);
             groupHolderView.totalPriceTextView = (TextView) convertView.findViewById(R.id.order_total_price);
-            groupHolderView.paymentButton = (Button) convertView.findViewById(R.id.order_payment1);
-            groupHolderView.deleteButton = (Button) convertView.findViewById(R.id.order_delete);
+            groupHolderView.paymentButton = (TextView) convertView.findViewById(R.id.order_payment1);
+            groupHolderView.deleteButton = (TextView) convertView.findViewById(R.id.order_delete);
             groupHolderView.currencyTextView = (TextView) convertView.findViewById(R.id.order_price_currency);
             groupHolderView.orderCancled = (TextView) convertView.findViewById(R.id.order_tv_cancel);
             convertView.setTag(groupHolderView);
@@ -266,8 +266,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         TextView currencyTextView;//币种
         TextView totalPriceTextView;//订单总价
         TextView orderCancled;
-        Button paymentButton;//支付按钮，快递按钮，再次购买按钮，三个功能
-        Button deleteButton;
+        TextView paymentButton;//支付按钮，快递按钮，再次购买按钮，三个功能
+        TextView deleteButton;
     }
 
     private class ChildHolderView {

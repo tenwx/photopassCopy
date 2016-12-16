@@ -1863,24 +1863,26 @@ public class API2 {
             params.put(Common.CUSTOMERID,ppCode);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
+        return post(params, Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, callback);
 
-        return observable;
+//        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+//        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new ProgressListener() {
+//            @Override
+//            public void update(long bytesRead, long contentLength) {
+//                if (callback != null) callback.onProgress(bytesRead, contentLength);
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .doOnSubscribe(new Action0() {
+//                    @Override
+//                    public void call() {
+//                        callback.doOnSubscribe();
+//                    }
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .compose(RxHelper.<JSONObject>handleResult());
+//
+//        return observable;
 
 //        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new HttpCallback() {
 //            @Override
@@ -4442,6 +4444,28 @@ public class API2 {
                     @Override
                     public void call() {
                         if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
+    }
+
+    private static Observable<JSONObject> post(Map<String, Object> params, final String url, final HttpCallback callback) {
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable  = request.post(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        callback.doOnSubscribe();
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())

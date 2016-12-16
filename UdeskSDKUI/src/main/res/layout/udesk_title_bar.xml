@@ -12,41 +12,49 @@
         android:layout_centerVertical="true"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_above="@+id/udesk_line"
         >
         <LinearLayout
             android:id="@+id/udesk_back_linear"
             android:orientation="vertical"
             android:layout_width="50dp"
             android:gravity="center"
-            android:layout_height="fill_parent">
+            android:layout_height="52dp">
 
             <ImageView
                 android:id="@+id/udesk_back_img"
-                android:layout_width="@dimen/udesk_20"
-                android:layout_height="@dimen/udesk_20"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/udesk_titlebar_back"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="15dp"
+                android:scaleType="centerInside"
                 />
 
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/udesk_content"
-            style="@style/udesk_titlebar_button_text_style"
-            android:layout_marginLeft="@dimen/udesk_15"
-            android:maxWidth="300dp"
-            />
-
-        <ImageView
-            android:id="@+id/udesk_status"
-            android:layout_width="@dimen/udesk_8"
-            android:layout_marginLeft="@dimen/udesk_2"
-            android:layout_height="@dimen/udesk_8"
-            android:src="@drawable/udesk_online_status"
-            android:visibility="gone"
-            />
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/udesk_content"
+        style="@style/udesk_titlebar_button_text_style"
+        android:layout_marginLeft="@dimen/udesk_15"
+        android:maxWidth="300dp"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:id="@+id/udesk_status"
+        android:layout_width="@dimen/udesk_8"
+        android:layout_marginLeft="@dimen/udesk_2"
+        android:layout_height="@dimen/udesk_8"
+        android:src="@drawable/udesk_online_status"
+        android:visibility="gone"
+        android:layout_toRightOf="@id/udesk_content"
+        android:layout_centerVertical="true"
+        />
 
 
     <LinearLayout
@@ -56,6 +64,7 @@
         android:layout_centerInParent="true"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_above="@+id/udesk_line"
         >
 
         <ImageView
@@ -75,7 +84,12 @@
             />
 
         </LinearLayout>
-
-
+    <View
+        android:id="@id/udesk_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="#bac1c6"
+        />
 
 </RelativeLayout>

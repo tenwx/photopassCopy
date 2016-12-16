@@ -162,7 +162,7 @@ public class ListOfPPAdapter extends BaseAdapter {
                     holder.tvShootDate.setText(ppInfo1.getShootDate());
                 }
             } else {
-                holder.tvShootDate.setText(arrayList.get(position).getShootDate());
+                holder.tvShootDate.setText(ppInfo1.getShootDate());
             }
         }
 
