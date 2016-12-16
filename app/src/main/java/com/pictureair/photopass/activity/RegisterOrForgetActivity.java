@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -247,6 +248,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     @Override
     public void onSuccess() {
         startActivity(new Intent(this, MainTabActivity.class));
+        AppManager.getInstance().killActivity(LoginActivity.class);
         finish();
     }
 

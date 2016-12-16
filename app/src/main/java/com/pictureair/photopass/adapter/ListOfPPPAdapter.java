@@ -131,7 +131,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.ppp_detail = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_detail);
 			holder.ppp_face = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_face);
 			holder.pppLine = (RelativeLayout) convertView.findViewById(R.id.card_bottom);
-			holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+			if (isUseHavedPPP) {
+				holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+			}
 			adjustLayout(holder);
 			convertView.setTag(holder);
 		} else {
@@ -225,8 +227,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		if (isUseHavedPPP) {
 			RelativeLayout.LayoutParams checkParams = (RelativeLayout.LayoutParams) holder.img_no_check.getLayoutParams();
-			checkParams.leftMargin = params.width - params2.width + ScreenUtil.dip2px(mContext, 10);
-			checkParams.topMargin = params.height - params2.height + ScreenUtil.dip2px(mContext, 10);
+			checkParams.leftMargin = (params.width - params2.width)/2 + ScreenUtil.dip2px(mContext, 10);
+			checkParams.topMargin = (params.height - params2.height)/2 + ScreenUtil.dip2px(mContext, 10);
 			holder.img_no_check.setLayoutParams(checkParams);
 
 		}

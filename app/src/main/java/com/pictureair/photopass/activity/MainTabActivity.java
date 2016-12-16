@@ -235,6 +235,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         slideLogoTV = (TextView) mDrawerLayout.findViewById(R.id.main_slide_text);
         btn_delete = (Button) mDrawerLayout.findViewById(R.id.main_slide_unbound);
+        //设置监听是为了拦截该层面的点击事件，不做具体事件处理，这样事件就不会传递到下层
+        mDrawerLayout.findViewById(R.id.slide_head).setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {

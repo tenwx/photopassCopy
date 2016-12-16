@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -376,6 +377,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         Intent i = new Intent();
         i.setClass(OtherRegisterActivity.this, MainTabActivity.class);
         startActivity(i);
+        AppManager.getInstance().killActivity(LoginActivity.class);
         finish();
     }
 
