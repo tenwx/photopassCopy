@@ -16,6 +16,7 @@
             android:id="@+id/rlrt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/select_line"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_dp_15"
@@ -23,8 +24,7 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/select_line"/>
+            android:src="@drawable/back_blue" />
 
         <TextView
             android:id="@+id/text"
@@ -32,14 +32,15 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@color/transparent"
-            android:text="@string/mypage_pp"
+            android:text="@string/edit_story_photo_title"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
-        <TextView
+        <ImageView
             android:id="@+id/pp_photos_edit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_above="@+id/select_line"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center"
@@ -47,104 +48,163 @@
             android:paddingLeft="@dimen/pp_dp_8"
             android:paddingRight="@dimen/pp_dp_16"
             android:paddingTop="@dimen/pp_dp_8"
-            android:text="@string/edit_story_album"
-            android:textColor="@color/pp_blue"
-            android:visibility="visible"
-            android:textSize="@dimen/text_size_16"
-            android:layout_above="@+id/select_line"/>
+            android:src="@drawable/edit_story_edit"
+            android:visibility="visible" />
 
         <View
             android:id="@id/select_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
             android:layout_alignParentBottom="true"
-            />
+            android:background="@color/pp_gray" />
 
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView
-        android:id="@+id/pullToRefreshPinnedSectionListView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout1"
-        android:layout_above="@+id/select_tools_linearlayout"
-        android:background="@color/white"
-        android:clipToPadding="true"
-        android:horizontalSpacing="@dimen/pp_dp_5"
-        android:listSelector="@color/transparent"
-        android:numColumns="3"
-        android:scrollbars="none"
-        android:verticalSpacing="0dip" />
+        android:layout_above="@+id/bottom_rl"
+        android:layout_below="@id/layout1">
 
-    <LinearLayout
-        android:id="@+id/select_tools_linearlayout"
+        <com.pictureair.photopass.widget.PWStickySectionRecyclerView
+            android:id="@+id/pullToRefreshPinnedSectionListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_rl"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/gray_light4"
-        android:padding="@dimen/pp_dp_10"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:id="@+id/select_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/edit_album_all_button"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="@dimen/pp_dp_5"
-            android:text="@string/edit_story_all"
-            android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_14" />
+        <RelativeLayout
+            android:id="@+id/buy_ppp_rl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_bottom_bar_height"
+            android:background="@color/white"
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/select_disall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/edit_album_disall_button"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="@dimen/pp_dp_5"
-            android:text="@string/edit_story_disall"
-            android:textColor="@drawable/textview_selector_onclick"
-            android:visibility="gone"
-            android:textSize="@dimen/text_size_14" />
+            <TextView
+                android:id="@+id/edit_album_buy_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@color/pp_red"
+                android:gravity="center"
+                android:paddingLeft="@dimen/pp_dp_20"
+                android:paddingRight="@dimen/pp_dp_20"
+                android:text="@string/buy_good"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_14" />
 
-        <TextView
-            android:id="@+id/select_delete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/edit_album_delete_button"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="@dimen/pp_dp_5"
-            android:text="@string/delete"
-            android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_14" />
+            <TextView
+                android:id="@+id/edit_album_card_no_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginTop="@dimen/pp_dp_5"
+                android:text="card"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_12" />
 
-        <TextView
-            android:id="@+id/select_download"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableTop="@drawable/edit_album_download_button"
-            android:gravity="center_horizontal|bottom"
-            android:drawablePadding="@dimen/pp_dp_5"
-            android:text="@string/down"
-            android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_14" />
+            <TextView
+                android:id="@+id/edit_album_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_marginTop="@dimen/pp_dp_5"
+                android:layout_toRightOf="@+id/edit_album_card_no_tv"
+                android:text="time"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_12" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/edit_album_intro_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/edit_album_card_no_tv"
+                android:layout_marginLeft="@dimen/pp_dp_5"
+                android:layout_toLeftOf="@+id/edit_album_buy_tv"
+                android:gravity="center_vertical"
+                android:text="@string/edit_story_ppp_intro"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_14" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/select_tools_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@color/gray_light4"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/pp_dp_10"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/select_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
+                android:drawableTop="@drawable/edit_album_all_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/edit_story_all"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14" />
+
+            <TextView
+                android:id="@+id/select_disall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
+                android:drawableTop="@drawable/edit_album_disall_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/edit_story_disall"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/select_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
+                android:drawableTop="@drawable/edit_album_delete_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/delete"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14" />
+
+            <TextView
+                android:id="@+id/select_download"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
+                android:drawableTop="@drawable/edit_album_download_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/down"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/no_photo_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pp_light_gray_background"
         android:layout_below="@id/layout1"
+        android:background="@color/pp_light_gray_background"
         android:visibility="gone">
 
         <RelativeLayout

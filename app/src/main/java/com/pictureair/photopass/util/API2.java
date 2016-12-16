@@ -36,6 +36,9 @@ import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.pictureair.photopass.util.API1.GET_NEW_PHOTOS;
+import static com.pictureair.photopass.util.API1.GET_OLD_PHOTOS;
+
 /**
  * Created by pengwu on 16/11/9.
  *
@@ -748,62 +751,30 @@ public class API2 {
      * 获取用户照片
      *
      * @param tokenId
-     * @param timeString 根据时间获取图片信息
      */
-    public static Observable<JSONObject> getPhotosByConditions(final String tokenId, final String timeString, String ppCode, final HttpCallback callback) {
+    public static Observable<JSONObject> getPhotosByConditions(String tokenId, int type, String receiveOn, String repeatIds, String ppCode, String shootDate, int limit) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        if (timeString != null) {
-            params.put(Common.LAST_UPDATE_TIME, timeString);
+        if (type == GET_NEW_PHOTOS) {
+            params.put(Common.GTE_RECEIVE_ON, receiveOn);
+            params.put(Common.REPEAT_ID, repeatIds);
+
+        } else if (type == GET_OLD_PHOTOS) {
+            params.put(Common.LTE_RECEIVE_ON, receiveOn);
+            params.put(Common.REPEAT_ID, repeatIds);
+
         }
         if (!TextUtils.isEmpty(ppCode)) {
             params.put(Common.CUSTOMERID, ppCode);
         }
-        PictureAirLog.out("the time of start get photos = " + timeString);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                       if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
+        if (!TextUtils.isEmpty(shootDate)) {
+            params.put(Common.SHOOTDATE, shootDate);
+        }
 
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                //成功获取照片信息
-//                if (null == timeString) {//获取全部照片
-//                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
-//                } else {//获取当前照片
-//                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                if (null == timeString) {//获取全部照片，需要将时间置空，保证下次下拉可以重新拉取数据
-//                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null);
-//                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
-//                } else {//获取当前照片
-//                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
-//                }
-//            }
-//        });
-//        return task;
+        params.put(Common.LIMIT, limit);
+        PictureAirLog.out("the time of start get photos = " + receiveOn + ",repeatids-->" + repeatIds);
+        return get(params, Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, null);
     }
 
     /**

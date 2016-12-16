@@ -27,7 +27,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 	private int oldCount;
 	private View view;
 	private SwipeRefreshLayout refreshLayout;
-	private CustomTextView tvStickyHeaderView;
+	private TextView tvStickyHeaderView;
 	private static Handler handler;
 
 	private static final int REFRESH = 666;
@@ -90,7 +89,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 		PictureAirLog.d("fragment init create");
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
-		tvStickyHeaderView = (CustomTextView) view.findViewById(R.id.section_time);
+		tvStickyHeaderView = (TextView) view.findViewById(R.id.section_location_tv);
 		pwStickySectionRecyclerView = (PWStickySectionRecyclerView) view.findViewById(R.id.pw_sticky_section_recyclerview);
 
 		tvStickyHeaderView.setTypeface(MyApplication.getInstance().getFontBold());

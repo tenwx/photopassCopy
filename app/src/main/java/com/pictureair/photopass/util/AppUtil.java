@@ -39,10 +39,10 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.widget.EditTextWithClear;
 
 import net.sqlcipher.Cursor;
@@ -881,8 +881,8 @@ public class AppUtil {
         for (int i = 0; i < list.size(); i++) {
             if (resultArrayList.size() > 1) {//从第三个开始插入
                 for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
-                    if (resultArrayList.get(j).getShootDate().equals(list.get(i).getShootDate())) {
-                        if (resultArrayList.get(j + 1).getShootDate().equals(list.get(i).getShootDate())) {
+                    if (resultArrayList.get(j).getLocationName().equals(list.get(i).getLocationName())) {
+                        if (resultArrayList.get(j + 1).getLocationName().equals(list.get(i).getLocationName())) {
 
                         } else {
                             findPosition = true;
@@ -896,7 +896,7 @@ public class AppUtil {
                 if (findPosition) {//找到
                     findPosition = false;
                 } else {//没有找到，直接放在后面
-                    if (resultArrayList.get(i - 1).getShootDate().equals(list.get(i).getShootDate())) {
+                    if (resultArrayList.get(i - 1).getLocationName().equals(list.get(i).getLocationName())) {
                         list.get(i).setSectionId(resultArrayList.get(i - 1).getSectionId());
                     } else {
                         list.get(i).setSectionId(resultArrayList.get(i - 1).getSectionId() + 1);
@@ -908,7 +908,7 @@ public class AppUtil {
                 if (i == 0) {
                     list.get(i).setSectionId(0);
                 } else if (i == 1) {
-                    if (resultArrayList.get(0).getShootDate().equals(list.get(i).getShootDate())) {
+                    if (resultArrayList.get(0).getLocationName().equals(list.get(i).getLocationName())) {
                         list.get(i).setSectionId(resultArrayList.get(0).getSectionId());
                     } else {
                         list.get(i).setSectionId(resultArrayList.get(0).getSectionId() + 1);
@@ -932,16 +932,28 @@ public class AppUtil {
      */
     private static ArrayList<PhotoInfo> getHeaderFavoriteList(ArrayList<PhotoInfo> list) {
         ArrayList<PhotoInfo> resultList = new ArrayList<>();
+        int lastPosition = 0;
         for (int i = 0; i < list.size(); i++) {
             if (i == 0) {
                 resultList.add(list.get(0));
                 resultList.add(list.get(0));
             } else {
-                if (list.get(i).getSectionId() != list.get(i - 1).getSectionId()) {
+                if (!list.get(i).getLocationName().equals(list.get(i - 1).getLocationName())) {
+                    //header，把之前的数据，设置照片数量
+                    for (int j = lastPosition; j < resultList.size(); j++) {
+                        resultList.get(j).setCurrentLocationPhotoCount(resultList.size() - lastPosition - 1);
+                    }
+                    lastPosition = resultList.size();
                     resultList.add(list.get(i));
 
                 }
                 resultList.add(list.get(i));
+            }
+        }
+
+        if (resultList.get(resultList.size() - 1).getCurrentLocationPhotoCount() == 0) {//之后都是同一个地点，因此要额外设置
+            for (int i = lastPosition; i < resultList.size(); i++) {
+                resultList.get(i).setCurrentLocationPhotoCount(resultList.size() - lastPosition - 1);
             }
         }
         return resultList;

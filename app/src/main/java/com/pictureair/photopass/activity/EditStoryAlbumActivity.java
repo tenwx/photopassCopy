@@ -6,27 +6,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore.Images.Media;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
+import com.pictureair.photopass.adapter.StickyRecycleAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.greendao.RefreshAndLoadMoreCallBack;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -34,54 +39,64 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
- * pp详情页面
+ * pp照片详情页面
  * @author bauer_bao
  *
  */
-public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener{
-	private ImageView backRelativeLayout;
-	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, titleTextView, editTextView;
+public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener, PWStickySectionRecyclerView.OnPullListener{
+	private ImageView backRelativeLayout, editImageView;
+	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, titleTextView;
 	private LinearLayout editBarLinearLayout;
-	private StickyGridHeadersGridView pinnedSectionListView;
-	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
+	private PWStickySectionRecyclerView pwStickySectionRecyclerView;
 	private RelativeLayout noCountView;
 	private TextView noCountTextView;
+	private SwipeRefreshLayout refreshLayout;
+	private RelativeLayout buyPPPRl;
+	private TextView buyPPPTv;
+	private TextView ppCardTv, ppTimeTv;
 
 	private ArrayList<PhotoInfo> albumArrayList;
 	private ArrayList<PhotoInfo> originalAlbumArrayList;
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
-	private ArrayList<PhotoInfo> localPhotoslist = new ArrayList<>();//选择的本地图片的list
 	private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
 
 	private final static int GET_PHOTOS_DONE = 13;
 	private final static int START_DELETE_NETWORK_PHOTOS = 14;
-	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
 	private final static int DELETE_DIALOG = 16;
 	private static final int GO_SETTING_DIALOG = 17;
 	private static final int DOWNLOAD_DIALOG = 18;
 	private static final int HAS_UNPAY_PHOTOS_DIALOG = 19;
 	private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 20;
 	private static final int HAS_ALL_UNPAY_PHOTOS_DIALOG = 21;
+	private static final int FIRST_TEN_PHOTOS_TIP_DIALOG = 22;
 
-	private int tabIndex = 0;
 	private int selectCount = 0;
 	private PWToast myToast;
 	private SettingUtil settingUtil;
 	private boolean editMode = false;
-	private boolean deleteLocalPhotoDone = false;
-	private boolean deleteNetPhotoDone = false;
 	private boolean netWorkFailed = false;
 	private String ppCode;
+	private String shootDate;
+	private int activated;
+	private int photoCount;
+	private int newCount;
 	private PWDialog pictureWorksDialog;
 	private int prepareDownloadCount;
+	private String userId;
+	private int oldCount = 0;
+	private int ppPhotoCount, refreshCount, loadMoreCount;
+	private String ppRefreshTime, ppRefreshIds, ppLoadMoreTime, ppLoadMoreIds;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
 		@Override
@@ -91,31 +106,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					dismissPWProgressDialog();
 					if (albumArrayList.size() == 0){
 						noCountView.setVisibility(View.VISIBLE);
-						switch (tabIndex) {
-							case 0:
-								break;
-
-							case 1://PP
-								noCountTextView.setText(R.string.no_photo_in_airpass);
-								break;
-
-							case 2://local
-								noCountTextView.setText(R.string.no_photo_in_magiccam);
-								break;
-
-							case 3://bought
-								noCountTextView.setText(R.string.no_photo_in_bought);
-								break;
-
-							case 4://favorite
-								noCountTextView.setText(R.string.no_photo_in_favourite);
-								break;
-
-							default:
-								break;
-						}
+						noCountTextView.setText(R.string.no_photo_in_airpass);
 					}
-					editStoryPinnedListViewAdapter.notifyDataSetChanged();
 					break;
 
 				case START_DELETE_NETWORK_PHOTOS://开始删除网络图片
@@ -130,11 +122,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 				case API1.DELETE_PHOTOS_FAILED://判断本地图片是否删除完毕，并且更具有没有本地图片而显示不同的提示
 					//需要处理
-					deleteNetPhotoDone = true;
 					netWorkFailed = true;
-					if (deleteLocalPhotoDone) {
-						dealAfterDeleted();
-					}
+					dealAfterDeleted();
 					break;
 
 				case API1.DELETE_PHOTOS_SUCCESS://判断本地图片是否删除完毕
@@ -145,22 +134,21 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					netWorkFailed = false;
 					//删除本地列表数据操作
 					deleteNetworkPhotos();
-					deleteNetPhotoDone = true;
 					selectCount -= photopassPhotoslist.size();
-
 					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, true);
-
-					if (deleteLocalPhotoDone) {
-						dealAfterDeleted();
-					}
+					dealAfterDeleted();
 					break;
 
-				case DELETE_LOCAL_PHOTOS_DONE://本地文件删除完成
-					deleteLocalPhotoDone = true;
-					((MyApplication)getApplication()).scanMagicFinish = false;
-					selectCount -= localPhotoslist.size();
-					if(deleteNetPhotoDone) {
-						dealAfterDeleted();
+				case API1.GET_PPP_SUCCESS:
+					if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
+						pictureWorksDialog.setPWDialogId(FIRST_TEN_PHOTOS_TIP_DIALOG)
+								.setPWDialogMessage(R.string.pp_first_up10_msg)
+								.setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
+								.setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
+								.pwDilogShow();
+						settingUtil.insertSettingFirstPP10Status(userId);
+					} else if (API1.PPPlist.size() > 0) {
+						settingUtil.insertSettingFirstPP10Status(userId);
 					}
 					break;
 
@@ -232,11 +220,28 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		disAllTextView = (TextView) findViewById(R.id.select_disall);
 		downloadTextView = (TextView) findViewById(R.id.select_download);
 		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
-		pinnedSectionListView = (StickyGridHeadersGridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
+		pwStickySectionRecyclerView = (PWStickySectionRecyclerView) findViewById(R.id.pullToRefreshPinnedSectionListView);
 		titleTextView = (TextView) findViewById(R.id.text);
 		noCountView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
 		noCountTextView = (TextView) findViewById(R.id.no_photo_textView);
-		editTextView = (TextView) findViewById(R.id.pp_photos_edit);
+		editImageView = (ImageView) findViewById(R.id.pp_photos_edit);
+		buyPPPRl = (RelativeLayout) findViewById(R.id.buy_ppp_rl);
+		buyPPPTv = (TextView) findViewById(R.id.edit_album_buy_tv);
+		ppCardTv = (TextView) findViewById(R.id.edit_album_card_no_tv);
+		ppTimeTv = (TextView) findViewById(R.id.edit_album_time_tv);
+
+		refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+		refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+		refreshLayout.setEnabled(true);
+		refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				PictureAirLog.out("start refresh");
+				if (albumArrayList.size() != 0 && !pwStickySectionRecyclerView.isLoadMore() && !editMode) {//有数量，不在加载更多，也没有编辑状态
+					getPhotosFromNetWork(API1.GET_NEW_PHOTOS, ppRefreshTime, ppRefreshIds);
+				}
+			}
+		});
 
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);
@@ -246,73 +251,229 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		disAllTextView.setOnClickListener(this);
 		downloadTextView.setOnClickListener(this);
 		downloadTextView.setEnabled(false);
-		editTextView.setOnClickListener(this);
+		editImageView.setOnClickListener(this);
+		buyPPPTv.setOnClickListener(this);
 
 		//初始化数据
 		albumArrayList = new ArrayList<>();
 		settingUtil = new SettingUtil();
 		ppCode = getIntent().getStringExtra("ppCode");
+		shootDate = getIntent().getStringExtra("shootDate");
+		activated = getIntent().getIntExtra("activated", 0);
+		photoCount = getIntent().getIntExtra("photoCount", 0);
+
+		if (activated == 1) {
+			buyPPPRl.setVisibility(View.GONE);
+		} else {
+			buyPPPRl.setVisibility(View.VISIBLE);
+		}
+
+		titleTextView.setText(String.format(getString(R.string.edit_story_photo_title), photoCount));
+		ppCardTv.setText(String.format(getString(R.string.story_card), ppCode));
+		ppTimeTv.setText(shootDate);
+
+		userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
 		showPWProgressDialog();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				originalAlbumArrayList = PictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
-				albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(originalAlbumArrayList, false));
-				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
-			}
-		}).start();
-
-		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
-		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
-		myToast = new PWToast(this);
-		
-		pinnedSectionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-										   int position, long id) {
-				return true;
-			}
-		});
-
-		pinnedSectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-									int position, long id) {
-				if (editMode) {//编辑模式，需要选中效果
-					itemOnClick(position, view);
-				} else {//预览模式，点击进入大图预览
-					PictureAirLog.out("select" + position);
-					if (albumArrayList.get(position).getIsVideo() == 1 && albumArrayList.get(position).getIsPaid() == 0) {
-						PhotoInfo info = albumArrayList.get(position);
-						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
-						intent.putExtra("videoInfo", info);
-						Bundle bundle = new Bundle();
-						bundle.putInt("position", position);
-						bundle.putString("tab", "editStory");
-						intent.putExtra("bundle", bundle);
-						startActivity(intent);
-					} else {
-						Intent i = new Intent();
-						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-						Bundle bundle = new Bundle();
-						bundle.putInt("position", position);
-						bundle.putString("tab", "editStory");
-						bundle.putString("ppCode", ppCode);
-						bundle.putString("photoId", albumArrayList.get(position).getPhotoId());
-						i.putExtra("bundle", bundle);
-						startActivity(i);
-					}
-				}
-			}
-		});
-
 		pictureWorksDialog = new PWDialog(this)
 				.setOnPWDialogClickListener(this)
 				.pwDialogCreate();
+
+		myToast = new PWToast(this);
+		pwStickySectionRecyclerView.initDate(albumArrayList);
+		pwStickySectionRecyclerView.setOnPullListener(this);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (PictureAirDbManager.isJsonInfoExist(JsonInfo.getNeedRefreshString(ppCode, shootDate))) {//需要从网络获取全部数据
+					//开始从网络获取数据
+					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+				} else {//从数据库获取数据
+					//从数据库获取数据, 并且需要设置oldCount数量
+//					getFromDb;
+
+
+
+
+
+
+					//判断用户是否超过10张照片
+					if (settingUtil.isFirstPP10(userId)) {
+						//第一次 PP数量到 10 。
+						API1.getPPPSByUserId(MyApplication.getTokenId(), editStoryAlbumHandler);
+					}
+					//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
+					if (albumArrayList.size() == 0) {
+						getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+					} else {//直接显示照片
+						pwStickySectionRecyclerView.notifyDataSetChanged();
+					}
+				}
+			}
+		}).start();
+
+//		pinnedSectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//									int position, long id) {
+//				if (editMode) {//编辑模式，需要选中效果
+//					itemOnClick(position, view);
+//				} else {//预览模式，点击进入大图预览
+//					PictureAirLog.out("select" + position);
+//					if (albumArrayList.get(position).getIsVideo() == 1 && albumArrayList.get(position).getIsPaid() == 0) {
+//						PhotoInfo info = albumArrayList.get(position);
+//						Intent intent = new Intent(EditStoryAlbumActivity.this, ADVideoDetailProductActivity.class);
+//						intent.putExtra("videoInfo", info);
+//						Bundle bundle = new Bundle();
+//						bundle.putInt("position", position);
+//						bundle.putString("tab", "editStory");
+//						intent.putExtra("bundle", bundle);
+//						startActivity(intent);
+//					} else {
+//						Intent i = new Intent();
+//						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
+//						Bundle bundle = new Bundle();
+//						bundle.putInt("position", position);
+//						bundle.putString("tab", "editStory");
+//						bundle.putString("ppCode", ppCode);
+//						bundle.putString("photoId", albumArrayList.get(position).getPhotoId());
+//						i.putExtra("bundle", bundle);
+//						startActivity(i);
+//					}
+//				}
+//			}
+//		});
+
+
+	}
+
+	/**
+	 * 获取照片
+	 * @param type
+	 * @param receivedOn
+	 * @param repeatIds
+     */
+	private void getPhotosFromNetWork(final int type, String receivedOn, final String repeatIds) {
+		API2.getPhotosByConditions(MyApplication.getTokenId(), type, receivedOn, repeatIds, ppCode, shootDate, Common.LOAD_PHOTO_COUNT)
+				.subscribeOn(Schedulers.io())
+				.map(new Func1<JSONObject, ArrayList<PhotoInfo>>() {
+					@Override
+					public ArrayList<PhotoInfo> call(JSONObject jsonObject) {
+						//删除此卡此天所有数据
+						if (type == API1.GET_DEFAULT_PHOTOS) {
+							PictureAirDbManager.deleteAllInfoFromTable(ppCode, shootDate);
+
+						}
+						JSONArray responseArray = jsonObject.getJSONArray("photos");
+
+						//解析数据 并且存到数据库
+						ArrayList<PhotoInfo> resultList = PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type,
+								MyApplication.getInstance().getLanguageType(), locationList, new RefreshAndLoadMoreCallBack() {
+							@Override
+							public void getRefreshData(String refreshIds, String refreshTime) {
+								PictureAirLog.d("get the limit data 1");
+								ppRefreshIds = refreshIds;
+								ppRefreshTime = refreshTime;
+
+							}
+
+							@Override
+							public void getLoadMoreData(String loadMoreIds, String loadMoreTime) {
+								PictureAirLog.d("get the limit data 12");
+								ppLoadMoreIds = loadMoreIds;
+								ppLoadMoreTime = loadMoreTime;
+
+							}
+
+							@Override
+							public void getAllData(String refreshIds, String refreshTime, String loadMoreIds, String loadMoreTime) {
+								PictureAirLog.d("get the limit data 123");
+								ppRefreshIds = refreshIds;
+								ppRefreshTime = refreshTime;
+								ppLoadMoreIds = loadMoreIds;
+								ppLoadMoreTime = loadMoreTime;
+
+							}
+						});
+						return AppUtil.insertSortFavouritePhotos(resultList, true);
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new RxSubscribe<ArrayList<PhotoInfo>>() {
+					@Override
+					public void _onNext(ArrayList<PhotoInfo> photoInfos) {
+						if (type == API1.GET_NEW_PHOTOS) {
+							refreshCount = photoInfos.size();
+						} else if (type == API1.GET_OLD_PHOTOS) {
+							loadMoreCount = photoInfos.size();
+						} else {
+							albumArrayList.clear();
+							ppPhotoCount = photoInfos.size();
+						}
+						newCount = photoInfos.size();
+
+						albumArrayList.addAll(photoInfos);
+					}
+
+					@Override
+					public void _onError(int status) {
+						//获取照片失败
+						if (type == API1.GET_DEFAULT_PHOTOS) {
+							ppRefreshIds = null;
+							ppRefreshTime = null;
+							ppLoadMoreIds = null;
+							ppLoadMoreTime = null;
+							dismissPWProgressDialog();
+							//显示无网络页面
+
+
+
+						} else if (type == API1.GET_NEW_PHOTOS) {
+							PictureAirLog.d("refresh" + refreshLayout.isRefreshing());
+							if (refreshLayout.isRefreshing()) {
+								refreshLayout.setRefreshing(false);
+							}
+
+						} else if (type == API1.GET_OLD_PHOTOS) {
+							refreshLayout.setEnabled(true);
+							if (pwStickySectionRecyclerView.isLoadMore()) {
+								pwStickySectionRecyclerView.setIsLoadMore(false);
+								pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_FAILED);
+							}
+						}
+						//弹toast提示
+						myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+
+					}
+
+					@Override
+					public void onCompleted() {
+						if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要删除对应的数据
+							PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
+							dismissPWProgressDialog();
+						} else if (type == API1.GET_NEW_PHOTOS) {//刷新
+							if (refreshLayout.isRefreshing()) {
+								refreshLayout.setRefreshing(false);
+							}
+
+						} else {//加载更多
+							refreshLayout.setEnabled(true);
+							pwStickySectionRecyclerView.setIsLoadMore(false);
+							if (newCount >= oldCount) {
+								if (newCount - oldCount < Common.LOAD_PHOTO_COUNT) {//说明刷新出来的照片已经小于额定值了，说明没有更多数据了
+									pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_NO_MORE);
+
+								}
+							} else {//属于删除pp卡操作，因此如果少于一页，可以点击加载更多
+								pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_CLICK_LOAD);
+							}
+							oldCount = newCount;
+						}
+						pwStickySectionRecyclerView.notifyDataSetChanged();
+					}
+				});
 	}
 
 	/**
@@ -374,7 +535,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				for (int i = 0; i < albumArrayList.size(); i++) {
 					albumArrayList.get(i).setIsSelected(1);
 				}
-				editStoryPinnedListViewAdapter.notifyDataSetChanged();
 				selectCount = albumArrayList.size();
 				selectAllTextView.setVisibility(View.GONE);
 				disAllTextView.setVisibility(View.VISIBLE);
@@ -386,7 +546,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				for (int i = 0; i < albumArrayList.size(); i++) {
 					albumArrayList.get(i).setIsSelected(0);
 				}
-				editStoryPinnedListViewAdapter.notifyDataSetChanged();
 				selectCount = 0;
 				selectAllTextView.setVisibility(View.VISIBLE);
 				disAllTextView.setVisibility(View.GONE);
@@ -399,12 +558,23 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				break;
 
 			case R.id.pp_photos_edit:
+				if (refreshLayout.isRefreshing() || pwStickySectionRecyclerView.isLoadMore()) {//如果刷新或者加载更多的时候，不允许编辑
+					return;
+				}
 				UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_EDIT_PHOTO); //统计点 编辑时候的事件（友盟）
 				editMode = true;
-				editStoryPinnedListViewAdapter.setEditMode(editMode);
+//				editStoryPinnedListViewAdapter.setEditMode(editMode);
 				editBarLinearLayout.setVisibility(View.VISIBLE);
 				titleTextView.setText(R.string.edit_story_album);
-				editTextView.setVisibility(View.GONE);
+				editImageView.setVisibility(View.GONE);
+				if (buyPPPRl.isShown()) {
+					buyPPPRl.setVisibility(View.GONE);
+				}
+				refreshLayout.setEnabled(false);
+				break;
+
+			case R.id.edit_album_buy_tv://购买ppp
+
 				break;
 
 			default:
@@ -480,8 +650,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		if (editMode) {
 			editMode = false;
 			editBarLinearLayout.setVisibility(View.GONE);
-			editStoryPinnedListViewAdapter.setEditMode(editMode);
-			titleTextView.setText(R.string.mypage_pp);
+			titleTextView.setText(String.format(getString(R.string.edit_story_photo_title), photoCount));
 			if (selectCount > 0) {
 				for (int i = 0; i < albumArrayList.size(); i++) {
 					if (albumArrayList.get(i).getIsSelected() == 1) {
@@ -495,7 +664,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				selectAllTextView.setVisibility(View.VISIBLE);
 				disAllTextView.setVisibility(View.GONE);
 			}
-			editTextView.setVisibility(View.VISIBLE);
+			editImageView.setVisibility(View.VISIBLE);
+			if (activated == 0) {
+				buyPPPRl.setVisibility(View.VISIBLE);
+			}
+			refreshLayout.setEnabled(true);
 		} else {
 			finish();
 		}
@@ -524,42 +697,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	}
 
 	/**
-	 * 删除文件的操作，完成比较耗时的操作
-	 */
-	private void deleteLocalPhotos() {
-		File file;
-		for (int i = 0; i < localPhotoslist.size(); i++) {
-			//删除contentpridiver表中的数据
-			PictureAirLog.out("需要删除的文件为" + localPhotoslist.get(i).getPhotoOriginalURL());
-			String params[] = new String[]{localPhotoslist.get(i).getPhotoOriginalURL()};
-			//删除Media数据库中的对应图片信息
-			PictureAirLog.out("删除Media表中的对应数据");
-			getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA + " like ?", params);
-
-			//获取需要删除的文件
-			file = new File(localPhotoslist.get(i).getPhotoOriginalURL());
-			//删除文件
-			if (file.exists()) {
-				PictureAirLog.out("开始删除文件" + localPhotoslist.get(i).getPhotoOriginalURL());
-				//删除文件
-				file.delete();
-				PictureAirLog.out("the file has been deleted");
-			}
-
-			PictureAirLog.out("arraylist需要移除的文件是" + localPhotoslist.get(i).getPhotoOriginalURL());
-			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
-			while (iterator.hasNext()) {
-				PhotoInfo photoInfo = iterator.next();
-				if (photoInfo.getPhotoOriginalURL().equals(localPhotoslist.get(i).getPhotoOriginalURL())) {
-					iterator.remove();
-					break;
-				}
-			}
-		}
-		editStoryAlbumHandler.sendEmptyMessage(DELETE_LOCAL_PHOTOS_DONE);
-	}
-
-	/**
 	 * 删除之后的处理
 	 */
 	private void dealAfterDeleted() {
@@ -567,13 +704,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			deleteTextView.setEnabled(false);
 			downloadTextView.setEnabled(false);
 		}
-		editStoryPinnedListViewAdapter.notifyDataSetChanged();
-		if (photopassPhotoslist.size() > 0 && localPhotoslist.size() > 0) {//如果既有本地图片，又有网络图片
-			if (netWorkFailed) {//网络图片删除失败
-				//需要弹出提示，这种提示需要特别处理，暂时还没有处理
-//				myToast.setTextAndShow("本地文件删除成功，网络图片删除失败", Common.TOAST_SHORT_TIME);
-			}
-		} else if (photopassPhotoslist.size() > 0 && localPhotoslist.size() == 0) {
+		if (photopassPhotoslist.size() > 0) {
 			if (netWorkFailed) {//网络图片删除失败
 				myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 			}
@@ -598,15 +729,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					new Thread() {
 						public void run() {
 							photopassPhotoslist.clear();
-							localPhotoslist.clear();
-							deleteLocalPhotoDone = false;
-							deleteNetPhotoDone = false;
 							for (int i = 0; i < albumArrayList.size(); i++) {
 								if (albumArrayList.get(i).getIsSelected() == 1) {//选中的照片
 									if (albumArrayList.get(i).getIsOnLine() == 1) {//网络照片
 										photopassPhotoslist.add(albumArrayList.get(i));
 									} else {
-										localPhotoslist.add(albumArrayList.get(i));
 									}
 								}
 							}
@@ -614,14 +741,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							if (photopassPhotoslist.size() > 0) {
 								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
 							} else {
-								deleteNetPhotoDone = true;
+
 							}
 
-							if (localPhotoslist.size() > 0) {
-								deleteLocalPhotos();
-							} else {
-								deleteLocalPhotoDone = true;
-							}
 						}
 					}.start();
 				} else if (dialogId == HAS_UNPAY_PHOTOS_DIALOG) {
@@ -641,8 +763,24 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 				} else if (dialogId == DOWNLOAD_DIALOG) {
 					downloadPic();
+				} else if (dialogId == FIRST_TEN_PHOTOS_TIP_DIALOG) {
+					// 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+					Intent intent = new Intent();
+					intent.setClass(EditStoryAlbumActivity.this, MyPPPActivity.class);
+					startActivity(intent);
 				}
 				break;
+		}
+	}
+
+	@Override
+	public void loadMore() {
+		if (!refreshLayout.isRefreshing() && !editMode) {//没有刷新，也没有编辑
+			PictureAirLog.d("start load more---->");
+			pwStickySectionRecyclerView.setIsLoadMore(true);
+			pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
+			refreshLayout.setEnabled(false);
+			getPhotosFromNetWork(API1.GET_OLD_PHOTOS, ppLoadMoreTime, ppLoadMoreIds);
 		}
 	}
 }

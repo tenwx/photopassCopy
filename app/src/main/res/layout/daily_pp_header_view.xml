@@ -9,6 +9,14 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/daily_pp_header_album_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/story_album"
+        android:rotation="10"/>
+
     <TextView
         android:id="@+id/daily_pp_header_title_tv"
         android:layout_width="wrap_content"
@@ -50,13 +58,14 @@
         android:textSize="@dimen/text_size_12" />
 
     <TextView
-        android:id="@+id/daily_pp_header_preview_download_tv"
+        android:id="@+id/daily_pp_header_preview_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/pp_dp_10"
-        android:text="preview"
+        android:drawableTop="@drawable/story_preview"
+        android:text="@string/preview"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_14" />
 
@@ -66,9 +75,41 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/pp_dp_10"
-        android:layout_toLeftOf="@+id/daily_pp_header_preview_download_tv"
-        android:text="buy"
+        android:layout_toLeftOf="@+id/daily_pp_header_preview_tv"
+        android:drawableTop="@drawable/story_buy"
+        android:text="@string/story_want_to_buy"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_14" />
+
+    <RelativeLayout
+        android:id="@+id/daily_pp_header_download_rl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/pp_dp_10">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/daily_pp_header_download_tv"
+            android:layout_alignLeft="@+id/daily_pp_header_download_tv"
+            android:layout_alignRight="@+id/daily_pp_header_download_tv"
+            android:layout_alignTop="@+id/daily_pp_header_download_tv"
+            android:src="@drawable/bg_circle" />
+
+        <TextView
+            android:id="@+id/daily_pp_header_download_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:drawableTop="@drawable/download_white"
+            android:gravity="center"
+            android:padding="@dimen/pp_dp_20"
+            android:text="@string/down"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -35,6 +35,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	private String strShootOn;//拍摄时间 年月日时分秒，用来数据库的排序  2016-10-20 10:06:57
 	private String shareURL;//网络图片分享的URL
 	private String adURL;//广告链接
+	private String receivedOn;//每张图片到服务器的时间，用于刷新加载操作  2016-10-20T02:06:57.000Z
 	private int isPaid;//网络图片是否已经购买属性，1已付，0，未支付
 	private int isVideo;//1是视频，0是图片
 	private int isPreset; // 照片是否有模版，0，代表没有模板，1，代表有模版, 000000000000000000000000
@@ -47,8 +48,6 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	@Transient
 	private String locationName;//每张图片的地点名称
 	@Transient
-	private String receivedOn;//每张图片到服务器的时间，用于刷新加载操作  2016-10-20T02:06:57.000Z
-	@Transient
 	private String failedTime;
 	@Transient
 	private int sectionId;//悬浮的id
@@ -60,6 +59,8 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	private int isSelected;//图片是否被选中，1，选中，0，未选中
 	@Transient
 	private int isUploaded;//图片是否已经上传到服务器
+	@Transient
+	private int currentLocationPhotoCount;//只有展示照片页才需要这个字段，每个地点对应的照片数量
 
 	@Override
 	public int compareTo(PhotoInfo another) {
@@ -132,6 +133,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeInt(isChecked);
 		dest.writeInt(isSelected);
 		dest.writeInt(isUploaded);
+		dest.writeInt(currentLocationPhotoCount);
 	}
 
 	@Override
@@ -165,6 +167,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 				", isChecked=" + isChecked +
 				", isSelected=" + isSelected +
 				", isUploaded=" + isUploaded +
+				", currentLocationPhotoCount=" + currentLocationPhotoCount +
 				'}';
 	}
 
@@ -230,6 +233,14 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 
 	public void setIsUploaded(int isUploaded) {
 		this.isUploaded = isUploaded;
+	}
+
+	public int getCurrentLocationPhotoCount() {
+		return currentLocationPhotoCount;
+	}
+
+	public void setCurrentLocationPhotoCount(int currentLocationPhotoCount) {
+		this.currentLocationPhotoCount = currentLocationPhotoCount;
 	}
 
 	public Long getId() {
@@ -421,34 +432,36 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		isChecked = source.readInt();
 		isSelected = source.readInt();
 		isUploaded = source.readInt();
+		currentLocationPhotoCount = source.readInt();
 	}
 
-	@Generated(hash = 205595751)
+	@Generated(hash = 994509055)
 	public PhotoInfo(Long id, String photoId, String photoPassCode, String shootDate,
-									String photoThumbnail_128, String photoThumbnail_512, String photoThumbnail_1024,
-									String photoOriginalURL, String locationId, String strShootOn, String shareURL,
-									String adURL, int isPaid, int isVideo, int isPreset, int isEnImage, int isOnLine,
-									int fileSize, int videoWidth, int videoHeight) {
-					this.id = id;
-					this.photoId = photoId;
-					this.photoPassCode = photoPassCode;
-					this.shootDate = shootDate;
-					this.photoThumbnail_128 = photoThumbnail_128;
-					this.photoThumbnail_512 = photoThumbnail_512;
-					this.photoThumbnail_1024 = photoThumbnail_1024;
-					this.photoOriginalURL = photoOriginalURL;
-					this.locationId = locationId;
-					this.strShootOn = strShootOn;
-					this.shareURL = shareURL;
-					this.adURL = adURL;
-					this.isPaid = isPaid;
-					this.isVideo = isVideo;
-					this.isPreset = isPreset;
-					this.isEnImage = isEnImage;
-					this.isOnLine = isOnLine;
-					this.fileSize = fileSize;
-					this.videoWidth = videoWidth;
-					this.videoHeight = videoHeight;
+			String photoThumbnail_128, String photoThumbnail_512, String photoThumbnail_1024,
+			String photoOriginalURL, String locationId, String strShootOn, String shareURL,
+			String adURL, String receivedOn, int isPaid, int isVideo, int isPreset,
+			int isEnImage, int isOnLine, int fileSize, int videoWidth, int videoHeight) {
+		this.id = id;
+		this.photoId = photoId;
+		this.photoPassCode = photoPassCode;
+		this.shootDate = shootDate;
+		this.photoThumbnail_128 = photoThumbnail_128;
+		this.photoThumbnail_512 = photoThumbnail_512;
+		this.photoThumbnail_1024 = photoThumbnail_1024;
+		this.photoOriginalURL = photoOriginalURL;
+		this.locationId = locationId;
+		this.strShootOn = strShootOn;
+		this.shareURL = shareURL;
+		this.adURL = adURL;
+		this.receivedOn = receivedOn;
+		this.isPaid = isPaid;
+		this.isVideo = isVideo;
+		this.isPreset = isPreset;
+		this.isEnImage = isEnImage;
+		this.isOnLine = isOnLine;
+		this.fileSize = fileSize;
+		this.videoWidth = videoWidth;
+		this.videoHeight = videoHeight;
 	}
 
 	@Generated(hash = 2143356537)

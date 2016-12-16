@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -15,7 +16,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
 import java.text.ParseException;
@@ -136,7 +136,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		if (convertView == null) {
 			viewHolder = new HeaderViewHolder();
 			convertView = layoutInflater.inflate(R.layout.story_pinned_listview_section, null);
-			viewHolder.storyTimeTextView = (CustomTextView) convertView.findViewById(R.id.section_time);
+			viewHolder.storyTimeTextView = (TextView) convertView.findViewById(R.id.section_location_tv);
 			viewHolder.storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
 			convertView.setTag(viewHolder);
 		}else {
@@ -171,7 +171,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 	}
 
 	private class HeaderViewHolder {
-		private CustomTextView storyTimeTextView;
+		private TextView storyTimeTextView;
 	}
 
 }

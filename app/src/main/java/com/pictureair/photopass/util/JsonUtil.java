@@ -271,6 +271,7 @@ public class JsonUtil {
         String ppCode = null;
         String shootDate = null;
         int isActivated = 0;
+        int photoCount = 0;
         String shootOn = null;
         PhotoInfo oldestPhotoInfo = null;
         if (location.containsKey("PPCode")) {
@@ -287,6 +288,10 @@ public class JsonUtil {
 
         if (location.containsKey("shootOn")) {
             shootOn = location.getString("shootOn");
+        }
+
+        if (location.containsKey("pCount")) {
+            photoCount = location.getIntValue("pCount");
         }
 
         if (location.containsKey("ppOldestPhoto")) {
@@ -324,6 +329,7 @@ public class JsonUtil {
                     dailyPPCardInfo.setShootDate(shootDate);
                     dailyPPCardInfo.setActivated(isActivated);
                     dailyPPCardInfo.setShootOn(shootOn);
+                    dailyPPCardInfo.setPhotoCount(photoCount);
                     dailyPPCardInfo.setAlbumCoverPhoto(oldestPhotoInfo);
                     dailyPPCardInfo.setLocationPhoto(photoInfo);
                     dailyPPCardInfo.setSectionId(index);

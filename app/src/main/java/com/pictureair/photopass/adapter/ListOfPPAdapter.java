@@ -117,9 +117,9 @@ public class ListOfPPAdapter extends BaseAdapter {
             holder.tvPPShowSeclect.setVisibility(View.VISIBLE);
             holder.tvShootDate.setVisibility(View.VISIBLE);
             //初始化选中与否
-            if (arrayList.get(position).isSelected == 0) {//未选中
+            if (arrayList.get(position).getIsSelected() == 0) {//未选中
                 holder.img_no_check.setImageResource(R.drawable.nosele);
-            } else if (arrayList.get(position).isSelected == 1) {//选中
+            } else if (arrayList.get(position).getIsSelected() == 1) {//选中
                 holder.img_no_check.setImageResource(R.drawable.sele);
             } else {//不可选
                 holder.img_no_check.setImageResource(R.drawable.del1);
@@ -265,14 +265,14 @@ public class ListOfPPAdapter extends BaseAdapter {
         public void onClick(View v) {
             if (isSelect) {
                 if (arrayList.get(position) instanceof PPinfo) {
-                    PPinfo ppInfo = (PPinfo) arrayList.get(position);
+                    PPinfo ppInfo = arrayList.get(position);
                     switch (v.getId()) {
                         case R.id.img:
                         case R.id.pp_item:
                             PictureAirLog.out("adapter---size=" + map.size());
                             if (null != mHandler) {
                                 Message msg = mHandler.obtainMessage();
-                                if (ppInfo.isSelected == 0) {
+                                if (ppInfo.getIsSelected() == 0) {
                                     if (useNumber >= pppInfo.capacity) {
                                         myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
                                         break;
@@ -280,23 +280,23 @@ public class ListOfPPAdapter extends BaseAdapter {
                                         ++choice;
                                         for (int j = 0; j < arrayList.size(); j++) {
                                         }
-                                        ppInfo.isSelected = 1;
+                                        ppInfo.setIsSelected(1);
                                         ++useNumber;
-                                        map.put(position, ppInfo.isSelected == 1);
+                                        map.put(position, ppInfo.getIsSelected() == 1);
                                     }
-                                } else if (ppInfo.isSelected == 2) {
+                                } else if (ppInfo.getIsSelected() == 2) {
 
                                 } else {
                                     --choice;
                                     if (choice == 0) {
                                         for (int j = 0; j < arrayList.size(); j++) {
-                                            PPinfo pp = (PPinfo) arrayList.get(j);
-                                            if (pp.isSelected == 2) {
-                                                pp.isSelected = 0;
+                                            PPinfo pp = arrayList.get(j);
+                                            if (pp.getIsSelected() == 2) {
+                                                pp.setIsSelected(0);
                                             }
                                         }
                                     }
-                                    ppInfo.isSelected = 0;
+                                    ppInfo.setIsSelected(0);
                                     --useNumber;
                                     map.remove(position);
                                 }

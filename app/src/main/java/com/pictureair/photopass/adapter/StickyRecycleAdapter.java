@@ -1,6 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
@@ -18,9 +18,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomTextView;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -109,12 +107,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
 
             recyclerViewHolder.itemView.setTag(NONE_STICKY_VIEW);
-            String headerTime = AppUtil.getHeaderTime(photoList, position);
-            try {
-                recyclerViewHolder.itemView.setContentDescription(AppUtil.dateToSmartDate(headerTime, context));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            recyclerViewHolder.itemView.setContentDescription(photoList.get(position).getLocationName() + "," + photoList.get(position).getCurrentLocationPhotoCount());
 
             recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,14 +165,9 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (viewHolder instanceof StickySectionHeaderViewHolder) {
             StickySectionHeaderViewHolder recyclerViewSectionViewHolder = (StickySectionHeaderViewHolder) viewHolder;
 
-            String headerTime = AppUtil.getHeaderTime(photoList, position);
-            try {
-                recyclerViewSectionViewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(headerTime, context));
-                recyclerViewSectionViewHolder.itemView.setContentDescription(AppUtil.dateToSmartDate(headerTime, context));
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            recyclerViewSectionViewHolder.storyLocationTV.setText(photoList.get(position).getLocationName());
+            recyclerViewSectionViewHolder.storyPhotoCountTV.setText("(" + photoList.get(position).getCurrentLocationPhotoCount() + ")");
+            recyclerViewSectionViewHolder.itemView.setContentDescription(photoList.get(position).getLocationName() + "," + photoList.get(position).getCurrentLocationPhotoCount());
             recyclerViewSectionViewHolder.itemView.setTag(HAS_STICKY_VIEW);
         }
     }
@@ -219,12 +207,15 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
     public class StickySectionHeaderViewHolder extends RecyclerView.ViewHolder {
-        private CustomTextView storyTimeTextView;
+        private TextView storyLocationTV, storyPhotoCountTV;
+        private ImageView storyIV;
 
         public StickySectionHeaderViewHolder(View itemView) {
             super(itemView);
-            storyTimeTextView = (CustomTextView) itemView.findViewById(R.id.section_time);
-            storyTimeTextView.setTypeface(MyApplication.getInstance().getFontBold());
+            storyLocationTV = (TextView) itemView.findViewById(R.id.section_location_tv);
+            storyPhotoCountTV = (TextView) itemView.findViewById(R.id.section_photo_count_tv);
+            storyIV = (ImageView) itemView.findViewById(R.id.section_photo_iv);
+            storyIV.setVisibility(View.VISIBLE);
         }
     }
 
@@ -250,5 +241,31 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view , int position);
         void onLoadMoreClick(View view , int position);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+
+
+                @Override
+                public int getSpanSize(int position) {
+                    //设置view的类型
+                    int viewType = getItemViewType(position);
+                    if (viewType == LOAD_HEADER_VIEW_TYPE || viewType == LOAD_MORE_VIEW_TYPE) {//如果是header，或者footer，获取当前gridlayoutmanager的列数
+                        return gridLayoutManager.getSpanCount();//获取列数
+                    } else {//如果是item，则返回1
+                        return 1;
+                    }
+                }
+            });
+            //重新设置列数
+            gridLayoutManager.setSpanCount(gridLayoutManager.getSpanCount());
+        }
     }
 }

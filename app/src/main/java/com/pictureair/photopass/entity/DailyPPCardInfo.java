@@ -10,6 +10,7 @@ public class DailyPPCardInfo {
     private String shootDate;//年月日
     private String shootOn;//年月日时分秒
     private int activated;
+    private int photoCount;
     private PhotoInfo albumCoverPhoto;//最旧的一个对象，作为封面
     private PhotoInfo locationPhoto;//作为每个地点的显示图片
 
@@ -70,5 +71,13 @@ public class DailyPPCardInfo {
 
     public void setLocationPhoto(PhotoInfo locationPhoto) {
         this.locationPhoto = locationPhoto;
+    }
+
+    public int getPhotoCount() {
+        return photoCount;
+    }
+
+    public void setPhotoCount(int photoCount) {
+        this.photoCount = photoCount;
     }
 }

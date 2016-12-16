@@ -125,8 +125,10 @@
     <string name="story_home">上海迪士尼乐拍通家园</string>
     <string name="story_card">卡号：%1$s</string>
     <string name="story_first_photo_in_disney">我在上海迪士尼的第一张照片</string>
+    <string name="story_with_disney">我和上海迪士尼在一起</string>
     <string name="story_blur_expire_time">未付款照片有效期30天</string>
     <string name="story_expire_time">高清照片1年内有效</string>
+    <string name="story_want_to_buy">我想买</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -534,6 +536,8 @@
     <string name="edit_story_unpay_tips">您选择中含有未付费的照片\n您只可确认下载已付费的照片</string>
     <string name="edit_story_all_unpay_tips">当前选中的照片未付费，不可下载</string>
     <string name="edit_story_addto_downloadlist">照片已在下载列队\n可去下载管理内查询，请耐心等待！</string>
+    <string name="edit_story_photo_title">照片(%1$d)</string>
+    <string name="edit_story_ppp_intro">仅需169元即可获得同一天任意一张乐园门票或者一张乐拍通卡里的所有数码照片！</string>
     <!-- edit story end -->
 
     <!-- 发票-->

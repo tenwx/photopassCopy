@@ -10,7 +10,15 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class JsonInfo {
+    /**
+     * 一卡一天的数据存储
+     */
     public static final String JSON_LOCATION_PHOTO_TYPE = "location_photo_type";
+
+    /**
+     * 一卡一天内页是否需要全部刷新的标记，由卡号和时间组成：code,shootdate，如果有，说明需要全部刷新，如果没有说明不需要全部刷新
+     */
+    public static final String DAILY_PP_REFRESH_ALL_TYPE = "daily_pp_refresh_all_type";
     @Id
     private Long id;
     /**
@@ -47,5 +55,15 @@ public class JsonInfo {
     }
     public void setJsonString(String jsonString) {
         this.jsonString = jsonString;
+    }
+
+    /**
+     * 获取一卡一天的数据结构
+     * @param ppCode
+     * @param shootDate
+     * @return
+     */
+    public static String getNeedRefreshString(String ppCode, String shootDate) {
+        return ppCode + "," + shootDate;
     }
 }

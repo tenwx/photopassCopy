@@ -5,6 +5,7 @@
 
     <!-- 透明白色 -->
     <color name="transparent_white">#AAFFFFFF</color>
+    <color name="transparent_white_50">#88FFFFFF</color>
     <color name="transparent_pp_blue">#886799ca</color>
 
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->

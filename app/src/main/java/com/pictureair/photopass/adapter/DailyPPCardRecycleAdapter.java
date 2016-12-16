@@ -1,16 +1,21 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DailyPPCardInfo;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -50,7 +55,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         if (dailyPPCardInfoArrayList.size() == 0 || position >= getItemCount()) {
             return;
         }
@@ -70,19 +75,91 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 photoUrl = dailyPPCardInfoArrayList.get(position).getLocationPhoto().getPhotoThumbnail_128();
             }
             GlideUtil.load(context, photoUrl, dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, recyclerViewHolder.photoIV);
+            recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.itemClick(position);
+                }
+            });
 
         } else if (viewHolder instanceof StickySectionHeaderViewHolder) {
-            StickySectionHeaderViewHolder recyclerViewSectionViewHolder = (StickySectionHeaderViewHolder) viewHolder;
+            final StickySectionHeaderViewHolder recyclerViewSectionViewHolder = (StickySectionHeaderViewHolder) viewHolder;
             recyclerViewSectionViewHolder.ppCodeTV.setText(String.format(context.getString(R.string.story_card), dailyPPCardInfoArrayList.get(position).getPpCode()));
             recyclerViewSectionViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate());
+            recyclerViewSectionViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.itemClick(position);
+
+                }
+            });
+            recyclerViewSectionViewHolder.buyTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.buyClick(position);
+
+                }
+            });
+            recyclerViewSectionViewHolder.previewTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.previewClick(position);
+                }
+            });
+            recyclerViewSectionViewHolder.downloadRL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.downloadClick(position);
+                }
+            });
             if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {//已升级PP
                 recyclerViewSectionViewHolder.expireTV.setText(context.getString(R.string.story_expire_time));
                 GlideUtil.load(context, Common.PHOTO_URL + dailyPPCardInfoArrayList.get(position).getAlbumCoverPhoto().getPhotoThumbnail_512(),
                         dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, recyclerViewSectionViewHolder.bgIV);
+                recyclerViewSectionViewHolder.downloadRL.setVisibility(View.VISIBLE);
+                recyclerViewSectionViewHolder.buyTV.setVisibility(View.GONE);
+                recyclerViewSectionViewHolder.previewTV.setVisibility(View.GONE);
+                recyclerViewSectionViewHolder.albumIV.setVisibility(View.GONE);
 
             } else {
+                GlideUtil.load(context, dailyPPCardInfoArrayList.get(position).getAlbumCoverPhoto().getPhotoThumbnail_128(),
+                        dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                recyclerViewSectionViewHolder.bgIV.setImageBitmap(BlurUtil.blur(bitmap.copy(Bitmap.Config.ARGB_8888, true)));
+                            }
+                        });
                 recyclerViewSectionViewHolder.expireTV.setText(context.getString(R.string.story_blur_expire_time));
+                recyclerViewSectionViewHolder.downloadRL.setVisibility(View.GONE);
+                recyclerViewSectionViewHolder.buyTV.setVisibility(View.VISIBLE);
+                recyclerViewSectionViewHolder.previewTV.setVisibility(View.VISIBLE);
+                recyclerViewSectionViewHolder.albumIV.setVisibility(View.VISIBLE);
+                GlideUtil.load(context, dailyPPCardInfoArrayList.get(position).getAlbumCoverPhoto().getPhotoThumbnail_128(),
+                        dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, new SimpleTarget<Bitmap>() {
 
+                            @Override
+                            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                if (bitmap != null) {
+                                    ViewGroup.LayoutParams params = recyclerViewSectionViewHolder.albumIV.getLayoutParams();
+                                    if (bitmap.getWidth() > bitmap.getHeight()) {//横图
+                                        params.width = ScreenUtil.getScreenWidth(context) / 3;
+                                        params.height = params.width * 3 / 4;
+                                    } else {//竖图
+                                        params.height = ScreenUtil.getScreenWidth(context) / 3;
+                                        params.width = params.height * 3 / 4;
+
+                                    }
+                                    recyclerViewSectionViewHolder.albumIV.setImageBitmap(bitmap);
+                                }
+                            }
+                        });
+            }
+
+
+            if (dailyPPCardInfoArrayList.get(position).getSectionId() == dailyPPCardInfoArrayList.get(dailyPPCardInfoArrayList.size() - 1).getSectionId()) {//最后一个header
+                recyclerViewSectionViewHolder.titleTV.setText(context.getString(R.string.story_first_photo_in_disney));
+            } else {
+                recyclerViewSectionViewHolder.titleTV.setText(context.getString(R.string.story_with_disney));
             }
 
         }
@@ -106,8 +183,9 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public class StickySectionHeaderViewHolder extends RecyclerView.ViewHolder {
-        private ImageView bgIV;
-        private TextView dateTV, ppCodeTV, buyTV, previewOrDownloadTV, expireTV;
+        private ImageView bgIV, albumIV;
+        private TextView dateTV, ppCodeTV, buyTV, previewTV, expireTV, titleTV;
+        private RelativeLayout downloadRL;
 
         public StickySectionHeaderViewHolder(View itemView) {
             super(itemView);
@@ -115,8 +193,11 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             dateTV = (TextView) itemView.findViewById(R.id.daily_pp_header_date_tv);
             ppCodeTV = (TextView) itemView.findViewById(R.id.daily_pp_header_card_no_tv);
             buyTV = (TextView) itemView.findViewById(R.id.daily_pp_header_buy_tv);
-            previewOrDownloadTV = (TextView) itemView.findViewById(R.id.daily_pp_header_preview_download_tv);
+            previewTV = (TextView) itemView.findViewById(R.id.daily_pp_header_preview_tv);
+            downloadRL = (RelativeLayout) itemView.findViewById(R.id.daily_pp_header_download_rl);
             expireTV = (TextView) itemView.findViewById(R.id.daily_pp_header_bottom_tip_tv);
+            titleTV = (TextView) itemView.findViewById(R.id.daily_pp_header_title_tv);
+            albumIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_album_iv);
             ViewGroup.LayoutParams params = itemView.getLayoutParams();
             params.width = ScreenUtil.getScreenWidth(context);
             params.height = params.width * 3 / 5;
@@ -142,11 +223,10 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public interface OnRecyclerViewItemClickListener {
-        void downloadClick();
-        void buyClick();
-        void previewClick();
-        void headerClick();
-        void itemClick();
+        void downloadClick(int position);
+        void buyClick(int position);
+        void previewClick(int position);
+        void itemClick(int position);
     }
 
     @Override

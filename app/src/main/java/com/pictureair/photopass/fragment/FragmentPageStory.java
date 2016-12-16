@@ -2,7 +2,6 @@ package com.pictureair.photopass.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,15 +26,14 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.AddPPPCodeActivity;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.GifPlayActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
-import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.adapter.DailyPPCardRecycleAdapter;
 import com.pictureair.photopass.adapter.NoPhotoRecycleAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.DailyPPCardInfo;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
@@ -43,15 +41,12 @@ import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
-import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
@@ -75,11 +70,7 @@ import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.StoryRecycleDividerItemDecoration;
 
 import java.lang.ref.WeakReference;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -95,13 +86,10 @@ import rx.schedulers.Schedulers;
  * 可以左右滑动切换不同的相册
  * 可以下拉刷新，获取更多的图片信息
  */
-public class FragmentPageStory extends BaseFragment implements OnClickListener{
+public class FragmentPageStory extends BaseFragment implements OnClickListener, DailyPPCardRecycleAdapter.OnRecyclerViewItemClickListener {
     //声明静态变量
-    private static final int LOAD_COMPLETED = 111;
     private static final int REFRESH = 666;
     private static final int SORT_COMPLETED_ALL = 223;
-    private static final int SYNC_BOUGHT_PHOTOS = 1001;
-    private static final int SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE = 1002;
     private static final int LOAD_PHOTO_FROM_DB = 1003;
     private static final int REFRESH_ALL_PHOTOS = 1006;
 
@@ -116,7 +104,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
      */
     private boolean sharedNeedFresh = false;
     private int screenWidth;
-    private int ppPhotoCount;
     private boolean hasHidden = false;
 
     //申明控件
@@ -142,18 +129,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
 
     //申明类
     private MyApplication app;
-    private ArrayList<PhotoItemInfo> photoPassItemInfoList;
 
-    private ArrayList<PhotoInfo> photoPassPicList = new ArrayList<>();// 所有的从服务器返回的photopass图片的信息
     private ArrayList<DailyPPCardInfo> dailyPPCardInfoArrayList = new ArrayList<>();
 
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private ArrayList<PPinfo> pPinfoArrayList = new ArrayList<>();
     private Activity context;
-    private SimpleDateFormat sdf;
     private String userId;
     private PWToast myToast;
-    private PWDialog pwDialog;
     private DealingInfo dealingInfo;
 
     /**
@@ -214,7 +197,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                     PictureAirLog.out("story flow ---> start get photo from net");
                     getLocationPhotos(false);
                 } else {
-                    PictureAirLog.out("photolist size = " + photoPassPicList.size());
                     //有数据，直接显示
                     fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_ALL);
                 }
@@ -223,7 +205,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
             case REFRESH_ALL_PHOTOS:
                 if (!hasHidden) {
                     showPWProgressDialog();
-                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
+                    getLocationPhotos(true);
                     API1.getPPSByUserId(fragmentPageStoryHandler);
 
                 } else {
@@ -280,57 +262,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                 }
                 break;
 
-            case API1.GET_PPP_SUCCESS:
-                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0 && context != null) {
-                    if (pwDialog == null) {
-                        pwDialog = new PWDialog(context)
-                                .setPWDialogMessage(R.string.pp_first_up10_msg)
-                                .setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
-                                .setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
-                                .setOnPWDialogClickListener(new PWDialog.OnPWDialogClickListener() {
-                                    @Override
-                                    public void onPWDialogButtonClicked(int which, int dialogId) {
-                                        if (which == DialogInterface.BUTTON_POSITIVE) {
-                                            // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
-                                            Intent intent = new Intent();
-                                            intent.setClass(context, MyPPPActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    }
-                                })
-                                .pwDialogCreate();
-                    }
-                    pwDialog.pwDilogShow();
-                    settingUtil.insertSettingFirstPP10Status(userId);
-                } else if (API1.PPPlist.size() > 0) {
-                    settingUtil.insertSettingFirstPP10Status(userId);
-                }
-                break;
-
-            case SYNC_BOUGHT_PHOTOS://同步已购买图片
-                /**
-                 * 1.重新从数据库获取一遍数据
-                 * 2.更新页面
-                 */
-                showPWProgressDialog();
-
-                new Thread(){
-                    @Override
-                    public void run() {
-                        synchronized (this) {
-                            photoPassPicList.clear();
-                            loadDataFromDataBase();
-                            photoPassItemInfoList.clear();
-                            fragmentPageStoryHandler.sendEmptyMessage(SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE);
-                        }
-                    }
-                }.start();
-                break;
-
-            case SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE:
-                getData();
-                break;
-
             case PPPPop.POP_SCAN:
                 Intent intent = new Intent(context, MipCaptureActivity.class);
                 startActivity(intent);
@@ -384,7 +315,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                     if (noPhotoRecycleAdapter != null) {
                         noPhotoRecycleAdapter.notifyDataSetChanged();
                     }
-
                 }
                 //通知首页更新PP列表
                 EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
@@ -405,6 +335,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
     private void finishLoad(boolean setVisibile) {
         //将video和photo标记清空
         dismissPWProgressDialog();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         if (setVisibile) {
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
@@ -415,10 +348,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
             showLeadView();
         } else {//刷新失败
             myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_REFRESH));
         }
     }
 
+    /**
+     * 获取一卡一天的数据列表
+     * @param isRefresh
+     */
     private void getLocationPhotos(final boolean isRefresh) {
         API2.getLocationPhoto(MyApplication.getTokenId())
                 .map(new Func1<JSONObject, ArrayList<DailyPPCardInfo>>() {
@@ -461,6 +397,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                             if (swipeRefreshLayout.isRefreshing()) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
+                            dismissPWProgressDialog();
                         } else {
                             //获取广告信息
                             if (!app.isGetADLocationSuccess()) {
@@ -534,7 +471,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
         app = (MyApplication) context.getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
-        photoPassItemInfoList = new ArrayList<>();
 
         scanLayout.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
@@ -544,7 +480,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
         //初始化数据
         GlideUtil.loadGifAsImage(context, GlideUtil.getDrawableUrl(context, R.drawable.story_pp_intro), gifIV);
         myToast = new PWToast(getActivity());
-        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
         //获取sp中的值
@@ -579,8 +514,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
                         PictureAirLog.d(TAG, "story flow ---> get location success" + jsonObject.toString());
                         locationList.clear();
                         locationList.addAll(AppUtil.getLocation(context, jsonObject.toString(), true));
-                        //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
-                        photoPassPicList.clear();
                         return locationList;
                     }
                 })
@@ -657,6 +590,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
             if (dailyPPCardRecycleAdapter == null) {
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
                 dailyPPCardRecycleAdapter = new DailyPPCardRecycleAdapter(context, dailyPPCardInfoArrayList);
+                dailyPPCardRecycleAdapter.setOnItemClickListener(this);
                 dailyPPCardRV.addItemDecoration(new StoryRecycleDividerItemDecoration(ScreenUtil.dip2px(context, 2)));
                 dailyPPCardRV.setLayoutManager(gridLayoutManager);
                 dailyPPCardRV.setAdapter(dailyPPCardRecycleAdapter);
@@ -737,18 +671,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
         }
     }
 
-    /**
-     * 检查数据库是否有数据
-     */
-    private void loadDataFromDataBase() {
-        PictureAirLog.out("load data from database");
-        long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-        ArrayList<PhotoInfo> resultPhotoArrayList = PictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
-        PictureAirLog.out("photo from db ---->" + resultPhotoArrayList.size());
-        ppPhotoCount = resultPhotoArrayList.size();
-        photoPassPicList.addAll(resultPhotoArrayList);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -773,7 +695,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
-            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, API1.GET_DEFAULT_PHOTOS, null, null, null, Common.LOAD_PHOTO_COUNT);//获取全部图片
             API1.getPPSByUserId(fragmentPageStoryHandler);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
@@ -829,131 +750,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //不需要super
-    }
-
-    /**
-     * 数据组合排序
-     * 遍历已经存在了的图片资源，分成四大类，all，photopass，magic，bought
-     *
-     * @throws ParseException
-     */
-    private void getData() {
-        PictureAirLog.out("story flow ---> deal data");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                try {
-                    //遍历所有photopass信息
-                    PhotoItemInfo photoItemInfo;
-                    boolean clone_contains = false;
-                    Date date1;
-                    Date date2;
-                    Date date3;
-
-                    //排序前，需要将之前的插入状态初始化为-1
-                    for (int i = 0; i < photoPassItemInfoList.size(); i++) {
-                        photoPassItemInfoList.get(i).lastInsertPosition = 0;
-                    }
-
-                    //处理网络图片
-                    for (int l = 0; l < photoPassPicList.size(); l++) {
-                        PhotoInfo info = photoPassPicList.get(l);
-
-                        int resultPosition = AppUtil.findPositionInLocationList(info, locationList);
-                        if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
-                            resultPosition = locationList.size() - 1;
-                            info.setLocationId("others");
-                        }
-                        if (resultPosition < 0 ) {
-                            resultPosition = 0;
-                        }
-
-//                                PictureAirLog.d(TAG, "find the location");
-                        //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
-                        for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-//                                    PictureAirLog.d(TAG, "weather already exists:" + j);
-                            if (info.getShootDate().equals(photoPassItemInfoList.get(j).shootTime)) {
-                                info.setLocationName(photoPassItemInfoList.get(j).place);
-
-                                //如果上次插入的索引值为-1，则从0开始，如果不是，则从上次插入的位置开始
-                                for (int k = photoPassItemInfoList.get(j).lastInsertPosition;
-                                     k < photoPassItemInfoList.get(j).list.size(); k++) {//图片返回没有顺序，因此插入的时候，需要客户端排序
-                                    date1 = sdf.parse(info.getStrShootOn());
-                                    date2 = sdf.parse(photoPassItemInfoList.get(j).list.get(k).getStrShootOn());
-                                    if (date1.after(date2)) {
-                                        photoPassItemInfoList.get(j).list.add(k, info);
-                                        photoPassItemInfoList.get(j).lastInsertPosition = k;
-                                        break;
-                                    } else {
-                                        if (k == photoPassItemInfoList.get(j).list.size() - 1) {//最后一个
-                                            photoPassItemInfoList.get(j).list.add(info);
-                                            photoPassItemInfoList.get(j).lastInsertPosition = k + 1;
-                                            break;
-                                        } else {
-                                            date3 = sdf.parse(photoPassItemInfoList.get(j).list.get(k + 1).getStrShootOn());
-                                            if (date1.after(date3)) {
-                                                photoPassItemInfoList.get(j).list.add(k + 1, info);
-                                                photoPassItemInfoList.get(j).lastInsertPosition = k + 1;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                date1 = sdf.parse(info.getStrShootOn());
-                                date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
-                                if (date1.after(date2)) {
-                                    photoPassItemInfoList.get(j).shootOn = info.getStrShootOn();
-                                }
-                                clone_contains = true;
-                                break;
-                            }
-                        }
-                        if (!clone_contains) {
-                            //初始化item的信息
-                            PictureAirLog.d(TAG, "not exist");
-                            photoItemInfo = new PhotoItemInfo();
-                            photoItemInfo.locationId = locationList.get(resultPosition).locationId;
-//                            if (isOther) {//把属于other的地点拼接到后面
-//                                photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString() + info.locationId;
-//                            } else {
-                                photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
-//                            }
-                            photoItemInfo.shootTime = info.getShootDate();
-                            if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
-                                photoItemInfo.place = locationList.get(resultPosition).placeCHName;
-                                info.setLocationName(locationList.get(resultPosition).placeCHName);
-
-                            } else {
-                                photoItemInfo.place = locationList.get(resultPosition).placeENName;
-                                info.setLocationName(locationList.get(resultPosition).placeENName);
-
-                            }
-                            photoItemInfo.list.add(info);
-                            photoItemInfo.placeUrl = locationList.get(resultPosition).placeUrl;
-                            photoItemInfo.latitude = locationList.get(resultPosition).latitude;
-                            photoItemInfo.longitude = locationList.get(resultPosition).longitude;
-                            photoItemInfo.lastInsertPosition = 0;
-                            photoItemInfo.islove = 0;
-                            photoItemInfo.shootOn = info.getStrShootOn();
-                            photoPassItemInfoList.add(photoItemInfo);
-                        } else {
-                            clone_contains = false;
-                        }
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } finally {
-                }
-
-                    //将magic和photopass列表放入all中
-                    Collections.sort(photoPassItemInfoList);
-                    fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
-                PictureAirLog.d(TAG, "------>completed");
-            }
-        }).start();
-
     }
 
     @SuppressLint("NewApi")
@@ -1015,6 +811,37 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
 
     }
 
+    @Override
+    public void downloadClick(int position) {
+        PictureAirLog.d("download click-->" + " :" + position);
+
+    }
+
+    @Override
+    public void buyClick(int position) {
+        showPWProgressDialog();
+        //获取商品（以后从缓存中取）
+        getGoods();
+
+    }
+
+    @Override
+    public void previewClick(int position) {
+        PictureAirLog.d("preview click-->" + position);
+
+    }
+
+    @Override
+    public void itemClick(int position) {
+        //进入相册
+        Intent i = new Intent(context, EditStoryAlbumActivity.class);
+        i.putExtra("ppCode", dailyPPCardInfoArrayList.get(position).getPpCode());
+        i.putExtra("shootDate", dailyPPCardInfoArrayList.get(position).getShootDate());
+        i.putExtra("activated", dailyPPCardInfoArrayList.get(position).getActivated());
+        i.putExtra("photoCount", dailyPPCardInfoArrayList.get(position).getPhotoCount());
+        startActivity(i);
+    }
+
     private void clickToRefresh() {
         PictureAirLog.out("do refresh when noPhotoView is showing");
         if (!swipeRefreshLayout.isRefreshing()) {
@@ -1065,7 +892,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener{
             } else if (!noPhotoViewRL.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
                 syncingBoughtPhotos = true;
                 PictureAirLog.out("start sync------->");
-                fragmentPageStoryHandler.sendEmptyMessageDelayed(SYNC_BOUGHT_PHOTOS, 2000);
+                fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 2000);
 
             } else {
                 PictureAirLog.out("still waiting sync");

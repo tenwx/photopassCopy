@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/story_pinned_section_ll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="horizontal"
     android:paddingBottom="@dimen/pp_dp_20"
     android:paddingLeft="@dimen/pp_dp_16"
     android:paddingRight="@dimen/pp_dp_16"
     android:paddingTop="@dimen/pp_dp_20">
 
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/section_time"
+    <TextView
+        android:id="@+id/section_location_tv"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:gravity="center_vertical"
-        android:textColor="@color/pp_blue"
-        android:textSize="@dimen/text_size_16" />
+        android:textColor="@color/pp_dark_blue"
+        android:textSize="@dimen/text_size_14" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/section_photo_count_tv"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_12" />
+
+    <ImageView
+        android:id="@+id/section_photo_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/pp_dp_3"
+        android:layout_toLeftOf="@+id/section_photo_count_tv"
+        android:adjustViewBounds="true"
+        android:src="@drawable/photo_count"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

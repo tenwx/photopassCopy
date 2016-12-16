@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
@@ -85,6 +86,7 @@ public class AppExitUtil {
         MyApplication.getInstance().scanMagicFinish = false;
         MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
         PictureAirDbManager.deleteAllInfoFromTable();
+        PictureAirDbManager.deleteJsonInfosByType(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);//退出的时候，清除所有pp信息
 
         MyApplication.clearTokenId();
 

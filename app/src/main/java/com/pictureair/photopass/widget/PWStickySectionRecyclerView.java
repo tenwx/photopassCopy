@@ -6,10 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.StickyRecycleAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -26,8 +26,9 @@ import java.util.ArrayList;
 public class PWStickySectionRecyclerView extends FrameLayout {
     private Context context;
     private RecyclerView recyclerView;
-    private LinearLayout sectionHeaderLL;
-    private TextView sectionHeaderTimeTV;
+    private RelativeLayout sectionHeaderRL;
+    private TextView sectionHeaderLocationTV, sectionHeaderPhotoCountTV;
+    private ImageView sectionHeaderIV;
     private GridLayoutManager gridLayoutManager;
     private StickyRecycleAdapter stickyRecycleAdapter;
     private RecycleDividerItemDecoration recycleDividerItemDecoration;
@@ -59,9 +60,10 @@ public class PWStickySectionRecyclerView extends FrameLayout {
     private void initView() {
         inflate(context, R.layout.pw_sticky_section_recycler_view, this);
         recyclerView = (RecyclerView) findViewById(R.id.sticky_section_recycler_view);
-        sectionHeaderLL = (LinearLayout) findViewById(R.id.story_pinned_section_ll);
-        sectionHeaderTimeTV = (TextView) findViewById(R.id.section_time);
-        sectionHeaderTimeTV.setTypeface(MyApplication.getInstance().getFontBold());
+        sectionHeaderRL = (RelativeLayout) findViewById(R.id.story_pinned_section_ll);
+        sectionHeaderLocationTV = (TextView) findViewById(R.id.section_location_tv);
+        sectionHeaderPhotoCountTV = (TextView) findViewById(R.id.section_photo_count_tv);
+        sectionHeaderIV = (ImageView) findViewById(R.id.section_photo_iv);
     }
 
     /**
@@ -110,24 +112,10 @@ public class PWStickySectionRecyclerView extends FrameLayout {
      * 初始化数据
      */
     public void initDate(ArrayList<PhotoInfo> list) {
-        sectionHeaderLL.setVisibility(isStickySectionHeader ? VISIBLE : GONE);
+        sectionHeaderRL.setVisibility(isStickySectionHeader ? VISIBLE : GONE);
 
         photoInfoArrayList = list;
         gridLayoutManager = new GridLayoutManager(context, columnCount);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (photoInfoArrayList.size() == 0) {
-                    return 1;
-                } else if (position > 0 && position < photoInfoArrayList.size() && photoInfoArrayList.get(position) != null
-                        && photoInfoArrayList.get(position).getSectionId() == photoInfoArrayList.get(position - 1).getSectionId()) {
-                    return 1;
-                } else {
-                    return 3;
-                }
-            }
-        });
-
         stickyRecycleAdapter = new StickyRecycleAdapter(context, photoInfoArrayList);
         stickyRecycleAdapter.setOnItemClickListener(onRecyclerViewItemClickListener);
 
@@ -164,7 +152,9 @@ public class PWStickySectionRecyclerView extends FrameLayout {
                 && !isLoadMore) {//如果滑动到了item的最下面了（除了加载更多项）就开始加载更多
 //		if (dy > 0 && !recyclerView.canScrollVertically(1) && !refreshLayout.isRefreshing() && !isLoadMore) {//如果滑动到底了，才开始加载更多
             PictureAirLog.d("start load more---->");
-            onPullListener.loadMore();
+            if (onPullListener != null) {
+                onPullListener.loadMore();
+            }
         }
     }
 
@@ -180,25 +170,28 @@ public class PWStickySectionRecyclerView extends FrameLayout {
         View stickyInfoView = recyclerView.findChildViewUnder(30, 1);//获取 （x,y）坐标下的view
 
         if (stickyInfoView != null && stickyInfoView.getContentDescription() != null) {
-            sectionHeaderTimeTV.setText(String.valueOf(stickyInfoView.getContentDescription()));
+            String[] headers = stickyInfoView.getContentDescription().toString().split(",");
+            sectionHeaderLocationTV.setText(headers[0]);
+            sectionHeaderPhotoCountTV.setText("(" + headers[1] + ")");
+            sectionHeaderIV.setVisibility(VISIBLE);
         }
 
         // Get the sticky view's translationY by the first view below the sticky's height.
-        View transInfoView = recyclerView.findChildViewUnder(30, sectionHeaderLL.getMeasuredHeight() + 1);
+        View transInfoView = recyclerView.findChildViewUnder(30, sectionHeaderRL.getMeasuredHeight() + 1);
 
         if (transInfoView != null && transInfoView.getTag() != null) {
             int transViewStatus = (int) transInfoView.getTag();
-            int dealtY = transInfoView.getTop() - sectionHeaderLL.getMeasuredHeight();
+            int dealtY = transInfoView.getTop() - sectionHeaderRL.getMeasuredHeight();
             if (transViewStatus == StickyRecycleAdapter.HAS_STICKY_VIEW) {
                 // If the first view below the sticky's height scroll off the screen,
                 // then recovery the sticky view's translationY.
                 if (transInfoView.getTop() > 0) {
-                    sectionHeaderLL.setTranslationY(dealtY);
+                    sectionHeaderRL.setTranslationY(dealtY);
                 } else {
-                    sectionHeaderLL.setTranslationY(0);
+                    sectionHeaderRL.setTranslationY(0);
                 }
             } else if (transViewStatus == StickyRecycleAdapter.NONE_STICKY_VIEW) {
-                sectionHeaderLL.setTranslationY(0);
+                sectionHeaderRL.setTranslationY(0);
             }
         }
     }

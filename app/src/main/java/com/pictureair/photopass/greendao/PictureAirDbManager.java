@@ -26,7 +26,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
 
 import net.sqlcipher.SQLException;
 
@@ -329,12 +328,30 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 按照pp卡删除photopassInfo中的内容
+     *
+     */
+    public static void deleteAllInfoFromTable(String ppCode, String shoodDate) {
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        List<PhotoInfo> list;
+        QueryBuilder<PhotoInfo> queryBuilder = photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoPassCode.eq(ppCode), PhotoInfoDao.Properties.ShootDate.eq(shoodDate));
+        if (queryBuilder.count() > 0) {
+            list = queryBuilder.build().forCurrentThread().list();
+            if (list != null) {
+                photoInfoDao.deleteInTx(list);
+            }
+        }
+    }
+
+    /**
      * 将照片插入到photoPassInfo表中
      *
      * @param responseArray
      * @param type         是否是刷新信息
      */
-    public static synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type) {
+    public static synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type, String language,
+                                                                                     ArrayList<DiscoverLocationItemInfo> locationList, RefreshAndLoadMoreCallBack callBack) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();//返回的数据列表
         ArrayList<PhotoInfo> dbPhotoList = new ArrayList<>();//插入数据库的列表
@@ -343,6 +360,8 @@ public class PictureAirDbManager {
         }
         String repeatTopId = null;
         String repeatBottomId = null;
+        String refreshTime = null;
+        String loadMoreTime = null;
         PictureAirLog.d("photo size -->" + responseArray.size());
         for (int i = 0; i < responseArray.size(); i++) {
             JSONObject object = responseArray.getJSONObject(i);
@@ -351,20 +370,36 @@ public class PictureAirDbManager {
                 photo.setLocationId("others");
             }
 
+            //设置地点名称
+            if (locationList != null) {
+                int resultPosition = AppUtil.findPositionInLocationList(photo, locationList);
+                if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
+                    resultPosition = locationList.size() - 1;
+                }
+                if (resultPosition < 0 ) {
+                    resultPosition = 0;
+                }
+                if (language.equals(Common.SIMPLE_CHINESE)) {
+                    photo.setLocationName(locationList.get(resultPosition).placeCHName);
+                } else {
+                    photo.setLocationName(locationList.get(resultPosition).placeENName);
+                }
+            }
+
             if (type == API1.GET_DEFAULT_PHOTOS) {
                 if (i == 0) {//记录最新的值
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                    refreshTime = photo.getReceivedOn();
                 } else if (i == responseArray.size() - 1) {//记录最后一个值
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                    loadMoreTime = photo.getReceivedOn();
                 }
             } else if (type == API1.GET_NEW_PHOTOS) {
                 if (i == 0) {//记录最新的值
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                    refreshTime = photo.getReceivedOn();
                 }
 
             } else if (type == API1.GET_OLD_PHOTOS) {
                 if (i == responseArray.size() - 1) {//记录最后一个值
-                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_RECEIVE_ON, photo.getReceivedOn());
+                    loadMoreTime = photo.getReceivedOn();
                 }
             }
 
@@ -433,14 +468,13 @@ public class PictureAirDbManager {
         }
 
         if (type == API1.GET_DEFAULT_PHOTOS) {
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+            callBack.getAllData(repeatTopId, refreshTime, repeatBottomId, loadMoreTime);
 
         } else if (type == API1.GET_NEW_PHOTOS) {
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_TOP_PHOTO_IDS, repeatTopId);
+            callBack.getRefreshData(repeatTopId, refreshTime);
 
         } else if (type == API1.GET_OLD_PHOTOS) {
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_BOTTOM_PHOTO_IDS, repeatBottomId);
+            callBack.getLoadMoreData(repeatBottomId, loadMoreTime);
 
         }
         return resultArrayList;
@@ -1227,5 +1261,49 @@ public class PictureAirDbManager {
             list.addAll(queryBuilder.build().forCurrentThread().list());
         }
         return list;
+    }
+
+    /**
+     * 删除对应类型的数据
+     * @param type
+     * @return
+     */
+    public static synchronized void deleteJsonInfosByType(String type) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        ArrayList<JsonInfo> list = new ArrayList<>();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonType.eq(type));
+        if (queryBuilder.count() > 0) {
+            list.addAll(queryBuilder.build().forCurrentThread().list());
+            jsonInfoDao.deleteInTx(list);
+        }
+    }
+
+    /**
+     * 删除一条数据
+     * @param type
+     * @return
+     */
+    public static synchronized void deleteJsonInfosByTypeAndString(String type, String str) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        ArrayList<JsonInfo> list = new ArrayList<>();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonType.eq(type), JsonInfoDao.Properties.JsonString.eq(str));
+        if (queryBuilder.count() > 0) {
+            list.addAll(queryBuilder.build().forCurrentThread().list());
+            jsonInfoDao.deleteInTx(list);
+        }
+    }
+
+    /**
+     * 删除对应类型的数据
+     * @param jsonString
+     * @return
+     */
+    public static synchronized boolean isJsonInfoExist(String jsonString) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonString.eq(jsonString));
+        return queryBuilder.count() > 0;
     }
 }
