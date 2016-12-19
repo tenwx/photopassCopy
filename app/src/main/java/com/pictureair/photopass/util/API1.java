@@ -374,7 +374,7 @@ public class API1 {
             params.put(Common.VERIFICATIONCODE, verificationCode);
         }
         if (password != null) {
-            params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+            params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
         }
         BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
             @Override

@@ -14,6 +14,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.support.multidex.MultiDex;
+import android.text.TextUtils;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.greendao.DaoMaster;
@@ -136,7 +137,7 @@ public class MyApplication extends Application {
      * @return tokenId
      */
     public static String getTokenId() {
-        if (tokenId == null) {
+        if (TextUtils.isEmpty(tokenId)) {
             tokenId = AESKeyHelper.decryptString(SPUtils.getString(MyApplication.getInstance().getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null),
                     PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
         }
