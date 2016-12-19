@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
-import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
@@ -86,7 +85,13 @@ public class AppExitUtil {
         MyApplication.getInstance().scanMagicFinish = false;
         MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
         PictureAirDbManager.deleteAllInfoFromTable();
-        PictureAirDbManager.deleteJsonInfosByType(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);//退出的时候，清除所有pp信息
+
+        /**
+         * 目前有两种状态，因此可以全部删除，如果以后有多种状态，并且有些不需要退出删除，就需要用下面的写法进行单个删除操作
+         * PictureAirDbManager.deleteJsonInfosByType(JsonInfo.JSON_LOCATION_PHOTO_TYPE);//退出的时候，清除所有pp信息，一卡一天信息
+         * PictureAirDbManager.deleteJsonInfosByType(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);//退出的时候，清除所有pp信息，pp刷新标记
+         */
+        PictureAirDbManager.deleteJsonInfos();
 
         MyApplication.clearTokenId();
 

@@ -1949,4 +1949,48 @@ public class AppUtil {
         }
         return photoInfo.getShootDate() + String.format(context.getString(R.string.gallery_expire_time), result);
     }
+
+    /**
+     * 获取repeatTopId
+     * @param resultArrayList
+     * @return
+     */
+    public static String getRepeatRefreshIds(ArrayList<PhotoInfo> resultArrayList) {
+        String repeatTopId = null;
+        for (int i = 0; i < resultArrayList.size(); i++) {
+            if (i == 0) {
+                repeatTopId = resultArrayList.get(i).getPhotoId();
+            } else {
+                if (resultArrayList.get(0).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                    repeatTopId += "," + resultArrayList.get(i).getPhotoId();
+                } else {
+                    break;
+                }
+            }
+        }
+        return repeatTopId;
+    }
+
+    /**
+     * 获取repeatBottomId
+     * @param resultArrayList
+     * @return
+     */
+    public static String getRepeatLoadMoreIds(ArrayList<PhotoInfo> resultArrayList) {
+        String repeatBottomId = null;
+        for (int i = resultArrayList.size() - 1; i >= 0; i--) {
+            if (i == resultArrayList.size() - 1) {
+                repeatBottomId = resultArrayList.get(i).getPhotoId();
+
+            } else {
+                if (resultArrayList.get(resultArrayList.size() - 1).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
+                    repeatBottomId += "," + resultArrayList.get(i).getPhotoId();
+
+                } else {
+                    break;
+                }
+            }
+        }
+        return repeatBottomId;
+    }
 }

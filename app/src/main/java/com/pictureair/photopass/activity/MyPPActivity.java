@@ -655,7 +655,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             public void run() {
                 PictureAirLog.out("start save json in thread");
                 final JSONArray responseArray = jsonObject.getJSONArray("photos");
-                PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, API1.GET_NEW_PHOTOS, null, null, null);
+                PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, API1.GET_NEW_PHOTOS, null, null);
                 //通知已经处理完毕
                 myPPHandler.sendEmptyMessage(SAVE_JSON_DONE);
             }

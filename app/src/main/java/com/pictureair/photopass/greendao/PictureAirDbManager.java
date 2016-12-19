@@ -206,11 +206,11 @@ public class PictureAirDbManager {
      * 根据ppCode获取对应的PP照片列表
      * @param ppCode
      */
-    public static ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
+    public static ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, String shootDate, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"))
-                .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
+                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate))
+                .orderDesc(PhotoInfoDao.Properties.ReceivedOn).build().forCurrentThread().list();
 
         for (PhotoInfo photoInfo: selectPhotoItemInfos) {
             // 获取图片路径
@@ -351,17 +351,13 @@ public class PictureAirDbManager {
      * @param type         是否是刷新信息
      */
     public static synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, int type, String language,
-                                                                                     ArrayList<DiscoverLocationItemInfo> locationList, RefreshAndLoadMoreCallBack callBack) {
+                                                                                     ArrayList<DiscoverLocationItemInfo> locationList) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();//返回的数据列表
         ArrayList<PhotoInfo> dbPhotoList = new ArrayList<>();//插入数据库的列表
         if (responseArray.size() == 0) {
             return resultArrayList;
         }
-        String repeatTopId = null;
-        String repeatBottomId = null;
-        String refreshTime = null;
-        String loadMoreTime = null;
         PictureAirLog.d("photo size -->" + responseArray.size());
         for (int i = 0; i < responseArray.size(); i++) {
             JSONObject object = responseArray.getJSONObject(i);
@@ -385,24 +381,6 @@ public class PictureAirDbManager {
                     photo.setLocationName(locationList.get(resultPosition).placeENName);
                 }
             }
-
-            if (type == API1.GET_DEFAULT_PHOTOS) {
-                if (i == 0) {//记录最新的值
-                    refreshTime = photo.getReceivedOn();
-                } else if (i == responseArray.size() - 1) {//记录最后一个值
-                    loadMoreTime = photo.getReceivedOn();
-                }
-            } else if (type == API1.GET_NEW_PHOTOS) {
-                if (i == 0) {//记录最新的值
-                    refreshTime = photo.getReceivedOn();
-                }
-
-            } else if (type == API1.GET_OLD_PHOTOS) {
-                if (i == responseArray.size() - 1) {//记录最后一个值
-                    loadMoreTime = photo.getReceivedOn();
-                }
-            }
-
 
             if (type == API1.GET_NEW_PHOTOS || type == API1.GET_OLD_PHOTOS) {
                 //1.先查询数据库是否有新的数据，如果有，则更新信息
@@ -438,45 +416,6 @@ public class PictureAirDbManager {
             dbPhotoList.add(photo);
         }
         photoInfoDao.insertInTx(dbPhotoList);
-
-        //获取repeatTopId
-        for (int i = 0; i < resultArrayList.size(); i++) {
-            if (i == 0) {
-                repeatTopId = resultArrayList.get(i).getPhotoId();
-            } else {
-                if (resultArrayList.get(0).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
-                    repeatTopId += "," + resultArrayList.get(i).getPhotoId();
-                } else {
-                    break;
-                }
-            }
-        }
-
-        //获取repeatBottomId
-        for (int i = resultArrayList.size() - 1; i >= 0; i--) {
-            if (i == resultArrayList.size() - 1) {
-                repeatBottomId = resultArrayList.get(i).getPhotoId();
-
-            } else {
-                if (resultArrayList.get(resultArrayList.size() - 1).getReceivedOn().equals(resultArrayList.get(i).getReceivedOn())) {
-                    repeatBottomId += "," + resultArrayList.get(i).getPhotoId();
-
-                } else {
-                    break;
-                }
-            }
-        }
-
-        if (type == API1.GET_DEFAULT_PHOTOS) {
-            callBack.getAllData(repeatTopId, refreshTime, repeatBottomId, loadMoreTime);
-
-        } else if (type == API1.GET_NEW_PHOTOS) {
-            callBack.getRefreshData(repeatTopId, refreshTime);
-
-        } else if (type == API1.GET_OLD_PHOTOS) {
-            callBack.getLoadMoreData(repeatBottomId, loadMoreTime);
-
-        }
         return resultArrayList;
     }
 
@@ -597,6 +536,39 @@ public class PictureAirDbManager {
         } else{
             resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
                     .orderDesc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
+        }
+        PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo" + resultArrayList.size());
+        return resultArrayList;
+    }
+
+    /**
+     * 查询数据库中的图片信息
+     *
+     * @return
+     */
+    public static synchronized ArrayList<PhotoInfo> getAllPhotosFromPhotoPassInfoByPPcodeAndDate(String ppCode, String shootDate, String deleteTime) {
+        ArrayList<PhotoInfo> resultArrayList;
+        PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
+        //根据当前时间，删除超过30天并且未支付的数据信息
+        /**
+         * 1.获取当前时间，以毫秒为单位
+         * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
+         */
+        resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+        PictureAirLog.d("size--> " + resultArrayList.size());
+        if (resultArrayList.size() > 0) {
+            photoInfoDao.deleteInTx(resultArrayList);
+        }
+
+        resultArrayList.clear();
+        //删除过期的数据之后，再查询photo表的信息
+        PictureAirLog.out("cursor open ---> getAllPhotoFromPhotoPassInfo");
+        QueryBuilder<PhotoInfo> queryBuilder = photoInfoDao.queryBuilder()
+                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"),
+                        PhotoInfoDao.Properties.ShootDate.eq(shootDate)).orderDesc(PhotoInfoDao.Properties.ReceivedOn);
+        if (queryBuilder.count() > 0) {
+            resultArrayList = (ArrayList<PhotoInfo>) queryBuilder.build().forCurrentThread().list();
         }
         PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo" + resultArrayList.size());
         return resultArrayList;
@@ -1277,6 +1249,15 @@ public class PictureAirDbManager {
             list.addAll(queryBuilder.build().forCurrentThread().list());
             jsonInfoDao.deleteInTx(list);
         }
+    }
+
+    /**
+     * 删除对应类型的数据
+     * @return
+     */
+    public static synchronized void deleteJsonInfos() {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        jsonInfoDao.deleteAll();
     }
 
     /**

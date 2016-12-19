@@ -677,6 +677,7 @@
     <!--special deal-->
 
     <!-- customer service -->
+    <string name="opinions_title">乐拍通客服</string>
     <string name="opinions_questions">常见问题</string>
     <string name="opinions_online">在线客服</string>
     <string name="opinions_feedback">意见反馈</string>

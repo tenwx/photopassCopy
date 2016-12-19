@@ -22,11 +22,14 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.StickyRecycleAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
+import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.greendao.RefreshAndLoadMoreCallBack;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
@@ -35,7 +38,9 @@ import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -43,8 +48,11 @@ import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -99,6 +107,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private int oldCount = 0;
 	private int ppPhotoCount, refreshCount, loadMoreCount;
 	private String ppRefreshTime, ppRefreshIds, ppLoadMoreTime, ppLoadMoreIds;
+	private GoodsInfo pppGoodsInfo = null;
+	private String[] photoUrls;
+	private SimpleDateFormat sdf;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
 		@Override
@@ -164,6 +175,66 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					} else if (API1.PPPlist.size() > 0) {
 						settingUtil.insertSettingFirstPP10Status(userId);
 					}
+					break;
+
+				case API1.GET_GOODS_SUCCESS:
+					List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+
+					GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+					if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+						allGoodsList1.addAll(goodsInfoJson.getGoods());
+					}
+					//获取PP+
+					for (GoodsInfo goodsInfo : allGoodsList1) {
+						if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+							pppGoodsInfo = goodsInfo;
+							break;
+						}
+					}
+					photoUrls = new String[pppGoodsInfo.getPictures().size()];
+					for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+						photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+					}
+					//调用addToCart API1
+					API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, editStoryAlbumHandler);
+					break;
+
+				case API1.GET_GOODS_FAILED:
+					dismissPWProgressDialog();
+					myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+					break;
+
+				case API1.ADD_TO_CART_FAILED:
+					dismissPWProgressDialog();
+					myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+					break;
+
+				case API1.ADD_TO_CART_SUCCESS:
+					JSONObject jsonObject1 = (JSONObject) msg.obj;
+					int currentCartCount = SPUtils.getInt(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+
+					String cartId = jsonObject1.getString("cartId");
+					dismissPWProgressDialog();
+					//生成订单
+					Intent intent3 = new Intent(EditStoryAlbumActivity.this, SubmitOrderActivity.class);
+					ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+					CartItemInfo cartItemInfo = new CartItemInfo();
+					cartItemInfo.setCartId(cartId);
+					cartItemInfo.setProductName(pppGoodsInfo.getName());
+					cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+					cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+					cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+					cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+					cartItemInfo.setQty(1);
+					cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+					cartItemInfo.setPictures(photoUrls);
+					cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+					cartItemInfo.setCartProductType(3);
+
+					orderinfoArrayList.add(cartItemInfo);
+					intent3.putExtra("orderinfo", orderinfoArrayList);
+					startActivity(intent3);
 					break;
 
 				default:
@@ -272,6 +343,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		buyPPPTv.setOnClickListener(this);
 
 		//初始化数据
+		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sharePop = new SharePop(this);
 		albumArrayList = new ArrayList<>();
 		settingUtil = new SettingUtil();
@@ -322,6 +394,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						bundle.putInt("position", position);
 						bundle.putString("tab", "editStory");
 						bundle.putString("ppCode", ppCode);
+						bundle.putString("shootDate", shootDate);
 						bundle.putString("photoId", albumArrayList.get(position).getPhotoId());
 						i.putExtra("bundle", bundle);
 						startActivity(i);
@@ -340,23 +413,30 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void run() {
 				if (PictureAirDbManager.isJsonInfoExist(JsonInfo.getNeedRefreshString(ppCode, shootDate))) {//需要从网络获取全部数据
+					PictureAirLog.d("need re-get photos");
 					//开始从网络获取数据
 					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
 				} else {//从数据库获取数据
+					PictureAirLog.d("get photos from db");
 					//从数据库获取数据, 并且需要设置oldCount数量
-//					getFromDb;
-
+					getPhotosFromDB();
 
 					//判断用户是否超过10张照片
 					if (settingUtil.isFirstPP10(userId)) {
 						//第一次 PP数量到 10 。
 						API1.getPPPSByUserId(MyApplication.getTokenId(), editStoryAlbumHandler);
 					}
+					PictureAirLog.d("photos from db size->" + albumArrayList.size());
 					//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
 					if (albumArrayList.size() == 0) {
 						getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
 					} else {//直接显示照片
-						pwStickySectionRecyclerView.notifyDataSetChanged();
+						pwStickySectionRecyclerView.post(new Runnable() {
+							@Override
+							public void run() {
+								pwStickySectionRecyclerView.notifyDataSetChanged();
+							}
+						});
 					}
 				}
 			}
@@ -373,6 +453,41 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				PictureAirLog.out("dismiss dialog");
 				dismissPWProgressDialog();
 			}
+		}
+	}
+
+	/**
+	 * 获取数据库数据
+	 */
+	private void getPhotosFromDB() {
+		long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+		ArrayList<PhotoInfo> dbList = PictureAirDbManager.getAllPhotosFromPhotoPassInfoByPPcodeAndDate(ppCode, shootDate, sdf.format(new Date(cacheTime)));
+		oldCount = dbList.size();
+		//设置地点名称
+		for (int i = 0; i < dbList.size(); i++) {
+			int resultPosition = AppUtil.findPositionInLocationList(dbList.get(i), locationList);
+			if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
+				resultPosition = locationList.size() - 1;
+				dbList.get(i).setLocationId("others");
+			}
+			if (resultPosition < 0 ) {
+				resultPosition = 0;
+			}
+			if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+				dbList.get(i).setLocationName(locationList.get(resultPosition).placeCHName);
+			} else {
+				dbList.get(i).setLocationName(locationList.get(resultPosition).placeENName);
+			}
+		}
+
+		if (dbList.size() > 0) {
+			ppRefreshTime = dbList.get(0).getReceivedOn();
+			ppLoadMoreTime = dbList.get(dbList.size() - 1).getReceivedOn();
+			ppRefreshIds = AppUtil.getRepeatRefreshIds(dbList);
+			ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(dbList);
+
+			albumArrayList.clear();
+			albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(dbList, true));
 		}
 	}
 
@@ -397,33 +512,23 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 						//解析数据 并且存到数据库
 						ArrayList<PhotoInfo> resultList = PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type,
-								MyApplication.getInstance().getLanguageType(), locationList, new RefreshAndLoadMoreCallBack() {
-							@Override
-							public void getRefreshData(String refreshIds, String refreshTime) {
-								PictureAirLog.d("get the limit data 1");
-								ppRefreshIds = refreshIds;
-								ppRefreshTime = refreshTime;
+								MyApplication.getInstance().getLanguageType(), locationList);
+						if (resultList.size() > 0) {
+							if (type == API1.GET_DEFAULT_PHOTOS) {
+								ppRefreshTime = resultList.get(0).getReceivedOn();
+								ppRefreshIds = AppUtil.getRepeatRefreshIds(resultList);
+								ppLoadMoreTime = resultList.get(resultList.size() - 1).getReceivedOn();
+								ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(resultList);
 
+							} else if (type == API1.GET_NEW_PHOTOS) {
+								ppRefreshTime = resultList.get(0).getReceivedOn();
+								ppRefreshIds = AppUtil.getRepeatRefreshIds(resultList);
+
+							} else if (type == API1.GET_OLD_PHOTOS) {
+								ppLoadMoreTime = resultList.get(resultList.size() - 1).getReceivedOn();
+								ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(resultList);
 							}
-
-							@Override
-							public void getLoadMoreData(String loadMoreIds, String loadMoreTime) {
-								PictureAirLog.d("get the limit data 12");
-								ppLoadMoreIds = loadMoreIds;
-								ppLoadMoreTime = loadMoreTime;
-
-							}
-
-							@Override
-							public void getAllData(String refreshIds, String refreshTime, String loadMoreIds, String loadMoreTime) {
-								PictureAirLog.d("get the limit data 123");
-								ppRefreshIds = refreshIds;
-								ppRefreshTime = refreshTime;
-								ppLoadMoreIds = loadMoreIds;
-								ppLoadMoreTime = loadMoreTime;
-
-							}
-						});
+						}
 						return AppUtil.insertSortFavouritePhotos(resultList, true);
 					}
 				})
@@ -630,11 +735,31 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				break;
 
 			case R.id.edit_album_buy_tv://购买ppp
-
+				showPWProgressDialog();
+				//获取商品（以后从缓存中取）
+				getGoods();
 				break;
 
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * 初始化数据
+	 */
+	private void getGoods() {
+		//从缓层中获取数据
+		String goodsByACache = ACache.get(this).getAsString(Common.ALL_GOODS);
+		if (goodsByACache != null && !goodsByACache.equals("")) {
+			editStoryAlbumHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+		} else {
+			//从网络获取商品,先检查网络
+			if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
+				API1.getGoods(editStoryAlbumHandler);
+			} else {
+				myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+			}
 		}
 	}
 

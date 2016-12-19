@@ -66,7 +66,6 @@ import com.pictureair.photopass.widget.SharePop;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -565,46 +564,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("currentposition---->" + currentPosition);
                 tabName = bundle.getString("tab");
                 PictureAirLog.out("tabName--->" + tabName);
-                long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-
-                if (tabName.equals("all")) {//获取全部照片
-                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    try {
-                        photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
-                                simpleDateFormat.format(new Date(cacheTime)),
-                                simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (tabName.equals("photopass")) {//获取pp图片
-                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    try {
-                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList,
-                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false, false));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (tabName.equals("local")) {//获取本地图片
-                    photolist.addAll(targetphotolist);
-
-                } else if (tabName.equals("bought")) {//获取已经购买的图片
-                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
-                    try {
-                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList,
-                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true, false));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                } else if (tabName.equals("favourite")) {//获取收藏图片
-
-                } else if (tabName.equals("editStory")){//编辑PP照片页面
+                if (tabName.equals("editStory")){//编辑PP照片页面
                     String ppCode = bundle.getString("ppCode");
+                    String shootDate = bundle.getString("shootDate");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
-                            PictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType()), false));
+                            PictureAirDbManager.getPhotoInfosByPPCode(ppCode, shootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
 
                 } else {//获取列表图片， other，不需要根据photoid重新找到地点
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list

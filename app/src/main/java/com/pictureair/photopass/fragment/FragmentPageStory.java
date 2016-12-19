@@ -30,10 +30,12 @@ import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.GifPlayActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.OpinionsActivity;
-import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
+import com.pictureair.photopass.activity.SubmitOrderActivity;
 import com.pictureair.photopass.adapter.DailyPPCardRecycleAdapter;
 import com.pictureair.photopass.adapter.NoPhotoRecycleAdapter;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DailyPPCardInfo;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
@@ -138,6 +140,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private String userId;
     private PWToast myToast;
     private DealingInfo dealingInfo;
+    private GoodsInfo pppGoodsInfo = null;
+    private String[] photoUrls;
 
     /**
      * 同步已经购买的照片
@@ -284,7 +288,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     break;
                 }
                 List<GoodsInfo> allGoodsList1 = new ArrayList<>();
-                GoodsInfo pppGoodsInfo = null;
+
                 GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                 if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                     allGoodsList1.addAll(goodsInfoJson.getGoods());
@@ -296,11 +300,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         break;
                     }
                 }
-                dismissPWProgressDialog();
-                //跳转到PP+详情页面
-                Intent intent3 = new Intent(context, PPPDetailProductActivity.class);
-                intent3.putExtra("goods", pppGoodsInfo);
-                startActivity(intent3);
+                photoUrls = new String[pppGoodsInfo.getPictures().size()];
+                for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+                    photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+                }
+                //调用addToCart API1
+                API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, fragmentPageStoryHandler);
                 break;
 
             case API1.GET_GOODS_FAILED:
@@ -321,6 +326,39 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_PPS_FAILED:// 获取pp列表失败, 不做任何操作
+                break;
+
+            case API1.ADD_TO_CART_FAILED:
+                dismissPWProgressDialog();
+                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.ADD_TO_CART_SUCCESS:
+                JSONObject jsonObject1 = (JSONObject) msg.obj;
+                int currentCartCount = SPUtils.getInt(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+
+                String cartId = jsonObject1.getString("cartId");
+                dismissPWProgressDialog();
+                //生成订单
+                Intent intent3 = new Intent(context, SubmitOrderActivity.class);
+                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo cartItemInfo = new CartItemInfo();
+                cartItemInfo.setCartId(cartId);
+                cartItemInfo.setProductName(pppGoodsInfo.getName());
+                cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+                cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+                cartItemInfo.setQty(1);
+                cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+                cartItemInfo.setPictures(photoUrls);
+                cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+                cartItemInfo.setCartProductType(3);
+
+                orderinfoArrayList.add(cartItemInfo);
+                intent3.putExtra("orderinfo", orderinfoArrayList);
+                startActivity(intent3);
                 break;
 
             default:
@@ -814,7 +852,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void downloadClick(int position) {
         PictureAirLog.d("download click-->" + " :" + position);
-
+        itemClick(position);
     }
 
     @Override
@@ -828,7 +866,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void previewClick(int position) {
         PictureAirLog.d("preview click-->" + position);
-
+        itemClick(position);
     }
 
     @Override
