@@ -10,6 +10,7 @@ import com.pictureair.photopass.util.Common;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -35,6 +36,7 @@ public enum  RetrofitClient {
                 .connectTimeout(60, TimeUnit.SECONDS)// 连接超时时间设置
                 .readTimeout(60, TimeUnit.SECONDS)// 读取超时时间设置
                 .retryOnConnectionFailure(false)// 失败重试
+                .connectionPool(new ConnectionPool(6, 5, TimeUnit.MINUTES))//连接池复用，个数为6，keepalive的时间未5分钟
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(Common.BASE_URL_TEST + "/")

@@ -83,7 +83,7 @@ public class AppExitUtil {
 
         MyApplication.getInstance().setPushPhotoCount(0);
         MyApplication.getInstance().setPushViedoCount(0);
-        MyApplication.getInstance().scanMagicFinish = false;
+//        MyApplication.getInstance().scanMagicFinish = false;
         MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
         PictureAirDbManager.deleteAllInfoFromTable();
         PictureAirDbManager.deleteJsonInfosByType(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);//退出的时候，清除所有pp信息

@@ -231,9 +231,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         gridView.setOnItemClickListener(new PhotoSelectedListener());
 
         //初始化数据
-        if (myApplication.needScanPhoto()) {//如果刚进入这个页面，则onresume不需要重新扫描文件，所以直接将变量设为false，以免造成oncreate和onresume同时进行，造成collection数组越界
-            myApplication.setneedScanPhoto(false);
-        }
+//        if (myApplication.needScanPhoto()) {//如果刚进入这个页面，则onresume不需要重新扫描文件，所以直接将变量设为false，以免造成oncreate和onresume同时进行，造成collection数组越界
+//            myApplication.setneedScanPhoto(false);
+//        }
     }
 
     /**
@@ -273,12 +273,12 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (myApplication.needScanPhoto()) {//需要刷新
-            PictureAirLog.v(TAG, "need scan photo--------------");
-            myApplication.setneedScanPhoto(false);
-        } else {
-            PictureAirLog.v(TAG, "has new edit photo false");
-        }
+//        if (myApplication.needScanPhoto()) {//需要刷新
+//            PictureAirLog.v(TAG, "need scan photo--------------");
+//            myApplication.setneedScanPhoto(false);
+//        } else {
+//            PictureAirLog.v(TAG, "has new edit photo false");
+//        }
     }
 
 
