@@ -123,6 +123,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
     public void sendSMSValidateCode(String phone) {
         registerOrForgetView.showDialog();
+        this.phone = phone;
         if (null == tokenId) {
             API1.getTokenId(context, handler);
         } else {

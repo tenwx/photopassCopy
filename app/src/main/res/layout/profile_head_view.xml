@@ -45,7 +45,8 @@
             android:layout_marginLeft="@dimen/pp_dp_30"
             android:layout_alignParentLeft="true"
             app:border_width= "2dp"
-            app:border_color= "@color/white"/>
+            app:border_color= "@color/white"
+            app:border_double="true"/>
 
     </RelativeLayout>
 

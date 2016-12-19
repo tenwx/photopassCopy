@@ -1373,12 +1373,12 @@ public class AppUtil {
         //将图片按照地点组合
         ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
         //将本地图片按照地点组合
-        ArrayList<PhotoItemInfo> magicPhotoItemInfoArrayList = getMagicItemInfoList(context, sdf, targetList);
-
+//        ArrayList<PhotoItemInfo> magicPhotoItemInfoArrayList = getMagicItemInfoList(context, sdf, targetList);
+//
         ArrayList<PhotoItemInfo> allPhotoItemInfoArrayList = new ArrayList<>();
         //将组合后的列表连接
         allPhotoItemInfoArrayList.addAll(photoItemInfoArrayList);
-        allPhotoItemInfoArrayList.addAll(magicPhotoItemInfoArrayList);
+//        allPhotoItemInfoArrayList.addAll(magicPhotoItemInfoArrayList);
 
         //将新的数据进行排序
         Collections.sort(allPhotoItemInfoArrayList);

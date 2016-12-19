@@ -82,7 +82,7 @@ public class AppExitUtil {
 
         MyApplication.getInstance().setPushPhotoCount(0);
         MyApplication.getInstance().setPushViedoCount(0);
-        MyApplication.getInstance().scanMagicFinish = false;
+//        MyApplication.getInstance().scanMagicFinish = false;
         MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
         PictureAirDbManager.deleteAllInfoFromTable();
 

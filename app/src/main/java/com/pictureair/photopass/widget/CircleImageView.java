@@ -38,6 +38,7 @@ public class CircleImageView extends ImageView {
 
     private int mBorderColor = DEFAULT_BORDER_COLOR;
     private int mBorderWidth = DEFAULT_BORDER_WIDTH;
+    private boolean mDoubleBorder = false;
 
     private Bitmap mBitmap;
     private BitmapShader mBitmapShader;
@@ -66,6 +67,7 @@ public class CircleImageView extends ImageView {
 
         mBorderWidth = a.getDimensionPixelSize(R.styleable.CircleImageView_border_width, DEFAULT_BORDER_WIDTH);
         mBorderColor = a.getColor(R.styleable.CircleImageView_border_color, DEFAULT_BORDER_COLOR);
+        mDoubleBorder = a.getBoolean(R.styleable.CircleImageView_border_double, false);
 
         a.recycle();
 
@@ -229,7 +231,11 @@ public class CircleImageView extends ImageView {
         }
 
         mShaderMatrix.setScale(scale, scale);
-        mShaderMatrix.postTranslate((int) (dx + 0.5f) + 2 * mBorderWidth, (int) (dy + 0.5f) + 2 * mBorderWidth);
+        if (!mDoubleBorder) {
+            mShaderMatrix.postTranslate((int) (dx + 0.5f) + mBorderWidth, (int) (dy + 0.5f) + mBorderWidth);
+        } else {
+            mShaderMatrix.postTranslate((int) (dx + 0.5f) + 2 * mBorderWidth, (int) (dy + 0.5f) + 2 * mBorderWidth);
+        }
 
         mBitmapShader.setLocalMatrix(mShaderMatrix);
     }

@@ -103,11 +103,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
-    private ArrayList<PhotoInfo> targetphotolist;
+//    private ArrayList<PhotoInfo> targetphotolist;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private int currentPosition;//记录当前预览照片的索引值
 
-    private boolean isEdited = false;
+//    private boolean isEdited = false;
     private String tabName;
 
     /**
@@ -553,9 +553,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             public void run() {
                 super.run();
                 //获取本地图片
-                targetphotolist = new ArrayList<>();
-                targetphotolist.addAll(AppUtil.getLocalPhotos(PreviewPhotoActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
-                Collections.sort(targetphotolist);
+//                targetphotolist = new ArrayList<>();
+//                targetphotolist.addAll(AppUtil.getLocalPhotos(PreviewPhotoActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+//                Collections.sort(targetphotolist);
 
                 //获取intent传递过来的信息
                 photolist = new ArrayList<>();
@@ -682,11 +682,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void updateIndexTools() {
         PictureAirLog.v(TAG, "updateIndexTools-------->" + currentPosition);
         //初始化图片收藏按钮，需要判断isLove=1或者是否在数据库中
-        if (isEdited) {
-            photoInfo = targetphotolist.get(currentPosition);
-        } else {//编辑前
+//        if (isEdited) {
+//            photoInfo = targetphotolist.get(currentPosition);
+//        } else {//编辑前
             photoInfo = photolist.get(currentPosition);
-        }
+//        }
 
         if (!isSouvenir) {
 
@@ -724,11 +724,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.preview_love://收藏按钮的操作
-                if (isEdited) {
-                    photoInfo = targetphotolist.get(mViewPager.getCurrentItem());
-                } else {//编辑前
+//                if (isEdited) {
+//                    photoInfo = targetphotolist.get(mViewPager.getCurrentItem());
+//                } else {//编辑前
                     photoInfo = photolist.get(mViewPager.getCurrentItem());
-                }
+//                }
                 if (photoInfo == null) {
                     return;
                 }
@@ -753,11 +753,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (photoInfo.getIsPaid() == 1) {
                     if (photoInfo.getIsPreset() == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
-                        if (isEdited) {//已经编辑过，取targetlist中的值
-                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
-                        } else {//没有编辑，取正常的值
+//                        if (isEdited) {//已经编辑过，取targetlist中的值
+//                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
+//                        } else {//没有编辑，取正常的值
                             intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
-                        }
+//                        }
                         startActivityForResult(intent, 1);
                     } else {
                         pictureWorksDialog.setPWDialogId(FRAME_PHOTO_EDIT_DIALOG)
@@ -784,11 +784,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         return;
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).getPhotoOriginalURL());
-                    if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
-                    } else {//编辑前
+//                    if (isEdited) {//编辑后
+//                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
+//                    } else {//编辑前
                         sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
-                    }
+//                    }
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
                     dia.show();
@@ -807,15 +807,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.getIsPaid() == 1) {
-                    if (isEdited) {//编辑后
-                        newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
-                    } else {//编辑前
+//                    if (isEdited) {//编辑后
+//                        newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
+//                    } else {//编辑前
                         if (photoInfo.getIsOnLine() == 1) {//是pp的照片
                             judgeOnePhotoDownloadFlow();
                         } else {
                             newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
                         }
-                    }
+//                    }
 
                 } else {
                     dia.show();
@@ -849,11 +849,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.v(TAG, "makegift");
                 intent = new Intent(this, MakegiftActivity.class);
                 //判断是否已经被编辑过
-                if (isEdited) {//已经被编辑过，那么取得是targetList中的值
-                    intent.putExtra("selectPhoto", targetphotolist.get(mViewPager.getCurrentItem()));
-                } else {//没有编辑过，直接获取之前的值
+//                if (isEdited) {//已经被编辑过，那么取得是targetList中的值
+//                    intent.putExtra("selectPhoto", targetphotolist.get(mViewPager.getCurrentItem()));
+//                } else {//没有编辑过，直接获取之前的值
                     intent.putExtra("selectPhoto", photolist.get(mViewPager.getCurrentItem()));
-                }
+//                }
                 startActivity(intent);
                 if (dia != null && dia.isShowing()) {
                     dia.dismiss();
@@ -937,37 +937,37 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == 11) {
-                //保存完图片的处理
-                PictureAirLog.v(TAG, "save success");
-                //1.获取新图片的数据，生成一个新的对象
-                PhotoInfo selectPhotoItemInfo = new PhotoInfo();
-                selectPhotoItemInfo.setPhotoOriginalURL(data.getStringExtra("photoUrl"));
-                File file = new File(selectPhotoItemInfo.getPhotoOriginalURL());
-                date = new Date(file.lastModified());
-                selectPhotoItemInfo.setPhotoId(selectPhotoItemInfo.getPhotoOriginalURL());
-                selectPhotoItemInfo.setStrShootOn(simpleDateFormat.format(date));
-                selectPhotoItemInfo.setShootDate(selectPhotoItemInfo.getStrShootOn().substring(0, 10));
-                selectPhotoItemInfo.setLocationName(getString(R.string.story_tab_magic));
-                selectPhotoItemInfo.setIsPaid(1);
-
-                //2.将新图片插入到targetList中
-                targetphotolist.add(0, selectPhotoItemInfo);
-                //3.修改viewPager中的值为targetList
-                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true);
-                mViewPager.setAdapter(pagerAdapter);
-                mViewPager.setCurrentItem(0, true);
-                currentPosition = 0;
-                //4.更新底部工具栏
-                isEdited = true;
-
-                updateIndexTools();
-
-                myApplication.setneedScanPhoto(true);
-                myApplication.scanMagicFinish = false;
-            }
-        }
+//        if (requestCode == 1) {
+//            if (resultCode == 11) {
+//                //保存完图片的处理
+//                PictureAirLog.v(TAG, "save success");
+//                //1.获取新图片的数据，生成一个新的对象
+//                PhotoInfo selectPhotoItemInfo = new PhotoInfo();
+//                selectPhotoItemInfo.setPhotoOriginalURL(data.getStringExtra("photoUrl"));
+//                File file = new File(selectPhotoItemInfo.getPhotoOriginalURL());
+//                date = new Date(file.lastModified());
+//                selectPhotoItemInfo.setPhotoId(selectPhotoItemInfo.getPhotoOriginalURL());
+//                selectPhotoItemInfo.setStrShootOn(simpleDateFormat.format(date));
+//                selectPhotoItemInfo.setShootDate(selectPhotoItemInfo.getStrShootOn().substring(0, 10));
+//                selectPhotoItemInfo.setLocationName(getString(R.string.story_tab_magic));
+//                selectPhotoItemInfo.setIsPaid(1);
+//
+//                //2.将新图片插入到targetList中
+//                targetphotolist.add(0, selectPhotoItemInfo);
+//                //3.修改viewPager中的值为targetList
+//                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true);
+//                mViewPager.setAdapter(pagerAdapter);
+//                mViewPager.setCurrentItem(0, true);
+//                currentPosition = 0;
+//                //4.更新底部工具栏
+//                isEdited = true;
+//
+//                updateIndexTools();
+//
+//                myApplication.setneedScanPhoto(true);
+//                myApplication.scanMagicFinish = false;
+//            }
+//        }
     }
 
     @Override

@@ -41,11 +41,11 @@ public class MyApplication extends Application {
     private static MyApplication instance;
     private static String tokenId;
     private boolean isLogin;
-    private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
-    private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
+//    private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
+    private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记、
     private int pushViedoCount = 0; // 推送视频的数量。
     private boolean needRefreshPPPList = false;// 记录是否需要更新ppp列表
-    public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
+//    public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
     public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
 
     /**
@@ -183,18 +183,18 @@ public class MyApplication extends Application {
      *
      * @return
      */
-    public boolean needScanPhoto() {
-        return needScanPhoto;
-    }
+//    public boolean needScanPhoto() {
+//        return needScanPhoto;
+//    }
 
     /**
      * 设置有新的照片被保存
      *
      * @param needScanPhoto
      */
-    public void setneedScanPhoto(boolean needScanPhoto) {
-        this.needScanPhoto = needScanPhoto;
-    }
+//    public void setneedScanPhoto(boolean needScanPhoto) {
+//        this.needScanPhoto = needScanPhoto;
+//    }
 
     /**
      * 设置推送图片的数量
@@ -512,9 +512,13 @@ public class MyApplication extends Application {
     @Override
     public Resources getResources() {
         Resources resources =  super.getResources();
-        Configuration oriCOnfig = resources.getConfiguration();
-        oriCOnfig.fontScale = 1f;
-        resources.updateConfiguration(oriCOnfig, resources.getDisplayMetrics());
+        try {
+            Configuration oriCOnfig = resources.getConfiguration();
+            oriCOnfig.fontScale = 1f;
+            resources.updateConfiguration(oriCOnfig, resources.getDisplayMetrics());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
         return resources;
     }
 }
