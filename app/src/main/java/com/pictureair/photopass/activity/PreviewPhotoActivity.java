@@ -180,6 +180,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 shareType = msg.what;
                 break;
 
+            case SharePop.DISMISS_DIALOG:
+                dismissPWProgressDialog();
+                break;
+
+            case SharePop.SHOW_DIALOG:
+                showPWProgressDialog(null);
+                break;
+
             case API1.BUY_PHOTO_SUCCESS:
                 dismissPWProgressDialog();
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
@@ -449,7 +457,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         isSouvenir = getIntent().getBooleanExtra("souvenir", false);
         if (!isSouvenir) {
-            showPWProgressDialog();
+            showPWProgressDialog(R.string.is_loading);
             getPreviewPhotos();
         } else {
             getSouvenirPhotos();
@@ -463,7 +471,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             @Override
             public void doOnSubscribe() {
                 super.doOnSubscribe();
-                showPWProgressDialog();
+                showPWProgressDialog(R.string.is_loading);
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
@@ -1165,7 +1173,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             PictureAirLog.out("sharePop not null");
             if (shareType != SharePop.TWITTER) {
                 PictureAirLog.out("dismiss dialog");
-                sharePop.dismissDialog();
+                dismissPWProgressDialog();
             }
         }
     }

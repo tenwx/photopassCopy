@@ -149,7 +149,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 			}
 		}
 
-		pwStickySectionRecyclerView.initDate(photoInfoArrayList);
+		pwStickySectionRecyclerView.initDate(photoInfoArrayList, true);
 
 		if (tab == 1) {//airpass
 			noPhotoTextView.setText(R.string.no_photo_in_airpass);
@@ -197,7 +197,7 @@ public class StoryFragment extends Fragment implements PWStickySectionRecyclerVi
 	//照片点击的监听类
 	private class PhotoOnItemClickListener implements StickyRecycleAdapter.OnRecyclerViewItemClickListener{
 		@Override
-		public void onItemClick(View view, int position) {
+		public void onItemClick(StickyRecycleAdapter.RecyclerItemViewHolder view, int position) {
 			if (photoInfoArrayList.size() == 0) {
 				return;
 			}

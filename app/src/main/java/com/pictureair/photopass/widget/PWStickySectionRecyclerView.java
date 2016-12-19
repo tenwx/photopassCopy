@@ -38,6 +38,7 @@ public class PWStickySectionRecyclerView extends FrameLayout {
     private OnPullListener onPullListener;
     private int columnCount = COLUMN_COUNT;
     private boolean isLoadMore = false;
+    private boolean editMode = false;
     /**
      * 是否需要header悬浮，默认悬浮
      */
@@ -111,12 +112,12 @@ public class PWStickySectionRecyclerView extends FrameLayout {
     /**
      * 初始化数据
      */
-    public void initDate(ArrayList<PhotoInfo> list) {
+    public void initDate(ArrayList<PhotoInfo> list, boolean editMode) {
         sectionHeaderRL.setVisibility(isStickySectionHeader ? VISIBLE : GONE);
 
         photoInfoArrayList = list;
         gridLayoutManager = new GridLayoutManager(context, columnCount);
-        stickyRecycleAdapter = new StickyRecycleAdapter(context, photoInfoArrayList);
+        stickyRecycleAdapter = new StickyRecycleAdapter(context, photoInfoArrayList, editMode);
         stickyRecycleAdapter.setOnItemClickListener(onRecyclerViewItemClickListener);
 
         recyclerView.setHasFixedSize(true);
@@ -140,6 +141,21 @@ public class PWStickySectionRecyclerView extends FrameLayout {
      */
     public void setIsLoadMore(boolean loadMore) {
         isLoadMore = loadMore;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        PictureAirLog.d("start edit--->");
+        this.editMode = editMode;
+        for (int i = 0; i < photoInfoArrayList.size(); i++) {
+            photoInfoArrayList.get(i).setIsChecked(editMode ? 1 : 0);
+        }
+        stickyRecycleAdapter.setEditMode(editMode);
+
+        stickyRecycleAdapter.notifyDataSetChanged();
     }
 
     /**

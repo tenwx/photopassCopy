@@ -149,6 +149,14 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 shareType = msg.what;
                 break;
 
+            case SharePop.DISMISS_DIALOG:
+                dismissPWProgressDialog();
+                break;
+
+            case SharePop.SHOW_DIALOG:
+                showPWProgressDialog(null);
+                break;
+
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist, 1, false);
@@ -223,7 +231,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             isLandscape = true;
             landscapeOrientation();
         }
-        showPWProgressDialog();
+        showPWProgressDialog(R.string.is_loading);
         getPreviewPhotos(getIntent());
     }
 
@@ -306,7 +314,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         PictureAirLog.e("DownloadPhotoPreviewActivity","onNewIntent");
-        showPWProgressDialog();
+        showPWProgressDialog(R.string.is_loading);
         getPreviewPhotos(intent);
     }
 
@@ -416,7 +424,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             PictureAirLog.out("sharePop not null");
             if (shareType != SharePop.TWITTER) {
                 PictureAirLog.out("dismiss dialog");
-                sharePop.dismissDialog();
+                dismissPWProgressDialog();
             }
         }
     }

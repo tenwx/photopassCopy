@@ -60,6 +60,8 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     private static final int MSG_ACTION_CCALLBACK = 2;
     private static final int MSG_CANCEL_NOTIFY = 3;
     public static final int TWITTER = 40;
+    public static final int SHOW_DIALOG = 41;
+    public static final int DISMISS_DIALOG = 42;
     private Context context;
     private LayoutInflater inflater;
     private View defaultView;
@@ -72,11 +74,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     private String sharePlatform;
     private String shareId;
     private Handler handler;
-    /**
-     * 打开程序进行分享比较耗时间，所以再点击分享的时候，就显示进度条
-     */
-    private PWProgressDialog pwProgressDialog;
-
     private String shareType; // 分享类型，判断是 什么分享平台。 微信：1，qqzone：2，sina：3，twitter
 
     private String photoId;
@@ -557,12 +554,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     @Override
     public void onClick(View v) {
         // 显示进度条，等待app打开
-        if (pwProgressDialog == null) {
-            pwProgressDialog = new PWProgressDialog(context)
-                    .setPWProgressDialogMessage(null)
-                    .pwProgressDialogCreate();
-        }
-        pwProgressDialog.pwProgressDialogShow();
+        handler.sendEmptyMessage(SHOW_DIALOG);
         switch (v.getId()) {
             case R.id.wechat_moments:
             case R.id.wechat:
@@ -673,11 +665,8 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     /**
      * 将开始程序的对话框消失掉
      */
-    public void dismissDialog() {
-        if (null != pwProgressDialog) {
-            PictureAirLog.d(TAG, "share pop dismiss");
-            pwProgressDialog.pwProgressDialogDismiss();
-        }
+    private void dismissDialog() {
+        handler.sendEmptyMessage(DISMISS_DIALOG);
     }
 
     @Override

@@ -46,10 +46,12 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private OnRecyclerViewItemClickListener mOnItemClickListener = null;
 
+    private boolean editMode = false;
 
-    public StickyRecycleAdapter(Context context, ArrayList<PhotoInfo> photoList) {
+    public StickyRecycleAdapter(Context context, ArrayList<PhotoInfo> photoList, boolean editMode) {
         this.context = context;
         this.photoList = photoList;
+        this.editMode = editMode;
     }
 
     @Override
@@ -114,11 +116,25 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onClick(View view) {
                     PictureAirLog.d("click---->" + recyclerViewHolder.getLayoutPosition() + (mOnItemClickListener != null));
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(recyclerViewHolder.itemView, recyclerViewHolder.getLayoutPosition());
+                        mOnItemClickListener.onItemClick(recyclerViewHolder, recyclerViewHolder.getLayoutPosition());
                     }
                 }
             });
 
+            if (editMode) {//编辑模式
+                recyclerViewHolder.mSelectImageView.setVisibility(View.VISIBLE);
+
+            } else {
+                recyclerViewHolder.mSelectImageView.setVisibility(View.INVISIBLE);
+
+            }
+            if (photoList.get(position).getIsSelected() == 1) {//选中
+                recyclerViewHolder.mSelectImageView.setImageResource(R.drawable.sel2);
+                recyclerViewHolder.mMaskImageView.setVisibility(View.VISIBLE);
+            } else {
+                recyclerViewHolder.mSelectImageView.setImageResource(R.drawable.sel3);
+                recyclerViewHolder.mMaskImageView.setVisibility(View.INVISIBLE);
+            }
 
         } else if (viewHolder instanceof LoadMoreViewHolder) {
             final LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) viewHolder;
@@ -195,6 +211,14 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.mOnItemClickListener = listener;
     }
 
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
     public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
         public ProgressBar pbLoading;
         public TextView tvLoadStatus;
@@ -223,11 +247,15 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ImageView mImageView;
         public ImageView videoImageView;
         public RelativeLayout gridItemRL;
+        public ImageView mMaskImageView;
+        public ImageView mSelectImageView;
 
         public RecyclerItemViewHolder(View convertView) {
             super(convertView);
             mImageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);
             videoImageView = (ImageView) convertView.findViewById(R.id.play_video_iv);
+            mMaskImageView = (ImageView) convertView.findViewById(R.id.imageView_mask);
+            mSelectImageView = (ImageView) convertView.findViewById(R.id.imageView_Select);
             gridItemRL = (RelativeLayout) convertView.findViewById(R.id.sticky_grid_view_rl);
             ViewGroup.LayoutParams params = gridItemRL.getLayoutParams();
             //宽度不用设置，会平均分配，大小也正好等于高度的数值
@@ -239,7 +267,7 @@ public class StickyRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     //define interface
     public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view , int position);
+        void onItemClick(RecyclerItemViewHolder view , int position);
         void onLoadMoreClick(View view , int position);
     }
 
