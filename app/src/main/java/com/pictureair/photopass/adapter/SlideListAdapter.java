@@ -1,6 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,11 +83,21 @@ public class SlideListAdapter extends BaseAdapter {
         PPinfo ppInfo = ppList.get(position);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String loadTime = df.format(new Date());
-        if (loadTime.equals(ppInfo.getShootDate())) {
+
+        if (TextUtils.isEmpty(ppInfo.getShootDate()) && ppInfo.getPhotoCount() == 0) {
             holder.tv_date.setText(R.string.today);
         } else {
-            holder.tv_date.setText(ppInfo.getShootDate());
+            if(ppInfo.getShootDate() != null) {
+                if (loadTime.equals(ppInfo.getShootDate())) {
+                    holder.tv_date.setText(R.string.today);
+                } else {
+                    holder.tv_date.setText(ppInfo.getShootDate());
+                }
+            } else {
+                holder.tv_date.setText("");
+            }
         }
+
         holder.tv_count.setText(String.format(mContext.getString(R.string.story_photo_count), ppInfo.getPhotoCount()));
         holder.tv_num.setText(ppInfo.getPpCode());
 

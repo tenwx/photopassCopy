@@ -24,9 +24,9 @@ public class PPInfoSortUtil implements Comparator<PPinfo> {
         if (TextUtils.isEmpty(info1.getShootDate()) && TextUtils.isEmpty(info2.getShootDate())) {
             return 0;
         } else if (TextUtils.isEmpty(info1.getShootDate()) && !TextUtils.isEmpty(info2.getShootDate())) {
-            return 1;
-        } else if (!TextUtils.isEmpty(info1.getShootDate()) && TextUtils.isEmpty(info2.getShootDate())) {
             return -1;
+        } else if (!TextUtils.isEmpty(info1.getShootDate()) && TextUtils.isEmpty(info2.getShootDate())) {
+            return 1;
         } else {
             try {
                 date1 = df.parse(info1.getShootDate());
@@ -41,10 +41,15 @@ public class PPInfoSortUtil implements Comparator<PPinfo> {
                 e.printStackTrace();
                 date2 = null;
             }
+
             if (date1 != null && date2 != null) {
                 return date1.compareTo(date2) * (-1);
-            } else {
+            } else if (date1 == null && date2 != null){
                 return 1;
+            } else if (date1 != null && date2 == null){
+                return -1;
+            } else {
+                return 0;
             }
         }
     }

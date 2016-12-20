@@ -246,7 +246,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                     myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                signAndLoginUtil.start(userName.getText().toString().trim(), null, false, false, null, null, null, null,Common.LOGINTYPE, shorMessage.getText().toString().trim());
+                signAndLoginUtil.start(countryCode + userName.getText().toString().trim(), null, false, false, null, null, null, null,Common.LOGINTYPE, shorMessage.getText().toString().trim());
 
                 break;
 
