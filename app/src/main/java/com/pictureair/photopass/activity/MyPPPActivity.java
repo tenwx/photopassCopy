@@ -60,7 +60,7 @@ import de.greenrobot.event.Subscribe;
 public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRefreshListener, PWDialog.OnPWDialogClickListener{
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
-    private ImageView setting, ppp_guideView;
+    private ImageView ppp_guideView;
     private MyListView listPPP;
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
@@ -536,8 +536,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
-        menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
-        setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (ScrollView) findViewById(R.id.nopppinfo);
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
@@ -549,7 +547,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         refreshLayout.setVisibility(View.GONE);
         ll_guide_layout.setVisibility(View.GONE);
         back.setOnClickListener(this);
-        menuLayout.setOnClickListener(this);
     }
 
     private void initViewUseHavedPPP(){
@@ -560,7 +557,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         ok.setVisibility(View.VISIBLE);
         ok.setText(formaStringPPP(0, 1));
         ok.setOnClickListener(this);
-        setting.setVisibility(View.GONE);
         ok.setEnabled(false);
         ok.setTextColor(getResources().getColor(R.color.gray_light5));
         refreshLayout.setVisibility(View.VISIBLE);
@@ -574,6 +570,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         //找控件
         button_buy_ppp = (Button) findViewById(R.id.button_buy_ppp);
         button_scan_ppp = (Button) findViewById(R.id.button_scan_ppp);
+        menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
+        menuLayout.setVisibility(View.VISIBLE);
+        menuLayout.setOnClickListener(this);
         button_buy_ppp.setTypeface(MyApplication.getInstance().getFontBold());
         button_scan_ppp.setTypeface(MyApplication.getInstance().getFontBold());
         list1 = new ArrayList<>();

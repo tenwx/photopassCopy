@@ -3,7 +3,7 @@
 
     <item android:state_enabled="true" android:state_pressed="true">
         <shape>
-            <solid android:color="@color/pp_gray" />
+            <solid android:color="@color/seekbar_progress" />
             <corners android:radius="2dp" />
         </shape>
     </item>
@@ -15,7 +15,7 @@
     </item>
     <item android:state_enabled="true" android:state_focused="true">
         <shape>
-            <solid android:color="@color/pp_gray" />
+            <solid android:color="@color/seekbar_progress" />
 
             <corners android:radius="2dp" />
         </shape>

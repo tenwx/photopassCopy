@@ -8,8 +8,6 @@
     <color name="transparent_white_50">#88FFFFFF</color>
     <color name="transparent_pp_blue">#886799ca</color>
 
-    <!-- 以前的PPBlue-->
-    <color name="old_pp_blue">#1994d7</color>
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
     <color name="pp_blue">#6799ca</color>
     <!-- 深蓝，比如深色的字体颜色-->

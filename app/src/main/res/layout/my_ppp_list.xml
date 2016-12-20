@@ -84,27 +84,28 @@
                     android:adjustViewBounds="true"/>
 
 
-                <RelativeLayout
-                    android:id="@+id/rl_ppp_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@id/ppp_imageView"
-                    android:layout_alignTop="@id/ppp_imageView"
-                    android:background="@drawable/ppp_status_none"
-                    >
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/rl_ppp_status"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignRight="@id/ppp_imageView"-->
+                    <!--android:layout_alignTop="@id/ppp_imageView"-->
+                    <!--android:background="@drawable/ppp_status_none"-->
+                    <!--&gt;-->
 
                     <TextView
                         android:id="@+id/tv_ppp_state"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:paddingBottom="20dp"
-                        android:rotation="45"
                         android:text="fadsfadsfs"
                         android:textColor="@color/pp_dark_blue"
-                        android:textSize="@dimen/text_size_14"/>
-                </RelativeLayout>
+                        android:textSize="@dimen/text_size_14"
+                        android:layout_alignRight="@id/ppp_imageView"
+                        android:layout_alignTop="@id/ppp_imageView"
+                        android:layout_marginRight="@dimen/pp_dp_16"
+                        android:layout_marginTop="@dimen/pp_dp_10"/>
+                <!--</RelativeLayout>-->
 
                 <RelativeLayout
                     android:id="@+id/card_bottom"

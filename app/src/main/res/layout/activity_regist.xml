@@ -305,7 +305,7 @@
                             android:enabled="false"
                             android:paddingLeft="@dimen/pp_dp_10"
                             android:paddingRight="@dimen/pp_dp_10"
-                            android:text="@string/smssdk_send_verification_code2"
+                            android:text="@string/smssdk_send_verification_code"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_16" />
                     </RelativeLayout>
@@ -362,7 +362,7 @@
                         android:layout_marginTop="@dimen/pp_dp_20"
                         android:padding="@dimen/pp_dp_10"
                         android:text="@string/smssdk_other_sign_up"
-                        android:textColor="@color/white"
+                        android:textColor="@drawable/login_text_color"
                         android:textSize="@dimen/text_size_14"
                         android:layout_centerInParent="true"/>
                 </RelativeLayout>
@@ -576,7 +576,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/textedit"
                         android:gravity="center"
-                        android:hint="@string/smssdk_write_identify_code"
+                        android:hint="@string/smssdk_write_identify_code2"
                         android:maxLength="20"
                         android:imeOptions="actionGo"
                         android:inputType="number"

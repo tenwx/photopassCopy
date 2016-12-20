@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="@dimen/text_size_16"
-            android:textColor="@color/white"
+            android:textColor="@drawable/login_text_color"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="@string/sign"
@@ -181,7 +181,7 @@
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/pp_dp_10"
             android:text="@string/forget_pwd"
-            android:textColor="@color/white"
+            android:textColor="@drawable/login_text_color"
             android:textSize="@dimen/text_size_14"
             android:visibility="visible" />
 
@@ -209,7 +209,7 @@
             android:layout_marginTop="@dimen/pp_dp_10"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/msgLogin"
-            android:textColor="@color/white"
+            android:textColor="@drawable/login_text_color"
             android:textSize="@dimen/text_size_14"
             android:layout_centerHorizontal="true"/>
 
@@ -221,7 +221,7 @@
             android:layout_centerInParent="true"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/otherLogin"
-            android:textColor="@color/white"
+            android:textColor="@drawable/login_text_color"
             android:textSize="@dimen/text_size_14"/>
     </RelativeLayout>
 

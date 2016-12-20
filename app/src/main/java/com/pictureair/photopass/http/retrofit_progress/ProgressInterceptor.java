@@ -25,7 +25,7 @@ public final class ProgressInterceptor implements Interceptor {
 
    @Override
    public Response intercept(Chain chain) throws IOException {
-      Request request = chain.request().newBuilder().build();//.addHeader("Connection", "close")
+      Request request = chain.request().newBuilder().addHeader("Connection", "close").build();
       if (request.header(UploadProgress.HEADER) != null) {
          // get temporary header
          String progressId = request.header(UploadProgress.HEADER);

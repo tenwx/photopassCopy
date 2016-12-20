@@ -608,7 +608,6 @@
     <string name="smssdk_pwd_forget">Please enter new password</string>
     <string name="smssdk_verification">验证码</string>
     <string name="smssdk_send_verification_code">Verify</string>
-    <string name="smssdk_send_verification_code2">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
     <string name="smssdk_explain_briefly">I have read and agree to the <a href = "5">Terms of Use</a>, the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
     <string name="please_agree">Please agree to Terms of Use, Supplemental Terms and Conditions &amp; Privacy Policy</string>
@@ -618,7 +617,6 @@
     <string name="smssdk_make_sure_mobile_detail">We will send verification code messages to this number:\n%1$s</string>
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
     <string name="smssdk_write_right_mobile_phone">Incorrect Mobile Number</string>
-    <string name="smssdk_write_identify_code">Code</string>
     <string name="smssdk_write_identify_code2">Code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="is_loading">Loading&#8230;</string>
