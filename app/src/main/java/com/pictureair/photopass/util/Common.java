@@ -312,6 +312,7 @@ public class Common {
     public static final String WECHAT_PAY_STATUS = "wechat_pay_status";
     public static final String PPP_GUIDE = "ppp_guide";
     public static final String STORY_LEAD_VIEW = "story_lead_view";//故事页对扫描按钮介绍的引导图
+    public static final String STORY_EDIT_TIP_VIEW = "story_edit_tip_view";
 
     //app的语言
     public static final String ENGLISH = "en";//英语

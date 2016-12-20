@@ -53,6 +53,7 @@
     <color name="gray_light3">#c1c1c1</color>
     <color name="gray_light4">#eeeeee</color>
     <color name="gray_light5">#c6c6c6</color>
+    <color name="gray_shadow">#7a7a7a</color>
     <color name="line_color">#e2e2e2</color>
     <color name="gray_deep">#8F8F8F</color>
     <color name="gray_cover">#cecece</color>

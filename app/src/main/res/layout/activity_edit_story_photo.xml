@@ -263,4 +263,39 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/tip_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/pp_photos_edit_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_dp_8"
+            android:paddingLeft="@dimen/pp_dp_8"
+            android:paddingRight="@dimen/pp_dp_16"
+            android:paddingTop="@dimen/pp_dp_8"
+            android:src="@drawable/edit_story_edit"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/pp_photos_edit_iv"
+            android:layout_marginRight="@dimen/pp_dp_5"
+            android:background="@drawable/blue_tip"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_dp_10"
+            android:paddingLeft="@dimen/pp_dp_10"
+            android:paddingRight="@dimen/pp_dp_10"
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/edit_story_edit_tip"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12" />
+    </RelativeLayout>
+
 </RelativeLayout>

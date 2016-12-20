@@ -10,10 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -65,10 +69,8 @@ import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -82,7 +84,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * @author bauer_bao
  */
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
-        PWDialog.OnPWDialogClickListener, PWDialog.OnCustomerViewCallBack, PhotoEventListener, IGetLastestVideoInfoView {
+        PWDialog.OnPWDialogClickListener, PhotoEventListener, IGetLastestVideoInfoView {
     private SettingUtil settingUtil;
 
     private TextView locationTextView;
@@ -95,6 +97,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private SharePop sharePop;
     private MyApplication myApplication;
     private PhotoInfo photoInfo;
+    private BottomSheetDialog sheetDialog;
 
     private RelativeLayout titleBar;
     private static final String TAG = "PreviewPhotoActivity";
@@ -149,7 +152,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int VIDEO_STILL_MAKING_DIALOG = 1008;
     private static final int BUY_BLUR_PHOTO_DIALOG = 1009;
 
-    private PWDialog pictureWorksDialog, buyPhotoDialog;
+    private PWDialog pictureWorksDialog;
 
     private List<GoodsInfo> allGoodsList;//全部商品
     private GoodsInfo pppGoodsInfo;
@@ -1223,29 +1226,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     @Override
-    public void initCustomerView(View view, int dialogId) {
-        if (dialogId == BUY_BLUR_PHOTO_DIALOG) {
-            closeDialogIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_close);
-            buyPhotoIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_photo_select_iv);
-            buyPhotoPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
-            buyPhotoIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
-            buyPhotoIntroTV.setVisibility(View.GONE);
-            buyPPPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_select_iv);
-            buyPPPPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
-            buyPPPIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
-            buyPPPIntroTV.setVisibility(View.GONE);
-            upgradePPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_upgrade_photo_select_iv);
-            confirmToBuyBtn = (Button) view.findViewById(R.id.preview_blur_dialog_buy_btn);
-
-            closeDialogIV.setOnClickListener(this);
-            buyPhotoIV.setOnClickListener(this);
-            buyPPPIV.setOnClickListener(this);
-            upgradePPIV.setOnClickListener(this);
-            confirmToBuyBtn.setOnClickListener(this);
-        }
-    }
-
-    @Override
     public void videoClick(int position) {
         PictureAirLog.out("start check the video info -->" + position);
         /**
@@ -1266,15 +1246,46 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public void buyClick(int position) {
         PictureAirLog.d("buy---> " + position);
-        if (buyPhotoDialog == null) {
-            buyPhotoDialog = new PWDialog(this, BUY_BLUR_PHOTO_DIALOG)
-                    .setPWDialogNegativeButton(null)
-                    .setPWDialogPositiveButton(null)
-                    .setPWDialogBackgroundColor(R.color.transparent)
-                    .setPWDialogContentView(R.layout.dialog_preview_buy_blur, this)
-                    .pwDialogCreate();
+        if (sheetDialog == null) {
+            sheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
+            View rootView = LayoutInflater.from(this).inflate(R.layout.dialog_preview_buy_blur, null);
+            //            closeDialogIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_close);
+//            buyPhotoIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_photo_select_iv);
+//            buyPhotoPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
+//            buyPhotoIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
+//            buyPhotoIntroTV.setVisibility(View.GONE);
+//            buyPPPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_select_iv);
+//            buyPPPPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
+//            buyPPPIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
+//            buyPPPIntroTV.setVisibility(View.GONE);
+//            upgradePPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_upgrade_photo_select_iv);
+//            confirmToBuyBtn = (Button) view.findViewById(R.id.preview_blur_dialog_buy_btn);
+//
+//            closeDialogIV.setOnClickListener(this);
+//            buyPhotoIV.setOnClickListener(this);
+//            buyPPPIV.setOnClickListener(this);
+//            upgradePPIV.setOnClickListener(this);
+//            confirmToBuyBtn.setOnClickListener(this);
+            sheetDialog.setContentView(rootView);
+            //解决弹出之后，如果用手势把对话框消失，则再次弹出的时候，只有阴影，对话框不会弹出的问题
+            View view1 = sheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet);
+            final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(view1);
+            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        sheetDialog.dismiss();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
         }
-        buyPhotoDialog.pwDilogShow();
+        sheetDialog.show();
     }
 
     @Override

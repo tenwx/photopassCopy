@@ -235,7 +235,7 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="preview_blur_dialog_select_goods">商品选择</string>
+    <string name="preview_blur_dialog_select_goods">选择商品</string>
     <string name="preview_blur_dialog_buy">确认购买</string>
     <string name="blur_intro">迪士尼乐拍通一卡通可让您下载已关联在此乐拍通卡内同一天的所有高清照片</string>
     <string name="up_ppp_money">我要购买迪士尼乐拍通一卡通</string>
@@ -537,6 +537,7 @@
     <string name="edit_story_addto_downloadlist">照片已在下载列队\n可去下载管理内查询，请耐心等待！</string>
     <string name="edit_story_photo_title">照片(%1$d)</string>
     <string name="edit_story_ppp_intro">仅需169元即可获得同一天任意一张乐园门票或者一张乐拍通卡里的所有数码照片！</string>
+    <string name="edit_story_edit_tip">点击编辑可批量下载\n删除照片哦！</string>
     <!-- edit story end -->
 
     <!-- 发票-->
