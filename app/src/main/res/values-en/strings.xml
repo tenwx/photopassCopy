@@ -537,6 +537,7 @@
     <string name="edit_story_addto_downloadlist">Downloading in progress.\nClick on Downloads to check on the status.</string>
     <string name="edit_story_photo_title">照片(%1$d)</string>
     <string name="edit_story_ppp_intro">仅需169元即可获得同一天任意一张乐园门票或者一张乐拍通卡里的所有数码照片！</string>
+    <string name="edit_story_edit_tip">点击编辑可批量下载\n删除照片哦！</string>
     <!-- edit story end -->
 
     <!-- invoice-->

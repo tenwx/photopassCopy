@@ -2,6 +2,7 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,11 @@ public class NoPhotoRecycleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
-            recyclerViewHolder.cardTimeTV.setText("(" + ppList.get(position).getShootDate() + ")");
+            String time = ppList.get(position).getShootDate();
+            if (TextUtils.isEmpty(time)) {
+                time = context.getString(R.string.today);
+            }
+            recyclerViewHolder.cardTimeTV.setText("(" + time + ")");
             recyclerViewHolder.cardNoTV.setText(String.format(context.getString(R.string.story_card), ppList.get(position).getPpCode()));
 
         }

@@ -68,7 +68,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, shareTextView, titleTextView;
 	private LinearLayout editBarLinearLayout;
 	private PWStickySectionRecyclerView pwStickySectionRecyclerView;
-	private RelativeLayout noCountView;
+	private RelativeLayout noCountView, tipRl;
 	private TextView noCountTextView;
 	private SwipeRefreshLayout refreshLayout;
 	private RelativeLayout buyPPPRl;
@@ -315,6 +315,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		buyPPPTv = (TextView) findViewById(R.id.edit_album_buy_tv);
 		ppCardTv = (TextView) findViewById(R.id.edit_album_card_no_tv);
 		ppTimeTv = (TextView) findViewById(R.id.edit_album_time_tv);
+		tipRl = (RelativeLayout) findViewById(R.id.tip_rl);
 
 		refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
 		refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -341,6 +342,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		shareTextView.setEnabled(false);
 		editImageView.setOnClickListener(this);
 		buyPPPTv.setOnClickListener(this);
+		tipRl.setOnClickListener(this);
 
 		//初始化数据
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -356,6 +358,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			buyPPPRl.setVisibility(View.GONE);
 		} else {
 			buyPPPRl.setVisibility(View.VISIBLE);
+		}
+
+		if (SPUtils.getBoolean(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_APP, Common.STORY_EDIT_TIP_VIEW, false)) {//如果为true，说明之前启动过
+			tipRl.setVisibility(View.GONE);
+		} else {
+			tipRl.setVisibility(View.VISIBLE);
 		}
 
 		titleTextView.setText(String.format(getString(R.string.edit_story_photo_title), photoCount));
@@ -738,6 +746,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				showPWProgressDialog();
 				//获取商品（以后从缓存中取）
 				getGoods();
+				break;
+
+			case R.id.tip_rl:
+				SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_APP, Common.STORY_EDIT_TIP_VIEW, true);
+				tipRl.setVisibility(View.GONE);
 				break;
 
 			default:
