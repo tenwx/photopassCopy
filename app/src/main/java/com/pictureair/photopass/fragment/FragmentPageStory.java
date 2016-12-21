@@ -635,7 +635,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         } else {//没有图片
             swipeRefreshLayout.setEnabled(false);
             //判断是否应该显示左上角红点
-            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 1) {//没有扫描过
+            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 2) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //获取banner数据
                 API2.getBannerPhotos(MyApplication.getTokenId())
