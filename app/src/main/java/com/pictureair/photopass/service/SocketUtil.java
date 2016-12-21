@@ -13,10 +13,11 @@ import android.support.v4.app.NotificationCompat;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -107,6 +108,9 @@ public class SocketUtil {
                 ppCode = updateJsonObject.getString("customerId");
                 shootDate = updateJsonObject.optString("shootDate");
                 PictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, isDelete);
+                if (isDelete) {//清空刷新标记
+                    PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
+                }
             } else if (updateJsonObject.has("id")) {//照片购买，删除照片推送
                 socketType = SocketEvent.SOCKET_PHOTO;
                 photoId = updateJsonObject.getString("id");

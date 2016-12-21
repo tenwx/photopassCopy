@@ -27,9 +27,11 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
@@ -96,7 +98,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private static final int SCAN_PPP_CODE_SUCCESS = 111;
     private static final int SCAN_FAILED_DIALOG = 222;
     private static final int TYPE_NOT_SAME_DIALOG = 333;
-    private static final int BIND_PP_DIALOG = 444;
     private static final int UPDATE_TIPS_DIALOG = 555;
     private static final int BUY_PPP_AND_UPDATE_TIP_DIALOG = 666;
     private static final int SCAN_PPP_AND_UPDATE_TIP_DIALOG = 777;
@@ -259,15 +260,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 ll_button_area.setVisibility(View.GONE);
                 break;
 
-
-            case API1.BIND_PP_SUCCESS://绑定成功
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-                list1.clear();
-                hasOtherAvailablePPP = false;
-                API1.PPPlist.clear();
-                getData();
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
                 GetPPPList();
@@ -347,14 +339,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 startActivity(intent1);
                 break;
 
-            case API1.ADD_CODE_TO_USER_SUCCESS:
-                //绑定成功
-                dismissPWProgressDialog();
-                JSONArray pps = new JSONArray();
-                pps.add(PPCode);
-                API1.bindPPsToPPP(MyApplication.getTokenId(), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
-
-                break;
             case API1.ADD_CODE_TO_USER_FAILED:
                 //绑定失败
                 dismissPWProgressDialog();
@@ -402,6 +386,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
                 //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                PictureAirDbManager.insertRefreshPPFlag(JSONArray.parseArray(ppsStr), JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
 
                 if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
                     AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
@@ -808,14 +793,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     .setPWDialogPositiveButton(R.string.dialog_ok1)
                     .setPWDialogContentCenter(true)
                     .pwDilogShow();
-
-        } else {//返回pp码，弹框，询问是否绑定，目前已经没有这个流程
-            pictureWorksDialog.setPWDialogId(BIND_PP_DIALOG)
-                    .setPWDialogMessage(R.string.bind_pp_now)
-                    .setPWDialogNegativeButton(R.string.dialog_cancel)
-                    .setPWDialogPositiveButton(R.string.dialog_ok)
-                    .setPWDialogContentCenter(true)
-                    .pwDilogShow();
         }
     }
 
@@ -875,7 +852,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private void showDialog(){
         boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
         if (isGuide) {
-            if (getIntent().getBooleanExtra("upgradePP", false)) {//需要选择pp进行升级
+            if (getIntent().getBooleanExtra("upgradePP", false) && hasUnUpgradedPP()) {//需要选择pp进行升级
                 pictureWorksDialog.setPWDialogId(SCAN_PPP_AND_UPDATE_TIP_DIALOG)
                         .setPWDialogMessage(getString(R.string.scan_ppp_upgrade))
                         .setPWDialogNegativeButton(null)
@@ -909,24 +886,26 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         }
     }
 
+    /**
+     * 是否有未升级的pp卡
+     * @return
+     */
+    private boolean hasUnUpgradedPP() {
+        boolean hasUnUpgrade = false;
+        ArrayList<JsonInfo> jsonInfos = PictureAirDbManager.getJsonInfos(JsonInfo.JSON_LOCATION_PHOTO_TYPE);
+        for (int i = 0; i < jsonInfos.size(); i++) {
+            if (jsonInfos.get(i).getJsonString().contains("ifActive: 0")) {
+                hasUnUpgrade = true;
+                break;
+            }
+        }
+        return hasUnUpgrade;
+    }
+
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             switch (dialogId) {
-                case BIND_PP_DIALOG://绑定对话框
-                    //如果点击ok，则自动绑定，首先要绑定要user上，然后再绑定到ppp上
-                    showPWProgressDialog();
-                    if (scanInfoEvent.isHasBind()) {//是否已经绑定，如果已经绑定，则直接绑定到ppp，如果没有绑定，先绑定到user，在绑定到ppp
-                        //已经被绑定了，所以直接绑定ppp
-                        JSONArray pps = new JSONArray();
-                        pps.add(PPCode);
-                        API1.bindPPsToPPP(MyApplication.getTokenId(), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
-                    } else {
-                        //没有被绑定，则先绑到user，再绑到ppp
-                        API1.addCodeToUser(PPCode, myPPPHandler);
-                    }
-                    break;
-
                 case UPDATE_TIPS_DIALOG://升级提示
                     if (listPPPAdapter.getMap().size() == 1){
                         showPWProgressDialog();

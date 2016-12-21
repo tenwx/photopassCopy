@@ -108,13 +108,6 @@
             android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
-        android:id="@+id/storyNoNetWorkView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/special_deal_ll"
-        android:visibility="gone" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/story_refresh_layout"
         android:layout_width="match_parent"
@@ -286,6 +279,13 @@
             </RelativeLayout>
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        android:id="@+id/storyNoNetWorkView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/special_deal_ll"
+        android:visibility="gone" />
 
     <com.pictureair.photopass.widget.DraftLayout
         android:id="@+id/draft_layout"

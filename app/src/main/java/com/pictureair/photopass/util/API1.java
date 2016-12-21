@@ -1078,7 +1078,7 @@ public class API1 {
      *
      * @param handler handler
      */
-    public static BasicResultCallTask getPPSByUserId(final Handler handler) {
+    public static BasicResultCallTask getPPSByUserId(final boolean showErrorView, final Handler handler) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
@@ -1091,7 +1091,13 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_PPS_FAILED, status, 0).sendToTarget();
+                if (showErrorView) {
+                    handler.obtainMessage(GET_PPS_FAILED, status, 2).sendToTarget();
+
+                } else {
+
+                    handler.obtainMessage(GET_PPS_FAILED, status, 0).sendToTarget();
+                }
 
             }
         });

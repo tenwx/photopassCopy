@@ -1220,6 +1220,25 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 更新json数据库
+     * @param jsonArray
+     * @param type json的类型
+     */
+    public static synchronized void insertRefreshPPFlag(JSONArray jsonArray, String type) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        ArrayList<JsonInfo> list = new ArrayList<>();
+        JSONObject jsonObject;
+        for (int i = 0; i < jsonArray.size(); i++) {
+            jsonObject = jsonArray.getJSONObject(i);
+            JsonInfo jsonInfo = new JsonInfo();
+            jsonInfo.setJsonType(type);
+            jsonInfo.setJsonString(JsonInfo.getNeedRefreshString(jsonObject.getString("code"), jsonObject.getString("bindDate")));
+            list.add(jsonInfo);
+        }
+        jsonInfoDao.insertInTx(list);
+    }
+
+    /**
      * 获取json存储数据
      * @param type
      * @return
@@ -1266,10 +1285,11 @@ public class PictureAirDbManager {
      * @return
      */
     public static synchronized void deleteJsonInfosByTypeAndString(String type, String str) {
+        PictureAirLog.d("delete str ---> " + str);
         JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
         ArrayList<JsonInfo> list = new ArrayList<>();
         QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
-                .where(JsonInfoDao.Properties.JsonType.eq(type), JsonInfoDao.Properties.JsonString.eq(str));
+                .where(JsonInfoDao.Properties.JsonType.eq(type), JsonInfoDao.Properties.JsonString.like("%" + str + "%"));
         if (queryBuilder.count() > 0) {
             list.addAll(queryBuilder.build().forCurrentThread().list());
             jsonInfoDao.deleteInTx(list);
@@ -1284,7 +1304,7 @@ public class PictureAirDbManager {
     public static synchronized boolean isJsonInfoExist(String jsonString) {
         JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
         QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
-                .where(JsonInfoDao.Properties.JsonString.eq(jsonString));
+                .where(JsonInfoDao.Properties.JsonString.like("%" + jsonString + "%"));
         return queryBuilder.count() > 0;
     }
 }

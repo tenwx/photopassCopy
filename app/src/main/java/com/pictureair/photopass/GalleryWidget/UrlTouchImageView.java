@@ -459,6 +459,9 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
      * 根据照片的购买情况确定布局和显示模式
      */
     private void showBlurView() {
+        if (oriBlurBmp == null) {
+            return;
+        }
         progressImageView.setImageResource(getImageResource(100));
         mImageView.setVisibility(VISIBLE);
         mImageView.setScaleType(ScaleType.MATRIX);

@@ -20,6 +20,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -140,7 +141,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 PictureAirLog.out("save json done----> start ");
                 //扫描成功，需要通知story更新页面
                 needNotifyStoryRefresh = true;
-                API1.getPPSByUserId(myPPHandler);
+                API1.getPPSByUserId(false, myPPHandler);
                 break;
 
             case UPDATE_UI:
@@ -261,7 +262,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 break;
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 showPWProgressDialog();
-                API1.getPPSByUserId(myPPHandler);
+                API1.getPPSByUserId(false, myPPHandler);
                 break;
 
             // seletePP的页面
@@ -303,6 +304,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功，需要回到story页面
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                PictureAirDbManager.insertRefreshPPFlag(pps, JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
                 if (AppManager.getInstance().checkActivity(MyPPPActivity.class)) {
                     AppManager.getInstance().killActivity(MyPPPActivity.class);
                 }
@@ -402,7 +404,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         menuLayout.setOnClickListener(this);
         // 获取PP信息
         showPWProgressDialog();
-        API1.getPPSByUserId(myPPHandler);
+        API1.getPPSByUserId(false, myPPHandler);
         // pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
         showPPCodeList = new ArrayList<PPinfo>();
         listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this,

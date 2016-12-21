@@ -46,6 +46,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
+import com.pictureair.photopass.eventbus.PPDeleteEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
@@ -63,7 +64,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.BannerView;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -73,6 +73,7 @@ import com.pictureair.photopass.widget.StoryRecycleDividerItemDecoration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -137,7 +138,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private ArrayList<PPinfo> pPinfoArrayList = new ArrayList<>();
     private Activity context;
-    private String userId;
     private PWToast myToast;
     private DealingInfo dealingInfo;
     private GoodsInfo pppGoodsInfo = null;
@@ -147,8 +147,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 同步已经购买的照片
      */
     private boolean syncingBoughtPhotos = false;
-
-    private SettingUtil settingUtil;
 
     private boolean mIsAskStoragePermission = false;
 
@@ -210,7 +208,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!hasHidden) {
                     showPWProgressDialog();
                     getLocationPhotos(true);
-                    API1.getPPSByUserId(fragmentPageStoryHandler);
+                    API1.getPPSByUserId(false, fragmentPageStoryHandler);
 
                 } else {
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
@@ -229,7 +227,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
-                API1.getPPSByUserId(fragmentPageStoryHandler);
+                API1.getPPSByUserId(false, fragmentPageStoryHandler);
                 getLocationPhotos(true);
                 showLeadView();
                 break;
@@ -256,14 +254,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //重新加载数据
                 PictureAirLog.out("onclick with reload");
                 showPWProgressDialog();
-                if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {//地址获取失败
-                    API1.getLocationInfo(context, MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
-                } else {//地址获取成功，但是照片获取失败
-                    Message message = fragmentPageStoryHandler.obtainMessage();
-                    message.what = API1.GET_ALL_LOCATION_SUCCESS;
-                    message.obj = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
-                    fragmentPageStoryHandler.sendMessage(message);
-                }
+                getLocation();
                 break;
 
             case PPPPop.POP_SCAN:
@@ -325,7 +316,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
                 break;
 
-            case API1.GET_PPS_FAILED:// 获取pp列表失败, 不做任何操作
+            case API1.GET_PPS_FAILED:// 获取pp列表失败
+                if (noPhotoViewRL.isShown() && msg.arg2 > 0) {//有卡无图页面，并且是需要显示网络异常页面，否则，不做任何处理
+                    noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+                    noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
+                }
                 break;
 
             case API1.ADD_TO_CART_FAILED:
@@ -505,10 +500,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
-        settingUtil = new SettingUtil();
         app = (MyApplication) context.getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
-        userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
 
         scanLayout.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
@@ -534,6 +527,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         //获取API
         PictureAirLog.out("story flow ---> get location info");
+        getLocation();
+        return view;
+    }
+
+    private void getLocation() {
         Observable.concat(acache, API2.getLocationInfo(context, app.getTokenId())
                 .map(new Func1<JSONObject, JSONObject>() {
                     @Override
@@ -569,14 +567,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                     @Override
                     public void onCompleted() {
-                        API1.getPPSByUserId(fragmentPageStoryHandler);
+                        API1.getPPSByUserId(true, fragmentPageStoryHandler);
                         if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
-                            //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-                            if (settingUtil.isFirstPP10(userId)) {
-                                //第一次 PP数量到 10 。
-                                API1.getPPPSByUserId(MyApplication.getTokenId(), fragmentPageStoryHandler);
-                            }
-
                             PictureAirLog.d(TAG, "---------> load data from databases");
                             new Thread() {
                                 @Override
@@ -594,8 +586,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         }
                     }
                 });
-
-        return view;
     }
 
     private Observable<JSONObject> acache = Observable.create(new Observable.OnSubscribe<JSONObject>() {
@@ -645,7 +635,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         } else {//没有图片
             swipeRefreshLayout.setEnabled(false);
             //判断是否应该显示左上角红点
-            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 2) {//没有扫描过
+            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 1) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //获取banner数据
                 API2.getBannerPhotos(MyApplication.getTokenId())
@@ -733,7 +723,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
-            API1.getPPSByUserId(fragmentPageStoryHandler);
+            API1.getPPSByUserId(false, fragmentPageStoryHandler);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
     }
@@ -832,13 +822,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case R.id.fab:
-
                 Intent intent = new Intent(context, OpinionsActivity.class);
                 startActivity(intent);
                 break;
 
             case R.id.float_hide:
                 draftLayout.setVisibility(View.GONE);
+                break;
+
             case R.id.story_no_photo_close_iv:
                 noPhotoTipRL.setVisibility(View.GONE);
                 break;
@@ -937,6 +928,45 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             }
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
+        } else if (baseBusEvent instanceof PPDeleteEvent) {
+            PPDeleteEvent ppDeleteEvent = (PPDeleteEvent) baseBusEvent;
+            ArrayList<PPinfo> list = new ArrayList<>();
+            list.addAll(ppDeleteEvent.getPpList());
+                /**
+                 * 1.删除数据库中一卡一天的信息
+                 * 2.刷新标记也需要从数据库中删除
+                 * 3.如果是有卡无图，需要删除列表信息
+                 * 4.如果是有卡有图，需要删除列表信息
+                 */
+                for (int i = 0; i < list.size(); i++) {
+                    PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + list.get(i).getPpCode() + "\"");
+                    PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, list.get(i).getPpCode());
+                    //有卡无图
+                    Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
+                    while (iterator.hasNext()) {
+                        PPinfo pPinfo = iterator.next();
+                        if (pPinfo.getPpCode().equals(list.get(i).getPpCode())) {
+                            iterator.remove();
+                        }
+                    }
+                    if (noPhotoRecycleAdapter != null) {
+                        noPhotoRecycleAdapter.notifyDataSetChanged();
+                    }
+
+                    //有卡有图
+                    Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
+                    while (iterator2.hasNext()) {
+                        DailyPPCardInfo dailyPPCardInfo = iterator2.next();
+                        if (dailyPPCardInfo.getPpCode().equals(list.get(i).getPpCode())) {
+                            iterator.remove();
+                        }
+                    }
+                    if (dailyPPCardRecycleAdapter != null) {
+                        dailyPPCardRecycleAdapter.notifyDataSetChanged();
+                    }
+                }
+            EventBus.getDefault().removeStickyEvent(ppDeleteEvent);
+
         }
     }
 

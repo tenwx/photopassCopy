@@ -96,6 +96,7 @@ public class BannerView extends LinearLayout {
         for (int i = 0; i < list.size(); i++) {//加载图片
             imageView = new ImageView(getContext());//新建一个新的imageview
             imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             GlideUtil.load(context, list.get(i), imageView);
             bannerViewList.add(imageView);
         }
