@@ -27,6 +27,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CustomButtonFont;
 import com.pictureair.photopass.widget.EditTextWithClear;
@@ -168,6 +169,22 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 }
             });
         }
+
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
+            if (!mIsMsgLogin) {
+                if (acount.contains("@")) {
+                    userName.setText(acount);
+                }
+            } else {
+                if (!acount.contains("@")) {
+                    if (acount.length() == 13 && acount.startsWith("86")) {
+                        userName.setText(acount.substring(2, acount.length()));
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -245,6 +262,8 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 if (!checkPhoneNumber()) {
                     myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
                     return;
+                } else if (!checkMsg()) {
+                    return;
                 }
                 signAndLoginUtil.start(countryCode + userName.getText().toString().trim(), null, false, false, null, null, null, null,Common.LOGINTYPE, shorMessage.getText().toString().trim());
 
@@ -276,6 +295,23 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         }
     }
 
+
+    /**
+     * 检查验证码
+     */
+    public boolean checkMsg() {
+        //判断密码，必须按照这个顺序
+        if (smsStr.isEmpty()) {
+            // 密码为空
+            myToast.setTextAndShow(R.string.modify_sms_empty_hint, 100);
+            return false;
+        } else if (smsStr.length() < 4) {
+            // 密码小于6位
+            myToast.setTextAndShow(R.string.notify_sms_hint, 100);
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 点击发送验证码过后 检查电话号码
@@ -378,20 +414,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         phoneStr = userName.getText().toString().trim();
         smsStr = shorMessage.getText().toString().trim();
-
-        if (countDownFinish) {
-            if (phoneStr.length() > 0) {
-                btn_next.setEnabled(true);
-            } else {
-                btn_next.setEnabled(false);
-            }
-        }
-
-        if (phoneStr.length() > 0 && smsStr.length() > 0) {
-            login.setEnabled(true);
-        } else {
-            login.setEnabled(false);
-        }
     }
 
     @Override
@@ -437,11 +459,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         if (time == 0) {
             countDownFinish = true;
             btn_next.setText(R.string.smssdk_send_verification_code);// 再次发送验证码
-            if (phoneStr.length() > 0) {
-                btn_next.setEnabled(true);
-            } else {
-                btn_next.setEnabled(false);
-            }
+            btn_next.setEnabled(true);
         } else {
 //            PictureAirLog.out("------>倒计时");
             countDownFinish = false;

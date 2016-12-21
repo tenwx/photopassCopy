@@ -204,6 +204,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin.setOnClickListener(this);
         shorMsgLogin.setOnClickListener(this);
 
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
+            if (!acount.contains("@")) {
+                if (acount.length() == 13 && acount.startsWith("86")) {
+                    userName.setText(acount.substring(2, acount.length()));
+                }
+            }
+        }
+
         // 自动检查更新
         checkUpdateManager = new CheckUpdateManager(this,
                 SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH));

@@ -104,7 +104,7 @@
                         android:layout_alignRight="@id/ppp_imageView"
                         android:layout_alignTop="@id/ppp_imageView"
                         android:layout_marginRight="@dimen/pp_dp_16"
-                        android:layout_marginTop="@dimen/pp_dp_10"/>
+                        android:layout_marginTop="@dimen/pp_dp_16"/>
                 <!--</RelativeLayout>-->
 
                 <RelativeLayout

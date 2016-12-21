@@ -20,6 +20,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -119,6 +120,13 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                 return false;
             }
         });
+
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
+            if (acount.contains("@")) {
+                etEmail.setText(acount);
+            }
+        }
 
     }
 

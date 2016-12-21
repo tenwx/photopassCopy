@@ -11,7 +11,7 @@
         android:scaleType="centerInside"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/sele"
+        android:src="@drawable/slide_minus"
         android:layout_marginLeft="@dimen/pp_dp_10"
         android:layout_marginRight="@dimen/pp_dp_10"
         android:visibility="invisible"

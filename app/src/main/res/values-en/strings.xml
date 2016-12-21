@@ -21,6 +21,8 @@
     <string name="connecting">Loading&#8230;</string>
     <string name="input_mobile">Please enter your mobile number</string>
     <string name="make_sure_mobile_detail">We will send verification code messages to this number:</string>
+    <string name="modify_sms_empty_hint">请输入验证码</string>
+    <string name="notify_sms_hint">验证码不能小于4位</string>
     <!-- login activity end-->
 
     <!-- email login start -->

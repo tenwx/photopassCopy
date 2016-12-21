@@ -21,6 +21,8 @@
     <string name="connecting">正在加载中，请稍后&#8230;</string>
     <string name="input_mobile">手机号未输入</string>
     <string name="make_sure_mobile_detail">我们将发送验证码短信到这个号码:</string>
+    <string name="modify_sms_empty_hint">请输入验证码</string>
+    <string name="notify_sms_hint">验证码不能小于4位</string>
     <!-- login activity end-->
 
     <!-- email login start -->
@@ -230,7 +232,7 @@
     <string name="photo_cannot_edit_yes">确定</string>
     <string name="gallery_buy_blur_photo">立即拥有此张数码高清照片</string>
     <string name="gallery_expire_time">（有效期至%1$s）</string>
-    <string name="souvenir_not_exist">您还没纪念照哦!</string>
+    <string name="souvenir_not_exist">您还没纪念照哦！</string>
     <string name="souvenir_photo">纪念照</string>
     <!-- preview photo end -->
 

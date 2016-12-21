@@ -438,6 +438,12 @@ public class JsonUtil {
         e.putString(Common.USERINFO_ACCOUNT, account);
         e.putBoolean(Common.USERINFO_ISLOGIN, true);
 
+        //在app sharedPreference中加入用户名，用于登录的时候获取
+        SharedPreferences asp = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE);
+        SharedPreferences.Editor ae = asp.edit();
+        ae.putString(Common.USERINFO_ACCOUNT, account);
+        ae.commit();
+
         String headUrl;
         if (obj.containsKey("avatarUrl")) {
             PictureAirLog.out("");

@@ -24,9 +24,9 @@
 
         <com.pictureair.photopass.widget.CircleImageView
             android:id="@+id/user_photo"
-            android:layout_width="@dimen/pp_dp_80"
-            android:layout_height="@dimen/pp_dp_80"
-            android:src="@drawable/about"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/opinion_title_head"
             />
 
     </LinearLayout>

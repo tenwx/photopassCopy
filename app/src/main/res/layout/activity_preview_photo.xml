@@ -100,11 +100,11 @@
             android:layout_weight="1">
 
             <ImageView
-                android:layout_width="@dimen/pp_dp_40"
-                android:layout_height="@dimen/pp_dp_40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_above="@+id/preview_show_no_souvenir"
                 android:adjustViewBounds="true"
-                android:src="@drawable/blur_bg_image"
+                android:src="@drawable/souvenir_nophoto"
                 android:layout_centerHorizontal="true"
                 />
             <TextView

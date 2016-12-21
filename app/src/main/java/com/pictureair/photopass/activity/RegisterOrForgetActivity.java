@@ -31,6 +31,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CustomButtonFont;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.CustomTextView;
@@ -53,8 +54,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private String languageType;
     private PWToast myToast;
     private Context context;
-    private RelativeLayout ll_put_identify_centen, titleLayout;
-    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout, parent;
+    private RelativeLayout titleLayout;
+    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout, parent, ll_put_identify_centen;
     private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain,dialogTvPhone;//country textview
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
     private CustomButtonFont btn_next, sure;
@@ -109,6 +110,17 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         btn_next.setEnabled(false);
         sure.setEnabled(false);
 
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
+            if (forgetActivity.equals(whatActivity)){
+                if (!acount.contains("@")) {
+                    if (acount.length() == 13 && acount.startsWith("86")) {
+                        et_write_phone.setText(acount.substring(2, acount.length()));
+                    }
+                }
+            }
+        }
+
         if (CustomFontManager.IS_CUSOTM_FONT) {
             typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
             btn_next.setTypeface(typeface);
@@ -132,7 +144,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         tv_explain = (CustomTextView) findViewById(R.id.tv_explain);
         ll_pwd_centen = (LinearLayout) findViewById(R.id.ll_pwd_centen);
         ll_mobile_centen = (LinearLayout) findViewById(R.id.ll_mobile_centen);
-        ll_put_identify_centen = (RelativeLayout) findViewById(R.id.ll_put_identify_centen);
+        ll_put_identify_centen = (LinearLayout) findViewById(R.id.ll_put_identify_centen);
         title = (TextView) findViewById(R.id.regist_title);
 
         tv_otherRegistered.setOnClickListener(this);
