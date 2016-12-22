@@ -46,7 +46,7 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/preview_share"
+            android:src="@drawable/edit_album_share_button"
             android:visibility="invisible"
             android:layout_above="@+id/download_preview_line"/>
 

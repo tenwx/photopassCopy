@@ -170,7 +170,7 @@ public class PictureAirDbManager {
             if (count < 6) {//不满6或者12的，需要补全
                 for (int j = 6 - count; j > 0; j--) {
                     map = new HashMap<>();
-                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.ic_loading));
                     map.put("isVideo", "0");
                     map.put("isEnImage", "0");
                     urlList.add(map);
@@ -178,7 +178,7 @@ public class PictureAirDbManager {
             } else if (count < 12) {
                 for (int j = 12 - count; j > 0; j--) {
                     map = new HashMap<>();
-                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.ic_loading));
                     map.put("isVideo", "0");
                     map.put("isEnImage", "0");
                     urlList.add(map);

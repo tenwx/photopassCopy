@@ -40,7 +40,7 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/preview_save" />
+            android:src="@drawable/edit_album_all_enable" />
     </RelativeLayout>
 
 </RelativeLayout>
