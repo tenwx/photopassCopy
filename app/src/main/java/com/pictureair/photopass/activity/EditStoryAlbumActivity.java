@@ -252,16 +252,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
 		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
 		//将已购买并且已选择的加入下载队列中
-		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).getIsSelected() == 1) {
-				if (hasUnPayPhotos) {
-					if (albumArrayList.get(i).getIsPaid() == 1) {
+		for (int i = 1; i < albumArrayList.size(); i++) {
+			if (albumArrayList.get(i).getSectionId() == albumArrayList.get(i - 1).getSectionId()) {
+				if (albumArrayList.get(i).getIsSelected() == 1) {
+					if (hasUnPayPhotos && albumArrayList.get(i).getIsPaid() == 0) {
+
+					} else {
 						hasPayedList.add(albumArrayList.get(i));
 					}
-				} else {
-					hasPayedList.add(albumArrayList.get(i));
 				}
 			}
+
 
 			if (i != 0 && (i % 50 == 0) && (i != albumArrayList.size() - 1) && hasPayedList.size() > 0) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
 				//开始将图片加入下载队列
@@ -473,6 +474,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		oldCount = dbList.size();
 		//设置地点名称
 		for (int i = 0; i < dbList.size(); i++) {
+			dbList.get(i).setIsSelected(0);
+			dbList.get(i).setIsChecked(0);
 			int resultPosition = AppUtil.findPositionInLocationList(dbList.get(i), locationList);
 			if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
 				resultPosition = locationList.size() - 1;
@@ -778,17 +781,20 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 	private void downloadPic(){
 		int unPayCount = 0;
-		int downloadCount =0;
-		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).getIsSelected() == 1) {
-				downloadCount++;
-				if (albumArrayList.get(i).getIsPaid() == 0) {
-					unPayCount++;
+		int downloadCount = 0;
+		for (int i = 1; i < albumArrayList.size(); i++) {
+			if (albumArrayList.get(i).getSectionId() == albumArrayList.get(i - 1).getSectionId()) {
+				if (albumArrayList.get(i).getIsSelected() == 1) {
+					downloadCount++;
+					if (albumArrayList.get(i).getIsPaid() == 0) {
+						unPayCount++;
+					}
 				}
 			}
+
 		}
 		if (unPayCount > 0) {//弹框提示
-			prepareDownloadCount = downloadCount-unPayCount;
+			prepareDownloadCount = downloadCount - unPayCount;
 			if (prepareDownloadCount < 0) prepareDownloadCount = 0;
 			pictureWorksDialog.setPWDialogId(unPayCount < selectCount ? HAS_UNPAY_PHOTOS_DIALOG : HAS_ALL_UNPAY_PHOTOS_DIALOG)
 					.setPWDialogMessage(unPayCount < selectCount ? R.string.edit_story_unpay_tips : R.string.edit_story_all_unpay_tips)
@@ -926,13 +932,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					new Thread() {
 						public void run() {
 							photopassPhotoslist.clear();
-							for (int i = 0; i < albumArrayList.size(); i++) {
-								if (albumArrayList.get(i).getIsSelected() == 1) {//选中的照片
-									if (albumArrayList.get(i).getIsOnLine() == 1) {//网络照片
-										photopassPhotoslist.add(albumArrayList.get(i));
-									} else {
+							for (int i = 1; i < albumArrayList.size(); i++) {
+								if (albumArrayList.get(i).getSectionId() == albumArrayList.get(i - 1).getSectionId()) {
+									if (albumArrayList.get(i).getIsSelected() == 1) {//选中的照片
+										if (albumArrayList.get(i).getIsOnLine() == 1) {//网络照片
+											photopassPhotoslist.add(albumArrayList.get(i));
+										}
 									}
 								}
+
 							}
 
 							if (photopassPhotoslist.size() > 0) {

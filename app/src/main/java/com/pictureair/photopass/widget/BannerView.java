@@ -92,6 +92,9 @@ public class BannerView extends LinearLayout {
     public void setPhotos(ArrayList<String> list) {
         bannerViewList.clear();
         pointViewList.clear();
+        if (pointGroup != null) {
+            pointGroup.removeAllViews();
+        }
 
         for (int i = 0; i < list.size(); i++) {//加载图片
             imageView = new ImageView(getContext());//新建一个新的imageview

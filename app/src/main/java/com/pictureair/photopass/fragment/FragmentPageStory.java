@@ -96,12 +96,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int LOAD_PHOTO_FROM_DB = 1003;
     private static final int REFRESH_ALL_PHOTOS = 1006;
 
+    private static final int NO_CARD_VIEW = 101;
+    private static final int CARD_WITH_NO_PHOTOS_VIEW = 102;
+    private static final int PHOTOS_VIEW = 103;
+
+    private int currentVisibleView;
+
     private static final String TAG = "FragmentPageStory";
 
     /**
      * 是否需要重新拉取数据
      */
     private boolean needfresh = false;
+
+    private boolean refreshPPlist = false;
+
+    private boolean getLocationPhotosDone = false;
     /**
      * 从sp中读取的值，如果是true，就要保存起来，一旦失败，就要把这个值给needfresh
      */
@@ -307,11 +317,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case API1.GET_PPS_SUCCESS:// 获取pp列表成功
                 pPinfoArrayList.clear();
                 pPinfoArrayList.addAll(JsonUtil.getPPList((JSONObject) msg.obj));
-                if (noPhotoViewRL.isShown()) {//有卡无图页面，需要刷新列表
-                    if (noPhotoRecycleAdapter != null) {
-                        noPhotoRecycleAdapter.notifyDataSetChanged();
+                if (currentVisibleView != PHOTOS_VIEW && getLocationPhotosDone) {
+                    if (refreshPPlist) {
+                        dismissPWProgressDialog();
+                        refreshPPlist = false;
                     }
+                    showViewPager();
                 }
+
                 //通知首页更新PP列表
                 EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
                 break;
@@ -411,11 +424,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                     @Override
                     public void _onError(int status) {
+                        getLocationPhotosDone = true;
                         finishLoad(!isRefresh);
                     }
 
                     @Override
                     public void onCompleted() {
+                        getLocationPhotosDone = true;
                         //清空推送消息的数量
                         app.setPushPhotoCount(0);
 
@@ -606,6 +621,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void showViewPager() {
         PictureAirLog.out("story flow ---> show view");
         if (dailyPPCardInfoArrayList != null && dailyPPCardInfoArrayList.size() > 0) {//有图片
+            currentVisibleView = PHOTOS_VIEW;
             PictureAirLog.out("viewpager---->has photos");
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
@@ -635,7 +651,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         } else {//没有图片
             swipeRefreshLayout.setEnabled(false);
             //判断是否应该显示左上角红点
-            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 2) {//没有扫描过
+            if (pPinfoArrayList.size() > 0) {
+                //有扫描过
+                currentVisibleView = CARD_WITH_NO_PHOTOS_VIEW;
+                PictureAirLog.out("viewpager---->no photos");
+                storyNoPpToScanLinearLayout.setVisibility(View.GONE);
+
+                //显示空图的情况
+                noPhotoViewRL.setVisibility(View.VISIBLE);
+
+                if (noPhotoRecycleAdapter == null) {
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                    noPhotoRecycleAdapter = new NoPhotoRecycleAdapter(context, pPinfoArrayList);
+                    noPhotoRV.setLayoutManager(linearLayoutManager);
+                    noPhotoRV.setAdapter(noPhotoRecycleAdapter);
+                } else {
+                    noPhotoRecycleAdapter.notifyDataSetChanged();
+                }
+
+            } else {
+                //没有扫描过
+                currentVisibleView = NO_CARD_VIEW;
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //获取banner数据
                 API2.getBannerPhotos(MyApplication.getTokenId())
@@ -669,22 +705,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //显示没有pp的情况
                 storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
                 noPhotoViewRL.setVisibility(View.GONE);
-
-            } else {//有扫描过
-                PictureAirLog.out("viewpager---->no photos");
-                storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-
-                //显示空图的情况
-                noPhotoViewRL.setVisibility(View.VISIBLE);
-
-                if (noPhotoRecycleAdapter == null) {
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-                    noPhotoRecycleAdapter = new NoPhotoRecycleAdapter(context, pPinfoArrayList);
-                    noPhotoRV.setLayoutManager(linearLayoutManager);
-                    noPhotoRV.setAdapter(noPhotoRecycleAdapter);
-                } else {
-                    noPhotoRecycleAdapter.notifyDataSetChanged();
-                }
             }
         }
         PictureAirLog.out("story flow ---> show view done");
@@ -722,7 +742,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             PictureAirLog.out("need refresh");
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
-            showPWProgressDialog();
+            if (currentVisibleView != PHOTOS_VIEW) {
+                refreshPPlist = true;
+                showPWProgressDialog();
+
+            }
             API1.getPPSByUserId(false, fragmentPageStoryHandler);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
@@ -932,40 +956,41 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             PPDeleteEvent ppDeleteEvent = (PPDeleteEvent) baseBusEvent;
             ArrayList<PPinfo> list = new ArrayList<>();
             list.addAll(ppDeleteEvent.getPpList());
-                /**
-                 * 1.删除数据库中一卡一天的信息
-                 * 2.刷新标记也需要从数据库中删除
-                 * 3.如果是有卡无图，需要删除列表信息
-                 * 4.如果是有卡有图，需要删除列表信息
-                 */
-                for (int i = 0; i < list.size(); i++) {
-                    PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + list.get(i).getPpCode() + "\"");
-                    PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, list.get(i).getPpCode());
-                    //有卡无图
-                    Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
-                    while (iterator.hasNext()) {
-                        PPinfo pPinfo = iterator.next();
-                        if (pPinfo.getPpCode().equals(list.get(i).getPpCode())) {
-                            iterator.remove();
-                        }
-                    }
-                    if (noPhotoRecycleAdapter != null) {
-                        noPhotoRecycleAdapter.notifyDataSetChanged();
-                    }
-
-                    //有卡有图
-                    Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
-                    while (iterator2.hasNext()) {
-                        DailyPPCardInfo dailyPPCardInfo = iterator2.next();
-                        if (dailyPPCardInfo.getPpCode().equals(list.get(i).getPpCode())) {
-                            iterator.remove();
-                        }
-                    }
-                    if (dailyPPCardRecycleAdapter != null) {
-                        dailyPPCardRecycleAdapter.notifyDataSetChanged();
+            /**
+             * 1.删除数据库中一卡一天的信息
+             * 2.刷新标记也需要从数据库中删除
+             * 3.如果是有卡无图，需要删除列表信息
+             * 4.如果是有卡有图，需要删除列表信息
+             */
+            for (int i = 0; i < list.size(); i++) {
+                PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + list.get(i).getPpCode() + "\"");
+                PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, list.get(i).getPpCode());
+                //有卡无图
+                Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
+                while (iterator.hasNext()) {
+                    PPinfo pPinfo = iterator.next();
+                    if (pPinfo.getPpCode().equals(list.get(i).getPpCode())) {
+                        iterator.remove();
                     }
                 }
+                if (noPhotoRecycleAdapter != null) {
+                    noPhotoRecycleAdapter.notifyDataSetChanged();
+                }
+
+                //有卡有图
+                Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
+                while (iterator2.hasNext()) {
+                    DailyPPCardInfo dailyPPCardInfo = iterator2.next();
+                    if (dailyPPCardInfo.getPpCode().equals(list.get(i).getPpCode())) {
+                        iterator.remove();
+                    }
+                }
+                if (dailyPPCardRecycleAdapter != null) {
+                    dailyPPCardRecycleAdapter.notifyDataSetChanged();
+                }
+            }
             EventBus.getDefault().removeStickyEvent(ppDeleteEvent);
+            showViewPager();
 
         }
     }

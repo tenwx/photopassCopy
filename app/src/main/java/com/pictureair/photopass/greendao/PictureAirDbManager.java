@@ -564,9 +564,13 @@ public class PictureAirDbManager {
         resultArrayList.clear();
         //删除过期的数据之后，再查询photo表的信息
         PictureAirLog.out("cursor open ---> getAllPhotoFromPhotoPassInfo");
-        QueryBuilder<PhotoInfo> queryBuilder = photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"),
-                        PhotoInfoDao.Properties.ShootDate.eq(shootDate)).orderDesc(PhotoInfoDao.Properties.ReceivedOn);
+        QueryBuilder<PhotoInfo> queryBuilder = photoInfoDao.queryBuilder();
+        if (TextUtils.isEmpty(shootDate)) {
+            queryBuilder.where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%")).orderDesc(PhotoInfoDao.Properties.ReceivedOn);
+        } else {
+            queryBuilder.where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"),
+                    PhotoInfoDao.Properties.ShootDate.eq(shootDate)).orderDesc(PhotoInfoDao.Properties.ReceivedOn);
+        }
         if (queryBuilder.count() > 0) {
             resultArrayList = (ArrayList<PhotoInfo>) queryBuilder.build().forCurrentThread().list();
         }
