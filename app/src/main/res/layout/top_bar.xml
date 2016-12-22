@@ -75,7 +75,7 @@
             android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/preview_save"
+            android:src="@drawable/edit_album_all_enable"
             android:visibility="gone" />
 
         <TextView
