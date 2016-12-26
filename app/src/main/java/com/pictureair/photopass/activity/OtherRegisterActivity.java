@@ -143,6 +143,7 @@ public class OtherRegisterActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_other_register);
         initview();// 初始化
     }
@@ -169,7 +170,6 @@ public class OtherRegisterActivity extends BaseActivity implements
         signAndLoginUtil = new SignAndLoginUtil(this, this);
 //		getDateYMD();
         setTopLeftValueAndShow(R.drawable.back_white,true);
-//        setTopTitleShow(R.string.smssdk_regist);
         etEmail = (EditTextWithClear) findViewById(R.id.other_sign_email);
         etPwd = (EditTextWithClear) findViewById(R.id.other_sign_password);
         etPwd2 = (EditTextWithClear) findViewById(R.id.other_sign_password2);

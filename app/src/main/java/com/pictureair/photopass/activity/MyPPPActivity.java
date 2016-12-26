@@ -265,7 +265,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 GetPPPList();
                 break;
             case API1.GET_PPS_BY_PPP_AND_DATE_SUCCESS:
-                intent = new Intent(MyPPPActivity.this, MyPPActivity.class);
+                intent = new Intent(MyPPPActivity.this, SelectPPActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("ppp", ppp);
                 intent.putExtras(bundle);
@@ -396,9 +396,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
 
                 } else {//照片通过ppp升级的流程
-                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){
-                        AppManager.getInstance().killActivity(MyPPActivity.class);
-                    }
                     if (AppManager.getInstance().checkActivity(EditStoryAlbumActivity.class)) {
                         AppManager.getInstance().killActivity(EditStoryAlbumActivity.class);
                     }
@@ -501,6 +498,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_my_ppp);
         initViewCommon();
         isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
@@ -581,9 +579,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             } else {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
             }
-        }
-        if (AppManager.getInstance().checkActivity(MyPPActivity.class)) {//如果从pp页面去选择未购买的资源去购买ppp，则会出现问题
-            AppManager.getInstance().killActivity(MyPPActivity.class);
         }
     }
 

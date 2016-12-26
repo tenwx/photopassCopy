@@ -174,7 +174,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         orderInfo = bundle.getParcelable("groupitem");
         orderDetailArrayList = (ArrayList<CartItemInfo>) bundle.getSerializable("childitemlist");
 
-        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency =  Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
     }
 
     @Override

@@ -68,6 +68,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_other_login);
         initView();
     }
@@ -85,92 +86,108 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         myToast = new PWToast(OtherLoginActivity.this);// 获取toast
         signAndLoginUtil = new SignAndLoginUtil(this, this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
-//        setTopTitleShow(R.string.user_login);
         ll_email = (LinearLayout) findViewById(R.id.other_login_email);
         ll_message = (LinearLayout) findViewById(R.id.other_login_message);
 
         if (!mIsMsgLogin) {
-
-            login = (Button) findViewById(R.id.btnOtherLogin);
-            userName = (EditTextWithClear) findViewById(R.id.otherLogin_email);
-            password = (EditTextWithClear) findViewById(R.id.otherLogin_password);
-            forgot = (TextView) findViewById(R.id.forgot);
-            ll_email.setVisibility(View.VISIBLE);
-            ll_message.setVisibility(View.GONE);
-            login.setOnClickListener(this);
-            forgot.setOnClickListener(this);
-
-            login.setTypeface(MyApplication.getInstance().getFontBold());
-
-            userName.setOnKeyListener(new OnKeyListener() {
-
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    // TODO Auto-generated method stub
-                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    /* 隐藏软键盘 */
-                        userName.clearFocus();
-                        password.requestFocus();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            password.setOnEditorActionListener(new OnEditorActionListener() {
-
-                @Override
-                public boolean onEditorAction(TextView v, int actionId,
-                                              KeyEvent event) {
-                    // TODO Auto-generated method stub
-				/* 判断是否是“GO”键 */
-                    if (actionId == EditorInfo.IME_ACTION_GO) {
-                        hideInputMethodManager(v);//
-                        login.performClick(); //
-                        return true;
-                    }
-                    return false;
-                }
-            });
+            initEmailLogin();
         } else {
-            registerTool = new RegisterTool(MyApplication.getTokenId(), OtherLoginActivity.this, this, MyApplication.getInstance().getLanguageType());
-            registerTool.setWhatActivity("sms");
-
-            rl_country = (LinearLayout) findViewById(R.id.other_login_rl_country);
-            tv_country = (TextView) findViewById(R.id.other_login_tv_country);
-            tv_country_num = (TextView) findViewById(R.id.other_login_tv_country_num);
-            userName = (EditTextWithClear) findViewById(R.id.other_login_username);
-            login = (Button) findViewById(R.id.btnOtherLogin2);
-            shorMessage = (EditTextWithClear) findViewById(R.id.other_login_verification);
-            btn_next = (CustomButtonFont) findViewById(R.id.other_btn_next);
-            ll_email.setVisibility(View.GONE);
-            ll_message.setVisibility(View.VISIBLE);
-            sign = (TextView) findViewById(R.id.other_login_sign);
-            sign.setVisibility(View.VISIBLE);
-            rl_country.setOnClickListener(this);
-            btn_next.setOnClickListener(this);
-            sign.setOnClickListener(this);
-            userName.addTextChangedListener(this);
-            shorMessage.addTextChangedListener(this);
-            login.setOnClickListener(this);
-
-
-            userName.setOnKeyListener(new OnKeyListener() {
-
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    // TODO Auto-generated method stub
-                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    /* 隐藏软键盘 */
-                        userName.clearFocus();
-                        shorMessage.requestFocus();
-                        return true;
-                    }
-                    return false;
-                }
-            });
+            initShortMsgLogin();
         }
 
-        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+        addAccountToView();
+    }
+
+    /**
+     * 邮箱登录
+     * */
+    private void initEmailLogin() {
+        login = (Button) findViewById(R.id.btnOtherLogin);
+        userName = (EditTextWithClear) findViewById(R.id.otherLogin_email);
+        password = (EditTextWithClear) findViewById(R.id.otherLogin_password);
+        forgot = (TextView) findViewById(R.id.forgot);
+        ll_email.setVisibility(View.VISIBLE);
+        ll_message.setVisibility(View.GONE);
+        login.setOnClickListener(this);
+        forgot.setOnClickListener(this);
+
+        login.setTypeface(MyApplication.getInstance().getFontBold());
+
+        userName.setOnKeyListener(new OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    /* 隐藏软键盘 */
+                    userName.clearFocus();
+                    password.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        password.setOnEditorActionListener(new OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                // TODO Auto-generated method stub
+				/* 判断是否是“GO”键 */
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    hideInputMethodManager(v);//
+                    login.performClick(); //
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 短信验证码登录
+     * */
+    private void initShortMsgLogin() {
+        registerTool = new RegisterTool(MyApplication.getTokenId(), OtherLoginActivity.this, this, MyApplication.getInstance().getLanguageType());
+        registerTool.setWhatActivity("sms");
+
+        rl_country = (LinearLayout) findViewById(R.id.other_login_rl_country);
+        tv_country = (TextView) findViewById(R.id.other_login_tv_country);
+        tv_country_num = (TextView) findViewById(R.id.other_login_tv_country_num);
+        userName = (EditTextWithClear) findViewById(R.id.other_login_username);
+        login = (Button) findViewById(R.id.btnOtherLogin2);
+        shorMessage = (EditTextWithClear) findViewById(R.id.other_login_verification);
+        btn_next = (CustomButtonFont) findViewById(R.id.other_btn_next);
+        ll_email.setVisibility(View.GONE);
+        ll_message.setVisibility(View.VISIBLE);
+        sign = (TextView) findViewById(R.id.other_login_sign);
+        sign.setVisibility(View.VISIBLE);
+        rl_country.setOnClickListener(this);
+        btn_next.setOnClickListener(this);
+        sign.setOnClickListener(this);
+        userName.addTextChangedListener(this);
+        shorMessage.addTextChangedListener(this);
+        login.setOnClickListener(this);
+
+
+        userName.setOnKeyListener(new OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    /* 隐藏软键盘 */
+                    userName.clearFocus();
+                    shorMessage.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void addAccountToView() {
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {
             String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
             if (!mIsMsgLogin) {
                 if (acount.contains("@")) {
@@ -184,7 +201,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 }
             }
         }
-
     }
 
     /**
@@ -265,7 +281,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 } else if (!checkMsg()) {
                     return;
                 }
-                signAndLoginUtil.start(countryCode + userName.getText().toString().trim(), null, false, false, null, null, null, null,Common.LOGINTYPE, shorMessage.getText().toString().trim());
+                signAndLoginUtil.start(countryCode + phoneStr, null, false, false, null, null, null, null,Common.LOGINTYPE, smsStr);
 
                 break;
 
@@ -278,8 +294,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
             case R.id.other_login_sign:
                 startActivity(new Intent(OtherLoginActivity.this,
                         RegisterOrForgetActivity.class).putExtra("activity","sign"));
-//                Intent intent = new Intent(this, OtherRegisterActivity.class);
-//                startActivity(intent);
                 break;
 
             case R.id.other_btn_next:

@@ -3,8 +3,7 @@
     android:id="@+id/user_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/pp_light_gray_background">
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"

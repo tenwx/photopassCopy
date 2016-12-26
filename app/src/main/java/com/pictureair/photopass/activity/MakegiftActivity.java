@@ -335,7 +335,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private void init() {
         newToast = new PWToast(this);
         currencytextview = (TextView) findViewById(R.id.textView2);
-        currencytextview.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencytextview.setText( Common.DEFAULT_CURRENCY);//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY)
         priceTextView = (TextView) findViewById(R.id.textview_productprice);
         introduceTextView = (TextView) findViewById(R.id.product_detail);
         addressTextView = (TextView) findViewById(R.id.detail_receive_address);

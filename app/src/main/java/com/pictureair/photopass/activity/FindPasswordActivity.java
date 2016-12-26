@@ -83,6 +83,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_find_pwd);
         context = this;
         initview();// 初始化

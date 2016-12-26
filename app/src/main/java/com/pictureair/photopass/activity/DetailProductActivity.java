@@ -151,7 +151,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         }
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
-        currencyTextView.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencyTextView.setText(Common.DEFAULT_CURRENCY);//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY)
         if (null != goodsInfo) {
             promotionPrice.setText(goodsInfo.getPrice() + "");
         }

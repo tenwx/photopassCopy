@@ -343,7 +343,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         bottomRelativeLayout = (RelativeLayout) findViewById(R.id.linearLayout1);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.noNetWorkView);
 
-        String currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        String currency = Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         currencyTextView.setText(currency);
         discountCurrencyTv.setText("-" + currency);

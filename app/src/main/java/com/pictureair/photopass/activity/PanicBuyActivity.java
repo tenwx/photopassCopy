@@ -275,7 +275,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initData() {
-        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency = Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         tv_hour.setText("00");
         tv_min.setText("00");
         tv_sec.setText("00");

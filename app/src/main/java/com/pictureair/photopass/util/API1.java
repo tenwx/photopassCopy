@@ -140,9 +140,6 @@ public class API1 {
 
 
     //Shop模块 start
-    public static final int GET_STOREID_FAILED = 4000;
-    public static final int GET_STOREID_SUCCESS = 4001;
-
     public static final int GET_GOODS_FAILED = 4010;
     public static final int GET_GOODS_SUCCESS = 4011;
 
@@ -1368,33 +1365,6 @@ public class API1 {
 
 
     /***************************************Shop模块 start**************************************/
-
-
-    /**
-     * 获取store编号,以此获取商品数据
-     *
-     * @param handler handler
-     */
-    public static BasicResultCallTask getStoreId(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_STORE_BY_IP, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_STOREID_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_STOREID_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
 
     /**
      * 获取全部商品

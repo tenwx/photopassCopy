@@ -306,7 +306,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         fromPanicBuy = getIntent().getIntExtra("fromPanicBuy", 0);
         dealingKey = getIntent().getStringExtra("dealingKey");
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
-        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency = Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);

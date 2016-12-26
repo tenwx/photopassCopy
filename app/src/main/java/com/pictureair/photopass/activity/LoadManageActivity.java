@@ -49,6 +49,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_load_manage);
 
         titles = new String[]{getResources().getString(R.string.photo_downloading),getResources().getString(R.string.photo_download_success)};

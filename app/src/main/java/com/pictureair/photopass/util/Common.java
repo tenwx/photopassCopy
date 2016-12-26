@@ -185,7 +185,6 @@ public class Common {
     public static final String PPP_COUNT = "pppcount";
     public static final String USER_ID = "userId";
     public static final String IS_JUST_BUY = "isJustBuy";
-    public static final String STORE_ID = "storeId";
     public static final String PRODUCT_ID = "productId";
     public static final String QTY = "qty";
     public static final String PRODUCT_NAME = "productName";
@@ -214,7 +213,6 @@ public class Common {
     public static final String PAY_TYPE = "payType";
     public static final String DELIVERY_TYPE = "deliveryType";
     public static final String STORE_ADDRESS = "storeAddress";
-    public static final String CURRENCY = "currency";
     public static final String IP = "ip";
     public static final String ADDRESS_INFO = "addressInfo";
     public static final String NEW_ADDRESS_INFO = "newAddressInfo";

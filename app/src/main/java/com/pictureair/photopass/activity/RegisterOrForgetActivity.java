@@ -56,7 +56,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private Context context;
     private RelativeLayout titleLayout;
     private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout, parent, ll_put_identify_centen;
-    private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain,dialogTvPhone;//country textview
+    private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain;
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
     private CustomButtonFont btn_next, sure;
     private String currentCode = "86"; //国家区号
@@ -75,6 +75,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_regist);
         context = this;
         tokenId = MyApplication.getTokenId();
@@ -110,7 +111,17 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         btn_next.setEnabled(false);
         sure.setEnabled(false);
 
-        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+        addAccountToView();
+
+        if (CustomFontManager.IS_CUSOTM_FONT) {
+            typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
+            btn_next.setTypeface(typeface);
+            sure.setTypeface(typeface);
+        }
+    }
+
+    private void addAccountToView() {
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {
             String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
             if (forgetActivity.equals(whatActivity)){
                 if (!acount.contains("@")) {
@@ -120,14 +131,11 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                 }
             }
         }
-
-        if (CustomFontManager.IS_CUSOTM_FONT) {
-            typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
-            btn_next.setTypeface(typeface);
-            sure.setTypeface(typeface);
-        }
     }
 
+    /**
+     * 手机号注册页面
+     * */
     private void initRegisterView() {
         forget_layout.setVisibility(View.GONE);
         setTopLeftValueAndShow(R.drawable.back_white, true);
@@ -169,6 +177,9 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         title.setText(R.string.smssdk_regist);
     }
 
+    /**
+     * 忘记密码页面
+     * */
     private void intiForgetView() {
         regist_layout.setVisibility(View.GONE);
         forget_layout.setVisibility(View.VISIBLE);
@@ -335,7 +346,6 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                     return;
                 }
                 showPwDialog();
-//                registerTool.sendSMSValidateCode(currentCode + phoneStr);
                 break;
             case R.id.forget_sure:
             case R.id.sure:
