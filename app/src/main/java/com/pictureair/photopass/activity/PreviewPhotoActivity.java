@@ -888,12 +888,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case R.id.cancel:
-                if (sheetDialog.isShowing()) {
-                    sheetDialog.dismiss();
-                }
-                break;
-
             case R.id.preview_blur_dialog_buy_photo_ll:
                 if (sheetDialog.isShowing()) {
                     sheetDialog.dismiss();
