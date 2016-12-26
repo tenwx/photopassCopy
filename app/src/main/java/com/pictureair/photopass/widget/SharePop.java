@@ -72,7 +72,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     private boolean isVideo;
     private int isEncrypted;
     private String sharePlatform;
-    private String shareId;
     private Handler handler;
     private String shareType; // 分享类型，判断是 什么分享平台。 微信：1，qqzone：2，sina：3，twitter
 
@@ -95,7 +94,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     //拿到shareUrl
                     JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
                     shareUrl = shareInfo.getString("shareUrl");
-                    shareId = shareInfo.getString("shareId");
                     PictureAirLog.d(TAG, "tokenid----->" + MyApplication.getTokenId());
                     PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
 
@@ -130,7 +128,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     //获取url失败，1.通知notify，2、关闭sdk
                     dismissDialog();
                     shareUrl = null;
-                    shareId = null;
                     int resId = getStringRes(context, "http_error_code_401");
                     if (resId > 0) {
                         showNotification(2000, context.getString(resId));
@@ -676,7 +673,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                 switch (msg.arg1) {
                     case 1: {
                         // 成功
-                        API1.shareCallBack(shareId, sharePlatform);
                         int resId = getStringRes(context, "share_completed");
                         if (resId > 0) {
                             showNotification(2000, context.getString(resId));

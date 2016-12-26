@@ -37,12 +37,6 @@
     </style>
     
 
-    <style name="dialogTans" parent="dialogLogin">
-        <item name="android:windowIsTranslucent">true</item> 
-        <item name="android:windowBackground">@color/transparent</item>
-    </style>
-
-    
     <style name="spinner_dialog" parent="dialogLogin">
         <item name="android:windowIsTranslucent">false</item><!--半透明-->
     </style>

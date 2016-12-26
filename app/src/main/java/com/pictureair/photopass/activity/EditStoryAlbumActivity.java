@@ -44,6 +44,7 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
@@ -74,6 +75,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private RelativeLayout buyPPPRl;
 	private TextView buyPPPTv;
 	private TextView ppCardTv, ppTimeTv;
+	private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 
 	private ArrayList<PhotoInfo> albumArrayList;
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
@@ -237,6 +239,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					startActivity(intent3);
 					break;
 
+				case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://重新加载
+					PictureAirLog.d("click reload-----");
+					showPWProgressDialog();
+					//开始从网络获取数据
+					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+					break;
+
 				default:
 					break;
 			}
@@ -317,6 +326,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		ppCardTv = (TextView) findViewById(R.id.edit_album_card_no_tv);
 		ppTimeTv = (TextView) findViewById(R.id.edit_album_time_tv);
 		tipRl = (RelativeLayout) findViewById(R.id.tip_rl);
+		noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.edit_story_no_net_count_view);
 
 		refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
 		refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -570,14 +580,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							ppLoadMoreTime = null;
 							dismissPWProgressDialog();
 							//显示无网络页面
-
-
+							noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+							noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, editStoryAlbumHandler, true);
+							editImageView.setEnabled(false);
 
 						} else if (type == API1.GET_NEW_PHOTOS) {
 							PictureAirLog.d("refresh" + refreshLayout.isRefreshing());
 							if (refreshLayout.isRefreshing()) {
 								refreshLayout.setRefreshing(false);
 							}
+							//弹toast提示
+							myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 
 						} else if (type == API1.GET_OLD_PHOTOS) {
 							refreshLayout.setEnabled(true);
@@ -585,16 +598,19 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 								pwStickySectionRecyclerView.setIsLoadMore(false);
 								pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_FAILED);
 							}
-						}
-						//弹toast提示
-						myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+							//弹toast提示
+							myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 
+						}
 					}
 
 					@Override
 					public void onCompleted() {
 						if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要删除对应的数据
 							PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
+							//显示无网络页面
+							noNetWorkOrNoCountView.setVisibility(View.GONE);
+							editImageView.setEnabled(true);
 							dismissPWProgressDialog();
 						} else if (type == API1.GET_NEW_PHOTOS) {//刷新
 							if (refreshLayout.isRefreshing()) {

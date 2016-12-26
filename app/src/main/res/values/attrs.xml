@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  Copyright (C) 2008 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,11 +32,10 @@
     <declare-styleable name="CircleImageView">
         <attr name="border_width" format="dimension" />
         <attr name="border_color" format="color" />
-        <attr name="border_double" format="boolean"/>
+        <attr name="border_double" format="boolean" />
     </declare-styleable>
 
-    <attr name="fontPath" format="string"/>
-
+    <attr name="fontPath" format="string" />
 
 
     <!-- TAB -->

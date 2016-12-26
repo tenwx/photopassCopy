@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,9 +19,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,7 +60,6 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -98,19 +96,21 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private MyApplication myApplication;
     private PhotoInfo photoInfo;
     private BottomSheetDialog sheetDialog;
+    private View editRootView, buyPhotoRootView;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     private RelativeLayout titleBar;
     private static final String TAG = "PreviewPhotoActivity";
 
     private int shareType = 0;
 
+    private int sheetDialogType;
+
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
-//    private ArrayList<PhotoInfo> targetphotolist;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private int currentPosition;//记录当前预览照片的索引值
 
-//    private boolean isEdited = false;
     private String tabName;
 
     /**
@@ -123,6 +123,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private ImageView buyPhotoIV, buyPPPIV, upgradePPIV, closeDialogIV;
     private TextView buyPhotoPriceTV, buyPhotoIntroTV, buyPPPPriceTV, buyPPPIntroTV;
     private Button confirmToBuyBtn;
+    private RelativeLayout buyPhotoRL, buyPPPRL, usePPPRL;
 
     /**
      * 是否是横屏模式
@@ -131,9 +132,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private RelativeLayout photoFraRelativeLayout;
 
-    private Dialog dia;
     private TextView editTV, shareTV, downloadTV, makeGiftTV;
-    private View cancelView;
 
     private Date date;
     private SimpleDateFormat simpleDateFormat;
@@ -141,7 +140,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private static final int GET_LOCATION_AD = 777;
     private static final int GET_LOCATION_AD_DONE = 1001;
-    private static final int CREATE_BLUR_DIALOG = 888;
     private static final int NO_PHOTOS_AND_RETURN = 1002;
 
     private static final int LOCAL_PHOTO_EDIT_DIALOG = 1003;
@@ -150,7 +148,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int DOWNLOAD_DIALOG = 1006;
     private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 1007;
     private static final int VIDEO_STILL_MAKING_DIALOG = 1008;
-    private static final int BUY_BLUR_PHOTO_DIALOG = 1009;
+    private static final int BUY_BLUR_PHOTO_SHEET_DIALOG = 1009;
+    private static final int EDIT_PHOTO_SHEET_DIALOG = 1010;
 
     private PWDialog pictureWorksDialog;
 
@@ -168,7 +167,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     /**没有纪念照时的布局*/
     private LinearLayout noSouvenirLayout;
-
 
     /**
      * 处理Message
@@ -372,9 +370,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case API1.GET_AD_LOCATIONS_FAILED:
                 break;
 
-            case CREATE_BLUR_DIALOG:
-                createBlurDialog();
-                break;
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
@@ -382,7 +377,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
                     SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
 
-                    dia.dismiss();
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
 
                     intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
                     intent.putExtra("photoPassCode",photoInfo.getPhotoPassCode());
@@ -418,7 +415,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         PictureAirLog.out("oncreate start----");
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE );
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         init();//初始化UI
         PictureAirLog.out("oncreate finish----");
     }
@@ -428,6 +425,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         pictureWorksDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
+        sheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
+
         previewPhotoHandler = new Handler(this);
         settingUtil = new SettingUtil();
         newToast = new PWToast(this);
@@ -443,8 +442,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         titleBar = (RelativeLayout) findViewById(R.id.preview_titlebar);
         noSouvenirLayout = (LinearLayout) findViewById(R.id.preivew_no_souvenir_layout);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-
-        previewPhotoHandler.sendEmptyMessage(CREATE_BLUR_DIALOG);
 
         myApplication = (MyApplication) getApplication();
 
@@ -555,11 +552,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             @Override
             public void run() {
                 super.run();
-                //获取本地图片
-//                targetphotolist = new ArrayList<>();
-//                targetphotolist.addAll(AppUtil.getLocalPhotos(PreviewPhotoActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
-//                Collections.sort(targetphotolist);
-
                 //获取intent传递过来的信息
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
@@ -655,28 +647,92 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }.start();
     }
 
-    private void createBlurDialog() {
-        dia = new Dialog(this, R.style.dialogTans);
-        Window window = dia.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        //		window.setWindowAnimations(R.style.from_bottom_anim);
-        dia.setCanceledOnTouchOutside(true);
-        View view = View.inflate(this, R.layout.preview_photo_dialog, null);
-        dia.setContentView(view);
-        WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
-        layoutParams.width = ScreenUtil.getScreenWidth(this);
-        dia.getWindow().setAttributes(layoutParams);
+    /**
+     * 显示对话框
+     * @param type
+     */
+    private void showSheetDialog(int type) {
+        if (sheetDialogType != type) {//需要更新UI
+            sheetDialogType = type;
+            if (type == BUY_BLUR_PHOTO_SHEET_DIALOG) {//购买模糊图的弹框
+                if (buyPhotoRootView == null) {
+                    buyPhotoRootView = LayoutInflater.from(this).inflate(R.layout.dialog_preview_buy_blur, null);
+                    buyPhotoRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_ll);
+                    buyPPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_ll);
+                    usePPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_photo_ll);
+                    buyPhotoRL.setOnClickListener(this);
+                    buyPPPRL.setOnClickListener(this);
+                    usePPPRL.setOnClickListener(this);
+//                    closeDialogIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_close);
+//                    buyPhotoIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_photo_select_iv);
+//                    buyPhotoPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
+//                    buyPhotoIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
+//                    buyPhotoIntroTV.setVisibility(View.GONE);
+//                    buyPPPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_select_iv);
+//                    buyPPPPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
+//                    buyPPPIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
+//                    buyPPPIntroTV.setVisibility(View.GONE);
+//                    upgradePPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_upgrade_photo_select_iv);
+//                    confirmToBuyBtn = (Button) view.findViewById(R.id.preview_blur_dialog_buy_btn);
+//
+//                    closeDialogIV.setOnClickListener(this);
+//                    buyPhotoIV.setOnClickListener(this);
+//                    buyPPPIV.setOnClickListener(this);
+//                    upgradePPIV.setOnClickListener(this);
+//                    confirmToBuyBtn.setOnClickListener(this);
+                } else {//需要把view的父控件的子view全部清除，此处为什么是FrameLayout，是从源码得知
+                    ((FrameLayout) buyPhotoRootView.getParent()).removeAllViews();
+                }
+                sheetDialog.setContentView(buyPhotoRootView);
 
-        cancelView = dia.findViewById(R.id.space_view);
-        editTV = (TextView) dia.findViewById(R.id.preview_edit);
-        shareTV = (TextView) dia.findViewById(R.id.preview_share);
-        downloadTV = (TextView) dia.findViewById(R.id.preview_download);
-        makeGiftTV = (TextView) dia.findViewById(R.id.preview_makegift);
-        cancelView.setOnClickListener(this);
-        editTV.setOnClickListener(this);
-        shareTV.setOnClickListener(this);
-        downloadTV.setOnClickListener(this);
-        makeGiftTV.setOnClickListener(this);
+            } else if (type == EDIT_PHOTO_SHEET_DIALOG) {//编辑清晰图的弹框
+                if (editRootView == null) {
+                    editRootView = View.inflate(this, R.layout.preview_photo_dialog, null);
+                    editTV = (TextView) editRootView.findViewById(R.id.preview_edit);
+                    shareTV = (TextView) editRootView.findViewById(R.id.preview_share);
+                    downloadTV = (TextView) editRootView.findViewById(R.id.preview_download);
+                    makeGiftTV = (TextView) editRootView.findViewById(R.id.preview_makegift);
+                    editTV.setOnClickListener(this);
+                    shareTV.setOnClickListener(this);
+                    downloadTV.setOnClickListener(this);
+                    makeGiftTV.setOnClickListener(this);
+                } else {
+                    ((FrameLayout) editRootView.getParent()).removeAllViews();
+                }
+
+                sheetDialog.setContentView(editRootView);
+
+            }
+        }
+        if (type == EDIT_PHOTO_SHEET_DIALOG) {//如果是编辑对话框，需要区分视频和照片
+            if (photoInfo.getIsVideo() == 1) {
+                editTV.setVisibility(View.GONE);
+                makeGiftTV.setVisibility(View.GONE);
+            } else {
+                editTV.setVisibility(View.VISIBLE);
+                makeGiftTV.setVisibility(View.VISIBLE);
+            }
+        }
+        if (bottomSheetBehavior == null) {
+            //解决弹出之后，如果用手势把对话框消失，则再次弹出的时候，只有阴影，对话框不会弹出的问题
+            View view1 = sheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet);
+            bottomSheetBehavior = BottomSheetBehavior.from(view1);
+            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        sheetDialog.dismiss();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
+        }
+        sheetDialog.show();
     }
 
     /**
@@ -685,11 +741,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void updateIndexTools() {
         PictureAirLog.v(TAG, "updateIndexTools-------->" + currentPosition);
         //初始化图片收藏按钮，需要判断isLove=1或者是否在数据库中
-//        if (isEdited) {
-//            photoInfo = targetphotolist.get(currentPosition);
-//        } else {//编辑前
-            photoInfo = photolist.get(currentPosition);
-//        }
+        photoInfo = photolist.get(currentPosition);
 
         if (!isSouvenir) {
 
@@ -726,21 +778,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 finish();
                 break;
 
-            case R.id.preview_love://收藏按钮的操作
-//                if (isEdited) {
-//                    photoInfo = targetphotolist.get(mViewPager.getCurrentItem());
-//                } else {//编辑前
-                    photoInfo = photolist.get(mViewPager.getCurrentItem());
-//                }
-                if (photoInfo == null) {
-                    return;
-                }
-                myApplication.needScanFavoritePhotos = true;
-                break;
-
             case R.id.preview_edit://编辑
-                if (dia.isShowing()) {
-                    dia.dismiss();
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 if (photoInfo == null) {
                     return;
@@ -756,11 +796,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (photoInfo.getIsPaid() == 1) {
                     if (photoInfo.getIsPreset() == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
-//                        if (isEdited) {//已经编辑过，取targetlist中的值
-//                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
-//                        } else {//没有编辑，取正常的值
-                            intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
-//                        }
+                        intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
                         startActivityForResult(intent, 1);
                     } else {
                         pictureWorksDialog.setPWDialogId(FRAME_PHOTO_EDIT_DIALOG)
@@ -770,37 +806,35 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 .pwDilogShow();
                     }
                 } else {
-                    dia.show();
+                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
                 break;
 
             case R.id.preview_share:
-                if (dia.isShowing()) {
-                    dia.dismiss();
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 if (photoInfo == null) {
                     return;
                 }
                 if (photoInfo.getIsPaid() == 1) {
-                    dia.dismiss();
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
                     if (mViewPager.getCurrentItem() >= photolist.size()) {
                         return;
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).getPhotoOriginalURL());
-//                    if (isEdited) {//编辑后
-//                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
-//                    } else {//编辑前
-                        sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
-//                    }
+                    sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
-                    dia.show();
+                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
                 break;
 
             case R.id.preview_download://下载,如果不是pp的照片，提示不需要下载，如果是pp的照片，并且没有支付，提示购买，如果已经购买，如果没有下载，则下载，否则提示已经下载
-                if (dia.isShowing()) {
-                    dia.dismiss();
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
@@ -810,25 +844,21 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.getIsPaid() == 1) {
-//                    if (isEdited) {//编辑后
-//                        newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
-//                    } else {//编辑前
-                        if (photoInfo.getIsOnLine() == 1) {//是pp的照片
-                            judgeOnePhotoDownloadFlow();
-                        } else {
-                            newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
-                        }
-//                    }
+                    if (photoInfo.getIsOnLine() == 1) {//是pp的照片
+                        judgeOnePhotoDownloadFlow();
+                    } else {
+                        newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
+                    }
 
                 } else {
-                    dia.show();
+                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
 
                 break;
 
             case R.id.preview_makegift:
-                if (dia.isShowing()) {
-                    dia.dismiss();
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 if (photoInfo == null) {
                     return;
@@ -851,67 +881,71 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 PictureAirLog.v(TAG, "makegift");
                 intent = new Intent(this, MakegiftActivity.class);
-                //判断是否已经被编辑过
-//                if (isEdited) {//已经被编辑过，那么取得是targetList中的值
-//                    intent.putExtra("selectPhoto", targetphotolist.get(mViewPager.getCurrentItem()));
-//                } else {//没有编辑过，直接获取之前的值
-                    intent.putExtra("selectPhoto", photolist.get(mViewPager.getCurrentItem()));
-//                }
+                intent.putExtra("selectPhoto", photolist.get(mViewPager.getCurrentItem()));
                 startActivity(intent);
-                if (dia != null && dia.isShowing()) {
-                    dia.dismiss();
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 break;
 
             case R.id.cancel:
-                dia.dismiss();
-                break;
-
-//            case buynow:
-//                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-//                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-//                    dia.dismiss();
-//                    return;
-//                }
-//                if (photoInfo == null) {
-//                    return;
-//                }
-//                showPWProgressDialog();
-//                API1.buyPhoto(photoInfo.getPhotoId(), previewPhotoHandler);
-//                dia.dismiss();
-//                break;
-
-            case R.id.space_view:
-                if (dia != null && dia.isShowing()) {
-                    dia.dismiss();
-
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
                 }
                 break;
 
-//            case buy_ppp:
-//                //直接购买PP+
-//                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-//                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-//                    dia.dismiss();
-//                    return;
-//                }
-//                showPWProgressDialog();
-//                //获取商品
-//                getALlGoods();
-//                dia.dismiss();
-//                break;
-//            case R.id.use_ppp:
-//                if (photoInfo == null) {
-//                    return;
-//                }
-//                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
-//                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-//                    dia.dismiss();
-//                    return;
-//                }else{
-//                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.getShootDate());
-//                }
-//                break;
+            case R.id.preview_blur_dialog_buy_photo_ll:
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
+                }
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
+                    return;
+                }
+                if (photoInfo == null) {
+                    return;
+                }
+                showPWProgressDialog();
+                API1.buyPhoto(photoInfo.getPhotoId(), previewPhotoHandler);
+                break;
+
+            case R.id.preview_blur_dialog_buy_ppp_ll:
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
+                }
+                //直接购买PP+
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
+                    return;
+                }
+                showPWProgressDialog();
+                //获取商品
+                getALlGoods();
+                break;
+
+            case R.id.preview_blur_dialog_upgrade_photo_ll:
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
+                }
+                if (photoInfo == null) {
+                    return;
+                }
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
+                    return;
+                }else{
+                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.getShootDate());
+                }
+                break;
 
             default:
                 break;
@@ -935,42 +969,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
             }
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1) {
-//            if (resultCode == 11) {
-//                //保存完图片的处理
-//                PictureAirLog.v(TAG, "save success");
-//                //1.获取新图片的数据，生成一个新的对象
-//                PhotoInfo selectPhotoItemInfo = new PhotoInfo();
-//                selectPhotoItemInfo.setPhotoOriginalURL(data.getStringExtra("photoUrl"));
-//                File file = new File(selectPhotoItemInfo.getPhotoOriginalURL());
-//                date = new Date(file.lastModified());
-//                selectPhotoItemInfo.setPhotoId(selectPhotoItemInfo.getPhotoOriginalURL());
-//                selectPhotoItemInfo.setStrShootOn(simpleDateFormat.format(date));
-//                selectPhotoItemInfo.setShootDate(selectPhotoItemInfo.getStrShootOn().substring(0, 10));
-//                selectPhotoItemInfo.setLocationName(getString(R.string.story_tab_magic));
-//                selectPhotoItemInfo.setIsPaid(1);
-//
-//                //2.将新图片插入到targetList中
-//                targetphotolist.add(0, selectPhotoItemInfo);
-//                //3.修改viewPager中的值为targetList
-//                pagerAdapter = new UrlPagerAdapter(this, targetphotolist, 0, true);
-//                mViewPager.setAdapter(pagerAdapter);
-//                mViewPager.setCurrentItem(0, true);
-//                currentPosition = 0;
-//                //4.更新底部工具栏
-//                isEdited = true;
-//
-//                updateIndexTools();
-//
-//                myApplication.setneedScanPhoto(true);
-//                myApplication.scanMagicFinish = false;
-//            }
-//        }
     }
 
     @Override
@@ -1023,11 +1021,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             portraitOrientation();
         }
 
-        if (dia != null) {
-            WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
-            layoutParams.width = ScreenUtil.getScreenWidth(this);
-            dia.getWindow().setAttributes(layoutParams);
-        }
+//        if (dia != null) {
+//            WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
+//            layoutParams.width = ScreenUtil.getScreenWidth(this);
+//            dia.getWindow().setAttributes(layoutParams);
+//        }
 
         if (pictureWorksDialog != null) {
             pictureWorksDialog.autoFitScreen();
@@ -1246,61 +1244,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public void buyClick(int position) {
         PictureAirLog.d("buy---> " + position);
-        if (sheetDialog == null) {
-            sheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
-            View rootView = LayoutInflater.from(this).inflate(R.layout.dialog_preview_buy_blur, null);
-            //            closeDialogIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_close);
-//            buyPhotoIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_photo_select_iv);
-//            buyPhotoPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
-//            buyPhotoIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
-//            buyPhotoIntroTV.setVisibility(View.GONE);
-//            buyPPPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_select_iv);
-//            buyPPPPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
-//            buyPPPIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
-//            buyPPPIntroTV.setVisibility(View.GONE);
-//            upgradePPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_upgrade_photo_select_iv);
-//            confirmToBuyBtn = (Button) view.findViewById(R.id.preview_blur_dialog_buy_btn);
-//
-//            closeDialogIV.setOnClickListener(this);
-//            buyPhotoIV.setOnClickListener(this);
-//            buyPPPIV.setOnClickListener(this);
-//            upgradePPIV.setOnClickListener(this);
-//            confirmToBuyBtn.setOnClickListener(this);
-            sheetDialog.setContentView(rootView);
-            //解决弹出之后，如果用手势把对话框消失，则再次弹出的时候，只有阴影，对话框不会弹出的问题
-            View view1 = sheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet);
-            final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(view1);
-            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        sheetDialog.dismiss();
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                }
-            });
-        }
-        sheetDialog.show();
+        showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
     }
 
     @Override
     public void longClick(int position) {
         PictureAirLog.d("long click--->");
-        if (dia != null && !dia.isShowing()) {
-            if (photoInfo.getIsVideo() == 1) {
-                editTV.setVisibility(View.GONE);
-                makeGiftTV.setVisibility(View.GONE);
-            } else {
-                editTV.setVisibility(View.VISIBLE);
-                makeGiftTV.setVisibility(View.VISIBLE);
-            }
-            dia.show();
-
+        if (!sheetDialog.isShowing()) {
+            showSheetDialog(EDIT_PHOTO_SHEET_DIALOG);
         }
     }
 

@@ -74,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/preview_blur_dialog_buy_photo_price_tv"
                 android:layout_below="@+id/preview_blur_dialog_buy_photo_price_tv"
+                android:textColor="@color/pp_blue"
                 android:text="buy" />
         </RelativeLayout>
 
@@ -131,6 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/preview_blur_dialog_buy_ppp_price_tv"
                 android:layout_below="@+id/preview_blur_dialog_buy_ppp_price_tv"
+                android:textColor="@color/pp_blue"
                 android:text="buy" />
 
         </RelativeLayout>

@@ -298,4 +298,11 @@
             android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        android:id="@+id/edit_story_no_net_count_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout1"
+        android:visibility="gone"/>
+
 </RelativeLayout>

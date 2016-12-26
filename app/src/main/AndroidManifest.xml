@@ -161,11 +161,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".selectHeadorBg.SetHeadPhotoAct"
-            android:configChanges="keyboard|orientation"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.SettingActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
@@ -209,11 +204,6 @@
             android:name=".activity.AboutActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.HelpActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activity.ModifyPasswordActivity"
             android:configChanges="keyboard|orientation"
