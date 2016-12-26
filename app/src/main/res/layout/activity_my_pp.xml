@@ -31,30 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/mypage_pp"
+            android:text="@string/selectionpp"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
-
-        <RelativeLayout
-            android:id="@+id/pp_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_8"
-            android:paddingRight="@dimen/pp_dp_8"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:visibility="gone"
-            android:layout_above="@+id/select_pp_line">
-
-            <ImageView
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/add_blue" />
-        </RelativeLayout>
 
          <TextView
             android:id="@+id/ok"
@@ -66,7 +45,6 @@
             android:text="@string/pp_ok"
             android:textColor="@color/pp_blue"
             android:padding="@dimen/pp_dp_5"
-            android:visibility="gone"
             android:textSize="@dimen/text_size_14" />
 
         <View
@@ -87,13 +65,6 @@
         android:divider="@color/gray_light"
         android:dividerHeight="@dimen/pp_dp_5" />
     
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
-        android:id="@+id/nonetwork_view"
-        android:layout_below="@id/head"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
     <RelativeLayout
         android:id="@+id/no_photo_relativelayout"
         android:layout_width="match_parent"

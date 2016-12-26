@@ -131,7 +131,6 @@ public class SignAndLoginUtil implements Handler.Callback {
 
             case API1.UPDATE_PROFILE_FAILED://修改个人信息失败
             case API1.GET_CART_FAILED://获取购物车失败
-            case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
                 dismissPWProgressDialog();
                 SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
@@ -161,16 +160,6 @@ public class SignAndLoginUtil implements Handler.Callback {
                 }
                 SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, cartCount);
                 PictureAirLog.out("start get pp");
-                //获取StoreId
-                API1.getStoreId(handler);
-                break;
-
-            case API1.GET_STOREID_SUCCESS://获取storeId成功
-                dismissPWProgressDialog();
-                PictureAirLog.v(TAG, "get storeid success");
-                JSONObject jsonObject = JSONObject.parseObject(msg.obj.toString());
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, jsonObject.getString("currency"));
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.STORE_ID, jsonObject.getString("storeId"));
                 //登录成功，跳转界面
                 loginsuccess();
                 break;

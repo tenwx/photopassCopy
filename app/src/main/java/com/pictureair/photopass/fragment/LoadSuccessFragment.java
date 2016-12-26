@@ -26,7 +26,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
 import com.pictureair.photopass.activity.LoadManageActivity;
-import com.pictureair.photopass.activity.MyPPActivity;
+import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
@@ -290,8 +290,9 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.load_success_btn_toload:
+                MyApplication.getInstance().setMainTabIndex(0);
                 Intent i = new Intent();
-                i.setClass(MyApplication.getInstance(), MyPPActivity.class);
+                i.setClass(MyApplication.getInstance(), MainTabActivity.class);
                 startActivity(i);
                 break;
             case R.id.tv_load_success_select_all:

@@ -10,6 +10,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 /**
  * Created by pengwu on 16/12/9.
+ * 可拖动的layout
  */
 
 public class DraftLayout extends RelativeLayout{
@@ -61,6 +62,7 @@ public class DraftLayout extends RelativeLayout{
                     t = b - oriHeight;
                 }
                 layout(l, t, r, b);
+                //必须设置，否则整个页面如果滑动，layout会回到起始位置
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(getWidth(), oriHeight);
                 layoutParams.leftMargin = l;
                 layoutParams.topMargin = t;

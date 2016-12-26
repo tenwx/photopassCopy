@@ -180,7 +180,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
         //初始化数据
         cartCount = SPUtils.getInt(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);//获取购物车数量
-        currency = SPUtils.getString(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
+        currency =  Common.DEFAULT_CURRENCY;//SPUtils.getString(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
         //设置购物车数量
         if (cartCount <= 0) {
             cartCountTextView.setVisibility(View.INVISIBLE);

@@ -863,9 +863,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case R.id.cancel:
-                dia.dismiss();
-                break;
+//            case R.id.cancel:
+//                dia.dismiss();
+//                break;
 
 //            case buynow:
 //                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {

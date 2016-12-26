@@ -29,7 +29,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.LoadManageActivity;
-import com.pictureair.photopass.activity.MyPPActivity;
+import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -400,8 +400,9 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.downloading_btn_toload:
+                MyApplication.getInstance().setMainTabIndex(0);
                 Intent intent = new Intent();
-                intent.setClass(MyApplication.getInstance(), MyPPActivity.class);
+                intent.setClass(MyApplication.getInstance(), MainTabActivity.class);
                 startActivity(intent);
                 break;
 

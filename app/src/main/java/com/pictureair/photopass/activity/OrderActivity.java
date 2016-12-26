@@ -310,7 +310,7 @@ public class OrderActivity extends BaseFragmentActivity {
         //从网络获取数据
         mFragments = new ArrayList<>();
         getData();
-        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency =  Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         //获取订单接口
         // 显示进度条。
         showProgressDialog();

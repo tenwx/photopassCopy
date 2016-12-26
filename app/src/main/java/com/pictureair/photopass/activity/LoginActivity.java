@@ -175,6 +175,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_login);
         initview();// 初始化
 
@@ -204,14 +205,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin.setOnClickListener(this);
         shorMsgLogin.setOnClickListener(this);
 
-        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
-            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
-            if (!acount.contains("@")) {
-                if (acount.length() == 13 && acount.startsWith("86")) {
-                    userName.setText(acount.substring(2, acount.length()));
-                }
-            }
-        }
+        addAccountToView();
 
         // 自动检查更新
         checkUpdateManager = new CheckUpdateManager(this,
@@ -262,6 +256,18 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 .getSystemService(INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+        }
+    }
+
+
+    private void addAccountToView() {
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
+            if (!acount.contains("@")) {
+                if (acount.length() == 13 && acount.startsWith("86")) {
+                    userName.setText(acount.substring(2, acount.length()));
+                }
+            }
         }
     }
 

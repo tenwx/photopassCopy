@@ -178,7 +178,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 
         promotionPriceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
-        currencyTextView.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencyTextView.setText(Common.DEFAULT_CURRENCY);//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY)
         promotionPriceTextView.setText(goodsInfo.getPrice() + "");
 
         detailTextView.setText(goodsInfo.getDescription());
