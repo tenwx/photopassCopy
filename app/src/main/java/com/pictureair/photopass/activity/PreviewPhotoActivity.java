@@ -455,8 +455,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         isSouvenir = getIntent().getBooleanExtra("souvenir", false);
+        showPWProgressDialog(R.string.is_loading);
         if (!isSouvenir) {
-            showPWProgressDialog(R.string.is_loading);
             getPreviewPhotos();
         } else {
             getSouvenirPhotos();
@@ -466,13 +466,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private void getSouvenirPhotos() {
         String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
-        API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode, new HttpCallback() {
-            @Override
-            public void doOnSubscribe() {
-                super.doOnSubscribe();
-                showPWProgressDialog(R.string.is_loading);
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
+        API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode)
+                .observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override

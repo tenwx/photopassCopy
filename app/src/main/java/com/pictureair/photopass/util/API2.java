@@ -82,265 +82,18 @@ public class API2 {
 
     private static final String TAG = "API";
 
-    /**
-     * 启动
-     */
-    public static final int GET_TOKEN_ID_SUCCESS = 1001;
-    public static final int GET_TOKEN_ID_FAILED = 1000;
-
-    public static final int LOGIN_SUCCESS = 1011;
-    public static final int LOGIN_FAILED = 1010;
-
-    public static final int SIGN_SUCCESS = 1021;
-    public static final int SIGN_FAILED = 1020;
-
-    public static final int LOGOUT_SUCCESS = 1031;
-    public static final int LOGOUT_FAILED = 1030;
-
-    public static final int GET_PPS_SUCCESS = 1041;
-    public static final int GET_PPS_FAILED = 1040;
-
-    //忘记密码
-    public static final int FIND_PWD_SUCCESS = 1051;
-    public static final int FIND_PWD_FAILED = 1050;
-
-    //发送验证码
-    public static final int SEND_SMS_VALIDATE_CODE_SUCCESS = 1061;
-    public static final int SEND_SMS_VALIDATE_CODE_FAILED = 1060;
-
-    //验证码判断
-    public static final int VALIDATECODE_SUCCESS = 1071;
-    public static final int VALIDATECODE_FAILED = 1070;
-
-
-    /**
-     * Story
-     */
-    public static final int GET_ALL_LOCATION_FAILED = 2000;
-    public static final int GET_ALL_LOCATION_SUCCESS = 2001;
-
-    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_FAILED = 2010;
-    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS = 2011;
-
-    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
-    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
-
-    /**
-     * 扫描
-     */
-    public static final int CHECK_CODE_FAILED = 2030;
-    public static final int CHECK_CODE_SUCCESS = 2031;
-
-    public static final int ADD_SCANE_CODE_FAIED = 2040;
-    public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
-    public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
-
-    //选择已有PP＋
-    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 2051;
-    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 2050;
-
-    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2060;
-    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2061;
-
-    /**
-     * 获取视频信息
-     */
-    public static final int GET_LAST_CONTENT_SUCCESS = 2071;
-    public static final int GET_LAST_CONTENT_FAILED = 2070;
-
-
-    public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2080;
-    public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2081;
-
-    public static final int GET_AD_LOCATIONS_FAILED = 2090;
-    public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
-
-    public static final int DELETE_PHOTOS_SUCCESS = 2101;
-    public static final int DELETE_PHOTOS_FAILED = 2100;
-
-    public static final int GET_BANNER_PHOTOS_SUCCESS = 2111;
-    public static final int GET_BANNER_PHOTOS_FAILED = 2110;
-
-    /**
-     * 发现
-     */
-    public static final int GET_FAVORITE_LOCATION_FAILED = 3000;
-    public static final int GET_FAVORITE_LOCATION_SUCCESS = 3001;
-
-    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3010;
-    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3011;
-
-
-    //Shop模块 start
-    public static final int GET_STOREID_FAILED = 4000;
-    public static final int GET_STOREID_SUCCESS = 4001;
-
-    public static final int GET_GOODS_FAILED = 4010;
-    public static final int GET_GOODS_SUCCESS = 4011;
-
-    public static final int GET_CART_FAILED = 4020;
     public static final int GET_CART_SUCCESS = 4021;
 
-    public static final int ADD_TO_CART_FAILED = 4030;
-    public static final int ADD_TO_CART_SUCCESS = 4031;
+//    public static final int ADD_TO_CART_FAILED = 4030;
+//    public static final int ADD_TO_CART_SUCCESS = 4031;
 
-    public static final int MODIFY_CART_FAILED = 4040;
-    public static final int MODIFY_CART_SUCCESS = 4041;
-
-    public static final int DELETE_CART_FAILED = 4050;
-    public static final int DELETE_CART_SUCCESS = 4051;
-
-    public static final int ADD_ORDER_FAILED = 4060;
-    public static final int ADD_ORDER_SUCCESS = 4061;
-
-    public static final int GET_ORDER_SUCCESS = 4070;
-    public static final int GET_ORDER_FAILED = 4071;
-
-    public static final int BUY_PHOTO_FAILED = 4080;
-    public static final int BUY_PHOTO_SUCCESS = 4081;
-
-    public static final int GET_OUTLET_ID_FAILED = 4090;
-    public static final int GET_OUTLET_ID_SUCCESS = 4091;
-
-    public static final int DELETE_ORDER_FAILED = 4100;
-    public static final int DELETE_ORDER_SUCCESS = 4101;
-
-    public static final int UNIONPAY_GET_TN_SUCCESS = 4111;
-    public static final int UNIONPAY_GET_TN_FAILED = 4110;
-
-    public static final int BATCH_ADD_TO_CARTS_SUCCESS = 4121;
-    public static final int BATCH_ADD_TO_CARTS_FAILED = 4120;
-
-    public static final int ADD_ADDRESS_LIST_FAILED = 4130;
-    public static final int ADD_ADDRESS_LIST_SUCCESS = 4131;
-
-    public static final int MODIFY_ADDRESS_LIST_FAILED = 4140;
-    public static final int MODIFY_ADDRESS_LIST_SUCCESS = 4141;
-
-    public static final int DELETE_ADDRESS_LIST_FAILED = 4150;
-    public static final int DELETE_ADDRESS_LIST_SUCCESS = 4151;
-
-    public static final int GET_INVOICE_FAILED = 4160;
-    public static final int GET_INVOICE_SUCCESS = 4161;
-
-    public static final int ADDRESS_LIST_FAILED = 4170;
-    public static final int ADDRESS_LIST_SUCCESS = 4171;
-
-    public static final int GET_DEALING_GOODS_SUCCESS = 4181;
-    public static final int GET_DEALING_GOODS_FAILED = 4180;
-
-    public static final int UPDATE_DEALING_ORDER_SUCCESS = 4191;
-    public static final int UPDATE_DEALING_ORDER_FAILED = 4190;
-
-    public static final int ADD_BOOKING_SUCCESS = 4201;
-    public static final int ADD_BOOKING_FAILED = 4200;
-
-    public static final int GET_SINGLE_GOODS_SUCCESS = 4201;
-    public static final int GET_SINGLE_GOODS_FAILED = 4200;
-
-    //Shop模块 end
-
-    //我的模块 start
-    public static final int BIND_PP_FAILURE = 5000;
-    public static final int BIND_PP_SUCCESS = 5001;
-
-    public static final int UPDATE_PROFILE_SUCCESS = 5011;
-    public static final int UPDATE_PROFILE_FAILED = 5010;
-    public static final int UPDATE_PROFILE_NAME = 5012;
-    public static final int UPDATE_PROFILE_GENDER = 5013;
-    public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
-    public static final int UPDATE_PROFILE_COUNTRY = 5015;
-    public static final int UPDATE_PROFILE_ALL = 5016;
-
-    public static final int GET_HELP_SUCCESS = 5021;
-    public static final int GET_HELP_FAILED = 5020;
-
-    public static final int UPDATE_USER_IMAGE_FAILED = 5030;
-    public static final int UPDATE_USER_IMAGE_SUCCESS = 5031;
-
-    public static final int SCAN_PPP_FAILED = 5040;
-    public static final int SCAN_PPP_SUCCESS = 5041;
-
-    public static final int HIDE_PP_SUCCESS = 5051;
-    public static final int HIDE_PP_FAILED = 5050;
-
-    public static final int UPLOAD_PHOTO_SUCCESS = 5061;
-    public static final int UPLOAD_PHOTO_FAILED = 5060;
-    public static final int UPLOAD_PHOTO_PROGRESS = 5062;
-
-    public static final int GET_PPP_SUCCESS = 5071;
-    public static final int GET_PPP_FAILED = 5070;
-
-    //PP & PP＋模块
-    public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5080;
-    public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5081;
-
-    public static final int BIND_PPS_DATE_TO_PP_FAILED = 5090;
-    public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5091;
-
-    public static final int MODIFY_PWD_SUCCESS = 5101;
-    public static final int MODIFY_PWD_FAILED = 5100;
-
-    public static final int ADD_CODE_TO_USER_FAILED = 5110;
-    public static final int ADD_CODE_TO_USER_SUCCESS = 5111;
-
-    public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
-    public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
-
-    public static final int REMOVE_PP_SUCCESS = 5131;
-    public static final int REMOVE_PP_FAILED = 5130;
-
-    //从订单中获取所有优惠卷
-    public static final int GET_COUPON_SUCCESS = 5141;
-    public static final int GET_COUPON_FAILED = 5140;
-
-    //添加一张优惠卷
-    public static final int INSERT_COUPON_SUCCESS = 5151;
-    public static final int INSERT_COUPON_FAILED = 5150;
-
-    //使用优惠券
-    public static final int PREVIEW_COUPON_SUCCESS = 5161;
-    public static final int PREVIEW_COUPON_FAILED = 5160;
-    //我的模块 end
-
-    public static final int GET_UPDATE_SUCCESS = 6001;
-    public static final int GET_UPDATE_FAILED = 6000;
-
-    public static final int DOWNLOAD_APK_SUCCESS = 6011;
-    public static final int DOWNLOAD_APK_FAILED = 6010;
-
-    // 推送
-    public static final int SOCKET_DISCONNECT_FAILED = 6020;
-    public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
-
-    //手动拉取推送
-    public static final int GET_SOCKET_DATA_FAILED = 6030;
-    public static final int GET_SOCKET_DATA_SUCCESS = 6031;
-
-    //下载
-    public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
-    public static final int DOWNLOAD_PHOTO_FAILED = 6040;
-    public final static int DOWNLOAD_PHOTO_GET_URL_SUCCESS = 6042;
-
-    //下载文件
-    public static final int DOWNLOAD_FILE_FAILED = 6050;
-    public static final int DOWNLOAD_FILE_SUCCESS = 6051;
-    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
-
-    //分享链接
-    public static final int GET_SHARE_URL_SUCCESS = 6061;
-    public static final int GET_SHARE_URL_FAILED = 6060;
-
-    //获取短连接
-    public static final int GET_SHORT_URL_SUCCESS = 6071;
-    public static final int GET_SHORT_URL_FAILED = 6070;
 
     /**
      * 发送设备ID获取tokenId
      *
      * @param context
      */
-    public static Observable<JSONObject> getTokenId(final Context context,final HttpCallback callback) {
+    public static Observable<JSONObject> getTokenId(final Context context) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.TERMINAL, "android");
         String id = Installation.id(context);
@@ -349,158 +102,45 @@ public class API2 {
         }
         params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-               if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                       if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//
-//                super.onSuccess(jsonObject);
-//                try {
-//                    ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
-//                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID,
-//                            AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                if (handler != null) {
-//                    handler.sendEmptyMessage(GET_TOKEN_ID_SUCCESS);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                if (handler != null) {
-//                    handler.obtainMessage(GET_TOKEN_ID_FAILED, status, 0).sendToTarget();
-//                }
-//            }
-//        });
-//
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_TOKENID, params, null);
     }
 
 
     /**
      * 登录
      *
-     * @param context
      * @param userName
      * @param password
      */
-    public static Observable<JSONObject> Login(final Context context, final String userName, String password, final HttpCallback callback) {
+    public static Observable<JSONObject> Login(final String userName, String password, String loginType, String verificationCode) {
         Map<String,Object> params = new HashMap<>();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
         if (userName != null) {
             params.put(Common.USERINFO_USERNAME, userName);
         }
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+        if (loginType != null) {
+            params.put(Common.LOGINTYPE, "verificationCodeLogin");
+            params.put(Common.VERIFICATIONCODE, verificationCode);
+        }
+        if (password != null) {
+            params.put(Common.USERINFO_PASSWORD, AppUtil.md5(AppUtil.md5(password) + PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+        }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.LOGIN, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                try {
-//                    JsonUtil.getUserInfo(context, jsonObject, userName, handler);
-//                    handler.sendEmptyMessage(LOGIN_SUCCESS);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(LOGIN_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.LOGIN, params, null);
     }
 
     /**
      * 登出账号
      *
      */
-    public static Observable<JSONObject> Logout(final HttpCallback callback) {
+    public static Observable<JSONObject> Logout() {
         Map<String,Object> params = new HashMap<>();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.LOGOUT, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "Logout onSuccess:" + jsonObject);
-//                handler.sendEmptyMessage(LOGOUT_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "Logout onFailure: status" + status);
-//                handler.sendEmptyMessage(LOGOUT_FAILED);
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.LOGOUT, params, null);
     }
 
     /**
@@ -574,7 +214,7 @@ public class API2 {
      * @param userName name
      * @param password pwd
      */
-    public static Observable<JSONObject> Register(final String userName, final String password, String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> Register(final String userName, final String password) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (userName != null) {
@@ -582,42 +222,7 @@ public class API2 {
         }
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.REGISTER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REGISTER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("sign success ---- > " + jsonObject);
-//                handler.sendEmptyMessage(SIGN_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.out("status----->" + status);
-//                handler.obtainMessage(SIGN_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.REGISTER, params, null);
     }
 
     /**
@@ -630,7 +235,7 @@ public class API2 {
      * language:string,选填,语言，默认为CN，可填写值：CN或EN，
      * msgType:string,选填，默认为register，可选值（forgotPassword,register）
      */
-    public static Observable<JSONObject> sendSMSValidateCode(final String tokenId, String phone, String language, boolean isRegister, final HttpCallback callback) {
+    public static Observable<JSONObject> sendSMSValidateCode(final String tokenId, String phone, String language, boolean isRegister) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.PHONE, "+" + phone);
@@ -639,42 +244,7 @@ public class API2 {
 
         PictureAirLog.v(TAG, "sendSMSValidateCode params：" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "sendSMSValidateCode onSuccess：" + jsonObject.toString());
-//                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.v(TAG, "sendSMSValidateCode onFailure：" + status);
-//                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_FAILED, status, 0).sendToTarget();
-//            }
-//
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, null);
     }
 
     /**
@@ -686,7 +256,7 @@ public class API2 {
      * sendTo:string,选填，email或mobile
      * msgType:string,选填，可选值（register,forgotPassword）
      */
-    public static Observable<JSONObject> validateCode(final String tokenId, String validateCode, String phoneOremail, boolean isRegister, final HttpCallback callback) {
+    public static Observable<JSONObject> validateCode(final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
 
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
@@ -696,54 +266,19 @@ public class API2 {
         params.put(Common.SEND_TO, "+"+phoneOremail);
         params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
         PictureAirLog.v(TAG, "validateCode params：" + params.toString());
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
 
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "validateCode onSuccess：" + jsonObject.toString());
-//                handler.obtainMessage(VALIDATECODE_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.v(TAG, "validateCode onFailure：" + status);
-//                handler.obtainMessage(VALIDATECODE_FAILED, status, 0).sendToTarget();
-//            }
-//
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, null);
     }
 
 
     /**
      * 获取所有的地址信息
      *
-     * @param context
      */
-    public static Observable<JSONObject> getLocationInfo(final Context context, String tokenId) {
+    public static Observable<JSONObject> getLocationInfo(final String tokenId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        return get(params, Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, null);
+        return get(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, null);
     }
 
 
@@ -751,6 +286,7 @@ public class API2 {
      * 获取用户照片
      *
      * @param tokenId
+     * 加了 shootDate
      */
     public static Observable<JSONObject> getPhotosByConditions(String tokenId, int type, String receiveOn, String repeatIds, String ppCode, String shootDate, int limit) {
         Map<String,Object> params = new HashMap<>();
@@ -774,7 +310,7 @@ public class API2 {
 
         params.put(Common.LIMIT, limit);
         PictureAirLog.out("the time of start get photos = " + receiveOn + ",repeatids-->" + repeatIds);
-        return get(params, Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, null);
+        return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
     }
 
     /**
@@ -782,7 +318,7 @@ public class API2 {
      *
      * @param tokenId
      */
-    public static Observable<JSONObject> getNewPhotosInfo(String tokenId, String photoId, final int id, final HttpCallback callback) {
+    public static Observable<JSONObject> getNewPhotosInfo(String tokenId, String photoId) {//, final int id
         Map<String,Object> params = new HashMap<>();
         JSONArray ids = new JSONArray();
         ids.add(photoId);
@@ -791,49 +327,7 @@ public class API2 {
             params.put(Common.EPPP_IDS, ids.toJSONString());
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("jsonobject---->" + jsonObject.toString());
-//                JSONArray photos = jsonObject.getJSONArray("photos");
-//                if (photos.size() > 0) {
-//                    PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-//                    PictureAirLog.out("jsonobject---->" + photoInfo.photoThumbnail_1024);
-//                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_SUCCESS, id, 0, photoInfo).sendToTarget();
-//
-//                } else {
-//                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, 401, 0).sendToTarget();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
     }
 
     /**
@@ -844,7 +338,7 @@ public class API2 {
     public static Observable<JSONObject> getBannerPhotos(String tokenId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        return get(params, Common.BASE_URL_TEST + Common.GET_BANNER_PHOTOS, null);
+        return get(Common.BASE_URL_TEST + Common.GET_BANNER_PHOTOS, params, null);
     }
 
     /**
@@ -855,7 +349,7 @@ public class API2 {
     public static Observable<JSONObject> getLocationPhoto(String tokenId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        return get(params, Common.BASE_URL_TEST + Common.GET_LOCATION_PHOTOS, null);
+        return get(Common.BASE_URL_TEST + Common.GET_LOCATION_PHOTOS, params, null);
     }
 
     /**
@@ -863,48 +357,14 @@ public class API2 {
      *
      * @param code
      */
-    public static Observable<JSONObject> checkCodeAvailable(String code, String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> checkCodeAvailable(String code) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (code != null) {
             params.put(Common.CODE, code);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-        return observable;
-
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("check code success--->" + jsonObject.toString());
-//                handler.obtainMessage(CHECK_CODE_SUCCESS, jsonObject.getString("codeType")).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(CHECK_CODE_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, null);
     }
 
     /**
@@ -912,58 +372,17 @@ public class API2 {
      *
      * @param url
      * @param params
-     * @param type
      */
-    public static Observable<JSONObject> addScanCodeToUser(String url, Map params, final String type, final HttpCallback callback) {
+    public static Observable<JSONObject> addScanCodeToUser(String url, Map params) {//final String type,
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(url, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("add scan code success---->" + type);
-//                if ("pp".equals(type)) {
-//                    handler.obtainMessage(ADD_PP_CODE_TO_USER_SUCCESS).sendToTarget();
-//                } else if ("ppp".equals(type)) {//ppp
-//                    handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
-//                } else {//coupon
-//                    handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS, jsonObject).sendToTarget();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_SCANE_CODE_FAIED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(url, params, null);
     }
 
     /**
      * 删除网络图片
      * @param tokenId
      */
-    public static Observable<JSONObject> removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final HttpCallback callback){
+    public static Observable<JSONObject> removePhotosFromPP(String tokenId, JSONArray ids, String ppCode){
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (ids != null) {
@@ -974,42 +393,7 @@ public class API2 {
         }
         PictureAirLog.out("param---->" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("delete photos----->" + jsonObject);
-//                handler.sendEmptyMessage(DELETE_PHOTOS_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.out("delete photos failed--->" + status);
-//                handler.obtainMessage(DELETE_PHOTOS_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, null);
     }
 
     /**
@@ -1017,45 +401,11 @@ public class API2 {
      *
      * @param tokenId
      */
-    public static Observable<JSONObject> getFavoriteLocations(String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> getFavoriteLocations(String tokenId) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.d(TAG, "get favorite locations success" + jsonObject.toString());
-//                handler.obtainMessage(GET_FAVORITE_LOCATION_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_FAVORITE_LOCATION_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, null);
     }
 
     /**
@@ -1065,8 +415,7 @@ public class API2 {
      * @param locationId locationId:string，必填，location的locationId
      * @param action     必填，操作（可选值：add，remove），收藏或取消收藏
      */
-    public static Observable<JSONObject> editFavoriteLocations(String tokenId, String locationId,
-                                                               String action, final int position, final HttpCallback callback) {
+    public static Observable<JSONObject> editFavoriteLocations(String tokenId, String locationId, String action) {//final int position,
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (locationId != null) {
@@ -1076,52 +425,7 @@ public class API2 {
             params.put(Common.ACTION, action);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(
-//                Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params,
-//                new HttpCallback() {
-//
-//                    @Override
-//                    public void onSuccess(JSONObject jsonObject) {
-//                        super.onSuccess(jsonObject);
-//                        PictureAirLog
-//                                .out("edit favorite location info success ----->"
-//                                        + jsonObject.toString());
-//                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_SUCCESS,
-//                                position, 0, jsonObject).sendToTarget();
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int status) {
-//                        super.onFailure(status);
-//                        PictureAirLog
-//                                .out("get favorite location info failed----->"
-//                                        + status);
-//                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_FAILED,
-//                                status, 0).sendToTarget();
-//                    }
-//                });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params, null);
     }
 
 
@@ -1130,7 +434,7 @@ public class API2 {
      *
      * @param lastUpdateTime 上次更新时间
      */
-    public static Observable<JSONObject> getLastContent(String lastUpdateTime, final HttpCallback callback) {
+    public static Observable<JSONObject> getLastContent(String lastUpdateTime) {
         StringBuffer sBuffer = new StringBuffer();
         sBuffer.append(Common.BASE_URL_TEST);
         sBuffer.append(Common.GET_LASTEST_CONTENT);
@@ -1141,83 +445,18 @@ public class API2 {
             params.put(Common.LAST_UPDATE_TIME, lastUpdateTime);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(sBuffer.toString(), params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(sBuffer.toString(), params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_LAST_CONTENT_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_LAST_CONTENT_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(sBuffer.toString(), params, null);
     }
 
     /**
      * 获取有广告的地点
      *
      */
-    public static Observable<JSONObject> getADLocations(final int oldPosition, final HttpCallback callback) {
+    public static Observable<JSONObject> getADLocations(final int oldPosition) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, oldPosition, 0, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_AD_LOCATIONS_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, null);
     }
 
     /***************************************我的模块 start**************************************/
@@ -1251,36 +490,6 @@ public class API2 {
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncUpload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(UPDATE_USER_IMAGE_SUCCESS, position, 0, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UPDATE_USER_IMAGE_FAILED, status, 0).sendToTarget();
-//
-//
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                Message msg = handler.obtainMessage(UPLOAD_PHOTO_PROGRESS);
-//                Bundle bundle = new Bundle();
-//                bundle.putLong("bytesWritten",bytesWritten);
-//                bundle.putLong("totalSize",totalSize);
-//                msg.setData(bundle);
-//                handler.sendMessage(msg);
-//            }
-//        });
-//        return task;
     }
 
 
@@ -1312,37 +521,6 @@ public class API2 {
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
-
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncUpload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(UPLOAD_PHOTO_SUCCESS, position, 0, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status, 0).sendToTarget();
-//
-//
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                Message msg = handler.obtainMessage(UPLOAD_PHOTO_PROGRESS);
-//                Bundle bundle = new Bundle();
-//                bundle.putLong("bytesWritten",bytesWritten);
-//                bundle.putLong("totalSize",totalSize);
-//                msg.setData(bundle);
-//                handler.sendMessage(msg);
-//            }
-//        });
-//        return task;
     }
 
     /**
@@ -1354,7 +532,7 @@ public class API2 {
      * @param gender   性别
      * @param QQ       qq
      */
-    public static Observable<JSONObject> updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final int modifyType, final HttpCallback callback) {
+    public static Observable<JSONObject> updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ) {//, final int modifyType
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (name != null) {
@@ -1373,89 +551,19 @@ public class API2 {
             params.put(Common.USERINFO_GENDER, gender);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(UPDATE_PROFILE_SUCCESS, modifyType, 0).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UPDATE_PROFILE_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, null);
     }
-
-    /**
-     * 获取订单信息 -- 有大改动
-     */
-
 
     /**
      * 获取所有的PP
      *
+     * 不一致，缺少final boolean showErrorView
      */
-    public static Observable<JSONObject> getPPSByUserId(final HttpCallback callback) {
+    public static Observable<JSONObject> getPPSByUserId() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_PPS_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_PPS_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, null);
     }
 
     /**
@@ -1465,46 +573,11 @@ public class API2 {
      */
     public static ArrayList<PPPinfo> PPPlist = new ArrayList<>();
 
-    public static Observable<JSONObject> getPPPSByUserId(String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> getPPPSByUserId(String tokenId) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("ppp--->" + jsonObject.toString());
-//                PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
-//                handler.obtainMessage(GET_PPP_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_PPP_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, null);
     }
 
     /**
@@ -1512,42 +585,9 @@ public class API2 {
      *
      * @param params  参数
      */
-    public static Observable<JSONObject> hidePPs(Map params, final HttpCallback callback) {
+    public static Observable<JSONObject> hidePPs(Map params) {
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.HIDE_PPS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.HIDE_PPS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(HIDE_PP_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(HIDE_PP_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.HIDE_PPS, params, null);
     }
 
     /**
@@ -1558,7 +598,7 @@ public class API2 {
      * @param bindDate bind
      * @param ppp      ppp
      */
-    public static Observable<JSONObject> bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp, final HttpCallback callback) {
+    public static Observable<JSONObject> bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.PPS, pps);
@@ -1569,88 +609,20 @@ public class API2 {
             params.put(Common.ppp1,ppp);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(BIND_PP_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(BIND_PP_FAILURE, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, null);
     }
 
     /**
      * 绑定PP卡到用户
      */
-    public static Observable<JSONObject> addCodeToUser(String ppCode, final HttpCallback callback) {
+    public static Observable<JSONObject> addCodeToUser(String ppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (ppCode != null) {
             params.put(Common.CUSTOMERID, ppCode);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(ADD_PP_CODE_TO_USER_SUCCESS);
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_CODE_TO_USER_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, null);
     }
 
 
@@ -1659,43 +631,9 @@ public class API2 {
      *
      * @param params  params
      */
-    public static Observable<JSONObject> bindPPPToUser(Map params, final HttpCallback callback) {
+    public static Observable<JSONObject> bindPPPToUser(Map params) {
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(SCAN_PPP_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(SCAN_PPP_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, null);
     }
 
 
@@ -1703,45 +641,11 @@ public class API2 {
      * 帮助
      *
      */
-    public static Observable<JSONObject> getHelp(final HttpCallback callback) {
+    public static Observable<JSONObject> getHelp() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.ME_HELP, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ME_HELP, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_HELP_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_HELP_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.ME_HELP, params, null);
     }
 
     /**
@@ -1750,49 +654,13 @@ public class API2 {
      * @param oldPwd  旧密码，修改的时候用到，如果是忘记密码的话，设为null
      * @param newPwd  新密码
      */
-    public static Observable<JSONObject> modifyPwd(String oldPwd, String newPwd, final HttpCallback callback) {
+    public static Observable<JSONObject> modifyPwd(String oldPwd, String newPwd) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(newPwd));
         params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(MODIFY_PWD_SUCCESS);
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(MODIFY_PWD_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.MODIFYPWD, params, null);
     }
 
     /**
@@ -1801,7 +669,7 @@ public class API2 {
      * @param pppCode  体验卡卡号
      * @param photoIds 绑定的图片
      */
-    public static Observable<JSONObject> useExperiencePPP(String pppCode, JSONArray photoIds, final HttpCallback callback) {
+    public static Observable<JSONObject> useExperiencePPP(String pppCode, JSONArray photoIds) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (pppCode != null) {
@@ -1813,91 +681,22 @@ public class API2 {
         PictureAirLog.out("photo ids --->" + photoIds);
         PictureAirLog.out("params--->" + params.toString());
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null)  callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(ADD_PHOTO_TO_PPP_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_PHOTO_TO_PPP_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, null);
     }
 
     /**
      * 从用户中移除pp
      *
      * @param ppCode   pp码
-     * @param position
      */
-    public static Observable<JSONObject> removePPFromUser(String ppCode, final int position, final HttpCallback callback) {
+    public static Observable<JSONObject> removePPFromUser(String ppCode, final HttpCallback callback) {//final int position,
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (ppCode != null) {
             params.put(Common.CUSTOMERID,ppCode);
         }
 
-        return post(params, Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, callback);
-
-//        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-//        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new ProgressListener() {
-//            @Override
-//            public void update(long bytesRead, long contentLength) {
-//                if (callback != null) callback.onProgress(bytesRead, contentLength);
-//            }
-//        })
-//                .subscribeOn(Schedulers.io())
-//                .doOnSubscribe(new Action0() {
-//                    @Override
-//                    public void call() {
-//                        callback.doOnSubscribe();
-//                    }
-//                })
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .compose(RxHelper.<JSONObject>handleResult());
-//
-//        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(REMOVE_PP_SUCCESS, position).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(REMOVE_PP_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, callback);
     }
 
     /***************************************我的模块 end**************************************/
@@ -1907,98 +706,16 @@ public class API2 {
 
 
     /**
-     * 获取store编号,以此获取商品数据
-     *
-     */
-    public static Observable<JSONObject> getStoreId(final HttpCallback callback) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.GET_STORE_BY_IP, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_STORE_BY_IP, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_STOREID_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_STOREID_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
-    }
-
-
-    /**
      * 获取全部商品
      *
      */
-    public static Observable<JSONObject> getGoods(final HttpCallback callback) {
+    public static Observable<JSONObject> getGoods() {
         PictureAirLog.v(TAG, "getGoods");
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_GOODS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_GOODS, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
-//                handler.obtainMessage(GET_GOODS_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_GOODS_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_GOODS, params, null);
     }
 
 
@@ -2007,57 +724,23 @@ public class API2 {
      *
      * @param cartIdsArray
      */
-    public static Observable<JSONObject> getCarts(JSONArray cartIdsArray, final HttpCallback callback) {
+    public static Observable<JSONObject> getCarts(JSONArray cartIdsArray) {
         PictureAirLog.out("getCarts---》" + MyApplication.getTokenId());
         final int flag;//表示请求类型： 初始化/选中取消选中
         Map<String,Object> params = new HashMap<>();
-        if (cartIdsArray == null) {
-            flag = -1;
-        } else {
-            if (cartIdsArray.size() > 0) {
-                params.put("cartItemIds", cartIdsArray.toString());
-            }
-            flag = GET_CART_SUCCESS;
+//        if (cartIdsArray == null) {
+//            flag = -1;
+//        } else {
+//              flag = GET_CART_SUCCESS;
+//        }
+        if (cartIdsArray != null && cartIdsArray.size() > 0) {
+            params.put("cartItemIds", cartIdsArray.toString());
         }
+
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_CART, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_CART_SUCCESS, flag, flag, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_CART_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_CART, params, null);
     }
 
 
@@ -2069,7 +752,7 @@ public class API2 {
      * @param isJustBuy   是否立即购买(可选)
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      */
-    public static Observable<JSONObject> addToCart(String goodsKey, int qty, Boolean isJustBuy, JSONArray embedPhotos, final HttpCallback callback) {
+    public static Observable<JSONObject> addToCart(String goodsKey, int qty, Boolean isJustBuy, JSONArray embedPhotos) {
         PictureAirLog.v(TAG, "addToCart");
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -2082,41 +765,7 @@ public class API2 {
             params.put(Common.EMBEDPHOTOS, embedPhotos.toString());
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(ADD_TO_CART_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_TO_CART_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, null);
     }
 
     /**
@@ -2124,48 +773,14 @@ public class API2 {
      * @param tokenId
      * @param goods
      */
-    public static Observable<JSONObject> batchAddToCarts(String tokenId, String goods, final HttpCallback callback) {
+    public static Observable<JSONObject> batchAddToCarts(String tokenId, String goods) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (goods != null) {
             params.put(Common.GOODS, goods);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, bytesRead);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(BATCH_ADD_TO_CARTS_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(BATCH_ADD_TO_CARTS_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, null);
     }
 
     /**
@@ -2189,48 +804,7 @@ public class API2 {
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.put(url, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPut(url, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(MODIFY_CART_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(MODIFY_CART_FAILED, status, 0).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                diaBarPop.setProgress(bytesWritten, totalSize);
-//            }
-//        });
-//        return task;
+        return put(url, params, callback);
     }
 
 
@@ -2239,7 +813,7 @@ public class API2 {
      *
      * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
      */
-    public static Observable<JSONObject> removeCartItems(JSONArray cartIdsArray, final HttpCallback callback) {
+    public static Observable<JSONObject> removeCartItems(JSONArray cartIdsArray) {
         String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -2248,42 +822,7 @@ public class API2 {
         }
         PictureAirLog.v(TAG, "params" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.delete(url, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncDelete(url, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(DELETE_CART_SUCCESS, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(DELETE_CART_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return delete(url, params, null);
     }
 
     /**
@@ -2296,7 +835,7 @@ public class API2 {
      */
     public static Observable<JSONObject> addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId,
                                                   JSONArray couponCodes, JSONObject invoice,
-                                                  String channelId, String uid, final HttpCallback callback) {
+                                                  String channelId, String uid) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (cartItemIds != null) {
@@ -2324,41 +863,7 @@ public class API2 {
         }
         PictureAirLog.out("addorder params ------------>"+params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(ADD_ORDER_SUCCESS, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_ORDER_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.ADD_ORDER, params, null);
     }
 
 
@@ -2366,59 +871,19 @@ public class API2 {
      * 获取订单信息
      *
      */
-    public static Observable<JSONObject> getOrderInfo(final HttpCallback callback) {
+    public static Observable<JSONObject> getOrderInfo() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                JSONArray allOrdersArray = jsonObject.getJSONArray("orders");//得到所有的订单信息
-//                if (allOrdersArray == null) {
-//                    handler.obtainMessage(GET_ORDER_FAILED, 401, 0).sendToTarget();
-//                } else {
-//                    handler.obtainMessage(GET_ORDER_SUCCESS, jsonObject).sendToTarget();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_ORDER_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, null);
     }
 
     /**
      * 删除订单信息
      *
      */
-    public static Observable<JSONObject> removeOrder(String orderId, final OrderInfo groupInfo, final OrderProductInfo childInfo, final HttpCallback callback) {
+    public static Observable<JSONObject> removeOrder(String orderId) {//, final OrderInfo groupInfo, final OrderProductInfo childInfo
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (orderId != null) {
@@ -2426,93 +891,18 @@ public class API2 {
         }
         PictureAirLog.v(TAG, "removeOrder params：" + params);
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                Message msg = handler.obtainMessage();
-//                Bundle b = new Bundle();
-//                b.putParcelable("group", groupInfo);
-//                b.putSerializable("child", childInfo);
-//                msg.what = DELETE_ORDER_SUCCESS;
-//                msg.setData(b);
-//                handler.sendMessage(msg);
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(DELETE_ORDER_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, null);
     }
 
     /**
      * 获得发票的所有地址列表
      *
      */
-    public static Observable<JSONObject> getInvoiceAddressList(final HttpCallback callback){
+    public static Observable<JSONObject> getInvoiceAddressList(){
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
 
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADDRESS_LIST_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, null);
     }
 
     /**
@@ -2520,7 +910,7 @@ public class API2 {
      *
      * @param cartIdsArray
      */
-    public static Observable<JSONObject> getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes, final HttpCallback callback) {
+    public static Observable<JSONObject> getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes) {
         PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
         final int flag;//表示请求类型： 初始化/选中取消选中
         Map<String,Object> params = new HashMap<>();
@@ -2537,50 +927,14 @@ public class API2 {
         params.put("isNeedInvoice", isNeedInvoice);
         params.put("couponCodes", couponCodes.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_CART, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_INVOICE_SUCCESS, flag, flag, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_INVOICE_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_CART, params, null);
     }
 
     /**
      * 添加发票的地址
      *
      */
-    public static Observable<JSONObject> addInvoiceAddress(SendAddress address, final HttpCallback callback){
+    public static Observable<JSONObject> addInvoiceAddress(SendAddress address){
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (address.getName() != null) {
@@ -2612,50 +966,14 @@ public class API2 {
         }
         params.put("defaultChose", address.isSelected());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("success---->" + jsonObject.toString());
-//                handler.obtainMessage(ADD_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, null);
     }
 
     /**
      * 修改发票的地址
      *
      */
-    public static Observable<JSONObject> modifyInvoiceAddress(SendAddress address, final HttpCallback callback){
+    public static Observable<JSONObject> modifyInvoiceAddress(SendAddress address){
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (address.getAddressId() != null) {
@@ -2691,89 +1009,19 @@ public class API2 {
         params.put("defaultChose", address.isSelected());
         PictureAirLog.out("modify address ------>"+params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.put(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead,contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPut(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("modify success---->" + jsonObject.toString());
-//                handler.obtainMessage(MODIFY_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.out("modify failure---->"+status);
-//                handler.obtainMessage(MODIFY_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return put(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, null);
     }
 
     /**
      * 删除发票的地址
      *
      */
-    public static Observable<JSONObject> deleteInvoiceAddress(String[] ids, final HttpCallback callback){
+    public static Observable<JSONObject> deleteInvoiceAddress(String[] ids){
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("addressesIds", ids);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.delete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncDelete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(DELETE_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(DELETE_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return delete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, null);
     }
 
     /**
@@ -2782,7 +1030,7 @@ public class API2 {
      *
      * @param photoId photoId
      */
-    public static Observable<JSONObject> buyPhoto(String photoId, final HttpCallback callback) {
+    public static Observable<JSONObject> buyPhoto(String photoId) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (photoId != null) {
@@ -2790,87 +1038,19 @@ public class API2 {
         }
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.BUY_PHOTO, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
-//                new HttpCallback() {
-//                    @Override
-//                    public void onSuccess(JSONObject jsonObject) {
-//                        super.onSuccess(jsonObject);
-//                        handler.obtainMessage(BUY_PHOTO_SUCCESS, jsonObject)
-//                                .sendToTarget();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int status) {
-//                        super.onFailure(status);
-//                        handler.obtainMessage(BUY_PHOTO_FAILED, status, 0)
-//                                .sendToTarget();
-//
-//                    }
-//                });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.BUY_PHOTO, params, null);
     }
 
     /**
      * 获取门店地址信息
      *
      */
-    public static Observable<JSONObject> getOutlets(final HttpCallback callback) {
+    public static Observable<JSONObject> getOutlets() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_OUTLET_ID_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_OUTLET_ID_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, null);
     }
 
     /**
@@ -2879,62 +1059,12 @@ public class API2 {
      * @param language
      * @return
      */
-    public static Observable<JSONObject> getDealingGoods(String tokenId, String language, final HttpCallback callback) {
+    public static Observable<JSONObject> getDealingGoods(String tokenId, String language) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.LANGUAGE, language);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead,contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                long localTime = System.currentTimeMillis();
-//                PictureAirLog.d("getDealingGoods localTime",new Date(localTime).toString());
-//                PictureAirLog.json(jsonObject.toString());
-//                DealingInfo dealingInfo = JsonUtil.getDealingInfo(jsonObject);
-//                if (dealingInfo != null) {
-//                    try {
-//                        PictureAirLog.d("getDealingGoods getCurrTime",dealingInfo.getCurrTime());
-//                        Date currentSystemServerDate = AppUtil.getDateLocalFromStr(dealingInfo.getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
-//                        PictureAirLog.d("getDealingGoods format",currentSystemServerDate.toString());
-//                        dealingInfo.setTimeOffset(localTime - currentSystemServerDate.getTime());
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    handler.obtainMessage(GET_DEALING_GOODS_SUCCESS, dealingInfo).sendToTarget();
-//
-//                } else {
-//                    handler.obtainMessage(GET_DEALING_GOODS_FAILED, 401, 0).sendToTarget();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_DEALING_GOODS_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_ALL_DEALINGS, params, null);
     }
 
     /***************************************Shop模块 end**************************************/
@@ -2945,48 +1075,14 @@ public class API2 {
      *
      * @param photos
      */
-    public static Observable<JSONObject> uploadPhotoMakeVideo(String photos, final HttpCallback callback) {
+    public static Observable<JSONObject> uploadPhotoMakeVideo(String photos) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (photos != null) {
             params.put(Common.PHOTOIDS, photos);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("uploadPhotoMakeVideo--->" + jsonObject.toString());
-//                handler.sendEmptyMessage(UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UPLOAD_PHOTO_MAKE_VIDEO_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, null);
     }
 
 
@@ -3006,7 +1102,7 @@ public class API2 {
      * 获取最新的版本信息
      *
      */
-    public static Observable<JSONObject> checkUpdate(Context context, final HttpCallback callback) {
+    public static Observable<JSONObject> checkUpdate(Context context) {
         if (context == null) {
 //            handler.sendEmptyMessage(GET_UPDATE_FAILED);
             return null;
@@ -3018,47 +1114,7 @@ public class API2 {
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
         params.put(Common.VERSION, verson);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                /**
-//                 * 测试使用
-//                 */
-////                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
-//                PictureAirLog.out("update---->" + jsonObject);
-//                ACache.get(c).put(Common.UPDATE_INFO, jsonObject.toString());
-//                handler.obtainMessage(GET_UPDATE_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.out("failed---->" + status);
-//                handler.sendEmptyMessage(GET_UPDATE_FAILED);
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, null);
     }
 
 //    /**
@@ -3128,92 +1184,24 @@ public class API2 {
     /**
      * socket链接后处理方法
      */
-    public static Observable<JSONObject> noticeSocketConnect(final HttpCallback callback) {
+    public static Observable<JSONObject> noticeSocketConnect() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "noticeSocketConnect 链接成功");
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.v(TAG, "noticeSocketConnect 链接失败,状态码：" + status);
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, null);
     }
 
 
     /**
      * 手机端退出登录前调用
      */
-    public static Observable<JSONObject> noticeSocketDisConnect(final HttpCallback callback) {
+    public static Observable<JSONObject> noticeSocketDisConnect() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开成功");
-//                handler.sendEmptyMessage(SOCKET_DISCONNECT_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-//                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开失败,状态码：" + status);
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, null);
     }
 
 
@@ -3222,92 +1210,26 @@ public class API2 {
      *
      * @param clearType
      */
-    public static Observable<JSONObject> clearSocketCachePhotoCount(String clearType, final HttpCallback callback) {
+    public static Observable<JSONObject> clearSocketCachePhotoCount(String clearType) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (clearType != null) {
             params.put(Common.CLEAR_TYPE, clearType);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息成功");
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, null);
     }
 
 
     /**
      * 返回用户未接收到的推送消息
      */
-    public static Observable<JSONObject> getSocketData(final HttpCallback callback) {
+    public static Observable<JSONObject> getSocketData() {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.v(TAG, "getSocketData onSuccess() jsonObject: " + jsonObject.toString());
-//                handler.obtainMessage(GET_SOCKET_DATA_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.v(TAG, "getSocketData onFailure() status: " + status);
-//                handler.obtainMessage(GET_SOCKET_DATA_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, null);
     }
 
     /***************************************
@@ -3321,7 +1243,7 @@ public class API2 {
      *
      * @param pppCode
      */
-    public static Observable<JSONObject> getPPsByPPPAndDate(String pppCode, final HttpCallback callback) {
+    public static Observable<JSONObject> getPPsByPPPAndDate(String pppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (pppCode != null) {
@@ -3329,42 +1251,7 @@ public class API2 {
         }
         String url = Common.BASE_URL_TEST + Common.GET_PPS_BY_PPP_AND_DATE;
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(url, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(url, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PPlist = JsonUtil.getPPSByPPP(jsonObject);
-//                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_SUCCESS, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return get(url, params, null);
     }
 
 
@@ -3374,7 +1261,7 @@ public class API2 {
      * @param pps
      * @param pppCode
      */
-    public static Observable<JSONObject> bindPPsDateToPPP(JSONArray pps, String pppCode, final HttpCallback callback) {
+    public static Observable<JSONObject> bindPPsDateToPPP(JSONArray pps, String pppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (pps != null) {
@@ -3385,40 +1272,7 @@ public class API2 {
         }
         String url = Common.BASE_URL_TEST + Common.BIND_PPS_DATE_TO_PPP;
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(url, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(BIND_PPS_DATE_TO_PP_SUCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(BIND_PPS_DATE_TO_PP_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(url, params, null);
     }
 
     /**
@@ -3426,9 +1280,8 @@ public class API2 {
      *
      * @param photoID   id
      * @param shareType 视频还是照片
-     * @param id        点击id
      */
-    public static Observable<JSONObject> getShareUrl(String photoID, String shareType, final int id, final HttpCallback callback) {
+    public static Observable<JSONObject> getShareUrl(String photoID, String shareType) {//final int id,
         Map<String,Object> params = new HashMap<>();
         JSONObject orgJSONObject = new JSONObject();
         try {
@@ -3443,93 +1296,21 @@ public class API2 {
         //BASE_URL_TEST2 测试成功
         PictureAirLog.out("get share url----------------" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
-//                handler.obtainMessage(GET_SHARE_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "获取分享失败" + status);
-//                handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, null);
     }
 
     /**
      * 获取分享的URL
      *
      * @param longURL
-     * @param id        点击id
      */
-    public static Observable<JSONObject> getShortUrl(String longURL, final int id, final HttpCallback callback) {
+    public static Observable<JSONObject> getShortUrl(String longURL) {//, final int id
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LONG_URL, longURL);
         PictureAirLog.out("get share url----------------" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
-//                handler.obtainMessage(GET_SHORT_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "获取分享失败" + status);
-//                handler.obtainMessage(GET_SHORT_URL_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, null);
     }
 
     /**
@@ -3538,7 +1319,7 @@ public class API2 {
      * @param shareId
      * @param platform
      */
-    public static Observable<JSONObject> shareCallBack(String shareId, String platform, final HttpCallback callback) {
+    public static Observable<JSONObject> shareCallBack(String shareId, String platform) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (shareId != null) {
@@ -3550,145 +1331,31 @@ public class API2 {
 
         PictureAirLog.e("----shareCallBack:", "" + params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("call back success---->" + jsonObject);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//            }
-//        });
-//
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, null);
     }
 
     /**
      * 获取照片的最新数据,并后台统计图片的下载数量
      *
      * @param tokenId
-     * @param id photoId
-     * @param isDownload 后台要统计图片
-     * @param downloadPhotoIds 有原图链接时,该对象存储photoId,后台用于过滤,没有原图链接时为null
+     * @param hasOriginalUrl 是否有原图
      */
-    public static Observable<JSONObject> getPhotosInfo(String tokenId, final int id, final boolean isDownload, final JSONArray downloadPhotoIds,final DownloadFileStatus fileStatus, final HttpCallback callback) {
+    public static Observable<JSONObject> getPhotosInfo(String tokenId, final boolean hasOriginalUrl,final DownloadFileStatus fileStatus) {
         Map<String,Object> params = new HashMap<>();
-        JSONArray ids = new JSONArray();
-        ids.add(fileStatus.getPhotoId());
+
         params.put(Common.USERINFO_TOKENID, tokenId);
-        if (ids != null) {
-            params.put(Common.EPPP_IDS, ids.toJSONString());
+        params.put(Common.ISDOWNLOAD, true);
+        //有原图是字符串downloadPhotoIds，没有原图是传ids ，jsonArray
+        if (hasOriginalUrl) {
+            params.put(Common.DOWNLOAD_PHOTO_IDS, fileStatus.getPhotoId());
+        } else {
+            JSONArray ids = new JSONArray();
+            ids.add(fileStatus.getPhotoId());
+            params.put(Common.EPPP_IDS, ids.toString());
+
         }
-        params.put(Common.ISDOWNLOAD, isDownload);
-        if (downloadPhotoIds != null) {
-            params.put(Common.DOWNLOAD_PHOTO_IDS, downloadPhotoIds.toString());
-        }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.doOnSubscribe();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
-//
-//            private void sendNoDataMsg () {
-//                Message msg = handler.obtainMessage();
-//                msg.what = DOWNLOAD_PHOTO_FAILED;
-//                Bundle bundle = new Bundle();
-//                if (fileStatus.isVideo() == 0) {
-//                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-//                } else {
-//                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-//                }
-//                bundle.putParcelable("url", fileStatus);
-//                bundle.putInt("status", 404);
-//                msg.setData(bundle);
-//                handler.sendMessage(msg);
-//            }
-//
-//            private void sendMsg() {
-//                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
-//                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-//                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-//                } else {
-//                    sendNoDataMsg();
-//                }
-//            }
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.out("jsonobject---->" + jsonObject.toString());
-//                JSONArray photos = jsonObject.getJSONArray("photos");
-//                if (photos.size() > 0) {
-//                    PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-//                    fileStatus.setNewUrl(photoInfo.photoPathOrURL);
-//                    if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
-//                        handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-//                    } else {
-//                        sendMsg();
-//                    }
-//                } else {
-//                    sendMsg();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                if (downloadPhotoIds != null) {//如果有原图链接的情况直接下载
-//                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-//                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-//                } else {
-//                    Message msg = handler.obtainMessage();
-//                    msg.what = DOWNLOAD_PHOTO_FAILED;
-//                    Bundle bundle = new Bundle();
-//                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-//                    bundle.putParcelable("url", fileStatus);
-//                    bundle.putInt("status", 401);
-//                    msg.setData(bundle);
-//                    handler.sendMessage(msg);
-//                }
-//            }
-//        });
-//
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
     }
 
     /**************************************下载图片 Start**************************************/
@@ -3797,7 +1464,7 @@ public class API2 {
      * @param pwd
      * @param mobile
      */
-    public static Observable<JSONObject> findPwd(String pwd, String mobile, final HttpCallback callback) {
+    public static Observable<JSONObject> findPwd(String pwd, String mobile) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
@@ -3805,41 +1472,7 @@ public class API2 {
             params.put(Common.USERINFO_USERNAME, mobile);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.FORGET_PWD, params, null);
     }
 
     /**
@@ -3848,7 +1481,7 @@ public class API2 {
      * @param email
      * @param language
      */
-    public static Observable<JSONObject> findPwdEmail(String email, String language, String tokenId, final HttpCallback callback) {
+    public static Observable<JSONObject> findPwdEmail(String email, String language, String tokenId) {
         Map<String,Object> params = new HashMap<>();
         if (null != language) {
             params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
@@ -3858,40 +1491,7 @@ public class API2 {
             params.put(Common.USERINFO_EMAIL, email);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, null);
     }
 
 
@@ -3899,7 +1499,7 @@ public class API2 {
      * 获取unionpay的tn
      *
      */
-    public static Observable<JSONObject> getUnionPayTN(String orderCode, final HttpCallback callback){
+    public static Observable<JSONObject> getUnionPayTN(String orderCode){
         PictureAirLog.e(TAG, MyApplication.getTokenId());
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -3908,40 +1508,7 @@ public class API2 {
         }
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "jsonObject" + jsonObject);
-//                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN, params, null);
     }
 
 
@@ -3950,7 +1517,7 @@ public class API2 {
      * 1. tokenId
      * 2. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static Observable<JSONObject> getCartItemCoupons(JSONArray cartItemIds, final HttpCallback callback) {
+    public static Observable<JSONObject> getCartItemCoupons(JSONArray cartItemIds) {
         Map<String,Object> params = new HashMap<>();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
@@ -3959,39 +1526,7 @@ public class API2 {
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_COUPONS, params, null);
     }
 
 
@@ -4006,7 +1541,7 @@ public class API2 {
      * 2. 优惠code
      * 3. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static Observable<JSONObject> addCoupons(String couponsCode, JSONArray cartItemIds, final HttpCallback callback) {
+    public static Observable<JSONObject> addCoupons(String couponsCode, JSONArray cartItemIds) {
         Map<String,Object> params = new HashMap<>();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
@@ -4017,39 +1552,7 @@ public class API2 {
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, null);
     }
 
     /**
@@ -4058,7 +1561,7 @@ public class API2 {
      * @param couponCodes  优惠码
      * @param cartItemsIds 用户选中的购物项
      */
-    public static Observable<JSONObject> previewCoupon(JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds, final HttpCallback callback) {
+    public static Observable<JSONObject> previewCoupon(JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (couponCodes != null) {
@@ -4070,87 +1573,20 @@ public class API2 {
         params.put("isNeedInvoice", needInvoice);
         PictureAirLog.v(TAG, "previewCoupon params：" + params);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(PREVIEW_COUPON_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(PREVIEW_COUPON_FAILED, status, 0).sendToTarget();
-//            }
-//
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, null);
     }
 
     /**
      * 从me中进入查询抵用劵
      *
      */
-    public static Observable<JSONObject> getCoupons(final HttpCallback callback) {
+    public static Observable<JSONObject> getCoupons() {
         Map<String,Object> params = new HashMap<>();
 
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "============" + jsonObject);
-//                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "============" + status);
-//                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, null);
     }
 
     /**
@@ -4158,49 +1594,14 @@ public class API2 {
      * 用于预览图片页面，“使用已有的迪斯尼乐拍通一卡通”
      * @param shootDate
      */
-    public static Observable<JSONObject> getPPPsByShootDate(String shootDate, final HttpCallback callback) {
+    public static Observable<JSONObject> getPPPsByShootDate(String shootDate) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (shootDate != null) {
             params.put(Common.SHOOTDATE,shootDate);
         }
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-////                PictureAirLog.e(TAG, "============" + jsonObject);
-//                PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
-//                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-////                PictureAirLog.e(TAG, "============" + status);
-//                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, null);
     }
 
     /**
@@ -4209,48 +1610,13 @@ public class API2 {
      * @param dealingKey
      * @return
      */
-    public static Observable<JSONObject> updateDealingOrder(String orderCode, String dealingKey, final HttpCallback callback) {
+    public static Observable<JSONObject> updateDealingOrder(String orderCode, String dealingKey) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.ORDER_CODE, orderCode);
         params.put(Common.DEALINGKEY, dealingKey);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.UPDATE_DEALING_ORDER, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_DEALING_ORDER, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.json(jsonObject.toString());
-//                handler.obtainMessage(UPDATE_DEALING_ORDER_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(UPDATE_DEALING_ORDER_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.UPDATE_DEALING_ORDER, params, null);
     }
 
 
@@ -4263,7 +1629,7 @@ public class API2 {
      * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
      */
     public static Observable<JSONObject> addBook(JSONArray goods, JSONArray couponCodes, int deliveryType, String outletId, String addressId,
-                                              int payType, String channelId, String dealingKey, final HttpCallback callback) {
+                                              int payType, String channelId, String dealingKey) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (goods != null) {
@@ -4292,84 +1658,15 @@ public class API2 {
         }
         PictureAirLog.out("addorder params ------------>"+params.toString());
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.post(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-//        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                handler.obtainMessage(ADD_BOOKING_SUCCESS, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(ADD_BOOKING_FAILED, status, 0).sendToTarget();
-//
-//            }
-//        });
-//        return task;
+        return post(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, null);
     }
 
-    public static Observable<JSONObject> getSingleGoods(String dealingUrl, final HttpCallback callback) {
+    public static Observable<JSONObject> getSingleGoods(String dealingUrl, String language) {//, final boolean onClick
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE, language);
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + dealingUrl, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + dealingUrl, params, new HttpCallback() {
-//
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                PictureAirLog.json(jsonObject.toString());
-//                handler.obtainMessage(GET_SINGLE_GOODS_SUCCESS, jsonObject).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_SINGLE_GOODS_FAILED, status, 0).sendToTarget();
-//            }
-//
-//        });
-
+        return get(Common.BASE_URL_TEST + dealingUrl, params, null);
     }
 
     /**
@@ -4377,15 +1674,27 @@ public class API2 {
      *
      * @param tokenId
      */
-    public static Observable<JSONObject> getSouvenirPhotos(final String tokenId, String ppCode, final HttpCallback callback) {
+    public static Observable<JSONObject> getSouvenirPhotos(final String tokenId, final String ppCode) {
         Map<String,Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (!TextUtils.isEmpty(ppCode)) {
             params.put(Common.CUSTOMERID, ppCode);
         }
 
+        return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
+    }
+
+
+
+    /**
+     * 公共请求方法(无参)
+     * @param requestUrl
+     * @param callback
+     * @return
+     */
+    private static Observable<JSONObject> get(final String requestUrl, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable  = request.get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new ProgressListener() {
+        Observable<JSONObject> observable = request.get(requestUrl, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (callback != null) callback.onProgress(bytesRead, contentLength);
@@ -4402,36 +1711,39 @@ public class API2 {
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
-
-
-//        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new com.pictureair.photopass.util.HttpCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                super.onSuccess(jsonObject);
-//                //成功获取照片信息
-//
-//                PictureAirLog.json(jsonObject.toString());
-//                handler.obtainMessage(GET_SOUVENIR_PHOTO_SUCCESS, jsonObject).sendToTarget();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(GET_SOUVENIR_PHOTO_FAILED, status, 0).sendToTarget();
-//            }
-//        });
-//        return task;
     }
 
+    private static Observable<JSONObject> post(final String url, final HttpCallback callback) {
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable  = request.post(url, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
+    }
+
+
     /**
-     * 公共请求方法
+     * 公共请求方法(有参
      * @param params
      * @param requestUrl
      * @param callback
      * @return
      */
-    private static Observable<JSONObject> get(Map<String, Object> params, String requestUrl, final HttpCallback callback) {
+    private static Observable<JSONObject> get(final String requestUrl, Map<String, Object> params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         Observable<JSONObject> observable = request.get(requestUrl, params, new ProgressListener() {
             @Override
@@ -4452,7 +1764,7 @@ public class API2 {
         return observable;
     }
 
-    private static Observable<JSONObject> post(Map<String, Object> params, final String url, final HttpCallback callback) {
+    private static Observable<JSONObject> post(final String url, Map<String, Object> params, final HttpCallback callback) {
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         Observable<JSONObject> observable  = request.post(url, params, new ProgressListener() {
@@ -4465,7 +1777,53 @@ public class API2 {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        callback.doOnSubscribe();
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
+    }
+
+    private static Observable<JSONObject> delete(final String url, Map<String, Object> params, final HttpCallback callback) {
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable  = request.delete(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
+        return observable;
+    }
+
+    private static Observable<JSONObject> put(final String url, Map<String, Object> params, final HttpCallback callback) {
+
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable  = request.put(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())

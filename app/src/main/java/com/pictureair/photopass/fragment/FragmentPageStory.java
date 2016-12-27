@@ -547,7 +547,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     }
 
     private void getLocation() {
-        Observable.concat(acache, API2.getLocationInfo(context, app.getTokenId())
+        Observable.concat(acache, API2.getLocationInfo(app.getTokenId())
                 .map(new Func1<JSONObject, JSONObject>() {
                     @Override
                     public JSONObject call(JSONObject jsonObject) {

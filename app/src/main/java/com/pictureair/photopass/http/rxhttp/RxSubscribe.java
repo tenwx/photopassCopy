@@ -11,6 +11,7 @@ import rx.Subscriber;
 public abstract class RxSubscribe<T> extends Subscriber<T> {
 
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
+    private static final String TAG = "Response result";
 
     @Override
     public void onNext(T t) {
@@ -19,6 +20,7 @@ public abstract class RxSubscribe<T> extends Subscriber<T> {
 
     @Override
     public void onError(Throwable e) {
+        PictureAirLog.e(TAG, e.toString());
         if (e instanceof ServerException) {
             _onError(((ServerException) e).getState());
         } else {

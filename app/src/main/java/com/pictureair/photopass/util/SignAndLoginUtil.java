@@ -4,12 +4,19 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.widget.PWProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.RxActivity;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 接受loginActicity中传来的手机号和密码
@@ -46,127 +53,6 @@ public class SignAndLoginUtil implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-
-        switch (msg.what) {
-            case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
-                dismissPWProgressDialog();
-                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.GET_TOKEN_ID_SUCCESS://获取tokenId成功
-                PictureAirLog.out("start sign or login");
-                if (isSign) {
-                    API1.Register(account, pwd,
-                            AESKeyHelper.decryptString(
-                                    SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null),
-                                    PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler);
-                } else {
-                    API1.Login(context, account, pwd, loginType, verificationCode, handler);
-                }
-                break;
-
-            case API1.LOGIN_FAILED://登录失败
-                switch (msg.arg1) {
-                    case 6035://token过期
-                        id = R.string.http_error_code_401;
-                        PictureAirLog.v(TAG, "tokenExpired");
-                        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
-                        break;
-
-                    case 6031://用户名不存在
-                    case 6033://密码错误
-                        id = ReflectionUtil.getStringId(context, msg.arg1);
-                        break;
-
-                    default:
-                        id = ReflectionUtil.getStringId(context, msg.arg1);
-                        break;
-                }
-                dismissPWProgressDialog();
-                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
-                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.LOGIN_SUCCESS://登录成功
-                String headUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
-                if (headUrl != null) {//头像不为空，下载头像文件
-                    API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH, handler);
-                }
-                String bgUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BGPHOTO, null);
-                if (bgUrl != null) {//背景不为空，下载背景文件
-                    API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT, handler);
-                }
-
-                if (needModifyInfo) {//需要修改个人信息
-                    API1.updateProfile(AESKeyHelper.decryptString(
-                            SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""),
-                            PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
-                            name, birthday, gender, country, "", API1.UPDATE_PROFILE_ALL, handler);
-                } else {
-                    handler.sendEmptyMessage(API1.UPDATE_PROFILE_SUCCESS);
-                }
-                break;
-
-            case API1.SIGN_FAILED://注册失败
-                PictureAirLog.out("msg --->" + msg.arg1);
-                switch (msg.arg1) {
-                    case 6029://邮箱已经存在
-                    case 6030://手机号已经存在
-                        id = ReflectionUtil.getStringId(context, msg.arg1);
-                        break;
-
-                    default:
-                        id = ReflectionUtil.getStringId(context, msg.arg1);
-                        break;
-                }
-                dismissPWProgressDialog();
-                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
-                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.SIGN_SUCCESS://注册成功
-                API1.Login(context, account, pwd, loginType, verificationCode, handler);
-                break;
-
-
-            case API1.UPDATE_PROFILE_FAILED://修改个人信息失败
-            case API1.GET_CART_FAILED://获取购物车失败
-                id = ReflectionUtil.getStringId(context, msg.arg1);
-                dismissPWProgressDialog();
-                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
-                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                break;
-
-            //修改个人信息成功
-            case API1.UPDATE_PROFILE_SUCCESS:
-                if (needModifyInfo) {
-                    //需要将个人信息保存部分
-                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, country);
-                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, gender);
-                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthday);
-                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, name);
-                }
-                PictureAirLog.v(TAG, "start get cart");
-                PictureAirLog.out("start get cart");
-                API1.getCarts(null,handler);
-                break;
-
-            case API1.GET_CART_SUCCESS://获取购物车成功
-                PictureAirLog.out("get cart count success");
-                int cartCount = 0;
-                CartItemInfoJson cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
-                if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
-                    cartCount = cartItemInfoJson.getTotalCount();
-                }
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, cartCount);
-                PictureAirLog.out("start get pp");
-                //登录成功，跳转界面
-                loginsuccess();
-                break;
-
-            default:
-                break;
-        }
         return false;
     }
 
@@ -202,11 +88,230 @@ public class SignAndLoginUtil implements Handler.Callback {
         handler = new Handler(this);
         if (null == SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null)) {
             PictureAirLog.v(TAG, "no tokenid");
-            API1.getTokenId(context, handler);
+            getTokenId();
         } else {
             PictureAirLog.v(TAG, "has tokenid");
-            handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+            goSignOrLogin();
         }
+    }
+
+
+    private void getTokenId(){
+        API2.getTokenId(context)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        try {
+                            byte[] key = ACache.get(MyApplication.getInstance()).getAsBinary(Common.USERINFO_SALT);
+                            if (key == null) {
+                                ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
+                            }
+                            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID,
+                                    AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+                            PictureAirLog.out("start sign or login");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        goSignOrLogin();
+                        PictureAirLog.e("getTokenId", "onCompleted end");
+                    }
+                });
+
+    }
+
+    private void goSignOrLogin() {
+        if (isSign) {
+            register();
+        } else {
+            login();
+        }
+    }
+
+    private void register() {
+        PictureAirLog.e("register", "register start");
+        API2.Register(account, pwd)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        switch (status) {
+                            case 6029://邮箱已经存在
+                            case 6030://手机号已经存在
+                                id = ReflectionUtil.getStringId(context, status);
+                                break;
+
+                            default:
+                                id = ReflectionUtil.getStringId(context, status);
+                                break;
+                        }
+                        dismissPWProgressDialog();
+                        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
+                        myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        login();
+                        PictureAirLog.e("register", "onCompleted end");
+                    }
+                });
+    }
+
+    private void login() {
+        PictureAirLog.e("login", "login start");
+        API2.Login(account, pwd, loginType, verificationCode)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                        JsonUtil.getUserInfo(context, jsonObject, account, null);
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        switch (status) {
+                            case 6035://token过期
+                                id = R.string.http_error_code_401;
+                                PictureAirLog.v(TAG, "tokenExpired");
+                                break;
+
+                            case 6031://用户名不存在
+                            case 6033://密码错误
+                                id = ReflectionUtil.getStringId(context, status);
+                                break;
+
+                            default:
+                                id = ReflectionUtil.getStringId(context, status);
+                                break;
+                        }
+                        dismissPWProgressDialog();
+                        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
+                        myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        String headUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
+                        if (headUrl != null) {//头像不为空，下载头像文件
+                            API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH, handler);
+                        }
+                        String bgUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BGPHOTO, null);
+                        if (bgUrl != null) {//背景不为空，下载背景文件
+                            API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT, handler);
+                        }
+
+                        if (needModifyInfo) {//需要修改个人信息
+                            updateProfile();
+                        } else {
+                            updateProfileSuccess();
+                        }
+
+                        PictureAirLog.e("login", "onCompleted end");
+                    }
+                });
+    }
+
+
+    private void updateProfile() {
+        PictureAirLog.e("updateProfile", "updateProfile start");
+        API2.updateProfile(AESKeyHelper.decryptString(
+                SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""),
+                PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
+                name, birthday, gender, country, "")//, API1.UPDATE_PROFILE_ALL
+         .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+         .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        profileOrCartsFailed(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        updateProfileSuccess();
+                        PictureAirLog.e("updateProfile", "onCompleted end");
+                    }
+                });
+    }
+
+
+    private void getCarts() {
+        PictureAirLog.e("getCarts", "getCarts start");
+        API2.getCarts(null)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.out("get cart count success");
+                        int cartCount = 0;
+                        CartItemInfoJson cartItemInfoJson = JsonTools.parseObject(jsonObject, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                        if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
+                            cartCount = cartItemInfoJson.getTotalCount();
+                        }
+                        SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, cartCount);
+                        PictureAirLog.out("start get pp");
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        profileOrCartsFailed(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        //登录成功，跳转界面
+                        loginsuccess();
+                        PictureAirLog.e("getCarts", "onCompleted end");
+                    }
+                });
+    }
+
+    private void updateProfileSuccess() {
+        if (needModifyInfo) {
+            //需要将个人信息保存部分
+            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, country);
+            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, gender);
+            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthday);
+            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, name);
+        }
+        PictureAirLog.v(TAG, "start get cart");
+        PictureAirLog.out("start get cart");
+        getCarts();
+    }
+
+    private void profileOrCartsFailed(int status) {
+        id = ReflectionUtil.getStringId(context, status);
+        dismissPWProgressDialog();
+        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
+        myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
     }
 
     public void destroy(){
