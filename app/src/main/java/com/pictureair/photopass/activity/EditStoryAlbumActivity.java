@@ -739,7 +739,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				for (int i = 0; i < albumArrayList.size(); i++) {
 					if (albumArrayList.get(i).getIsSelected() == 1) {
 						sharePop.setshareinfo(albumArrayList.get(i), editStoryAlbumHandler);
-						return;
+						break;
 					}
 				}
 				sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
