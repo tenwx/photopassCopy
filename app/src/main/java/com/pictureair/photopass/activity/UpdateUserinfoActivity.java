@@ -112,15 +112,6 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
                         mIntent.putExtra("nickName", userInfo);
                         this.setResult(1, mIntent);
                         break;
-                    case Common.QQTYPE:
-                        if (TextUtils.isEmpty(etUserInfo.getText().toString().trim())) {
-
-                            return;
-                        }
-                        mIntent = new Intent();
-                        mIntent.putExtra("qq", userInfo);
-                        this.setResult(2, mIntent);
-                        break;
 
                     default:
                         break;

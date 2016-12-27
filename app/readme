@@ -106,3 +106,22 @@ versionCode 2     versionName "1.0.1"
 -------16/4/15------
 versionCode 1     versionName "1.0.0"
 更新要点：临时发布版本，不稳定
+
+资源文件备注：
+res
+ -raw
+  -address.txt  收货地址文件
+  -beep.mav     扫描成功的音频文件
+
+assets
+ -data.bin      银联
+ -icudt46l.zip  sqlcipher
+ -ShareSDK.xml  分享本地配置文件
+
+jniLibs
+ -armeabi(/-v7a)
+  -libentryexpro.so         银联
+  -libnbsdc-jni1.2.0.so     听云
+  -libpw_cipher_manager.so  key管理
+  -libsqlcipher.so          sqlcipher
+  -libuptsmaddon.so         银联

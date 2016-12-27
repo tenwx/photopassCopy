@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="udesk_titlebar_back">返回</string>
     <string name="udesk_navi_open_im">联系我们</string>
     <string name="udesk_navi_helper_title_main">帮助</string>
@@ -16,6 +15,7 @@
     <string name="udesk_copy">复制</string>
     <string name="udesk_fail_save_image">图片保存失败</string>
     <string name="udesk_success_save_image">成功保存</string>
+    <string name="udesk_error_network">无网络</string>
     <string name="udesk_cancel">取消</string>
     <string name="udesk_sure">确定</string>
     <string name="udesk_ok">留言</string>
@@ -34,22 +34,20 @@
     <string name="udesk_has_not_open_robot">当前APP还没有开启智能机器人客服功能</string>
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
     <string name="udesk_options_agentgroup">请选择客服组</string>
-
     <string name="aduido_denied">拒绝了录音权限，无法录音</string>
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
     <string name="photo_denied">拒绝了获取相册权限，无法获取图片</string>
     <string name="add_bolcked_tips">抱歉，你已经被加入了黑名单</string>
     <string name="udesk_agent_connecting">客服连接中...</string>
     <string name="udesk_agent_connecting_error_net_uavailabl">连接失败,稍后再试!</string>
-
     <string name="udesk_edit_hint_msg">输入消息...</string>
     <string name="udesk_voice_init">按住说话</string>
     <string name="udesk_voice_cancle">手指松开，取消发送</string>
+    <string name="udesk_voice_ready">准备中...</string>
     <string name="udesk_thanks_survy">感谢您的评价！</string>
     <string name="udesk_transfer_success">客服转接成功,</string>
     <string name="udesk_service">为您服务</string>
     <string name="udesk_nonexistent_agent"> 客服不存在，请核对输入的客服ID是否正确</string>
     <string name="udesk_nonexistent_groupId"> 客服组不存在，请核对输入的客服组ID是否正确</string>
-
     <string name="udesk_has_survey"> 谢谢，您已对本次服务做出过评价了!</string>
 </resources>

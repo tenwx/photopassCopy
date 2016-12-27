@@ -1,6 +1,5 @@
 package com.pictureair.photopass.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -53,7 +52,6 @@ import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -79,8 +77,8 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -91,16 +89,7 @@ import rx.schedulers.Schedulers;
  */
 public class FragmentPageStory extends BaseFragment implements OnClickListener, DailyPPCardRecycleAdapter.OnRecyclerViewItemClickListener {
     //声明静态变量
-    private static final int REFRESH = 666;
-    private static final int SORT_COMPLETED_ALL = 223;
-    private static final int LOAD_PHOTO_FROM_DB = 1003;
     private static final int REFRESH_ALL_PHOTOS = 1006;
-
-    private static final int NO_CARD_VIEW = 101;
-    private static final int CARD_WITH_NO_PHOTOS_VIEW = 102;
-    private static final int PHOTOS_VIEW = 103;
-
-    private int currentVisibleView;
 
     private static final String TAG = "FragmentPageStory";
 
@@ -109,9 +98,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private boolean needfresh = false;
 
-    private boolean refreshPPlist = false;
-
-    private boolean getLocationPhotosDone = false;
     /**
      * 从sp中读取的值，如果是true，就要保存起来，一旦失败，就要把这个值给needfresh
      */
@@ -139,19 +125,20 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private RecyclerView noPhotoRV, dailyPPCardRV;
     private NoPhotoRecycleAdapter noPhotoRecycleAdapter;
     private DailyPPCardRecycleAdapter dailyPPCardRecycleAdapter;
+    private ImageView img_float_hide;
+    private FloatingActionButton fab;
+    private PWToast myToast;
 
-    //申明类
+    //申明变量
     private MyApplication app;
-
     private ArrayList<DailyPPCardInfo> dailyPPCardInfoArrayList = new ArrayList<>();
-
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private ArrayList<PPinfo> pPinfoArrayList = new ArrayList<>();
     private Activity context;
-    private PWToast myToast;
     private DealingInfo dealingInfo;
     private GoodsInfo pppGoodsInfo = null;
     private String[] photoUrls;
+    private String cartId = null;
 
     /**
      * 同步已经购买的照片
@@ -159,9 +146,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private boolean syncingBoughtPhotos = false;
 
     private boolean mIsAskStoragePermission = false;
-
-    private ImageView img_float_hide;
-    private FloatingActionButton fab;
 
     //申明handler消息回调机制
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
@@ -190,81 +174,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case API1.GET_AD_LOCATIONS_SUCCESS://获取广告地点成功
-                PictureAirLog.out("ad location---->" + msg.obj.toString());
-                /**
-                 * 1.存入数据库
-                 * 2.在application中记录结果
-                 */
-                JSONObject adJsonObject = (JSONObject) msg.obj;
-                PictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"));
-                app.setGetADLocationSuccess(true);
-                break;
-
-            case LOAD_PHOTO_FROM_DB:
-                if (dailyPPCardInfoArrayList.size() == 0 || needfresh) {
-                    //数据为0，需要从网上下载
-                    PictureAirLog.out("photolist size = 0");
-                    //判断是否之前有成功获取过
-                    PictureAirLog.out("story flow ---> start get photo from net");
-                    getLocationPhotos(false);
-                } else {
-                    //有数据，直接显示
-                    fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_ALL);
-                }
-                break;
-
-            case REFRESH_ALL_PHOTOS:
-                if (!hasHidden) {
-                    showPWProgressDialog();
-                    getLocationPhotos(true);
-                    API1.getPPSByUserId(false, fragmentPageStoryHandler);
-
-                } else {
-                    fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
-                }
-                break;
-
-            case API1.GET_SOCKET_DATA_SUCCESS://手动刷新成功
-                //获取推送成功，后面逻辑按照之前走
-                PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
-                JSONObject jsonObject = (JSONObject) msg.obj;
-                if (jsonObject.size() > 0) {
-                    JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null);
-                }
-                break;
-
-            case REFRESH://开始刷新
-                PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
-                API1.getPPSByUserId(false, fragmentPageStoryHandler);
-                getLocationPhotos(true);
-                showLeadView();
-                break;
-
-            case SORT_COMPLETED_ALL:
-                PictureAirLog.out("story flow ---> sort data done");
-                if (syncingBoughtPhotos) {//同步购买照片操作
-                    syncingBoughtPhotos = false;
-                    if (dailyPPCardRecycleAdapter != null) {
-                        dailyPPCardRecycleAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    showViewPager();
-                    noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
-                    if (sharedNeedFresh) {
-                        sharedNeedFresh = false;
-                    }
-                }
-
-                dismissPWProgressDialog();
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载数据
                 PictureAirLog.out("onclick with reload");
                 showPWProgressDialog();
-                getLocation();
+                getPPList(true, false, false);
                 break;
 
             case PPPPop.POP_SCAN:
@@ -284,182 +198,19 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 }
                 break;
 
-            case API1.GET_GOODS_SUCCESS:
-                if (context == null) {
-                    break;
-                }
-                List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+            case REFRESH_ALL_PHOTOS:
+                if (!hasHidden) {
+                    showPWProgressDialog();
+                    getPPList(false, true, false);
 
-                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                    allGoodsList1.addAll(goodsInfoJson.getGoods());
-                }
-                //获取PP+
-                for (GoodsInfo goodsInfo : allGoodsList1) {
-                    if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                        pppGoodsInfo = goodsInfo;
-                        break;
-                    }
-                }
-                photoUrls = new String[pppGoodsInfo.getPictures().size()];
-                for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
-                    photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
-                }
-                //调用addToCart API1
-                API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, fragmentPageStoryHandler);
-                break;
-
-            case API1.GET_GOODS_FAILED:
-                dismissPWProgressDialog();
-                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.GET_PPS_SUCCESS:// 获取pp列表成功
-                pPinfoArrayList.clear();
-                pPinfoArrayList.addAll(JsonUtil.getPPList((JSONObject) msg.obj));
-                if (currentVisibleView != PHOTOS_VIEW && getLocationPhotosDone) {
-                    if (refreshPPlist) {
-                        dismissPWProgressDialog();
-                        refreshPPlist = false;
-                    }
-                    showViewPager();
-                }
-
-                //通知首页更新PP列表
-                EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
-                break;
-
-            case API1.GET_PPS_FAILED:// 获取pp列表失败
-                if (noPhotoViewRL.isShown() && msg.arg2 > 0) {//有卡无图页面，并且是需要显示网络异常页面，否则，不做任何处理
-                    noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-                    noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
+                } else {
+                    fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
                 }
                 break;
-
-            case API1.ADD_TO_CART_FAILED:
-                dismissPWProgressDialog();
-                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.ADD_TO_CART_SUCCESS:
-                JSONObject jsonObject1 = (JSONObject) msg.obj;
-                int currentCartCount = SPUtils.getInt(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-
-                String cartId = jsonObject1.getString("cartId");
-                dismissPWProgressDialog();
-                //生成订单
-                Intent intent3 = new Intent(context, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                CartItemInfo cartItemInfo = new CartItemInfo();
-                cartItemInfo.setCartId(cartId);
-                cartItemInfo.setProductName(pppGoodsInfo.getName());
-                cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-                cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-                cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-                cartItemInfo.setQty(1);
-                cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-                cartItemInfo.setPictures(photoUrls);
-                cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-                cartItemInfo.setCartProductType(3);
-
-                orderinfoArrayList.add(cartItemInfo);
-                intent3.putExtra("orderinfo", orderinfoArrayList);
-                startActivity(intent3);
-                break;
-
+            
             default:
                 break;
         }
-    }
-
-
-    /**
-     * 全部处理完成之后会调用
-     */
-    private void finishLoad(boolean setVisibile) {
-        //将video和photo标记清空
-        dismissPWProgressDialog();
-        if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-        if (setVisibile) {
-            storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-            if (sharedNeedFresh) {
-                needfresh = sharedNeedFresh;
-            }
-            noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
-            showLeadView();
-        } else {//刷新失败
-            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-        }
-    }
-
-    /**
-     * 获取一卡一天的数据列表
-     * @param isRefresh
-     */
-    private void getLocationPhotos(final boolean isRefresh) {
-        API2.getLocationPhoto(MyApplication.getTokenId())
-                .map(new Func1<JSONObject, ArrayList<DailyPPCardInfo>>() {
-                    @Override
-                    public ArrayList<DailyPPCardInfo> call(JSONObject jsonObject) {
-                        //更新数据库
-                        if (jsonObject.containsKey("locationP")) {
-                            PictureAirDbManager.updateJsonInfos(jsonObject.getJSONArray("locationP"), JsonInfo.JSON_LOCATION_PHOTO_TYPE);
-
-                        }
-                        return JsonUtil.getDailyPPCardInfoList(jsonObject, locationList, MyApplication.getInstance().getLanguageType());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RxSubscribe<ArrayList<DailyPPCardInfo>>() {
-                    @Override
-                    public void _onNext(ArrayList<DailyPPCardInfo> strings) {
-                        dailyPPCardInfoArrayList.clear();
-                        dailyPPCardInfoArrayList.addAll(strings);
-                    }
-
-                    @Override
-                    public void _onError(int status) {
-                        getLocationPhotosDone = true;
-                        finishLoad(!isRefresh);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        getLocationPhotosDone = true;
-                        //清空推送消息的数量
-                        app.setPushPhotoCount(0);
-
-                        if (isRefresh) {
-                            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
-
-                            //刷新广告地点
-                            app.setGetADLocationSuccess(false);
-                            API1.getADLocations(0, fragmentPageStoryHandler);
-
-                            showViewPager();
-                            if (swipeRefreshLayout.isRefreshing()) {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                            dismissPWProgressDialog();
-                        } else {
-                            //获取广告信息
-                            if (!app.isGetADLocationSuccess()) {
-                                PictureAirLog.out("start get ad location");
-                                API1.getADLocations(0, fragmentPageStoryHandler);
-                            } else {
-                                PictureAirLog.out("ad location has got already");
-                            }
-
-                            fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_ALL);
-                        }
-
-                    }
-                });
     }
 
     @Override
@@ -490,9 +241,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             @Override
             public void onRefresh() {
                 PictureAirLog.out("start refresh");
-                Message message = fragmentPageStoryHandler.obtainMessage();
-                message.what = REFRESH;
-                fragmentPageStoryHandler.sendMessage(message);
+                getRefreshData();
             }
         });
         gifRL = (RelativeLayout) view.findViewById(R.id.story_gif_rl);
@@ -540,80 +289,332 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (needfresh) {//如果一开始就需要全部刷新，
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
         }
-        //获取API
-        PictureAirLog.out("story flow ---> get location info");
-        getLocation();
+        //获取全部的pp
+        getPPList(true, false, false);
         return view;
     }
 
-    private void getLocation() {
-        Observable.concat(acache, API2.getLocationInfo(context, app.getTokenId())
-                .map(new Func1<JSONObject, JSONObject>() {
+    /**
+     * 获取pp列表
+     * @param needGetLocationData 是否需要继续获取location等信息
+     */
+    private void getPPList(final boolean needGetLocationData, final boolean refresh, final boolean dismissDia) {
+        PictureAirLog.d("get pp list ----> " + needGetLocationData);
+        API2.getPPSByUserId().compose(this.<JSONObject>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
-                    public JSONObject call(JSONObject jsonObject) {
-                        ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
-                        return jsonObject;
+                    public void _onNext(JSONObject jsonObject) {
+                        pPinfoArrayList.clear();
+                        pPinfoArrayList.addAll(JsonUtil.getPPList(jsonObject));
                     }
-                }))
-                .first()
-                .subscribeOn(Schedulers.io())
 
+                    @Override
+                    public void _onError(int status) {
+                        if (refresh) {//如果是刷新操作，需要获取照片信息
+                            getLocationPhotos(refresh);
+                        } else if (needGetLocationData) {//不是刷新操作，需要获取地点信息
+                            getLocationData(false);
+                        } else if (dismissDia) {
+                            dismissPWProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        if (refresh) {
+                            getLocationPhotos(refresh);
+                        } else if (needGetLocationData) {
+                            getLocationData(false);
+                        } else if (dismissDia) {
+                            dismissPWProgressDialog();
+                            showViewPager();
+                        }
+
+                        //通知首页更新PP列表
+                        EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW_UPDATE, pPinfoArrayList));
+
+                    }
+                });
+    }
+
+    /**
+     * 获取地点信息
+     * @param isRefresh 是否是下拉刷新操作
+     */
+    private void getLocationData(final boolean isRefresh) {
+        PictureAirLog.d("loadData start");
+        //先获取缓存的数据
+        Observable.just(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(final String s) {
+                        if (!TextUtils.isEmpty(s)) {//如果不为空，把缓存数据传递下去
+                            PictureAirLog.d("load data---> cache is not empty");
+                            return Observable.just(JSONObject.parseObject(s));
+
+                        } else {//如果为空，请求服务器，并将数据缓存起来
+                            PictureAirLog.d("load data---> cache is empty, need get from net");
+                            return API2.getLocationInfo(app.getTokenId())
+                                    .map(new Func1<JSONObject, JSONObject>() {
+                                        @Override
+                                        public JSONObject call(JSONObject jsonObject) {
+                                            ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
+                                            return jsonObject;
+                                        }
+                                    });
+
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .compose(this.<JSONObject>bindToLifecycle())
                 .map(new Func1<JSONObject, ArrayList<DiscoverLocationItemInfo>>() {
                     @Override
                     public ArrayList<DiscoverLocationItemInfo> call(JSONObject jsonObject) {
-                        PictureAirLog.d(TAG, "story flow ---> get location success" + jsonObject.toString());
+                        PictureAirLog.d(TAG, "load data ---> get location success" + jsonObject.toString());
                         locationList.clear();
                         locationList.addAll(AppUtil.getLocation(context, jsonObject.toString(), true));
                         return locationList;
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RxSubscribe<ArrayList<DiscoverLocationItemInfo>>() {
+                //开始从数据库获取一卡一天的数据
+                .map(new Func1<ArrayList<DiscoverLocationItemInfo>, ArrayList<DailyPPCardInfo>>() {
                     @Override
-                    public void _onNext(ArrayList<DiscoverLocationItemInfo> discoverLocationItemInfos) {
+                    public ArrayList<DailyPPCardInfo> call(ArrayList<DiscoverLocationItemInfo> discoverLocationItemInfos) {
+                        ArrayList<DailyPPCardInfo> list = new ArrayList<>();
+                        PictureAirLog.d("need refresh---> " + needfresh);
+                        if (!needfresh) {//不需要刷新
+                            PictureAirLog.d(TAG, "---------> load data from databases");
+                            ArrayList<JsonInfo> jsonInfos = new ArrayList<>();
+                            jsonInfos.addAll(PictureAirDbManager.getJsonInfos(JsonInfo.JSON_LOCATION_PHOTO_TYPE));
+                            list.addAll(JsonUtil.getDailyPPCardInfoList(jsonInfos, discoverLocationItemInfos, MyApplication.getInstance().getLanguageType()));
+                        }
+                        return list;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<ArrayList<DailyPPCardInfo>>() {
+                    @Override
+                    public void _onNext(ArrayList<DailyPPCardInfo> dailyPPCardInfos) {
+                        dailyPPCardInfoArrayList.clear();
+                        dailyPPCardInfoArrayList.addAll(dailyPPCardInfos);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        loadError(true);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        if (dailyPPCardInfoArrayList.size() == 0 || needfresh) {
+                            //数据为0，需要从网上下载，判断是否之前有成功获取过
+                            PictureAirLog.out("story flow ---> start get photo from net");
+                            getLocationPhotos(false);
+
+                        } else {
+                            PictureAirLog.out("story flow ---> show data");
+                            //有数据，直接显示
+                            //清空推送消息的数量
+                            app.setPushPhotoCount(0);
+                            if (!isRefresh) {//全部加载
+                                //获取广告信息
+                                if (!app.isGetADLocationSuccess()) {
+                                    PictureAirLog.out("start get ad location");
+                                    getADInfo();
+                                } else {
+                                    PictureAirLog.out("ad location has got already");
+                                }
+
+                                if (syncingBoughtPhotos) {//同步购买照片操作
+                                    syncingBoughtPhotos = false;
+                                    if (dailyPPCardRecycleAdapter != null) {
+                                        dailyPPCardRecycleAdapter.notifyDataSetChanged();
+                                    }
+                                } else {
+                                    showViewPager();
+                                    noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                                    if (sharedNeedFresh) {
+                                        sharedNeedFresh = false;
+                                    }
+                                }
+                                dismissPWProgressDialog();
+                            }
+                        }
+
+                    }
+                });
+    }
+
+    /**
+     * 获取一卡一天的数据列表
+     * @param isRefresh
+     */
+    private void getLocationPhotos(final boolean isRefresh) {
+        API2.getLocationPhoto(MyApplication.getTokenId())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .map(new Func1<JSONObject, ArrayList<DailyPPCardInfo>>() {
+                    @Override
+                    public ArrayList<DailyPPCardInfo> call(JSONObject jsonObject) {
+                        //更新数据库
+                        if (jsonObject.containsKey("locationP")) {
+                            PictureAirDbManager.updateJsonInfos(jsonObject.getJSONArray("locationP"), JsonInfo.JSON_LOCATION_PHOTO_TYPE);
+
+                        }
+                        return JsonUtil.getDailyPPCardInfoList(jsonObject, locationList, MyApplication.getInstance().getLanguageType());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<ArrayList<DailyPPCardInfo>>() {
+                    @Override
+                    public void _onNext(ArrayList<DailyPPCardInfo> strings) {
+                        dailyPPCardInfoArrayList.clear();
+                        dailyPPCardInfoArrayList.addAll(strings);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        loadError(!isRefresh);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        //清空推送消息的数量
+                        app.setPushPhotoCount(0);
+
+                        if (isRefresh) {
+                            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
+
+                            //刷新广告地点
+                            app.setGetADLocationSuccess(false);
+                            getADInfo();
+
+                            showViewPager();
+                            if (swipeRefreshLayout.isRefreshing()) {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                            dismissPWProgressDialog();
+                        } else {
+                            //获取广告信息
+                            if (!app.isGetADLocationSuccess()) {
+                                PictureAirLog.out("start get ad location");
+                                getADInfo();
+                            } else {
+                                PictureAirLog.out("ad location has got already");
+                            }
+
+                            if (syncingBoughtPhotos) {//同步购买照片操作
+                                syncingBoughtPhotos = false;
+                                if (dailyPPCardRecycleAdapter != null) {
+                                    dailyPPCardRecycleAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                showViewPager();
+                                noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                                if (sharedNeedFresh) {
+                                    sharedNeedFresh = false;
+                                }
+                            }
+                            dismissPWProgressDialog();
+                        }
+
+                    }
+                });
+    }
+
+    /**
+     * 开始刷新
+     */
+    private void getRefreshData() {
+        PictureAirLog.d(TAG, "start refreshing");
+        //获取socket推送信息
+        API2.getSocketData()
+                .compose(this.<JSONObject>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        //获取推送成功，后面逻辑按照之前走
+                        PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + jsonObject.toString());
+                        if (jsonObject.size() > 0) {
+                            JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
+        getPPList(false, true, false);
+        showLeadView();
+    }
+
+    /**
+     * 全部处理完成之后会调用
+     */
+    private void loadError(boolean setVisibile) {
+        //将video和photo标记清空
+        dismissPWProgressDialog();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        if (setVisibile) {
+            storyNoPpToScanLinearLayout.setVisibility(View.GONE);
+            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+            if (sharedNeedFresh) {
+                needfresh = sharedNeedFresh;
+            }
+            noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
+            showLeadView();
+        } else {//刷新失败
+            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+        }
+    }
+
+    /**
+     * 获取广告视频
+     */
+    private void getADInfo() {
+        PictureAirLog.d("get ad info");
+        API2.getADLocations()
+                .compose(this.<JSONObject>bindToLifecycle())
+                .doOnNext(new Action1<JSONObject>() {
+                    @Override
+                    public void call(JSONObject jsonObject) {
+                        PictureAirLog.out("ad location---->" + jsonObject.toString());
+                        /**
+                         * 1.存入数据库
+                         * 2.在application中记录结果
+                         */
+                        PictureAirDbManager.insertADLocations(jsonObject.getJSONArray("locations"));
+                        app.setGetADLocationSuccess(true);
+                    }
+                })
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
 
                     }
 
                     @Override
                     public void _onError(int status) {
-                        finishLoad(true);
+
                     }
 
                     @Override
                     public void onCompleted() {
-                        API1.getPPSByUserId(true, fragmentPageStoryHandler);
-                        if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
-                            PictureAirLog.d(TAG, "---------> load data from databases");
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    super.run();
-                                    ArrayList<JsonInfo> jsonInfos = new ArrayList<>();
-                                    jsonInfos.addAll(PictureAirDbManager.getJsonInfos(JsonInfo.JSON_LOCATION_PHOTO_TYPE));
 
-                                    dailyPPCardInfoArrayList.addAll(JsonUtil.getDailyPPCardInfoList(jsonInfos, locationList, MyApplication.getInstance().getLanguageType()));
-                                    fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
-                                }
-                            }.start();
-                        } else {
-                            fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
-                        }
                     }
                 });
     }
-
-    private Observable<JSONObject> acache = Observable.create(new Observable.OnSubscribe<JSONObject>() {
-        @Override
-        public void call(Subscriber<? super JSONObject> subscriber) {
-            String locationInfo = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
-            if (!TextUtils.isEmpty(locationInfo)) {
-                subscriber.onNext(JSONObject.parseObject(locationInfo));
-            } else {
-                subscriber.onCompleted();
-            }
-        }
-    });
 
     /**
      * 控制控件的隐藏或者显示
@@ -621,7 +622,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void showViewPager() {
         PictureAirLog.out("story flow ---> show view");
         if (dailyPPCardInfoArrayList != null && dailyPPCardInfoArrayList.size() > 0) {//有图片
-            currentVisibleView = PHOTOS_VIEW;
             PictureAirLog.out("viewpager---->has photos");
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
@@ -642,10 +642,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 dailyPPCardRecycleAdapter.notifyDataSetChanged();
             }
 
-            if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
+            if (app.getPushPhotoCount() == 0){
                 PictureAirLog.out("need gone the badgeview");
                 PictureAirLog.out("photocount---->" + app.getPushPhotoCount());
-                PictureAirLog.out("video count---->" + app.getPushViedoCount());
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
@@ -653,7 +652,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //判断是否应该显示左上角红点
             if (pPinfoArrayList.size() > 0) {
                 //有扫描过
-                currentVisibleView = CARD_WITH_NO_PHOTOS_VIEW;
                 PictureAirLog.out("viewpager---->no photos");
                 storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 
@@ -671,10 +669,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             } else {
                 //没有扫描过
-                currentVisibleView = NO_CARD_VIEW;
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //获取banner数据
                 API2.getBannerPhotos(MyApplication.getTokenId())
+                        .compose(this.<JSONObject>bindToLifecycle())
                         .map(new Func1<JSONObject, ArrayList<String>>() {
 
                             @Override
@@ -742,12 +740,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             PictureAirLog.out("need refresh");
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
-            if (currentVisibleView != PHOTOS_VIEW) {
-                refreshPPlist = true;
-                showPWProgressDialog();
-
-            }
-            API1.getPPSByUserId(false, fragmentPageStoryHandler);
+            showPWProgressDialog();
+            getPPList(false, false, true);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
     }
@@ -774,7 +768,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         context = null;
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -788,7 +781,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         hasHidden = hidden;
         PictureAirLog.out("hidden--->" + hidden);
         if (!hasHidden) {
-            if (app.getPushPhotoCount() + app.getPushViedoCount() > 0) {
+            if (app.getPushPhotoCount() > 0) {
                 PictureAirLog.out("hidden--->开始刷新");
                 //刷新操作
                 clickToRefresh();
@@ -804,10 +797,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //不需要super
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onClick(View v) {
-        Intent i = null;
+        Intent i;
         switch (v.getId()) {
             //扫描按钮
             case R.id.story_menu_rl:
@@ -846,8 +838,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case R.id.fab:
-                Intent intent = new Intent(context, OpinionsActivity.class);
-                startActivity(intent);
+                i = new Intent(context, OpinionsActivity.class);
+                startActivity(i);
                 break;
 
             case R.id.float_hide:
@@ -900,9 +892,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setEnabled(true);
             swipeRefreshLayout.setRefreshing(true);
-            Message message = fragmentPageStoryHandler.obtainMessage();
-            message.what = REFRESH;
-            fragmentPageStoryHandler.sendMessage(message);
+            getRefreshData();
         }
     }
 
@@ -953,7 +943,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
         } else if (baseBusEvent instanceof PPDeleteEvent) {
-            PPDeleteEvent ppDeleteEvent = (PPDeleteEvent) baseBusEvent;
+            final PPDeleteEvent ppDeleteEvent = (PPDeleteEvent) baseBusEvent;
             ArrayList<PPinfo> list = new ArrayList<>();
             list.addAll(ppDeleteEvent.getPpList());
             /**
@@ -962,36 +952,60 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
              * 3.如果是有卡无图，需要删除列表信息
              * 4.如果是有卡有图，需要删除列表信息
              */
-            for (int i = 0; i < list.size(); i++) {
-                PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + list.get(i).getPpCode() + "\"");
-                PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, list.get(i).getPpCode());
-                //有卡无图
-                Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
-                while (iterator.hasNext()) {
-                    PPinfo pPinfo = iterator.next();
-                    if (pPinfo.getPpCode().equals(list.get(i).getPpCode())) {
-                        iterator.remove();
-                    }
-                }
-                if (noPhotoRecycleAdapter != null) {
-                    noPhotoRecycleAdapter.notifyDataSetChanged();
-                }
+            Observable.from(list)
+                    .subscribeOn(Schedulers.io())
+                    .compose(this.<PPinfo>bindToLifecycle())
+                    .map(new Func1<PPinfo, Object>() {
 
-                //有卡有图
-                Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
-                while (iterator2.hasNext()) {
-                    DailyPPCardInfo dailyPPCardInfo = iterator2.next();
-                    if (dailyPPCardInfo.getPpCode().equals(list.get(i).getPpCode())) {
-                        iterator.remove();
-                    }
-                }
-                if (dailyPPCardRecycleAdapter != null) {
-                    dailyPPCardRecycleAdapter.notifyDataSetChanged();
-                }
-            }
-            EventBus.getDefault().removeStickyEvent(ppDeleteEvent);
-            showViewPager();
+                        @Override
+                        public Object call(PPinfo info) {
+                            PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + info.getPpCode() + "\"");
+                            PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, info.getPpCode());
+                            //有卡无图
+                            Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
+                            while (iterator.hasNext()) {
+                                PPinfo pPinfo = iterator.next();
+                                if (pPinfo.getPpCode().equals(pPinfo.getPpCode())) {
+                                    iterator.remove();
+                                }
+                            }
 
+                            //有卡有图
+                            Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
+                            while (iterator2.hasNext()) {
+                                DailyPPCardInfo dailyPPCardInfo = iterator2.next();
+                                if (dailyPPCardInfo.getPpCode().equals(info.getPpCode())) {
+                                    iterator.remove();
+                                }
+                            }
+                            return null;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RxSubscribe<Object>() {
+
+                        @Override
+                        public void onCompleted() {
+                            if (noPhotoRecycleAdapter != null) {
+                                noPhotoRecycleAdapter.notifyDataSetChanged();
+                            }
+                            if (dailyPPCardRecycleAdapter != null) {
+                                dailyPPCardRecycleAdapter.notifyDataSetChanged();
+                            }
+                            EventBus.getDefault().removeStickyEvent(ppDeleteEvent);
+                            showViewPager();
+                        }
+
+                        @Override
+                        public void _onNext(Object o) {
+
+                        }
+
+                        @Override
+                        public void _onError(int status) {
+
+                        }
+                    });
         }
     }
 
@@ -999,17 +1013,110 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 初始化数据
      */
     private void getGoods() {
-        //从缓层中获取数据
-        String goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
-        if (goodsByACache != null && !goodsByACache.equals("")) {
-            fragmentPageStoryHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
-        } else {
-            //从网络获取商品,先检查网络
-            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(fragmentPageStoryHandler);
-            } else {
-                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            }
+        if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            return;
         }
+        //从缓层中获取数据
+        Observable.just(ACache.get(getActivity()).getAsString(Common.ALL_GOODS))
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String s) {
+                        if (!TextUtils.isEmpty(s)) {
+                            PictureAirLog.d("goods is not null");
+                            return Observable.just(JSONObject.parseObject(s));
+                        } else {
+                            PictureAirLog.d("goods is null");
+                            //从网络获取商品,先检查网络
+                            return API2.getGoods()
+                                    .map(new Func1<JSONObject, JSONObject>() {
+                                        @Override
+                                        public JSONObject call(JSONObject jsonObject) {
+                                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+                                            return jsonObject;
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .compose(this.<JSONObject>bindToLifecycle())
+                //解析json
+                .map(new Func1<JSONObject, GoodsInfo>() {
+                    @Override
+                    public GoodsInfo call(JSONObject jsonObject) {
+                        PictureAirLog.d("parse goods json");
+                        List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+                        GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                        if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                            allGoodsList1.addAll(goodsInfoJson.getGoods());
+                        }
+                        //获取PP+
+                        for (GoodsInfo goodsInfo : allGoodsList1) {
+                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                                pppGoodsInfo = goodsInfo;
+                                break;
+                            }
+                        }
+                        photoUrls = new String[pppGoodsInfo.getPictures().size()];
+                        for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+                            photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+                        }
+                        return pppGoodsInfo;
+                    }
+                })
+                //加入购物车
+                .flatMap(new Func1<GoodsInfo, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(GoodsInfo goodsInfo) {
+                        PictureAirLog.d("start add to goods key:" + goodsInfo.getGoodsKey());
+                        //调用addToCart API1
+                        return API2.addToCart(goodsInfo.getGoodsKey(), 1, true, null);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("add to cart success--> " + jsonObject);
+
+                        int currentCartCount = SPUtils.getInt(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+                        cartId = jsonObject.getString("cartId");
+                        PictureAirLog.d("cartid--> " + cartId);
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+                        //生成订单
+                        Intent intent3 = new Intent(context, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo = new CartItemInfo();
+                        cartItemInfo.setCartId(cartId);
+                        cartItemInfo.setProductName(pppGoodsInfo.getName());
+                        cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                        cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
+
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent3.putExtra("orderinfo", orderinfoArrayList);
+                        startActivity(intent3);
+                    }
+                });
+
     }
 }
