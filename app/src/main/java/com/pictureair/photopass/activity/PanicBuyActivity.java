@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -21,17 +22,20 @@ import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.RxActivity;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -40,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by pengwu on 16/9/28.
@@ -119,123 +124,12 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                 }
                 break;
 
-            case API1.GET_SINGLE_GOODS_SUCCESS:
-                goodsInfo = (GoodsInfo) msg.obj;
-                if (goodsInfo != null) {
-                    PictureAirLog.v(goodsInfo.toString());
-                    if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
-                        PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
-                        List<GoodInfoPictures> goodInfoPicturesList = new ArrayList<>();
-                        goodInfoPicturesList.add(goodsInfo.getPictures().get(1));
-//                        bannerViewDetail.findimagepath(goodInfoPicturesList);
-                        GlideUtil.load(PanicBuyActivity.this, Common.PHOTO_URL + goodInfoPicturesList.get(0).getUrl(), bannerViewDetail);
-                        //封装购物车宣传图
-                        photoUrls = new String[goodsInfo.getPictures().size()];
-                        for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                            photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
-                        }
-                    }
-
-                    showDealsDetails();
-                    try {
-                        PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalStart());
-                        PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalEnd());
-
-                        long localTime = System.currentTimeMillis();
-                        Date currentSystemServerDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
-                        goodsInfo.getDealing().setTimeOffset(localTime - currentSystemServerDate.getTime());
-                        startDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalStart());
-                        endDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalEnd());
-                        PictureAirLog.d(TAG, "formatStartDate " + startDate.toString());
-                        PictureAirLog.d(TAG, "formatEndDate " + endDate.toString());
-
-                        Date currentData = getCurrentDate();
-                        if (goodsInfo.getDealing().getState() == -2 || goodsInfo.getDealing().getState() == -3) {
-                            if (startDate.getTime()  > currentData.getTime() - goodsInfo.getDealing().getTimeOffset()) {
-                                mStartDeal = DEAL_NOT_START;
-                            }else if (currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
-                                mStartDeal = DEALING;
-                            }
-                        } else if (goodsInfo.getDealing().getState() == 1) {
-                            if ( currentData.getTime() - goodsInfo.getDealing().getTimeOffset() >= startDate.getTime() && currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
-                                mStartDeal = DEALING;
-                            } else {
-                                mStartDeal = NO_DEALS;
-                            }
-                        }
-                        if (mStartDeal == DEAL_NOT_START) {
-                            countDownTimer = new MyCountDownTimer(startDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
-                            countDownTimer.start();
-                            disableBuy();
-                        } else if (mStartDeal == DEALING) {
-                            countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
-                            countDownTimer.start();
-                            enableBuy();
-                        } else if (mStartDeal == NO_DEALS) {
-                            finishBuy(R.string.special_deal_end);
-                        }
-                        layout_content.setVisibility(View.VISIBLE);
-                        noNetWorkOrNoCountView.setVisibility(View.GONE);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-                dismissPWProgressDialog();
-                break;
-
-            case API1.GET_SINGLE_GOODS_FAILED:
-                layout_content.setVisibility(View.GONE);
-                noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-                dismissPWProgressDialog();
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD:
                 if (dealingInfo != null) {
                     showPWProgressDialog();
-                    API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, false);
+                    getSingleGoods(false);
                 }
                 break;
-
-            case API1.UPDATE_SINGLE_GOODS_SUCCESS:
-                dismissPWProgressDialog();
-                GoodsInfo info = (GoodsInfo) msg.obj;
-                int lave = info.getDealing().getLave();
-                if (info.getDealing().getPossible() != null && info.getDealing().getPossible()) {
-                    if (lave == -1 || lave > 0) {
-                        Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                        CartItemInfo cartItemInfo = new CartItemInfo();
-
-                        cartItemInfo.setProductName(goodsInfo.getName());
-                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
-                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                        cartItemInfo.setDescription(goodsInfo.getDescription());
-                        cartItemInfo.setQty(1);
-                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
-                        cartItemInfo.setPictures(photoUrls);
-                        cartItemInfo.setPrice(goodsInfo.getPrice());
-                        cartItemInfo.setCartProductType(3);
-                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
-
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putExtra("orderinfo", orderinfoArrayList);
-                        intent.putExtra("fromPanicBuy", 1);
-                        intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
-                        startActivity(intent);
-                    } else {
-                        myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
-                    }
-                } else {
-                    myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
-                }
-                break;
-
-            case API1.UPDATE_SINGLE_GOODS_FAILED:
-                dismissPWProgressDialog();
-                myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                break;
-
         }
     }
 
@@ -284,9 +178,146 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         PictureAirLog.d(dealingInfo.toString());
 
         if (dealingInfo != null) {
-            API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, false);
+            getSingleGoods(false);
         }
     }
+
+
+    private void getSingleGoods(final boolean update) {
+
+        API2.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType())
+                .compose(((RxActivity)PanicBuyActivity.this).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.json(jsonObject.toString());
+                        GoodsInfo goodsInfo = JsonUtil.getGoodsInfo(jsonObject);
+                        if (!update) {
+                            getGoodsSuccess(goodsInfo);
+                        } else {
+                            updateGoodsSuccess(goodsInfo);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        if (!update) {
+                            layout_content.setVisibility(View.GONE);
+                            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+                            dismissPWProgressDialog();
+                        } else {
+                            dismissPWProgressDialog();
+                            myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+                    }
+                });
+
+    }
+
+
+    private void getGoodsSuccess(GoodsInfo goodsInfo) {
+        this.goodsInfo = goodsInfo;
+        if (goodsInfo != null) {
+            PictureAirLog.v(goodsInfo.toString());
+            if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+                PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
+                List<GoodInfoPictures> goodInfoPicturesList = new ArrayList<>();
+                goodInfoPicturesList.add(goodsInfo.getPictures().get(1));
+//                        bannerViewDetail.findimagepath(goodInfoPicturesList);
+                GlideUtil.load(PanicBuyActivity.this, Common.PHOTO_URL + goodInfoPicturesList.get(0).getUrl(), bannerViewDetail);
+                //封装购物车宣传图
+                photoUrls = new String[goodsInfo.getPictures().size()];
+                for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                    photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                }
+            }
+
+            showDealsDetails();
+            try {
+                PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalStart());
+                PictureAirLog.d(TAG, goodsInfo.getDealing().getCurrTimeIntervalEnd());
+
+                long localTime = System.currentTimeMillis();
+                Date currentSystemServerDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
+                goodsInfo.getDealing().setTimeOffset(localTime - currentSystemServerDate.getTime());
+                startDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalStart());
+                endDate = AppUtil.getDateLocalFromStr(goodsInfo.getDealing().getCurrTimeIntervalEnd());
+                PictureAirLog.d(TAG, "formatStartDate " + startDate.toString());
+                PictureAirLog.d(TAG, "formatEndDate " + endDate.toString());
+
+                Date currentData = getCurrentDate();
+                if (goodsInfo.getDealing().getState() == -2 || goodsInfo.getDealing().getState() == -3) {
+                    if (startDate.getTime()  > currentData.getTime() - goodsInfo.getDealing().getTimeOffset()) {
+                        mStartDeal = DEAL_NOT_START;
+                    }else if (currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
+                        mStartDeal = DEALING;
+                    }
+                } else if (goodsInfo.getDealing().getState() == 1) {
+                    if ( currentData.getTime() - goodsInfo.getDealing().getTimeOffset() >= startDate.getTime() && currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
+                        mStartDeal = DEALING;
+                    } else {
+                        mStartDeal = NO_DEALS;
+                    }
+                }
+                if (mStartDeal == DEAL_NOT_START) {
+                    countDownTimer = new MyCountDownTimer(startDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
+                    countDownTimer.start();
+                    disableBuy();
+                } else if (mStartDeal == DEALING) {
+                    countDownTimer = new MyCountDownTimer(endDate.getTime() - (currentData.getTime() - goodsInfo.getDealing().getTimeOffset()), 1000, PanicBuyActivity.this);
+                    countDownTimer.start();
+                    enableBuy();
+                } else if (mStartDeal == NO_DEALS) {
+                    finishBuy(R.string.special_deal_end);
+                }
+                layout_content.setVisibility(View.VISIBLE);
+                noNetWorkOrNoCountView.setVisibility(View.GONE);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updateGoodsSuccess(GoodsInfo info) {
+        int lave = info.getDealing().getLave();
+        if (info.getDealing().getPossible() != null && info.getDealing().getPossible()) {
+            if (lave == -1 || lave > 0) {
+                Intent intent = new Intent(PanicBuyActivity.this, SubmitOrderActivity.class);
+                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo cartItemInfo = new CartItemInfo();
+
+                cartItemInfo.setProductName(goodsInfo.getName());
+                cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
+                cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                cartItemInfo.setDescription(goodsInfo.getDescription());
+                cartItemInfo.setQty(1);
+                cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                cartItemInfo.setPictures(photoUrls);
+                cartItemInfo.setPrice(goodsInfo.getPrice());
+                cartItemInfo.setCartProductType(3);
+                cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
+
+                orderinfoArrayList.add(cartItemInfo);
+                intent.putExtra("orderinfo", orderinfoArrayList);
+                intent.putExtra("fromPanicBuy", 1);
+                intent.putExtra("dealingKey", goodsInfo.getDealing().getKey());
+                startActivity(intent);
+            } else {
+                myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
+            }
+        } else {
+            myToast.setTextAndShow(R.string.special_deal_count_enough, Common.TOAST_SHORT_TIME);
+        }
+    }
+
 
     private void enableBuy() {
         btn_purchase.setEnabled(true);
@@ -345,7 +376,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.special_deal_purchase:
                 showPWProgressDialog();
-                API1.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType(), panciBuyHandler, true);
+                getSingleGoods(true);
 
                 break;
             case R.id.special_deal_back:

@@ -35,7 +35,6 @@ import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.PPDeleteEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
-import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
@@ -72,7 +71,6 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -446,14 +444,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private void removePPFromUser() {
         final String ppcode = ppList.get(deletePosition).getPpCode();
-        API2.removePPFromUser(ppList.get(deletePosition).getPpCode(), deletePosition, new HttpCallback() {
+        API2.removePPFromUser(ppList.get(deletePosition).getPpCode(), new HttpCallback() {
             @Override
             public void doOnSubscribe() {
                 super.doOnSubscribe();
                 showPWProgressDialog();
             }
-        }).subscribeOn(Schedulers.io())
-                .compose(this.<JSONObject>bindToLifecycle())
+        }).compose(this.<JSONObject>bindToLifecycle())
                 .map(new Func1<JSONObject, List<PPinfo>>() {
                     @Override
                     public List<PPinfo> call(JSONObject jsonObject) {
