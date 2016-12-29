@@ -106,7 +106,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     ok.setTextColor(getResources().getColor(R.color.gray_light5));
                 } else {
                     ok.setEnabled(true);
-                    ok.setTextColor(getResources().getColor(R.color.white));
+                    ok.setTextColor(getResources().getColor(R.color.pp_blue));
                 }
                 break;
 

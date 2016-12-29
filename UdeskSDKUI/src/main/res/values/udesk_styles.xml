@@ -32,6 +32,9 @@
     </style>
 
     <style name="Udesk_Theme" parent="android:Theme.Translucent.NoTitleBar"></style>
+    <style name="Udesk_Theme2" parent="android:Theme.Black.NoTitleBar">
+        <item name="android:background">@android:color/white</item>
+    </style>
 
 
     <style name="transcutestyle" parent="@android:style/Theme.Dialog">

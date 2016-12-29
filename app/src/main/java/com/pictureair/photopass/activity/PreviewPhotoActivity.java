@@ -483,6 +483,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 for (int i = 0; i < responseArray.size(); i++) {
                                     PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i));
                                     if (photoInfo != null) {
+                                        photoInfo.setId(1L);
                                         photolist.add(photoInfo);
                                     }
                                 }
@@ -518,6 +519,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 for (int i = 0; i < jsonArray.size(); i++) {
                                     PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i));
                                     if (photoInfo != null) {
+                                        photoInfo.setId(1L);
                                         photolist.add(photoInfo);
                                     }
                                 }

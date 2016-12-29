@@ -164,6 +164,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
     private PhotoInfo newPhotoInfo(DownloadFileStatus fileStatus,int position){
         PhotoInfo info = new PhotoInfo();
+        info.setId(1L);
         info.setIsVideo(fileStatus.isVideo());
         info.setPhotoOriginalURL(fileStatus.getUrl());
         info.setPhotoId(fileStatus.getPhotoId());
