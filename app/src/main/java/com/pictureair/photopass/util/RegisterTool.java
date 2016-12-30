@@ -4,10 +4,16 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.RxActivity;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 
 /**
@@ -26,45 +32,14 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     public static final String FORGET_ACTIVITY = "forget";
     private String whatActivity = "";
     private SignAndLoginUtil signAndLoginUtil;
-    private PWToast myToast;
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case API1.FIND_PWD_SUCCESS:
-                    registerOrForgetView.goneDialog();
-                    validateSuccess();
-                    break;
-                case API1.VALIDATECODE_SUCCESS:
-                    registerOrForgetView.goneDialog();
-                    if (whatActivity.equals(SIGN_ACTIVITY))
-                        validateSuccess();//验证码ok
-                    else if (whatActivity.equals(FORGET_ACTIVITY))
-                        registerOrForgetView.nextPageForget();
-                    break;
-
-                case API1.SEND_SMS_VALIDATE_CODE_SUCCESS://验证码发送成功
-                    sendValidateCodeSuccess();
-                    break;
-                case API1.FIND_PWD_FAILED:
-                case API1.VALIDATECODE_FAILED:
-                case API1.SEND_SMS_VALIDATE_CODE_FAILED:
-                    registerOrForgetView.goneDialog();
-                    registerOrForgetView.onFai(msg.arg1);
-                    break;
                 case SEND_TIME:
                     registerOrForgetView.countDown(time);
-                    break;
-                case API1.GET_TOKEN_ID_SUCCESS:
-                    tokenId = MyApplication.getTokenId();
-                    API1.sendSMSValidateCode(handler, tokenId, phone, languageType, true);
-                    break;
-
-                case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
-                    registerOrForgetView.goneDialog();
-                    myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
                 default:
                     break;
@@ -96,6 +71,8 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
                 }
             }
         }).start();
+
+
     }
 
     private void validateSuccess() {
@@ -111,23 +88,22 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
         this.registerOrForgetView = registerView;
         this.languageType = languageType;
         signAndLoginUtil = new SignAndLoginUtil(context, this);
-        myToast = new PWToast(context);
     }
 
     public void submit(String validateCode, String phone, String pwd) {
         registerOrForgetView.showDialog();
         this.phone = phone;
         this.pwd = pwd;
-        API1.validateCode(handler, tokenId, validateCode, phone, true);
+        validateCode(validateCode);
     }
 
     public void sendSMSValidateCode(String phone) {
         registerOrForgetView.showDialog();
         this.phone = phone;
         if (null == tokenId) {
-            API1.getTokenId(context, handler);
+            getTokenId();
         } else {
-            handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+            sendSMSCode();
         }
     }
 
@@ -146,6 +122,118 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     public void forgetPwd(String pwd) {
         registerOrForgetView.showDialog();
         this.pwd = pwd;
-        API1.findPwd(handler, pwd, phone);
+        findPwd();
+    }
+
+
+    private void findPwd() {
+        API2.findPwd(pwd, phone)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        registerOrForgetView.goneDialog();
+                        validateSuccess();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        onRequestError(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
+    }
+
+
+    private void getTokenId() {
+        API2.getTokenId(context)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+
+                    @Override
+                    public void onCompleted() {
+                        sendSMSCode();
+                    }
+
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        try {
+                            byte[] key = ACache.get(MyApplication.getInstance()).getAsBinary(Common.USERINFO_SALT);
+                            if (key == null) {
+                                ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
+                            }
+                            SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID,
+                                    AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        tokenId = MyApplication.getTokenId();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        onRequestError(status);
+                    }
+                });
+    }
+
+    private void onRequestError(int status) {
+        registerOrForgetView.goneDialog();
+        registerOrForgetView.onFai(status);
+    }
+
+    private void sendSMSCode() {
+        API2.sendSMSValidateCode( tokenId, phone, languageType, true)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        onRequestError(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        sendValidateCodeSuccess();
+                    }
+                });
+    }
+
+    private void validateCode(String validateCode) {
+        API2.validateCode(tokenId, validateCode, phone, true)
+                .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        registerOrForgetView.goneDialog();
+                        if (whatActivity.equals(SIGN_ACTIVITY))
+                            validateSuccess();//验证码ok
+                        else if (whatActivity.equals(FORGET_ACTIVITY))
+                            registerOrForgetView.nextPageForget();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        onRequestError(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 }

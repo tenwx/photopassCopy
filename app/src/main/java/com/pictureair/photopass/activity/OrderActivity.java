@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -29,23 +30,29 @@ import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
 import com.pictureair.photopass.fragment.OrderFragment;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
@@ -121,131 +128,6 @@ public class OrderActivity extends BaseFragmentActivity {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case API1.GET_ORDER_SUCCESS://获取订单数据成功
-                if (getLocalPaymentDone) {//如果本地订单消息获取成功，则处理订单
-                    PictureAirLog.out("has finish");
-                    orderActivityHandler.obtainMessage(GET_LOCAL_PEYMENT_DONE, msg.obj).sendToTarget();
-
-                } else {//延迟一会
-                    PictureAirLog.out("need delay");
-                    Message message = orderActivityHandler.obtainMessage();
-                    message.what = API1.GET_ORDER_SUCCESS;
-                    message.obj = msg.obj;
-                    orderActivityHandler.sendMessageDelayed(message, 100);
-
-                }
-                break;
-
-            case GET_LOCAL_PEYMENT_DONE://处理订单消息
-                showTop();
-                PictureAirLog.d(TAG, "get success----");
-
-                netWorkOrNoCountView.setVisibility(View.INVISIBLE);
-                paymentOrderArrayList.clear();
-                paymentOrderChildArrayList.clear();
-                deliveryOrderArrayList.clear();
-                deliveryOrderChildArrayList.clear();
-                allOrderArrayList.clear();
-                allOrderChildArrayList.clear();
-                downOrderArrayList.clear();
-                downOrderChildArrayList.clear();
-                //解析数据
-                JSONObject resultJsonObject = (JSONObject) msg.obj;
-                JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
-                PictureAirLog.v(TAG, "orderInfo" + allOrdersArray.toString());
-                for (int i = 0; i < allOrdersArray.size(); i++) {
-                    JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
-                    orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
-                    cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
-                    PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
-
-                    for (int j = 0; j < cartItemInfo.size(); j++) {
-                        if (cartItemInfo.get(j).getCartProductType() == 1) {
-                            orderInfo.productEntityType = 1;
-                            break;
-                        } else {
-                            orderInfo.productEntityType = 0;
-                        }
-                    }
-
-                    OrderProductInfo orderProductInfo = new OrderProductInfo();
-                    orderProductInfo.setOrderTime(orderInfo.orderTime);
-                    orderProductInfo.setCartItemInfos(cartItemInfo);
-                    PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderNumber);
-                    if (orderInfo.orderStatus == -3) {
-                        downOrderArrayList.add(orderInfo);
-                        downOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus > -3 && orderInfo.orderStatus < 1) {
-                        if (orderInfo.orderStatus == -1) {
-                            continue;
-                        } else {
-                            paymentOrderArrayList.add(orderInfo);
-                            paymentOrderChildArrayList.add(orderProductInfo);
-                        }
-                    } else if (orderInfo.orderStatus == 1) {//1等待买家付款
-                        if (orderIds != null && orderIds.size() > 0) {
-                            for (PaymentOrderInfo paymentOrderInfo : orderIds) {
-                                //判断orderId是否相同，且状态是否为1（未付款）
-                                if (paymentOrderInfo.getOrderId().equals(orderInfo.orderNumber + "")) {
-                                    orderInfo.orderStatus = 6;
-                                    break;
-                                }
-                            }
-                        }
-                        paymentOrderArrayList.add(orderInfo);
-                        paymentOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-                        if (orderInfo.productEntityType == 0) {
-                            //0为虚拟商品
-                            downOrderArrayList.add(orderInfo);
-                            downOrderChildArrayList.add(orderProductInfo);
-                        } else {
-                            //需要买家自提
-                            deliveryOrderArrayList.add(orderInfo);
-                            deliveryOrderChildArrayList.add(orderProductInfo);
-                        }
-                    }
-                }
-
-                if (null == mFragments || mFragments.size() == 0) {
-                    if (null != orderActivityHandler
-                            && null != paymentOrderArrayList
-                            && null != deliveryOrderArrayList
-                            && null != downOrderArrayList
-                            && null != paymentOrderChildArrayList
-                            && null != deliveryOrderChildArrayList
-                            && null != downOrderChildArrayList) {
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, downOrderArrayList, downOrderChildArrayList, currency, 2));
-                    }
-                }
-
-                if (null == orderAdapter) {
-                    orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
-                    viewPager.setAdapter(orderAdapter);
-                    viewPager.setVisibility(View.VISIBLE);
-                    viewPager.setOffscreenPageLimit(3);
-                    viewPager.setCurrentItem(orderType);
-                }
-                EventBus.getDefault().post(new OrderFragmentEvent(paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
-                EventBus.getDefault().post(new OrderFragmentEvent(deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
-                EventBus.getDefault().post(new OrderFragmentEvent(downOrderArrayList, downOrderChildArrayList, currency, 2));
-                hideProgressDialog();
-                break;
-
-            case API1.GET_ORDER_FAILED:
-//				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
-                orderFragmentEvent.setRequest(1);
-                EventBus.getDefault().post(orderFragmentEvent);
-
-                hideProgressDialog();
-                goneTop();
-                netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
-                viewPager.setVisibility(View.INVISIBLE);
-                break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
@@ -256,7 +138,7 @@ public class OrderActivity extends BaseFragmentActivity {
                 }
                 showTop();
                 showProgressDialog();
-                API1.getOrderInfo(orderActivityHandler);
+                getData();
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
@@ -275,7 +157,7 @@ public class OrderActivity extends BaseFragmentActivity {
                     break;
                 }
                 showTop();
-                API1.getOrderInfo(orderActivityHandler);
+                getData();
                 break;
 
 
@@ -366,7 +248,136 @@ public class OrderActivity extends BaseFragmentActivity {
      * 从网络上获取信息
      */
     public void getData() {
-        API1.getOrderInfo(orderActivityHandler);
+
+        API2.getOrderInfo()
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .map(new Func1<JSONObject, JSONObject>() {
+                    @Override
+                    public JSONObject call(JSONObject jsonObject) {
+                        PictureAirLog.e("order map",Looper.myLooper() == Looper.getMainLooper()?"true":"false");
+                        while (!getLocalPaymentDone);
+                        return jsonObject;
+
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        showTop();
+                        PictureAirLog.d(TAG, "get success----");
+
+                        netWorkOrNoCountView.setVisibility(View.INVISIBLE);
+                        paymentOrderArrayList.clear();
+                        paymentOrderChildArrayList.clear();
+                        deliveryOrderArrayList.clear();
+                        deliveryOrderChildArrayList.clear();
+                        allOrderArrayList.clear();
+                        allOrderChildArrayList.clear();
+                        downOrderArrayList.clear();
+                        downOrderChildArrayList.clear();
+                        //解析数据
+                        JSONArray allOrdersArray = jsonObject.getJSONArray("orders");//得到所有的订单信息
+                        PictureAirLog.v(TAG, "orderInfo" + allOrdersArray.toString());
+                        for (int i = 0; i < allOrdersArray.size(); i++) {
+                            JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
+                            orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
+                            cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
+                            PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
+
+                            for (int j = 0; j < cartItemInfo.size(); j++) {
+                                if (cartItemInfo.get(j).getCartProductType() == 1) {
+                                    orderInfo.productEntityType = 1;
+                                    break;
+                                } else {
+                                    orderInfo.productEntityType = 0;
+                                }
+                            }
+
+                            OrderProductInfo orderProductInfo = new OrderProductInfo();
+                            orderProductInfo.setOrderTime(orderInfo.orderTime);
+                            orderProductInfo.setCartItemInfos(cartItemInfo);
+                            PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderNumber);
+                            if (orderInfo.orderStatus == -3) {
+                                downOrderArrayList.add(orderInfo);
+                                downOrderChildArrayList.add(orderProductInfo);
+                            } else if (orderInfo.orderStatus > -3 && orderInfo.orderStatus < 1) {
+                                if (orderInfo.orderStatus == -1) {
+                                    continue;
+                                } else {
+                                    paymentOrderArrayList.add(orderInfo);
+                                    paymentOrderChildArrayList.add(orderProductInfo);
+                                }
+                            } else if (orderInfo.orderStatus == 1) {//1等待买家付款
+                                if (orderIds != null && orderIds.size() > 0) {
+                                    for (PaymentOrderInfo paymentOrderInfo : orderIds) {
+                                        //判断orderId是否相同，且状态是否为1（未付款）
+                                        if (paymentOrderInfo.getOrderId().equals(orderInfo.orderNumber + "")) {
+                                            orderInfo.orderStatus = 6;
+                                            break;
+                                        }
+                                    }
+                                }
+                                paymentOrderArrayList.add(orderInfo);
+                                paymentOrderChildArrayList.add(orderProductInfo);
+                            } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
+                                if (orderInfo.productEntityType == 0) {
+                                    //0为虚拟商品
+                                    downOrderArrayList.add(orderInfo);
+                                    downOrderChildArrayList.add(orderProductInfo);
+                                } else {
+                                    //需要买家自提
+                                    deliveryOrderArrayList.add(orderInfo);
+                                    deliveryOrderChildArrayList.add(orderProductInfo);
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
+                        orderFragmentEvent.setRequest(1);
+                        EventBus.getDefault().post(orderFragmentEvent);
+
+                        hideProgressDialog();
+                        goneTop();
+                        netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                        netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
+                        viewPager.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                        if (null == mFragments || mFragments.size() == 0) {
+                            if (null != orderActivityHandler
+                                    && null != paymentOrderArrayList
+                                    && null != deliveryOrderArrayList
+                                    && null != downOrderArrayList
+                                    && null != paymentOrderChildArrayList
+                                    && null != deliveryOrderChildArrayList
+                                    && null != downOrderChildArrayList) {
+                                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
+                                mFragments.add(OrderFragment.getInstance(orderActivityHandler, deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
+                                mFragments.add(OrderFragment.getInstance(orderActivityHandler, downOrderArrayList, downOrderChildArrayList, currency, 2));
+                            }
+                        }
+
+                        if (null == orderAdapter) {
+                            orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
+                            viewPager.setAdapter(orderAdapter);
+                            viewPager.setVisibility(View.VISIBLE);
+                            viewPager.setOffscreenPageLimit(3);
+                            viewPager.setCurrentItem(orderType);
+                        }
+                        EventBus.getDefault().post(new OrderFragmentEvent(paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
+                        EventBus.getDefault().post(new OrderFragmentEvent(deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
+                        EventBus.getDefault().post(new OrderFragmentEvent(downOrderArrayList, downOrderChildArrayList, currency, 2));
+                        hideProgressDialog();
+                    }
+                });
     }
 
     /**

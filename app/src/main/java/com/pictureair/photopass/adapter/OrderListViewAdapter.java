@@ -9,26 +9,31 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 public class OrderListViewAdapter extends BaseExpandableListAdapter implements PWDialog.OnPWDialogClickListener {
     private LayoutInflater mInflater;
@@ -48,6 +53,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
     private OrderInfo deleteOrderInfo;
     private OrderProductInfo deleteOrderProductInfo;
+    private RemoveOrderItemListener removeOrderItemListener;
 
     public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler, int tab) {
         this.context = context;
@@ -58,6 +64,10 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         this.tab = tab;
         mInflater = LayoutInflater.from(context);
         screenWight = ScreenUtil.getScreenWidth(context) / 3 - 40;
+    }
+
+    public void setRemoveOrderItemListener(RemoveOrderItemListener listener) {
+        this.removeOrderItemListener = listener;
     }
 
     @Override
@@ -255,7 +265,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            API1.removeOrder(deleteOrderInfo.orderId, deleteOrderInfo, deleteOrderProductInfo, handler);
+            removeOrder(deleteOrderInfo.orderId, deleteOrderInfo, deleteOrderProductInfo);
         }
     }
 
@@ -336,11 +346,42 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
                 } else if (tab == 2) {//已取
                     PictureAirLog.out("start delete order");
-                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position), handler);
+                    removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position));
                 }
             }
         }
 
+    }
+
+    private void removeOrder(String orderId, final OrderInfo orderInfo, final OrderProductInfo orderProductInfo) {
+        API2.removeOrder(orderId)
+                .compose(((RxAppCompatActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        if (removeOrderItemListener != null) {
+                            removeOrderItemListener.removeOrderSuccess(orderInfo, orderProductInfo);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        if (removeOrderItemListener != null) {
+                            removeOrderItemListener.removeOrderFailed(status);
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    public interface RemoveOrderItemListener {
+        void removeOrderSuccess(OrderInfo orderInfo, OrderProductInfo orderProductInfo);
+        void removeOrderFailed(int status);
     }
 
 }

@@ -25,7 +25,8 @@ import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -33,10 +34,13 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /*
  * @author talon
@@ -108,22 +112,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     ok.setEnabled(true);
                     ok.setTextColor(getResources().getColor(R.color.pp_blue));
                 }
-                break;
-
-            case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功，需要回到story页面
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-                PictureAirDbManager.insertRefreshPPFlag(pps, JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
-                if (AppManager.getInstance().checkActivity(MyPPPActivity.class)) {
-                    AppManager.getInstance().killActivity(MyPPPActivity.class);
-                }
-                MyApplication.getInstance().setMainTabIndex(0);
-                dismissPWProgressDialog();
-                finish();
-                break;
-
-            case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
-                dismissPWProgressDialog();
-                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             default:
@@ -213,7 +201,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         new Thread() {
             public void run() {
 //                PictureAirLog.e("","API1.PPlist:"+API1.PPlist.size());
-                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, API1.PPlist, 2);
+                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, API2.PPlist, 2);
 //                PictureAirLog.e("","showPPCodeList.size():"+showPPCodeList.size());
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
@@ -289,8 +277,8 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        if (API1.PPPlist.size() != 0){
-            API1.PPPlist.clear();
+        if (API2.PPPlist.size() != 0){
+            API2.PPPlist.clear();
         }
         super.onDestroy();
     }
@@ -314,12 +302,41 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                                 .pwDilogShow();
                     } else {
                         showPWProgressDialog();
-                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+                        bindPPsDateToPPP(pps, dppp.PPPCode);
                     }
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    private void bindPPsDateToPPP(JSONArray jsonArray, String pppCode) {
+        API2.bindPPsDateToPPP(jsonArray, pppCode)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        SPUtils.put(SelectPPActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                        PictureAirDbManager.insertRefreshPPFlag(pps, JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        if (AppManager.getInstance().checkActivity(MyPPPActivity.class)) {
+                            AppManager.getInstance().killActivity(MyPPPActivity.class);
+                        }
+                        MyApplication.getInstance().setMainTabIndex(0);
+                        dismissPWProgressDialog();
+                        finish();
+                    }
+                });
     }
 }

@@ -62,15 +62,6 @@ public class API1 {
     public static final int FIND_PWD_SUCCESS = 1051;
     public static final int FIND_PWD_FAILED = 1050;
 
-    //发送验证码
-    public static final int SEND_SMS_VALIDATE_CODE_SUCCESS = 1061;
-    public static final int SEND_SMS_VALIDATE_CODE_FAILED = 1060;
-
-    //验证码判断
-    public static final int VALIDATECODE_SUCCESS = 1071;
-    public static final int VALIDATECODE_FAILED = 1070;
-
-
     /**
      * Story
      */
@@ -139,17 +130,11 @@ public class API1 {
     public static final int ADD_ORDER_FAILED = 4060;
     public static final int ADD_ORDER_SUCCESS = 4061;
 
-    public static final int GET_ORDER_SUCCESS = 4070;
-    public static final int GET_ORDER_FAILED = 4071;
-
     public static final int BUY_PHOTO_FAILED = 4080;
     public static final int BUY_PHOTO_SUCCESS = 4081;
 
     public static final int GET_OUTLET_ID_FAILED = 4090;
     public static final int GET_OUTLET_ID_SUCCESS = 4091;
-
-    public static final int DELETE_ORDER_FAILED = 4100;
-    public static final int DELETE_ORDER_SUCCESS = 4101;
 
     public static final int UNIONPAY_GET_TN_SUCCESS = 4111;
     public static final int UNIONPAY_GET_TN_FAILED = 4110;
@@ -184,9 +169,6 @@ public class API1 {
     //Shop模块 end
 
     //我的模块 start
-    public static final int BIND_PP_FAILURE = 5000;
-    public static final int BIND_PP_SUCCESS = 5001;
-
     public static final int UPDATE_PROFILE_SUCCESS = 5011;
     public static final int UPDATE_PROFILE_FAILED = 5010;
     public static final int UPDATE_PROFILE_NAME = 5012;
@@ -202,17 +184,8 @@ public class API1 {
     public static final int GET_PPP_FAILED = 5070;
 
     //PP & PP＋模块
-    public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5080;
-    public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5081;
-
-    public static final int BIND_PPS_DATE_TO_PP_FAILED = 5090;
-    public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5091;
-
     public static final int MODIFY_PWD_SUCCESS = 5101;
     public static final int MODIFY_PWD_FAILED = 5100;
-
-    public static final int ADD_CODE_TO_USER_FAILED = 5110;
-    public static final int ADD_CODE_TO_USER_SUCCESS = 5111;
 
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
@@ -381,82 +354,6 @@ public class API1 {
             }
         });
 
-        return task;
-    }
-
-    /**
-     * 发送验证码
-     * SEND_SMS_VALIDATE_CODE
-     * <p/>
-     * note:手机号格式 “＋8615717737873”
-     * appID:string，必填，appID
-     * phone:string，必填，手机号，
-     * language:string,选填,语言，默认为CN，可填写值：CN或EN，
-     * msgType:string,选填，默认为register，可选值（forgotPassword,register）
-     */
-    public static BasicResultCallTask sendSMSValidateCode(final Handler handler, final String tokenId, String phone, String language, boolean isRegister) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.PHONE, "+" + phone);
-        params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
-        params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
-
-        PictureAirLog.v(TAG, "sendSMSValidateCode params：" + params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.v(TAG, "sendSMSValidateCode onSuccess：" + jsonObject.toString());
-                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.v(TAG, "sendSMSValidateCode onFailure：" + status);
-                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_FAILED, status, 0).sendToTarget();
-            }
-
-        });
-        return task;
-    }
-
-    /**
-     * 判断验证信息是否有效 验证码
-     * validateCode
-     *
-     * tokenId:string，必填，tokenId
-     * validateCode:string,必填，验证信息
-     * sendTo:string,选填，email或mobile
-     * msgType:string,选填，可选值（register,forgotPassword）
-     */
-    public static BasicResultCallTask validateCode(final Handler handler, final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
-
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (validateCode != null) {
-            params.put(Common.VALIDATE_CODE, validateCode);
-        }
-        params.put(Common.SEND_TO, "+"+phoneOremail);
-        params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
-
-        PictureAirLog.v(TAG, "validateCode params：" + params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.v(TAG, "validateCode onSuccess：" + jsonObject.toString());
-                handler.obtainMessage(VALIDATECODE_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.v(TAG, "validateCode onFailure：" + status);
-                handler.obtainMessage(VALIDATECODE_FAILED, status, 0).sendToTarget();
-            }
-
-        });
         return task;
     }
 
@@ -841,37 +738,6 @@ public class API1 {
     }
 
     /**
-     * 获取账号下所有ppp
-     *
-     * @param tokenId tokenId
-     * @param handler handler
-     */
-    public static ArrayList<PPPinfo> PPPlist = new ArrayList<>();
-
-    public static BasicResultCallTask getPPPSByUserId(String tokenId, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.out("ppp--->" + jsonObject.toString());
-                PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
-                handler.obtainMessage(GET_PPP_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.d(Common.GET_PPPS_BY_USERID + "failed---->" + status);
-                handler.obtainMessage(GET_PPP_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-    /**
      * 修改密码或者忘记密码接口
      *
      * @param oldPwd  旧密码，修改的时候用到，如果是忘记密码的话，设为null
@@ -1203,74 +1069,6 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(ADD_ORDER_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 获取订单信息
-     *
-     * @param handler handler
-     */
-    public static BasicResultCallTask getOrderInfo(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                JSONArray allOrdersArray = jsonObject.getJSONArray("orders");//得到所有的订单信息
-                if (allOrdersArray == null) {
-                    handler.obtainMessage(GET_ORDER_FAILED, 401, 0).sendToTarget();
-                } else {
-                    handler.obtainMessage(GET_ORDER_SUCCESS, jsonObject).sendToTarget();
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_ORDER_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 删除订单信息
-     *
-     * @param handler
-     */
-    public static BasicResultCallTask removeOrder(String orderId, final OrderInfo groupInfo, final OrderProductInfo childInfo, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (orderId != null) {
-            params.put(Common.ORDER_ID, orderId);
-        }
-        PictureAirLog.v(TAG, "removeOrder params：" + params);
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                Message msg = handler.obtainMessage();
-                Bundle b = new Bundle();
-                b.putParcelable("group", groupInfo);
-                b.putSerializable("child", childInfo);
-                msg.what = DELETE_ORDER_SUCCESS;
-                msg.setData(b);
-                handler.sendMessage(msg);
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(DELETE_ORDER_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -1750,74 +1548,6 @@ public class API1 {
      * 推送 End
      **************************************/
 
-    public static ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>();
-
-    /**
-     * 根据PP+选择PP界面。  曾经根据日期选择，现在不需要日期。
-     *
-     * @param pppCode
-     * @param handler
-     */
-    public static BasicResultCallTask getPPsByPPPAndDate(String pppCode, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (pppCode != null) {
-            params.put(Common.PPPCode, pppCode);
-        }
-        String url = Common.BASE_URL_TEST + Common.GET_PPS_BY_PPP_AND_DATE;
-        BasicResultCallTask task = HttpUtil1.asyncGet(url, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PPlist = JsonUtil.getPPSByPPP(jsonObject);
-                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 选择PP+ 绑定PP。现在的逻辑： 一张PP+卡只能绑定一张PP卡的某一天。
-     *
-     * @param pps
-     * @param pppCode
-     * @param handler
-     */
-    public static BasicResultCallTask bindPPsDateToPPP(JSONArray pps, String pppCode, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (pps != null) {
-            params.put(Common.PPS,pps.toString());
-        }
-        if (pppCode != null) {
-            params.put(Common.ppp1, pppCode);
-        }
-        String url = Common.BASE_URL_TEST + Common.BIND_PPS_DATE_TO_PPP;
-        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(BIND_PPS_DATE_TO_PP_SUCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(BIND_PPS_DATE_TO_PP_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
     /**
      * 获取分享的URL
      *
@@ -2049,73 +1779,6 @@ public class API1 {
     /**************************************下载图片 End**************************************/
 
     /**
-     * 忘记密码
-     *
-     * @param handler
-     * @param pwd
-     * @param mobile
-     */
-    public static BasicResultCallTask findPwd(final Handler handler, String pwd, String mobile) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
-        if (mobile != null) {
-            params.put(Common.USERINFO_USERNAME, mobile);
-        }
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 忘记密码
-     *
-     * @param handler
-     * @param email
-     * @param language
-     */
-    public static BasicResultCallTask findPwdEmail(final Handler handler, String email, String language, String tokenId) {
-        Map<String,Object> params = new HashMap<>();
-        if (null != language) {
-            params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
-        }
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (email != null) {
-            params.put(Common.USERINFO_EMAIL, email);
-        }
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-
-    /**
      * 获取unionpay的tn
      *
      * @param handler
@@ -2274,37 +1937,6 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "============" + status);
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 根据照片的拍摄时间获取PP+卡列表
-     * 用于预览图片页面，“使用已有的迪斯尼乐拍通一卡通”
-     * @param handler
-     * @param shootDate
-     */
-    public static BasicResultCallTask getPPPsByShootDate(final Handler handler, String shootDate) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (shootDate != null) {
-            params.put(Common.SHOOTDATE,shootDate);
-        }
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-//                PictureAirLog.e(TAG, "============" + jsonObject);
-                PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
-                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-//                PictureAirLog.e(TAG, "============" + status);
-                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
             }
         });
         return task;

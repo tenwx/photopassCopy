@@ -39,6 +39,7 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
@@ -48,6 +49,7 @@ import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -167,14 +169,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					break;
 
 				case API1.GET_PPP_SUCCESS:
-					if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
+					if (ppPhotoCount >= 10 && API2.PPPlist.size() == 0) {
 						pictureWorksDialog.setPWDialogId(FIRST_TEN_PHOTOS_TIP_DIALOG)
 								.setPWDialogMessage(R.string.pp_first_up10_msg)
 								.setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
 								.setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
 								.pwDilogShow();
 						settingUtil.insertSettingFirstPP10Status(userId);
-					} else if (API1.PPPlist.size() > 0) {
+					} else if (API2.PPPlist.size() > 0) {
 						settingUtil.insertSettingFirstPP10Status(userId);
 					}
 					break;
@@ -443,7 +445,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					//判断用户是否超过10张照片
 					if (settingUtil.isFirstPP10(userId)) {
 						//第一次 PP数量到 10 。
-						API1.getPPPSByUserId(MyApplication.getTokenId(), editStoryAlbumHandler);
+//						API1.getPPPSByUserId(MyApplication.getTokenId(), editStoryAlbumHandler);
+						getPPPsByUserId(MyApplication.getTokenId());
 					}
 					PictureAirLog.d("photos from db size->" + albumArrayList.size());
 					//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
@@ -461,6 +464,38 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			}
 		}).start();
 
+	}
+
+	private void getPPPsByUserId(String tokenId) {
+		API2.getPPPSByUserId(tokenId)
+				.compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new RxSubscribe<JSONObject>() {
+					@Override
+					public void _onNext(JSONObject jsonObject) {
+						API2.PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
+						if (ppPhotoCount >= 10 && API2.PPPlist.size() == 0) {
+							pictureWorksDialog.setPWDialogId(FIRST_TEN_PHOTOS_TIP_DIALOG)
+									.setPWDialogMessage(R.string.pp_first_up10_msg)
+									.setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
+									.setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
+									.pwDilogShow();
+							settingUtil.insertSettingFirstPP10Status(userId);
+						} else if (API2.PPPlist.size() > 0) {
+							settingUtil.insertSettingFirstPP10Status(userId);
+						}
+					}
+
+					@Override
+					public void _onError(int status) {
+
+					}
+
+					@Override
+					public void onCompleted() {
+
+					}
+				});
 	}
 
 	@Override

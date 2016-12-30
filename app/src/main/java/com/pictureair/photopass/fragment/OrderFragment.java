@@ -23,7 +23,6 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OrderInfoDateSortUtil;
@@ -44,7 +43,7 @@ import de.greenrobot.event.Subscribe;
 /**
  * Created by bass on 16/4/25.
  */
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment implements OrderListViewAdapter.RemoveOrderItemListener{
     private final String TAG = "OrderFragment";
     private View view;
     private ExpandableListView orderListView;
@@ -72,29 +71,6 @@ public class OrderFragment extends Fragment {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case API1.DELETE_ORDER_SUCCESS:
-                    PictureAirLog.v(TAG, "DELETE_ORDER_SUCCESS");
-                    // 移除第几个position。
-                    Bundle b = msg.getData();
-                    OrderInfo groupInfo = b.getParcelable("group");
-                    OrderProductInfo childInfo = (OrderProductInfo) b.getSerializable("child");
-
-                    //删除全部订单 中的对象
-                    orderList.remove(groupInfo);
-                    childlist.remove(childInfo);
-                    if (allOrderAdapter != null) {
-                        allOrderAdapter.notifyDataSetChanged();
-                    }
-
-                    if (orderList == null || orderList.size() == 0) {//显示空图
-                        showNetWorkOrNoCount();
-                    }
-                    break;
-
-                case API1.DELETE_ORDER_FAILED:
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
                     //去跳转到商品页面
                     //需要删除页面，保证只剩下mainTab页面，
@@ -178,6 +154,7 @@ public class OrderFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler, tab);
+        allOrderAdapter.setRemoveOrderItemListener(this);
         orderListView.setGroupIndicator(null);
         orderListView.setAdapter(allOrderAdapter);
         orderListView.setOnGroupClickListener(new GroupOnClick(tab));
@@ -192,6 +169,24 @@ public class OrderFragment extends Fragment {
                 orderListView.expandGroup(i);
             }
         }
+    }
+
+    @Override
+    public void removeOrderSuccess(OrderInfo orderInfo, OrderProductInfo orderProductInfo) {
+        orderList.remove(orderInfo);
+        childlist.remove(orderProductInfo);
+        if (allOrderAdapter != null) {
+            allOrderAdapter.notifyDataSetChanged();
+        }
+
+        if (orderList == null || orderList.size() == 0) {//显示空图
+            showNetWorkOrNoCount();
+        }
+    }
+
+    @Override
+    public void removeOrderFailed(int status) {
+        myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
     }
 
     //group点击事件监听

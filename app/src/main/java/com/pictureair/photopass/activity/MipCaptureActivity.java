@@ -36,6 +36,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
@@ -192,7 +193,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
                         //进入ppp页面
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
-                        API1.PPPlist.clear();
+                        API2.PPPlist.clear();
                         intent2.putExtra("upgradePP", true);
                         startActivity(intent2);
 

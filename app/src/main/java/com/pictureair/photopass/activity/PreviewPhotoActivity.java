@@ -46,7 +46,6 @@ import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.HttpCallback;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
@@ -372,7 +371,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
-                if (API1.PPPlist.size() > 0) {
+                if (API2.PPPlist.size() > 0) {
                     //将 tabname 存入sp
                     SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
                     SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
@@ -934,13 +933,51 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     return;
                 }else{
-                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.getShootDate());
+//                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.getShootDate());
+                    getPPPsByShootDate(photoInfo.getShootDate());
                 }
                 break;
 
             default:
                 break;
         }
+    }
+    private void getPPPsByShootDate(String shootDate) {
+        API2.getPPPsByShootDate(shootDate)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        API2.PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
+                        if (API2.PPPlist.size() > 0) {
+                            //将 tabname 存入sp
+                            SPUtils.put(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
+                            SPUtils.put(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
+
+                            if (sheetDialog.isShowing()) {
+                                sheetDialog.dismiss();
+                            }
+
+                            Intent intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
+                            intent.putExtra("photoPassCode",photoInfo.getPhotoPassCode());
+                            intent.putExtra("shootTime",photoInfo.getShootDate());
+                            startActivity(intent);
+                        } else {
+                            newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**

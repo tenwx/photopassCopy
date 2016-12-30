@@ -26,18 +26,24 @@ import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by bauer_bao on 16/9/2.
@@ -93,7 +99,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     dismissPWProgressDialog();
                     break;
 
-                case API1.GET_PPPS_BY_SHOOTDATE_FAILED:
                 case API1.GET_GOODS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                     dismissPWProgressDialog();
@@ -134,22 +139,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                         buyImg = new ImageView(ADVideoDetailProductActivity.this);// buyImg是动画的图片
                         buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
                         setAnim(buyImg);
-                    }
-                    break;
-
-                case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
-                    dismissPWProgressDialog();
-                    if (API1.PPPlist.size() > 0) {
-                        //将 tabname 存入sp
-                        SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
-                        SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
-
-                        Intent intent = new Intent(ADVideoDetailProductActivity.this, SelectPPActivity.class);
-                        intent.putExtra("photoPassCode", videoInfo.getPhotoPassCode());
-                        intent.putExtra("shootTime", videoInfo.getShootDate());
-                        startActivity(intent);
-                    } else {
-                        pwToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                     }
                     break;
 
@@ -251,7 +240,8 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     return;
                 }else{
                     showPWProgressDialog();
-                    API1.getPPPsByShootDate(adVideoHandler, videoInfo.getShootDate());
+//                    API1.getPPPsByShootDate(adVideoHandler, videoInfo.getShootDate());
+                    getPPPsByShootDate(videoInfo.getShootDate());
                 }
                 break;
 
@@ -268,6 +258,42 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             default:
                 break;
         }
+    }
+
+    private void getPPPsByShootDate(String shootDate) {
+        API2.getPPPsByShootDate(shootDate)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        API2.PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
+                        dismissPWProgressDialog();
+                        if (API2.PPPlist.size() > 0) {
+                            //将 tabname 存入sp
+                            SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
+                            SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
+
+                            Intent intent = new Intent(ADVideoDetailProductActivity.this, SelectPPActivity.class);
+                            intent.putExtra("photoPassCode", videoInfo.getPhotoPassCode());
+                            intent.putExtra("shootTime", videoInfo.getShootDate());
+                            startActivity(intent);
+                        } else {
+                            pwToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,9 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -25,6 +25,9 @@ import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.widget.CustomButtonFont;
+import com.trello.rxlifecycle.android.ActivityEvent;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 忘记密码：2个页面
@@ -44,38 +47,6 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     //提示页面
     private LinearLayout llContenHint;
     private CustomButtonFont btnBackLoginPage;
-
-    private Handler mHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            dismissPWProgressDialog();
-            switch (msg.what) {
-                case API1.FIND_PWD_SUCCESS:
-                    llFindPwdContent.setVisibility(View.GONE);
-                    llContenHint.setVisibility(View.VISIBLE);
-                    break;
-
-                case API1.FIND_PWD_FAILED:
-                    int id;
-                    switch (msg.arg1) {
-                        case 6031://用户名不存在
-                            id = ReflectionUtil.getStringId(FindPasswordActivity.this, msg.arg1);
-                            break;
-
-                        default:
-                            id = ReflectionUtil.getStringId(FindPasswordActivity.this, msg.arg1);
-                            break;
-                    }
-                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                    break;
-
-                default:
-                    break;
-
-            }
-            return false;
-        }
-    });
 
     /**
      * 点击键盘之外，隐藏键盘
@@ -166,12 +137,46 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                 }
 
                 showPWProgressDialog();
-                API1.findPwdEmail(mHandler, etEmailStr, MyApplication.getInstance().getLanguageType(),MyApplication.getTokenId());
+                findPWDEmail(etEmailStr);
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void findPWDEmail(String etEmailStr) {
+        API2.findPwdEmail(etEmailStr, MyApplication.getInstance().getLanguageType(),MyApplication.getTokenId())
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        llFindPwdContent.setVisibility(View.GONE);
+                        llContenHint.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        int id;
+                        dismissPWProgressDialog();
+                        switch (status) {
+                            case 6031://用户名不存在
+                                id = ReflectionUtil.getStringId(FindPasswordActivity.this, status);
+                                break;
+
+                            default:
+                                id = ReflectionUtil.getStringId(FindPasswordActivity.this, status);
+                                break;
+                        }
+                        myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                    }
+                });
     }
 
     @Override
@@ -202,8 +207,6 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != mHandler)
-            mHandler.removeCallbacksAndMessages(null);
     }
 
     private void backLogin() {

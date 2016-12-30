@@ -306,11 +306,12 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			GlideUtil.load(mContext, Common.PHOTO_URL + dpp.pppCardBg, R.drawable.ic_discover_loading, R.drawable.ic_discover_failed, holder.ppp_imageView);
 			holder.ppp_imageView.setTag(R.id.glide_image_tag, dpp.pppCardBg);
 		}
-
-		if (!dpp.pppCardBg.contains("ppp.")) {
-			holder.pppLine.setBackgroundResource(R.drawable.ppp_white_line);
-		} else {
-			holder.pppLine.setBackgroundColor(Color.TRANSPARENT);
+		if (dpp.pppCardBg != null) {
+			if (!dpp.pppCardBg.contains("ppp.")) {
+				holder.pppLine.setBackgroundResource(R.drawable.ppp_white_line);
+			} else {
+				holder.pppLine.setBackgroundColor(Color.TRANSPARENT);
+			}
 		}
 
 		//设置过期时间

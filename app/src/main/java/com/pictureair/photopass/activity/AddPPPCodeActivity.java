@@ -11,7 +11,7 @@ import android.widget.Button;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
@@ -108,7 +108,7 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
         Intent intent2 = new Intent();
         intent2.setClass(AddPPPCodeActivity.this, MyPPPActivity.class);
         intent2.putExtra("upgradePP", true);
-        API1.PPPlist.clear();
+        API2.PPPlist.clear();
         startActivity(intent2);
         AppManager.getInstance().killActivity(MipCaptureActivity.class);
         finish();

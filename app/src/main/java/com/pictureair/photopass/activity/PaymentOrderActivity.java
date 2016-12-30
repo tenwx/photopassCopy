@@ -23,6 +23,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -704,7 +705,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
                 }
                 intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
-                API1.PPPlist.clear();
+                API2.PPPlist.clear();
 
             } else {
                 // 以下两种情况，进入图片清晰页面
