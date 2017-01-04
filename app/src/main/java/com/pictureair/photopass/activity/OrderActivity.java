@@ -48,11 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order

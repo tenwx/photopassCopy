@@ -1,11 +1,11 @@
 package com.pictureair.photopass.editPhoto.interf;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.editPhoto.widget.StickerView;
+import com.trello.rxlifecycle.components.RxActivity;
 
 /**
  * Created by talon on 16/5/20.
@@ -42,7 +42,7 @@ public interface IPWEditView {
 
     void ToastShow(int stringId); //弹出Toast
 
-    Activity getEditPhotView();//获取窗体对象
+    RxActivity getEditPhotView();//获取窗体对象
 
     void finishActivity();
 

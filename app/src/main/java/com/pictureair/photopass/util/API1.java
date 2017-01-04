@@ -9,14 +9,9 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.OrderProductInfo;
-import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
@@ -30,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,19 +42,6 @@ public class API1 {
     public static final int GET_DEFAULT_PHOTOS = 1;//获取默认图片
     public static final int GET_NEW_PHOTOS = 2;//获取最新图片
     public static final int GET_OLD_PHOTOS = 3;//获取旧图片
-
-    /**
-     * 启动
-     */
-    public static final int GET_TOKEN_ID_SUCCESS = 1001;
-    public static final int GET_TOKEN_ID_FAILED = 1000;
-
-    public static final int LOGOUT_SUCCESS = 1031;
-    public static final int LOGOUT_FAILED = 1030;
-
-    //忘记密码
-    public static final int FIND_PWD_SUCCESS = 1051;
-    public static final int FIND_PWD_FAILED = 1050;
 
     /**
      * Story
@@ -88,9 +69,6 @@ public class API1 {
     /**
      * 获取视频信息
      */
-    public static final int GET_LAST_CONTENT_SUCCESS = 2071;
-    public static final int GET_LAST_CONTENT_FAILED = 2070;
-
 
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2080;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2081;
@@ -127,17 +105,11 @@ public class API1 {
     public static final int DELETE_CART_FAILED = 4050;
     public static final int DELETE_CART_SUCCESS = 4051;
 
-    public static final int ADD_ORDER_FAILED = 4060;
-    public static final int ADD_ORDER_SUCCESS = 4061;
-
     public static final int BUY_PHOTO_FAILED = 4080;
     public static final int BUY_PHOTO_SUCCESS = 4081;
 
     public static final int GET_OUTLET_ID_FAILED = 4090;
     public static final int GET_OUTLET_ID_SUCCESS = 4091;
-
-    public static final int UNIONPAY_GET_TN_SUCCESS = 4111;
-    public static final int UNIONPAY_GET_TN_FAILED = 4110;
 
     public static final int BATCH_ADD_TO_CARTS_SUCCESS = 4121;
     public static final int BATCH_ADD_TO_CARTS_FAILED = 4120;
@@ -151,31 +123,14 @@ public class API1 {
     public static final int DELETE_ADDRESS_LIST_FAILED = 4150;
     public static final int DELETE_ADDRESS_LIST_SUCCESS = 4151;
 
-    public static final int GET_INVOICE_FAILED = 4160;
-    public static final int GET_INVOICE_SUCCESS = 4161;
-
     public static final int ADDRESS_LIST_FAILED = 4170;
     public static final int ADDRESS_LIST_SUCCESS = 4171;
 
     public static final int GET_DEALING_GOODS_SUCCESS = 4181;
     public static final int GET_DEALING_GOODS_FAILED = 4180;
-
-    public static final int UPDATE_DEALING_ORDER_SUCCESS = 4191;
-    public static final int UPDATE_DEALING_ORDER_FAILED = 4190;
-
-    public static final int ADD_BOOKING_SUCCESS = 4201;
-    public static final int ADD_BOOKING_FAILED = 4200;
-
     //Shop模块 end
 
     //我的模块 start
-    public static final int UPDATE_PROFILE_SUCCESS = 5011;
-    public static final int UPDATE_PROFILE_FAILED = 5010;
-    public static final int UPDATE_PROFILE_NAME = 5012;
-    public static final int UPDATE_PROFILE_GENDER = 5013;
-    public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
-    public static final int UPDATE_PROFILE_COUNTRY = 5015;
-
     public static final int UPLOAD_PHOTO_SUCCESS = 5061;
     public static final int UPLOAD_PHOTO_FAILED = 5060;
     public static final int UPLOAD_PHOTO_PROGRESS = 5062;
@@ -184,9 +139,6 @@ public class API1 {
     public static final int GET_PPP_FAILED = 5070;
 
     //PP & PP＋模块
-    public static final int MODIFY_PWD_SUCCESS = 5101;
-    public static final int MODIFY_PWD_FAILED = 5100;
-
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
 
@@ -197,25 +149,6 @@ public class API1 {
     //添加一张优惠卷
     public static final int INSERT_COUPON_SUCCESS = 5151;
     public static final int INSERT_COUPON_FAILED = 5150;
-
-    //使用优惠券
-    public static final int PREVIEW_COUPON_SUCCESS = 5161;
-    public static final int PREVIEW_COUPON_FAILED = 5160;
-    //我的模块 end
-
-    public static final int GET_UPDATE_SUCCESS = 6001;
-    public static final int GET_UPDATE_FAILED = 6000;
-
-    public static final int DOWNLOAD_APK_SUCCESS = 6011;
-    public static final int DOWNLOAD_APK_FAILED = 6010;
-
-    // 推送
-    public static final int SOCKET_DISCONNECT_FAILED = 6020;
-    public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
-
-    //手动拉取推送
-    public static final int GET_SOCKET_DATA_FAILED = 6030;
-    public static final int GET_SOCKET_DATA_SUCCESS = 6031;
 
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
@@ -234,80 +167,6 @@ public class API1 {
     //获取短连接
     public static final int GET_SHORT_URL_SUCCESS = 6071;
     public static final int GET_SHORT_URL_FAILED = 6070;
-
-    /**
-     * 发送设备ID获取tokenId
-     *
-     * @param context
-     * @param handler
-     */
-    public static BasicResultCallTask getTokenId(final Context context, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.TERMINAL, "android");
-        String id = Installation.id(context);
-        if (id != null) {
-            params.put(Common.UUID, id);
-        }
-        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
-
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-
-                super.onSuccess(jsonObject);
-                try {
-                    byte[] key = ACache.get(MyApplication.getInstance()).getAsBinary(Common.USERINFO_SALT);
-                    if (key == null) {
-                        ACache.get(context).put(Common.USERINFO_SALT, AESKeyHelper.secureByteRandom());
-                    }
-                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID,
-                            AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (handler != null) {
-                    handler.sendEmptyMessage(GET_TOKEN_ID_SUCCESS);
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                if (handler != null) {
-                    handler.obtainMessage(GET_TOKEN_ID_FAILED, status, 0).sendToTarget();
-                }
-            }
-        });
-
-        return task;
-    }
-
-    /**
-     * 登出账号
-     *
-     * @param handler handler
-     */
-    public static BasicResultCallTask Logout(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "Logout onSuccess:" + jsonObject);
-                handler.sendEmptyMessage(LOGOUT_SUCCESS);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "Logout onFailure: status" + status);
-                handler.sendEmptyMessage(LOGOUT_FAILED);
-            }
-        });
-        return task;
-    }
 
     /**
      * 下载头像或者背景文件
@@ -594,38 +453,6 @@ public class API1 {
 
 
     /**
-     * 获取最新的边框以及饰品信息
-     *
-     * @param lastUpdateTime 上次更新时间
-     * @param handler
-     */
-    public static BasicResultCallTask getLastContent(String lastUpdateTime, final Handler handler) {
-        StringBuffer sBuffer = new StringBuffer();
-        sBuffer.append(Common.BASE_URL_TEST);
-        sBuffer.append(Common.GET_LASTEST_CONTENT);
-
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (lastUpdateTime != null) {
-            params.put(Common.LAST_UPDATE_TIME, lastUpdateTime);
-        }
-        BasicResultCallTask task = HttpUtil1.asyncGet(sBuffer.toString(), params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_LAST_CONTENT_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_LAST_CONTENT_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
      * 获取有广告的地点
      *
      * @param handler
@@ -687,81 +514,6 @@ public class API1 {
                 bundle.putLong("totalSize",totalSize);
                 msg.setData(bundle);
                 handler.sendMessage(msg);
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 更新用户信息
-     *
-     * @param tokenId  tokenId
-     * @param name     名字
-     * @param birthday 生日
-     * @param gender   性别
-     * @param QQ       qq
-     * @param handler  handler
-     */
-    public static BasicResultCallTask updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final int modifyType, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (name != null) {
-            params.put(Common.USERINFO_NICKNAME, name);
-        }
-        if (country != null) {
-            params.put(Common.USERINFO_COUNTRY, country);
-        }
-        if (QQ != null) {
-            params.put(Common.USERINFO_QQ, QQ);
-        }
-        if (birthday != null) {
-            params.put(Common.USERINFO_BIRTHDAY, birthday);
-        }
-        if (gender != null) {
-            params.put(Common.USERINFO_GENDER, gender);
-        }
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_PROFILE, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(UPDATE_PROFILE_SUCCESS, modifyType, 0).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(UPDATE_PROFILE_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 修改密码或者忘记密码接口
-     *
-     * @param oldPwd  旧密码，修改的时候用到，如果是忘记密码的话，设为null
-     * @param newPwd  新密码
-     * @param handler
-     */
-    public static BasicResultCallTask modifyPwd(String oldPwd, String newPwd, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.NEW_PASSWORD, AppUtil.md5(newPwd));
-        params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.sendEmptyMessage(MODIFY_PWD_SUCCESS);
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(MODIFY_PWD_FAILED, status, 0).sendToTarget();
-
             }
         });
         return task;
@@ -1020,62 +772,6 @@ public class API1 {
     }
 
     /**
-     * 提交订单
-     *
-     * @param cartItemIds  JSONArray
-     * @param deliveryType 物流方式(必须，送货方式,物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3))
-     * @param outletId     门店编号门店主键(与addressId互斥,但不能都存在,若物流方式为3则无此条约束)
-     * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
-     * @param handler      handler
-     */
-    public static BasicResultCallTask addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId,
-                                               JSONArray couponCodes, JSONObject invoice,
-                                               String channelId, String uid, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (cartItemIds != null) {
-            params.put("cartItemIds", cartItemIds.toString());
-        }
-        params.put("deliveryType", deliveryType);
-        params.put("coupons", couponCodes == null ? "" : couponCodes.toString());
-        if (deliveryType == 0) {
-            //物流
-            if (addressId != null) {
-                params.put("addressId", addressId);
-            }
-        } else if (deliveryType == 1) {
-            //自提
-            if (outletId != null) {
-                params.put("outletId", outletId);
-            }
-        }
-        if(null != invoice)
-            params.put("invoiceInfo",invoice);
-
-        if (!TextUtils.isEmpty(channelId)) {
-            params.put("channelId", channelId);
-            params.put("uId", uid);
-        }
-        PictureAirLog.out("addorder params ------------>"+params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(ADD_ORDER_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(ADD_ORDER_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-    /**
      * 获得发票的所有地址列表
      *
      * @param handler
@@ -1094,47 +790,6 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(ADDRESS_LIST_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 获取用户购物车带发票的信息
-     *
-     * @param cartIdsArray
-     * @param handler      handler
-     */
-    public static BasicResultCallTask getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes, final Handler handler) {
-        PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
-        final int flag;//表示请求类型： 初始化/选中取消选中
-        Map<String,Object> params = new HashMap<>();
-        if (cartIdsArray == null) {
-            flag = -1;
-        } else {
-            if (cartIdsArray.size() > 0) {
-                params.put("cartItemIds", cartIdsArray.toString());
-            }
-            flag = GET_CART_SUCCESS;
-        }
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        params.put("isNeedInvoice", isNeedInvoice);
-        params.put("couponCodes", couponCodes.toString());
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_INVOICE_SUCCESS, flag, flag, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_INVOICE_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -1400,46 +1055,6 @@ public class API1 {
             + "'downloadUrl':'http://dd.myapp.com/16891/2FA495F1283F48658CEACFF53DB6F856.apk?fsname=com.pictureair.photopass_1.1.1_4.apk'}]}}";
 
 
-    /**
-     * 获取最新的版本信息
-     *
-     * @param handler
-     */
-    public static BasicResultCallTask checkUpdate(Context context, final Handler handler) {
-        if (context == null) {
-            handler.sendEmptyMessage(GET_UPDATE_FAILED);
-            return null;
-        }
-        final Context c = context;
-        String verson = c.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        params.put(Common.VERSION, verson);
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                /**
-                 * 测试使用
-                 */
-//                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
-                PictureAirLog.out("update---->" + jsonObject);
-                ACache.get(c).put(Common.UPDATE_INFO, jsonObject.toString());
-                handler.obtainMessage(GET_UPDATE_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.out("failed---->" + status);
-                handler.sendEmptyMessage(GET_UPDATE_FAILED);
-            }
-        });
-        return task;
-    }
-
     /***************************************推送 Start**************************************/
     /**
      * socket链接后处理方法
@@ -1464,33 +1079,6 @@ public class API1 {
         return task;
     }
 
-
-    /**
-     * 手机端退出登录前调用
-     */
-    public static BasicResultCallTask noticeSocketDisConnect(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开成功");
-                handler.sendEmptyMessage(SOCKET_DISCONNECT_SUCCESS);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开失败,状态码：" + status);
-            }
-        });
-        return task;
-    }
-
-
     /**
      * 手机端接收到推送后，调用清空推送数据
      *
@@ -1513,32 +1101,6 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 返回用户未接收到的推送消息
-     */
-    public static BasicResultCallTask getSocketData(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.v(TAG, "getSocketData onSuccess() jsonObject: " + jsonObject.toString());
-                handler.obtainMessage(GET_SOCKET_DATA_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.v(TAG, "getSocketData onFailure() status: " + status);
-                handler.obtainMessage(GET_SOCKET_DATA_FAILED, status, 0).sendToTarget();
             }
         });
         return task;
@@ -1779,38 +1341,6 @@ public class API1 {
     /**************************************下载图片 End**************************************/
 
     /**
-     * 获取unionpay的tn
-     *
-     * @param handler
-     */
-    public static BasicResultCallTask getUnionPayTN(String orderCode , final Handler handler){
-        PictureAirLog.e(TAG, MyApplication.getTokenId());
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (orderCode != null) {
-            params.put(Common.ORDER_CODE, orderCode);
-        }
-        PictureAirLog.e(TAG, MyApplication.getTokenId());
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "jsonObject" + jsonObject);
-                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-
-    /**
      * 根据商品查询所有可以使用的优惠卷
      * 1. tokenId
      * 2. cartItemIds:array<string>,用户选中的购物项(可选)
@@ -1879,41 +1409,6 @@ public class API1 {
     }
 
     /**
-     * 用户使用优惠码预览费用
-     *
-     * @param handler
-     * @param couponCodes  优惠码
-     * @param cartItemsIds 用户选中的购物项
-     */
-    public static BasicResultCallTask previewCoupon(final Handler handler, JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (couponCodes != null) {
-            params.put("couponCodes", couponCodes.toString());
-        }
-        if (cartItemsIds != null) {
-            params.put("cartItemIds", cartItemsIds.toString());
-        }
-        params.put("isNeedInvoice", needInvoice);
-        PictureAirLog.v(TAG, "previewCoupon params：" + params);
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(PREVIEW_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(PREVIEW_COUPON_FAILED, status, 0).sendToTarget();
-            }
-
-        });
-        return task;
-    }
-
-    /**
      * 从me中进入查询抵用劵
      *
      * @param handler
@@ -1937,94 +1432,6 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "============" + status);
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     *
-     * @param handler
-     * @param orderCode
-     * @param dealingKey
-     * @return
-     */
-    public static BasicResultCallTask updateDealingOrder(final Handler handler, String orderCode, String dealingKey) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.ORDER_CODE, orderCode);
-        params.put(Common.DEALINGKEY, dealingKey);
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_DEALING_ORDER, params, new HttpCallback() {
-
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.json(jsonObject.toString());
-                handler.obtainMessage(UPDATE_DEALING_ORDER_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(UPDATE_DEALING_ORDER_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 提交订单
-     *
-     * @param goods  JSONArray
-     * @param deliveryType 物流方式(必须，送货方式,物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3))
-     * @param outletId     门店编号门店主键(与addressId互斥,但不能都存在,若物流方式为3则无此条约束)
-     * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
-     * @param handler      handler
-     */
-    public static BasicResultCallTask addBook(JSONArray goods, JSONArray couponCodes, int deliveryType, String outletId, String addressId,
-                                int payType, String channelId, String dealingKey, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (goods != null) {
-            params.put(Common.GOODS, goods.toString());
-        }
-        if (couponCodes != null) {
-            params.put("coupons", couponCodes.toString());
-        }
-        params.put(Common.DELIVERY_TYPE, deliveryType);
-
-        if (deliveryType == 0) {
-            //物流
-            params.put(Common.ADDRESS_ID, addressId);
-        } else if (deliveryType == 1) {
-            //自提
-            params.put("outletId", outletId);
-        }
-
-        params.put(Common.PAY_TYPE, payType);
-        if (!TextUtils.isEmpty(channelId)) {
-            params.put("channelId", channelId);
-        }
-
-        if (!TextUtils.isEmpty(dealingKey)) {
-            params.put(Common.DEALINGKEY, dealingKey);
-        }
-        PictureAirLog.out("addorder params ------------>"+params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(ADD_BOOKING_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(ADD_BOOKING_FAILED, status, 0).sendToTarget();
-
             }
         });
         return task;

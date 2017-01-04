@@ -81,6 +81,13 @@ public class API2 {
 
     public static final int GET_CART_SUCCESS = 4021;
 
+    public static final int UPDATE_PROFILE_NAME = 5012;
+    public static final int UPDATE_PROFILE_GENDER = 5013;
+    public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
+    public static final int UPDATE_PROFILE_COUNTRY = 5015;
+
+    public static final int DOWNLOAD_APK_FAILED = 6010;
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -522,7 +529,7 @@ public class API2 {
      * @param gender   性别
      * @param QQ       qq
      */
-    public static Observable<JSONObject> updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ) {//, final int modifyType
+    public static Observable<JSONObject> updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (name != null) {
@@ -898,15 +905,9 @@ public class API2 {
      */
     public static Observable<JSONObject> getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes) {
         PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
-        final int flag;//表示请求类型： 初始化/选中取消选中
         Map<String, Object> params = new HashMap<>();
-        if (cartIdsArray == null) {
-            flag = -1;
-        } else {
-            if (cartIdsArray.size() > 0) {
-                params.put("cartItemIds", cartIdsArray.toString());
-            }
-            flag = GET_CART_SUCCESS;
+        if (cartIdsArray != null && cartIdsArray.size() > 0) {
+            params.put("cartItemIds", cartIdsArray.toString());
         }
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
@@ -1070,10 +1071,6 @@ public class API2 {
      * 获取最新的版本信息
      */
     public static Observable<JSONObject> checkUpdate(Context context) {
-        if (context == null) {
-//            handler.sendEmptyMessage(GET_UPDATE_FAILED);
-            return null;
-        }
         final Context c = context;
         String verson = c.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         Map<String, Object> params = new HashMap<>();
@@ -1628,7 +1625,7 @@ public class API2 {
         return post(Common.BASE_URL_TEST + Common.ADD_BOOKING, params, null);
     }
 
-    public static Observable<JSONObject> getSingleGoods(String dealingUrl, String language) {//, final boolean onClick
+    public static Observable<JSONObject> getSingleGoods(String dealingUrl, String language) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, language);

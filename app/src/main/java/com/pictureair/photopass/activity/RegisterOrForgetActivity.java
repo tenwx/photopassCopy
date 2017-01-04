@@ -276,7 +276,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     }
 
     @Override
-    public void countDown(int time) {
+    public void countDown(long time) {
         if (time == 0) {
             countDownFinish = true;
             btn_next.setText(R.string.smssdk_send_verification_code);// 再次发送验证码

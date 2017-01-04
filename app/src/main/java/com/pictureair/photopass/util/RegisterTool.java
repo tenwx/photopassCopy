@@ -1,8 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
+import android.os.CountDownTimer;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -13,6 +12,7 @@ import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
 
+import java.lang.ref.WeakReference;
 import rx.android.schedulers.AndroidSchedulers;
 
 
@@ -24,28 +24,13 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     private Context context;
     private RegisterOrForgetCallback registerOrForgetView;
     private String languageType;
-    private final int SEND_TIME = 0X1;
-    private int time = 60;
     private String phone = "";
     private String pwd = "";
     public static final String SIGN_ACTIVITY = "sign";
     public static final String FORGET_ACTIVITY = "forget";
     private String whatActivity = "";
     private SignAndLoginUtil signAndLoginUtil;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SEND_TIME:
-                    registerOrForgetView.countDown(time);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    private RegisterCountDownTimer timer;
 
     public void setWhatActivity(String whatActivity) {
         this.whatActivity = whatActivity;
@@ -56,23 +41,8 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
      */
     private void sendValidateCodeSuccess() {
         registerOrForgetView.goneDialog();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                time = 60;
-                try {
-                    while (time > 0) {
-                        Thread.sleep(1000);
-                        --time;
-                        handler.sendEmptyMessage(SEND_TIME);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-
+        timer = new RegisterCountDownTimer(60 * 1000, 1000, this);
+        timer.start();
     }
 
     private void validateSuccess() {
@@ -115,6 +85,10 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     public void onDestroy() {
         if (signAndLoginUtil != null) {
             signAndLoginUtil.destroy();
+        }
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
         registerOrForgetView.goneDialog();
     }
@@ -236,4 +210,36 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
                     }
                 });
     }
+
+    private void timeCountDown(long time) {
+        registerOrForgetView.countDown(time);
+    }
+
+    private static class RegisterCountDownTimer extends CountDownTimer{
+        private WeakReference<RegisterTool> registerToolWeakRef;
+
+        public RegisterCountDownTimer(long millisInFuture, long countDownInterval, RegisterTool registerTool) {
+            super(millisInFuture, countDownInterval);
+            registerToolWeakRef = new WeakReference<RegisterTool>(registerTool);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            int sec = 1000;
+            long ss = millisUntilFinished / sec;
+            if (registerToolWeakRef.get() != null) {
+                registerToolWeakRef.get().timeCountDown(ss);
+                PictureAirLog.d("registerTool count down", ss + "s");
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            if (registerToolWeakRef.get() != null) {
+                registerToolWeakRef.get().timeCountDown(0);
+                PictureAirLog.d("registerTool count down", "finish");
+            }
+        }
+    }
+
 }

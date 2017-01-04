@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -22,8 +24,11 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 个人信息页面
@@ -76,11 +81,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 Bundle bundle = (Bundle) msg.obj;
                 birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(),
+                updateProfile(MyApplication.getTokenId(),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""), birthdayString,
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""),
-                        "", API1.UPDATE_PROFILE_BIRTHDAY, profileHandler);
+                        "", API2.UPDATE_PROFILE_BIRTHDAY);
                 break;
 
             case R.id.item_gender:
@@ -89,57 +94,12 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(),
+                updateProfile(MyApplication.getTokenId(),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""), genderString,
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""), "",
-                        API1.UPDATE_PROFILE_GENDER, profileHandler);
+                        API2.UPDATE_PROFILE_GENDER);
                 break;
-
-
-            case API1.UPDATE_PROFILE_FAILED:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.UPDATE_PROFILE_SUCCESS:
-                switch (msg.arg1) {
-                    case API1.UPDATE_PROFILE_NAME:
-                        tvNickName.setText(nickNameString);
-                        tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
-                        break;
-
-                    case API1.UPDATE_PROFILE_GENDER:
-                        if (genderString.equals("male")) {
-                            tvGender.setText(R.string.male);
-                        } else if (genderString.equals("female")) {
-                            tvGender.setText(R.string.female);
-                        }
-                        tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
-                        break;
-
-                    case API1.UPDATE_PROFILE_BIRTHDAY:
-                        PictureAirLog.out("birthday--->" + birthdayString);
-                        tvBirthday.setText(birthdayString);
-                        tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
-                        break;
-
-                    case API1.UPDATE_PROFILE_COUNTRY:
-                        countryTv.setText(countryString);
-                        countryRL.setEnabled(false);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthdayString);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, nickNameString);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, countryCode);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, genderString);
-                dismissPWProgressDialog();
-                break;
-
             default:
                 break;
         }
@@ -305,11 +265,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(),
+                updateProfile(MyApplication.getTokenId(),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
-                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
+                        countryCode, "", API2.UPDATE_PROFILE_COUNTRY);
             }
         }
 
@@ -321,16 +281,78 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 }
                 nickNameString = data.getStringExtra("nickName");
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(), nickNameString,
+                updateProfile(MyApplication.getTokenId(), nickNameString,
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""),
                         SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
-                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""), "", API2.UPDATE_PROFILE_NAME);
                 break;
 
             default:
                 break;
         }
 
+    }
+
+    private void updateProfile(String pTokenId, String pName, String pBirthday, String pGender, String pCountry, String pQQ, final int pModifyType) {
+        API2.updateProfile(pTokenId, pName, pBirthday, pGender, pCountry, pQQ)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        updateProfileSuccess(pModifyType);
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    private void updateProfileSuccess(int modifyType) {
+
+        switch (modifyType) {
+            case API2.UPDATE_PROFILE_NAME:
+                tvNickName.setText(nickNameString);
+                tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+                break;
+
+            case API2.UPDATE_PROFILE_GENDER:
+                if (genderString.equals("male")) {
+                    tvGender.setText(R.string.male);
+                } else if (genderString.equals("female")) {
+                    tvGender.setText(R.string.female);
+                }
+                tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
+                break;
+
+            case API2.UPDATE_PROFILE_BIRTHDAY:
+                PictureAirLog.out("birthday--->" + birthdayString);
+                tvBirthday.setText(birthdayString);
+                tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
+                break;
+
+            case API2.UPDATE_PROFILE_COUNTRY:
+                countryTv.setText(countryString);
+                countryRL.setEnabled(false);
+                break;
+
+            default:
+                break;
+        }
+
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthdayString);
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, nickNameString);
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, countryCode);
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, genderString);
     }
 
     /**

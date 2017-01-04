@@ -35,8 +35,10 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.InvoiceInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
@@ -45,10 +47,13 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
@@ -95,8 +100,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private float invoicePay=0;//快递费用
     private float resultPrice = 0;//初始总费用
 
-    private static final int PAY_SUCCESS = 10001;//支付成功
-    private static final int PAY_FAILED = 10002;//失败
+//    private static final int PAY_SUCCESS = 10001;//支付成功
+//    private static final int PAY_FAILED = 10002;//失败
 
     private JSONArray couponCodes;//优惠券
 
@@ -138,90 +143,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 selectPhoto(msg.arg1);
                 break;
 
-            case API1.GET_COUPON_SUCCESS:
-                JSONObject couponJson = (JSONObject) msg.obj;
-                couponCount = couponJson.getInteger("amount");
-                dismissPWProgressDialog();
-                //更新界面
-                updateShopPriceUI(true);
-
-                break;
-            case API1.GET_COUPON_FAILED:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                break;
-            case API1.PREVIEW_COUPON_SUCCESS:
-                //使用优惠码成功 -- 解析数据
-                JSONObject json = (JSONObject) msg.obj;
-                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + json);
-
-                straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠折扣
-                promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠立减
-                preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
-                totalprice = Float.valueOf(json.getString("resultPrice"));//初始总费用
-                payPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
-
-                //更新界面
-                dismissPWProgressDialog();
-                if (straightwayPreferentialPrice == 0) {
-                    updateShopPriceUI(true);
-                } else {
-                    updateShopPriceUI(false);
-                }
-                break;
-            case API1.PREVIEW_COUPON_FAILED:
-                //使用优惠码失败
-                PictureAirLog.v(TAG, "PREVIEW_COUPON_FAILED code：" + msg.arg1);
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                break;
-            case API1.GET_OUTLET_ID_SUCCESS:
-                //获取自提地址成功
-                AddressJson addressJson = JsonTools.parseObject(msg.obj.toString(), AddressJson.class);
-                if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                    //更新地址信息View
-                    if (addressList != null) {
-                        addressList.clear();
-                    }
-                    addressList = addressJson.getOutlets();
-                    addressAdapter.refresh(addressList);
-                    fixListViewHeight(transportListView);
-                    //存入缓存
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
-                    }
-                }
-                break;
-
-            case API1.GET_OUTLET_ID_FAILED:
-                //获取自提地址失败
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                break;
-
-            case API1.ADD_ORDER_SUCCESS:
-                PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
-                JSONObject jsonObject = (JSONObject) msg.obj;
-                orderId = jsonObject.getString("orderCode");
-                dismissPWProgressDialog();
-                if (orderId != null && !orderId.isEmpty()) {
-                    goToPayActivity(true);
-                }
-
-                break;
-
-            case API1.ADD_ORDER_FAILED:
-                PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                //提交订单失败，购物车数量恢复
-                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
-                break;
-
             case API1.UPLOAD_PHOTO_FAILED:
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
@@ -241,43 +162,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 updatephotolist.set(0, itemInfo);
                 break;
 
-            case API1.GET_INVOICE_SUCCESS:
-                invoiceInfo = originalInvoiceInfo;
-                parseInvoicePay(msg);
-                dismissPWProgressDialog();
-                break;
-
-            case API1.GET_INVOICE_FAILED:
-                originalInvoiceInfo = null;
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case PAY_SUCCESS:
-                //成功跳转相应的界面
-
-
-                break;
-            case PAY_FAILED:
-                //失败
-
-                break;
-
-            case API1.ADD_BOOKING_SUCCESS:
-                PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
-                JSONObject orderObject = (JSONObject) msg.obj;
-                orderId = orderObject.getString("orderCode");
-                dismissPWProgressDialog();
-                if (!TextUtils.isEmpty(orderId)) {
-                    goToPayActivity(true);
-                }
-                break;
-            case API1.ADD_BOOKING_FAILED:
-                //参照ADDORDER写的可能要修改
-                PictureAirLog.e(TAG, "ADD_BOOKING_FAILED cade: " + msg.arg1);
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
             default:
                 break;
         }
@@ -386,7 +270,33 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      */
     public void getCoupons() {
         showPWProgressDialog();
-        API1.getCartItemCoupons(submitOrderHandler, cartItemIds);
+        getCartItemCoupons(cartItemIds);
+    }
+
+    private void getCartItemCoupons(JSONArray pCartItemIds) {
+        API2.getCartItemCoupons(pCartItemIds)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        couponCount = jsonObject.getInteger("amount");
+                        dismissPWProgressDialog();
+                        //更新界面
+                        updateShopPriceUI(true);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**
@@ -395,9 +305,49 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     public void getAddress() {
         String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
         if (addressByACache != null && !addressByACache.equals("")) {
-            submitOrderHandler.obtainMessage(API1.GET_OUTLET_ID_SUCCESS, addressByACache).sendToTarget();
+            getOutletsidSuccess(addressByACache);
         } else {
-            API1.getOutlets(submitOrderHandler);
+            getOutlets();
+        }
+    }
+
+    private void getOutlets() {
+        API2.getOutlets()
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        getOutletsidSuccess(jsonObject.toString());
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        //获取自提地址失败
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    private void getOutletsidSuccess(String json) {
+        AddressJson addressJson = JsonTools.parseObject(json, AddressJson.class);
+        if (addressJson != null && addressJson.getOutlets().size() > 0) {
+            //更新地址信息View
+            if (addressList != null) {
+                addressList.clear();
+            }
+            addressList = addressJson.getOutlets();
+            addressAdapter.refresh(addressList);
+            fixListViewHeight(transportListView);
+            //存入缓存
+            if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, json, ACache.TIME_DAY);
+            }
         }
     }
 
@@ -741,9 +691,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             showPWProgressDialog();
                             if (fromPanicBuy == 0) {
                                 invoice = assembleInvoiceJson();
-                                API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, invoice, null, null, submitOrderHandler);
+                                addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, invoice, null, null);
                             } else if (fromPanicBuy == 1) {
-                                API1.addBook(goods, null, 1, "", "", 0, "", dealingKey,submitOrderHandler);
+                                addBook(goods, null, 1, "", "", 0, "", dealingKey);
                             }
                         }
                     } else {
@@ -759,9 +709,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         invoice = assembleInvoiceJson();
                         showPWProgressDialog();
                         if (fromPanicBuy == 0) {
-                            API1.addOrder(cartItemIds, 3, "", "", couponCodes, invoice, channelId, uid, submitOrderHandler);
+                            addOrder(cartItemIds, 3, "", "", couponCodes, invoice, channelId, uid);
                         } else if (fromPanicBuy == 1){
-                            API1.addBook(goods, null, 3, "", "", 0, "", dealingKey,submitOrderHandler);
+                            addBook(goods, null, 3, "", "", 0, "", dealingKey);
                         }
                     }
                 } else {
@@ -811,6 +761,74 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
     }
 
+    private void addOrder(JSONArray pJsonArray, int pDeliveryType, String pOutletId, String pAddressId,
+                          JSONArray pCouponCodes, JSONObject pInvoice,
+                          String pChannelId, String pUid) {
+        API2.addOrder(pJsonArray, pDeliveryType, pOutletId, pAddressId, pCouponCodes, pInvoice, pChannelId, pUid)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + jsonObject);
+                        orderId = jsonObject.getString("orderCode");
+                        dismissPWProgressDialog();
+                        if (orderId != null && !orderId.isEmpty()) {
+                            goToPayActivity(true);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + status);
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+
+                        //提交订单失败，购物车数量恢复
+                        int currentCartCount = SPUtils.getInt(SubmitOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(SubmitOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
+    }
+
+    private void addBook(JSONArray pGoods, JSONArray pCouponCodes, int pDeliveryType, String pOutletId, String pAddressId,
+                         int pPayType, String pChannelId, String pDealingKey) {
+        API2.addBook(pGoods, pCouponCodes, pDeliveryType, pOutletId, pAddressId, pPayType, pChannelId, pDealingKey)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + jsonObject);
+                        orderId = jsonObject.getString("orderCode");
+                        dismissPWProgressDialog();
+                        if (!TextUtils.isEmpty(orderId)) {
+                            goToPayActivity(true);
+                        }
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        //参照ADDORDER写的可能要修改
+                        PictureAirLog.e(TAG, "ADD_BOOKING_FAILED cade: " + status);
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
     //封装发票的jsonObject
     public JSONObject assembleInvoiceJson(){
         if(null != invoiceInfo && invoiceInfo.isNeedInvoice()) {
@@ -826,17 +844,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     }
 
     //解析发票费用
-    public void parseInvoicePay(Message msg){
+    public void parseInvoicePay(JSONObject jsonObject){
         invoicePriceUnitTv.setText(currency);
-        JSONObject result = (JSONObject) msg.obj;
-        if(null == result)
+        if(null == jsonObject)
             return;
-        if(result.containsKey("logisticsFee")) {
-            invoicePay = Float.valueOf(result.getString("logisticsFee"));
+        if(jsonObject.containsKey("logisticsFee")) {
+            invoicePay = Float.valueOf(jsonObject.getString("logisticsFee"));
             invoicePriceTv.setText((int) invoicePay+"");
         }
-        if(result.containsKey("totalPrice"))
-            payPrice = Float.valueOf(result.getString("totalPrice"));
+        if(jsonObject.containsKey("totalPrice"))
+            payPrice = Float.valueOf(jsonObject.getString("totalPrice"));
         payPriceTv.setText(((int) payPrice + ""));
         totalpriceTextView.setText(((int) payPrice + ""));
     }
@@ -867,11 +884,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 hasInvoiceInfo = invoiceInfo.isNeedInvoice();
             }
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
-                API1.previewCoupon(submitOrderHandler, couponCodes, hasInvoiceInfo, cartItemIds);
+                preivewCoupon(couponCodes, hasInvoiceInfo, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
                 if (null != cartItemIds) {
-                    API1.previewCoupon(submitOrderHandler, new JSONArray(), hasInvoiceInfo, cartItemIds);
+                    preivewCoupon(new JSONArray(), hasInvoiceInfo, cartItemIds);
                 }
             }
         }
@@ -882,15 +899,81 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             if(null != originalInvoiceInfo) {
                 showPWProgressDialog();
                 if (couponCodes != null && couponCodes.size() > 0) {
-                    API1.getCartsWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), couponCodes, submitOrderHandler);
+                    getCartWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), couponCodes);
 
                 } else {
-                    API1.getCartsWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), new JSONArray(), submitOrderHandler);
+                    getCartWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), new JSONArray());
 
                 }
             }
         }
 
+    }
+
+    private void preivewCoupon(JSONArray pCouponCodes, boolean pNeedInvoice, JSONArray pCartItemsIds) {
+        API2.previewCoupon(pCouponCodes, pNeedInvoice, pCartItemsIds)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        //使用优惠码成功 -- 解析数据
+                        PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + jsonObject);
+
+                        straightwayPreferentialPrice = Float.valueOf(jsonObject.getString("straightwayPreferentialPrice"));//优惠折扣
+                        promotionPreferentialPrice = Float.valueOf(jsonObject.getString("promotionPreferentialPrice"));//优惠立减
+                        preferentialPrice = Float.valueOf(jsonObject.getString("preferentialPrice"));//优惠减免总费用
+                        totalprice = Float.valueOf(jsonObject.getString("resultPrice"));//初始总费用
+                        payPrice = Float.valueOf(jsonObject.getString("totalPrice"));//实际支付总价
+
+                        //更新界面
+                        dismissPWProgressDialog();
+                        if (straightwayPreferentialPrice == 0) {
+                            updateShopPriceUI(true);
+                        } else {
+                            updateShopPriceUI(false);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        //使用优惠码失败
+                        PictureAirLog.v(TAG, "PREVIEW_COUPON_FAILED code：" + status);
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    private void getCartWithInvoice(JSONArray pCartIdsArray, boolean pIsNeedInvoice, JSONArray pCouponCodes) {
+        API2.getCartsWithInvoice(pCartIdsArray, pIsNeedInvoice, pCouponCodes)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        invoiceInfo = originalInvoiceInfo;
+                        parseInvoicePay(jsonObject);
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        originalInvoiceInfo = null;
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     @Override

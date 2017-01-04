@@ -3,7 +3,6 @@ package com.pictureair.photopass.editPhoto.presenter;
 import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
@@ -11,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.MyApplication;
@@ -26,8 +26,9 @@ import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
@@ -35,11 +36,14 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PWMediaScanner;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by talon on 16/5/20.
@@ -90,9 +94,32 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         isOnLine = pwEditView.getEditPhotView().getIntent().getBooleanExtra("isOnLine",false);
         loadImageFormPath();  //加载图片，用ImageLoader加载，故不用新开线程。
         // 获取网络饰品与边框
-        API1.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""), mHandler);
+//        API1.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""), mHandler);
+        getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""));
     }
 
+
+    private void getLastContent(String pLastUpdateTime) {
+        API2.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""))
+                .compose(pwEditView.getEditPhotView().<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        pwEditUtil.getLastContentSuccess(jsonObject.toString());
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
 
     /**
      * 根据 图片地址加载图片。 仅仅在进入的时候使用一次本方法
@@ -799,14 +826,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                             loadImageOnLocal(photoPath, false);
                         }
                     }
-
-                    break;
-
-                case API1.GET_LAST_CONTENT_SUCCESS://获取更新信息成功。
-                    pwEditUtil.getLastContentSuccess(msg.obj.toString());
-                    break;
-
-                case API1.GET_LAST_CONTENT_FAILED://获取更新信息失败，不做操作
 
                     break;
 

@@ -15,17 +15,14 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
@@ -119,24 +116,24 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         OtherRegisterActivity.class));
                 break;
 
-            case API1.FIND_PWD_FAILED:
-                int id = 0;
-                switch (msg.arg1) {
-                    case 6031://用户名不存在
-                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
-                        break;
-
-                    default:
-                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
-                        break;
-                }
-
-                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.FIND_PWD_SUCCESS:
-                signAndLoginUtil.start(forGetphoto, forGetPwd, false, false, null, null, null, null, null, null);// 登录
-                break;
+//            case API1.FIND_PWD_FAILED:
+//                int id = 0;
+//                switch (msg.arg1) {
+//                    case 6031://用户名不存在
+//                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+//                        break;
+//
+//                    default:
+//                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+//                        break;
+//                }
+//
+//                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+//                break;
+//
+//            case API1.FIND_PWD_SUCCESS:
+//                signAndLoginUtil.start(forGetphoto, forGetPwd, false, false, null, null, null, null, null, null);// 登录
+//                break;
 
             case START_AGREEMENT_WEBVIEW:
                 Intent intent = new Intent();

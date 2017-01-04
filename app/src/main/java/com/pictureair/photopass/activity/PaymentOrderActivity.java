@@ -22,7 +22,7 @@ import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -33,6 +33,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 import com.unionpay.UPPayAssistEx;
 
 import org.json.JSONException;
@@ -41,6 +42,7 @@ import java.lang.ref.WeakReference;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PaymentOrderActivity extends BaseActivity implements OnClickListener {
     private TextView sbmtButton;
@@ -114,10 +116,50 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             //手动拉取信息
             if (payAsyncResultJsonObject == null) {//没有收到推送，需要手动获取
                 asyncTimeOut = true;
-                API1.getSocketData(paymentOrderHandler);
+                getSocketData();
             }
         }
     };
+
+    private void getSocketData() {
+        API2.getSocketData()
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: ");
+                        boolean isSuccess = false;
+                        if (jsonObject.size() > 0) {
+                            isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
+                        }
+                        if (!isSuccess) {
+                            dismissPWProgressDialog();
+                            if (payAsyncResultJsonObject == null) {
+                                PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
+                            }
+                            SuccessAfterPayment();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + status);
+                        if (payAsyncResultJsonObject == null) {
+                            PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
+                        }
+                        SuccessAfterPayment();
+                        finish();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
 
     private static class PaymentOrderHandler extends Handler {
         private final WeakReference<PaymentOrderActivity> mActivity;
@@ -165,12 +207,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
 
             case RQF_SUCCESS:
-            case API1.ADD_ORDER_SUCCESS:
-                PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
-                //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
-                showPWProgressDialog();
-                paySyncResult = true;
-                paymentOrderHandler.postDelayed(runnable, 5000);
+                rqf_success();
 
                 break;
 
@@ -184,82 +221,17 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
-                PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS: ");
-                dismissPWProgressDialog();
-                PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
-                if (msg.obj == null || (msg.obj).toString().length() == 0) {
-                    PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
-                    paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
-                } else {
-                    //获得TN号成功 -- 解析数据
-                    PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
-                    JSONObject result = (JSONObject) msg.obj;
-                    PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS:  result： " + result);
-                    tNCode = result.getString("tn");//
-                    UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, tNCode, mMode);
-                    PictureAirLog.v(TAG, "tNCode: " + tNCode);
-                }
-                break;
-
-            case API1.GET_SOCKET_DATA_SUCCESS:
-                //获取推送成功，后面逻辑按照之前走
-                PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: ");
-                JSONObject jsonObject = (JSONObject) msg.obj;
-                boolean isSuccess = false;
-                if (jsonObject.size() > 0) {
-                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
-                }
-                if (!isSuccess) {
-                    dismissPWProgressDialog();
-                    if (payAsyncResultJsonObject == null) {
-                        PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
-                    }
-                    SuccessAfterPayment();
-                    finish();
-                }
-
-                break;
-            case API1.GET_SOCKET_DATA_FAILED:
-                //获取推送失败
-                dismissPWProgressDialog();
-                PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + msg.arg1);
-                if (payAsyncResultJsonObject == null) {
-                    PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
-                }
-                SuccessAfterPayment();
-                finish();
-
-                break;
-
-            case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
-                PictureAirLog.v(TAG, "UNIONPAY_GET_TN_FAILED: ");
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
-                break;
-
-            case API1.ADD_ORDER_FAILED:
-                PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                Intent errorIntent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                startActivity(errorIntent);
-                ErrorInPayment();
-                break;
-
-            case API1.UPDATE_DEALING_ORDER_SUCCESS:
-                finish();
-                dismissPWProgressDialog();
-                break;
-
-            case API1.UPDATE_DEALING_ORDER_FAILED:
-                dismissPWProgressDialog();
-                break;
-
             default:
                 break;
         }
+    }
+
+    private void rqf_success() {
+        PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
+        //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
+        showPWProgressDialog();
+        paySyncResult = true;
+        paymentOrderHandler.postDelayed(runnable, 5000);
     }
 
     @Override
@@ -379,14 +351,41 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (cartItemIds != null) {
             if (productType == 1) {
                 //获取收货地址
-                API1.addOrder(cartItemIds, 1, outletId, "", couponCodes,null, null, null, paymentOrderHandler);
-
+                addOrder(cartItemIds, 1, outletId, "", couponCodes,null, null, null);
             } else {
                 //PP+/数码商品不需要地址
-                API1.addOrder(cartItemIds, 3, "", "", couponCodes,null, null, null, paymentOrderHandler);
-
+                addOrder(cartItemIds, 3, "", "", couponCodes,null, null, null);
             }
         }
+    }
+
+    private void addOrder(JSONArray pJsonArray, int pDeliveryType, String pOutletId, String pAddressId,
+                          JSONArray pCouponCodes, JSONObject pInvoice,
+                          String pChannelId, String pUid) {
+        API2.addOrder(pJsonArray, pDeliveryType, pOutletId, pAddressId, pCouponCodes, pInvoice, pChannelId, pUid)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        rqf_success();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + status);
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                        Intent errorIntent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                        startActivity(errorIntent);
+                        ErrorInPayment();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
 
@@ -505,7 +504,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             } else {
                 showPWProgressDialog();
                 PictureAirLog.out("========orderId" + orderId);
-                API1.getUnionPayTN(orderId, paymentOrderHandler);
+                getUnionPayTN(orderId);
             }
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
@@ -533,6 +532,45 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    private void getUnionPayTN(String orderId) {
+        API2.getUnionPayTN(orderId)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS: ");
+                        dismissPWProgressDialog();
+                        if (jsonObject == null || jsonObject.toString().length() == 0) {
+                            PictureAirLog.v(TAG, "msg.obj: " + jsonObject);
+                            paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                        } else {
+                            //获得TN号成功 -- 解析数据
+                            PictureAirLog.v(TAG, "msg.obj: " + jsonObject);
+                            JSONObject result = (JSONObject) jsonObject;
+                            PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS:  result： " + result);
+                            tNCode = result.getString("tn");//
+                            UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, tNCode, mMode);
+                            PictureAirLog.v(TAG, "tNCode: " + tNCode);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.v(TAG, "UNIONPAY_GET_TN_FAILED: ");
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                        paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+
     // 支付失败处理
     private void ErrorInPayment() {
         // TODO Auto-generated method stub
@@ -552,10 +590,34 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (fromPanicBuy == 1) {
             AppManager.getInstance().killActivity(PanicBuyActivity.class);
             showPWProgressDialog();
-            API1.updateDealingOrder(paymentOrderHandler, orderid, dealingKey);
+            updateDealingOrder(orderid, dealingKey);
         } else {
             finish();
         }
+    }
+
+    private void updateDealingOrder(String orderId, String dealingKey) {
+        API2.updateDealingOrder(orderId, dealingKey)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.json(jsonObject.toString());
+                        dismissPWProgressDialog();
+                        finish();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     // 取消操作处理
@@ -583,7 +645,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             if (fromPanicBuy == 1) {
                 AppManager.getInstance().killActivity(PanicBuyActivity.class);
                 showPWProgressDialog();
-                API1.updateDealingOrder(paymentOrderHandler, orderid, dealingKey);
+                updateDealingOrder(orderid, dealingKey);
             } else {
                 Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 startActivity(intent2);
