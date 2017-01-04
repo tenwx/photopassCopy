@@ -1195,7 +1195,7 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 更新json数据库
+     * 更新json数据库:更新一卡一天的json数据
      * @param jsonArray
      * @param type json的类型
      */
@@ -1224,22 +1224,45 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 更新json数据库
+     * 更新json数据库：更新一卡一天更新标记
      * @param jsonArray
      * @param type json的类型
      */
     public static synchronized void insertRefreshPPFlag(JSONArray jsonArray, String type) {
         JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
-        ArrayList<JsonInfo> list = new ArrayList<>();
         JSONObject jsonObject;
         for (int i = 0; i < jsonArray.size(); i++) {
             jsonObject = jsonArray.getJSONObject(i);
-            JsonInfo jsonInfo = new JsonInfo();
-            jsonInfo.setJsonType(type);
-            jsonInfo.setJsonString(JsonInfo.getNeedRefreshString(jsonObject.getString("code"), jsonObject.getString("bindDate")));
-            list.add(jsonInfo);
+            String jsonStr = JsonInfo.getNeedRefreshString(jsonObject.getString("code"), jsonObject.getString("bindDate"));
+            QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                    .where(JsonInfoDao.Properties.JsonType.eq(type), JsonInfoDao.Properties.JsonString.like("%" + jsonStr + "%"));
+            if (queryBuilder.count() > 0) {
+                JsonInfo jsonInfo = queryBuilder.build().forCurrentThread().unique();
+                jsonInfo.setJsonString(JsonInfo.updateRefreshStr(jsonStr, true));
+                jsonInfoDao.update(jsonInfo);
+            }
         }
-        jsonInfoDao.insertInTx(list);
+    }
+
+    /**
+     * 更新json数据库：更新一卡一天更新标记
+     * @param jsonStr str
+     * @param type json的类型
+     */
+    public static synchronized void updateRefreshedPPFlag(String type, String jsonStr) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonType.eq(type), JsonInfoDao.Properties.JsonString.like("%" + jsonStr + "%"));
+        JsonInfo jsonInfo;
+        if (queryBuilder.count() > 0) {//如果存在，需要把状态改变
+            jsonInfo = queryBuilder.build().forCurrentThread().unique();
+            jsonInfo.setJsonString(JsonInfo.updateRefreshStr(jsonStr, false));
+            jsonInfoDao.update(jsonInfo);
+        } else {//如果不存在，需要插入新的状态
+            jsonInfo = new JsonInfo();
+            jsonInfo.setJsonType(type);
+            jsonInfo.setJsonString(JsonInfo.updateRefreshStr(jsonStr, false));
+        }
     }
 
     /**
@@ -1275,7 +1298,7 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 删除对应类型的数据
+     * 删除所有类型的数据
      * @return
      */
     public static synchronized void deleteJsonInfos() {
@@ -1301,7 +1324,7 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 删除对应类型的数据
+     * 是否存在对应类型的数据
      * @param jsonString
      * @return
      */
@@ -1310,5 +1333,24 @@ public class PictureAirDbManager {
         QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
                 .where(JsonInfoDao.Properties.JsonString.like("%" + jsonString + "%"));
         return queryBuilder.count() > 0;
+    }
+
+    /**
+     * 是否需要重新从网络获取数据
+     * @param jsonString
+     * @return
+     */
+    public static synchronized boolean needGetFromNet(String jsonString) {
+        JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
+        QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
+                .where(JsonInfoDao.Properties.JsonString.like("%" + jsonString + "%"));
+        if (queryBuilder.count() > 0) {//之前有加载过
+            JsonInfo jsonInfo = queryBuilder.build().forCurrentThread().unique();
+            return jsonInfo.getJsonString().contains("unRefreshed");//是否有刷新标记
+
+        } else {//之前没有加载过，需要从网络加载
+            return true;
+
+        }
     }
 }

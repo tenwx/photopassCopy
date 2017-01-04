@@ -355,7 +355,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                         } else {//如果为空，请求服务器，并将数据缓存起来
                             PictureAirLog.d("load data---> cache is empty, need get from net");
-                            return API2.getLocationInfo(app.getTokenId())
+                            return API2.getLocationInfo(MyApplication.getTokenId())
                                     .map(new Func1<JSONObject, JSONObject>() {
                                         @Override
                                         public JSONObject call(JSONObject jsonObject) {
@@ -449,7 +449,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     /**
      * 获取一卡一天的数据列表
-     * @param isRefresh
+     * @param isRefresh isrefresh
      */
     private void getLocationPhotos(final boolean isRefresh) {
         API2.getLocationPhoto(MyApplication.getTokenId())
@@ -878,6 +878,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public void itemClick(int position) {
+        PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode());
         //进入相册
         Intent i = new Intent(context, EditStoryAlbumActivity.class);
         i.putExtra("ppCode", dailyPPCardInfoArrayList.get(position).getPpCode());

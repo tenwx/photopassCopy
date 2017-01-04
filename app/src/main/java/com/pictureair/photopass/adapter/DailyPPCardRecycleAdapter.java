@@ -62,6 +62,17 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
+            recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dailyPPCardInfoArrayList.get(position).getPpCode().equals("occupy")) {//通用图，需要传递前一个position
+                        mOnItemClickListener.itemClick(position - 1);
+
+                    } else {
+                        mOnItemClickListener.itemClick(position);
+                    }
+                }
+            });
             if (dailyPPCardInfoArrayList.get(position).getPpCode().equals("occupy")) {//占位图，通用图
                 GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_placeholder), recyclerViewHolder.photoIV);
                 return;
@@ -75,12 +86,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 photoUrl = dailyPPCardInfoArrayList.get(position).getLocationPhoto().getPhotoThumbnail_128();
             }
             GlideUtil.load(context, photoUrl, dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, recyclerViewHolder.photoIV);
-            recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.itemClick(position);
-                }
-            });
 
         } else if (viewHolder instanceof StickySectionHeaderViewHolder) {
             final StickySectionHeaderViewHolder recyclerViewSectionViewHolder = (StickySectionHeaderViewHolder) viewHolder;

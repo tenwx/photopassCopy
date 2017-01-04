@@ -66,4 +66,14 @@ public class JsonInfo {
     public static String getNeedRefreshString(String ppCode, String shootDate) {
         return ppCode + "," + shootDate;
     }
+
+    /**
+     * 是否刷新的字符串拼接
+     * @param jsonStr
+     * @param needRefresh
+     * @return
+     */
+    public static String updateRefreshStr(String jsonStr, boolean needRefresh) {
+        return jsonStr + (needRefresh ? ",unRefreshed" : ",Refreshed");//unRefreshed：需要刷新 : Refreshed：已经刷新过
+    }
 }

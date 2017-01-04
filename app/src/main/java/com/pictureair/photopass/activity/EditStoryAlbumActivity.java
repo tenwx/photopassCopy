@@ -433,7 +433,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (PictureAirDbManager.isJsonInfoExist(JsonInfo.getNeedRefreshString(ppCode, shootDate))) {//需要从网络获取全部数据
+				if (PictureAirDbManager.needGetFromNet(JsonInfo.getNeedRefreshString(ppCode, shootDate))) {//需要从网络获取全部数据
 					PictureAirLog.d("need re-get photos");
 					//开始从网络获取数据
 					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
@@ -592,17 +592,18 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				.subscribe(new RxSubscribe<ArrayList<PhotoInfo>>() {
 					@Override
 					public void _onNext(ArrayList<PhotoInfo> photoInfos) {
+						newCount = photoInfos.size();
 						if (type == API1.GET_NEW_PHOTOS) {
 							refreshCount = photoInfos.size();
+							albumArrayList.addAll(0, photoInfos);//刷新的数据，需要加载在最前面
 						} else if (type == API1.GET_OLD_PHOTOS) {
 							loadMoreCount = photoInfos.size();
+							albumArrayList.addAll(photoInfos);
 						} else {
 							albumArrayList.clear();
 							ppPhotoCount = photoInfos.size();
+							albumArrayList.addAll(photoInfos);
 						}
-						newCount = photoInfos.size();
-
-						albumArrayList.addAll(photoInfos);
 					}
 
 					@Override
@@ -641,8 +642,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 					@Override
 					public void onCompleted() {
-						if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要删除对应的数据
-							PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
+						if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要更新对应的数据
+							PictureAirDbManager.updateRefreshedPPFlag(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
 							//显示无网络页面
 							noNetWorkOrNoCountView.setVisibility(View.GONE);
 							editImageView.setEnabled(true);

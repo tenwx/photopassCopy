@@ -17,15 +17,11 @@
  */
 package com.pictureair.photopass.GalleryWidget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -34,14 +30,7 @@ import android.widget.ImageView;
 
 import com.pictureair.photopass.util.PictureAirLog;
 
-import java.lang.ref.WeakReference;
-import java.util.Timer;
-import java.util.TimerTask;
-
-@SuppressLint("NewApi")
-public class TouchImageView extends ImageView {
-
-    // private static final String TAG = "Touch";
+public class TouchImageView extends ImageView implements View.OnTouchListener, View.OnLongClickListener {
     // These matrices will be used to move and zoom image
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
@@ -51,20 +40,16 @@ public class TouchImageView extends ImageView {
      */
     static final long DOUBLE_PRESS_INTERVAL = 600;
 
-    /**
-     * 长按间隔时间
-     */
-    static final long LONG_TOUCH_INTERVAL = 300;
     static final float FRICTION = 0.9f;
 
     // We can be in one of these 4 states
     static final int NONE = 0;//无
-    static final int DRAG = 1;//拖拽模式
+    static final int DOWN = 1;//按下模式
     static final int ZOOM = 2;//缩放模式
     static final int TOUCH_CLEAR = 3;//touch clear 模式
+    static final int MOVE = 4;//移动模式
+    static final int LOSE_FOCUS = 5;//失去焦点模式
     static final int CLICK = 10;
-    static final int DOUBLE_CLICK = 4;
-    static final int LONG_TOUCH = 5;
     int mode = NONE;
 
     float redundantXSpace, redundantYSpace;//初始多余的左边距和上边距
@@ -91,25 +76,12 @@ public class TouchImageView extends ImageView {
     private boolean hasReset = false;
 
     private Context mContext;
-    private Timer mClickTimer, mLongTouchTimer;
-    private OnClickListener mOnClickListener;
     private Object mScaleDetector;
-    private Handler mTimerHandler = null;
+    private boolean isLongClicking = false;
 
     private boolean zoomEnable = true;
     private OnTouchClearListener onTouchClearListener;
     private OnLongTouchListener onLongTouchListener;
-
-    // Scale mode on DoubleTap
-    private boolean zoomToOriginalSize = false;
-
-    public boolean isZoomToOriginalSize() {
-        return this.zoomToOriginalSize;
-    }
-
-    public void setZoomToOriginalSize(boolean zoomToOriginalSize) {
-        this.zoomToOriginalSize = zoomToOriginalSize;
-    }
 
     public boolean onLeftSide = false, onTopSide = false, onRightSide = false, onBottomSide = false;
 
@@ -117,7 +89,6 @@ public class TouchImageView extends ImageView {
         super(context);
         super.setClickable(true);
         this.mContext = context;
-
         init();
     }
 
@@ -125,207 +96,17 @@ public class TouchImageView extends ImageView {
         super(context, attrs);
         super.setClickable(true);
         this.mContext = context;
-
         init();
     }
 
     protected void init() {
-        mTimerHandler = new TimeHandler(this);
         matrix.setTranslate(1f, 1f);
         m = new float[9];
         setImageMatrix(matrix);
         setScaleType(ScaleType.MATRIX);
-        if (Build.VERSION.SDK_INT >= 8) {
-            mScaleDetector = new ScaleGestureDetector(mContext, new ScaleListener());
-        }
-
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent rawEvent) {
-                WrapMotionEvent event = WrapMotionEvent.wrap(rawEvent);
-                if (mScaleDetector != null) {
-                    ((ScaleGestureDetector) mScaleDetector).onTouchEvent(rawEvent);
-                }
-                fillMatrixXY();
-                PointF curr = new PointF(event.getX(), event.getY());
-
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        PictureAirLog.out("------------>down:" + event.getX() + ":" + event.getY());
-                        allowInert = false;
-                        savedMatrix.set(matrix);
-                        last.set(event.getX(), event.getY());
-                        start.set(last);
-                        mode = DRAG;
-
-                        mLongTouchTimer = new Timer();
-                        mLongTouchTimer.schedule(new Task(LONG_TOUCH), LONG_TOUCH_INTERVAL);
-                        break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        PictureAirLog.out("------------>action pointer down");
-                        if (!zoomEnable) {
-                            break;
-                        }
-                        oldDist = spacing(event);
-                        //Log.d(TAG, "oldDist=" + oldDist);
-                        if (oldDist > 10f) {
-                            savedMatrix.set(matrix);
-                            midPoint(mid, event);
-                            if (mode == TOUCH_CLEAR) {//让touch-clear消失
-                                onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, false);
-                            }
-                            mode = ZOOM;
-                            if (mLongTouchTimer != null) {
-                                mLongTouchTimer.cancel();
-                            }
-                            //Log.d(TAG, "mode=ZOOM");
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        PictureAirLog.out("----------> up");
-                        if (mLongTouchTimer != null) {
-                            mLongTouchTimer.cancel();
-                        }
-                        if (mode == TOUCH_CLEAR) {//让touch-clear消失
-                            onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, false);
-                        }
-                        allowInert = true;
-                        mode = NONE;
-
-                        int xDiff = (int) Math.abs(event.getX() - start.x);
-                        int yDiff = (int) Math.abs(event.getY() - start.y);
-
-                        if (xDiff < CLICK && yDiff < CLICK && zoomEnable) {
-                            //Perform scale on double click
-                            long pressTime = System.currentTimeMillis();
-                            if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
-                                if (mClickTimer != null) mClickTimer.cancel();
-                                if (saveScale == 1) {
-                                    PictureAirLog.out("----------> saveScale  = 1 ");
-                                    final float targetScale = maxScale / saveScale;
-                                    matrix.postScale(targetScale, targetScale, start.x, start.y);
-                                    saveScale = maxScale;
-                                } else {
-                                    PictureAirLog.out("----------> saveScale != 1");
-                                    matrix.postScale(minScale / saveScale, minScale / saveScale, width / 2, height / 2);
-                                    saveScale = minScale;
-                                }
-                                calcPadding();
-                                checkAndSetTranslate(0, 0);
-                                lastPressTime = 0;
-                            } else {
-                                lastPressTime = pressTime;
-                                mClickTimer = new Timer();
-                                mClickTimer.schedule(new Task(DOUBLE_CLICK), 300);
-                            }
-                            if (saveScale == minScale) {
-                                scaleMatrixToBounds();
-                            }
-                        }
-
-                        break;
-
-                    case MotionEvent.ACTION_POINTER_UP:
-                        PictureAirLog.out("-----------> action pointer up");
-                        mode = NONE;
-                        if (mLongTouchTimer != null) {
-                            mLongTouchTimer.cancel();
-                        }
-                        velocity = 0;
-                        savedMatrix.set(matrix);
-                        oldDist = spacing(event);
-                        //Log.d(TAG, "mode=NONE");
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-                        PictureAirLog.out("----------> action move:" + event.getX() + ":" + event.getY());
-
-                        float deltaX = curr.x - last.x;
-                        float deltaY = curr.y - last.y;
-
-                        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {//小米4，move事件有偏差，如果超过这偏差，才算move
-                            if (mLongTouchTimer != null) {
-                                mLongTouchTimer.cancel();
-                            }
-                            allowInert = false;
-                        } else {
-                            break;
-                        }
-
-                        if (mode == TOUCH_CLEAR) {
-                            onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, true);
-                            hasReset = false;
-
-                        } else if (mode == DRAG) {
-
-                            long dragTime = System.currentTimeMillis();
-
-                            velocity = (float) distanceBetween(curr, last) / (dragTime - lastDragTime) * FRICTION;
-                            lastDragTime = dragTime;
-
-                            checkAndSetTranslate(deltaX, deltaY);
-                            lastDelta.set(deltaX, deltaY);
-                            last.set(curr.x, curr.y);
-
-                        } else if (mScaleDetector == null && mode == ZOOM) {
-                            if (!zoomEnable) {
-                                break;
-                            }
-                            float newDist = spacing(event);
-                            if (rawEvent.getPointerCount() < 2) break;
-                            //There is one serious trouble: when you scaling with two fingers, then pick up first finger of gesture, ACTION_MOVE being called.
-                            //Magic number 50 for this case
-                            if (10 > Math.abs(oldDist - newDist) || Math.abs(oldDist - newDist) > 50)
-                                break;
-                            float mScaleFactor = newDist / oldDist;
-                            oldDist = newDist;
-
-                            float origScale = saveScale;
-                            saveScale *= mScaleFactor;
-                            if (saveScale > maxScale) {
-                                saveScale = maxScale;
-                                mScaleFactor = maxScale / origScale;
-                            } else if (saveScale < minScale) {
-                                saveScale = minScale;
-                                mScaleFactor = minScale / origScale;
-                            }
-
-                            calcPadding();
-                            if (origWidth * saveScale <= width || origHeight * saveScale <= height) {
-                                matrix.postScale(mScaleFactor, mScaleFactor, width / 2, height / 2);
-                                if (mScaleFactor < 1) {
-                                    fillMatrixXY();
-                                    if (mScaleFactor < 1) {
-                                        scaleMatrixToBounds();
-                                    }
-                                }
-                            } else {
-                                PointF mid = midPointF(event);
-                                matrix.postScale(mScaleFactor, mScaleFactor, mid.x, mid.y);
-                                fillMatrixXY();
-                                if (mScaleFactor < 1) {
-                                    if (matrixX < -right)
-                                        matrix.postTranslate(-(matrixX + right), 0);
-                                    else if (matrixX > 0)
-                                        matrix.postTranslate(-matrixX, 0);
-                                    if (matrixY < -bottom)
-                                        matrix.postTranslate(0, -(matrixY + bottom));
-                                    else if (matrixY > 0)
-                                        matrix.postTranslate(0, -matrixY);
-                                }
-                            }
-                            checkSiding();
-                        }
-                        break;
-                }
-
-                if (zoomEnable) {
-                    setImageMatrix(matrix);
-                    invalidate();
-                }
-                return false;
-            }
-        });
+        mScaleDetector = new ScaleGestureDetector(mContext, new ScaleListener());
+        setOnTouchListener(this);
+        setOnLongClickListener(this);
     }
 
     /**
@@ -358,23 +139,33 @@ public class TouchImageView extends ImageView {
 
         calcPadding();
         checkAndSetTranslate(0, 0);
-
         scaleMatrixToBounds();
-
         setImageMatrix(matrix);
         invalidate();
     }
 
+    /**
+     * 是否可以左右滑动切换tab
+     * @return
+     */
     public boolean pagerCanScroll() {
         PictureAirLog.out("pager can scroll--->");
         if (mode != NONE) return false;
         return saveScale == minScale;
     }
 
-    public boolean isTouchClearMode() {
-        return mode == TOUCH_CLEAR;
+    /**
+     * 是否是不可切换tab的模式
+     * @return
+     */
+    public boolean isNoScrollMode() {
+        return (mode == TOUCH_CLEAR || mode == LOSE_FOCUS);
     }
 
+    /**
+     * 获取缩放比例
+     * @return
+     */
     public float getSaveScale() {
         return saveScale;
     }
@@ -382,6 +173,7 @@ public class TouchImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        PictureAirLog.d("ondraw--->" + allowInert);
         if (!allowInert) return;
         final float deltaX = lastDelta.x * velocity, deltaY = lastDelta.y * velocity;
         if (deltaX > width || deltaY > height) {
@@ -394,6 +186,7 @@ public class TouchImageView extends ImageView {
     }
 
     private void checkAndSetTranslate(float deltaX, float deltaY) {
+        PictureAirLog.d("check set translate---->");
         float scaleWidth = Math.round(origWidth * saveScale);
         float scaleHeight = Math.round(origHeight * saveScale);
         fillMatrixXY();
@@ -425,27 +218,19 @@ public class TouchImageView extends ImageView {
     }
 
     private void checkSiding() {
+        PictureAirLog.d("check siding---->");
         fillMatrixXY();
         //Log.d(TAG, "x: " + matrixX + " y: " + matrixY + " left: " + right / 2 + " top:" + bottom / 2);
         float scaleWidth = Math.round(origWidth * saveScale);
         float scaleHeight = Math.round(origHeight * saveScale);
         onLeftSide = onRightSide = onTopSide = onBottomSide = false;
+        //滑动到距离边缘10以内，都算到边缘了
         if (-matrixX < 10.0f) onLeftSide = true;
-        //Log.d("GalleryViewPager", String.format("ScaleW: %f; W: %f, MatrixX: %f", scaleWidth, width, matrixX));
+        PictureAirLog.d("GalleryViewPager---> " + String.format("ScaleW: %f; W: %f, MatrixX: %f", scaleWidth, width, matrixX));
         if ((scaleWidth >= width && (matrixX + scaleWidth - width) < 10) ||
                 (scaleWidth <= width && -matrixX + scaleWidth <= width)) onRightSide = true;
         if (-matrixY < 10.0f) onTopSide = true;
         if (Math.abs(-matrixY + height - scaleHeight) < 10.0f) onBottomSide = true;
-    }
-
-    /**
-     * 取消定时器
-     */
-    public void cancelTimer() {
-        PictureAirLog.d("cancel the timer");
-        if (mLongTouchTimer != null) {
-            mLongTouchTimer.cancel();
-        }
     }
 
     private void calcPadding() {
@@ -518,7 +303,6 @@ public class TouchImageView extends ImageView {
      * Determine the space between the first two fingers
      */
     private float spacing(WrapMotionEvent event) {
-        // ...
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
@@ -528,34 +312,156 @@ public class TouchImageView extends ImageView {
      * Calculate the mid point of the first two fingers
      */
     private void midPoint(PointF point, WrapMotionEvent event) {
-        // ...
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         point.set(x / 2, y / 2);
     }
 
-    private PointF midPointF(WrapMotionEvent event) {
-        // ...
-        float x = event.getX(0) + event.getX(1);
-        float y = event.getY(0) + event.getY(1);
-        return new PointF(x / 2, y / 2);
+    @Override
+    public boolean onLongClick(View v) {
+        if ((mode == DOWN || mode == MOVE) && isLongClicking) {
+            isLongClicking = false;
+            if (onTouchClearListener != null) {//如果是按下状态，并且是模糊图，才可以转换成touch_clear状态
+                mode = TOUCH_CLEAR;
+                onTouchClearListener.onTouchClear(last.x, last.y, (int)matrixX, (int)matrixY, saveScale, hasReset, true);
+                hasReset = false;
+            } else {
+                if (onLongTouchListener != null) {
+                    onLongTouchListener.onLongTouch();
+                    mode = LOSE_FOCUS;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
-    public void setOnClickListener(OnClickListener l) {
-        mOnClickListener = l;
-    }
+    public boolean onTouch(View v, MotionEvent rawEvent) {
+        WrapMotionEvent event = WrapMotionEvent.wrap(rawEvent);
+        if (mScaleDetector != null) {
+            ((ScaleGestureDetector) mScaleDetector).onTouchEvent(rawEvent);
+        }
+        fillMatrixXY();
+        PointF curr = new PointF(event.getX(), event.getY());
 
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                PictureAirLog.out("------------>down:" + event.getX() + ":" + event.getY());
+                allowInert = false;
+                savedMatrix.set(matrix);
+                last.set(event.getX(), event.getY());
+                start.set(last);
+                mode = DOWN;
+                isLongClicking = true;
+                break;
 
-    private class Task extends TimerTask {
-        int type;
-        public Task(int type) {
-            this. type = type;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                PictureAirLog.out("------------>action pointer down");
+                if (!zoomEnable) {
+                    break;
+                }
+                oldDist = spacing(event);
+                //Log.d(TAG, "oldDist=" + oldDist);
+                if (oldDist > 10f) {
+                    savedMatrix.set(matrix);
+                    midPoint(mid, event);
+                    if (mode == TOUCH_CLEAR) {//让touch-clear消失
+                        onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, false);
+                    }
+                    mode = ZOOM;
+                    isLongClicking = false;
+                    //Log.d(TAG, "mode=ZOOM");
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                PictureAirLog.out("----------> up");
+                if (mode == TOUCH_CLEAR) {//让touch-clear消失
+                    onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, false);
+                }
+                allowInert = true;
+                mode = NONE;
+
+                int xDiff = (int) Math.abs(event.getX() - start.x);
+                int yDiff = (int) Math.abs(event.getY() - start.y);
+
+                if (xDiff < CLICK && yDiff < CLICK && zoomEnable) {
+                    //Perform scale on double click
+                    long pressTime = System.currentTimeMillis();
+                    if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
+                        if (saveScale == 1) {
+                            PictureAirLog.out("----------> saveScale  = 1 ");
+                            final float targetScale = maxScale / saveScale;
+                            matrix.postScale(targetScale, targetScale, start.x, start.y);
+                            saveScale = maxScale;
+                        } else {
+                            PictureAirLog.out("----------> saveScale != 1");
+                            matrix.postScale(minScale / saveScale, minScale / saveScale, width / 2, height / 2);
+                            saveScale = minScale;
+                        }
+                        calcPadding();
+                        checkAndSetTranslate(0, 0);
+                        lastPressTime = 0;
+                    } else {
+                        lastPressTime = pressTime;
+                    }
+                    if (saveScale == minScale) {
+                        scaleMatrixToBounds();
+                    }
+                }
+                break;
+
+            case MotionEvent.ACTION_POINTER_UP:
+                PictureAirLog.out("-----------> action pointer up");
+                mode = NONE;
+                velocity = 0;
+                savedMatrix.set(matrix);
+                oldDist = spacing(event);
+                //Log.d(TAG, "mode=NONE");
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                PictureAirLog.out("----------> action move:" + event.getX() + ":" + event.getY() + "mode-->" + mode);
+                if (mode == LOSE_FOCUS) {//长按之后，禁止任何touch行为
+                    break;
+                }
+
+                float deltaX = curr.x - last.x;
+                float deltaY = curr.y - last.y;
+
+                if (mode != MOVE && mode != TOUCH_CLEAR) {
+                    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {//部分机型，比如小米4，move事件有偏差，如果超过这偏差，才算move
+                        allowInert = false;
+                        isLongClicking = false;
+                        mode = MOVE;
+                    } else {
+                        last.set(curr.x, curr.y);
+                        break;
+                    }
+                }
+
+                if (mode == TOUCH_CLEAR) {
+                    onTouchClearListener.onTouchClear(curr.x, curr.y, (int) matrixX, (int) matrixY, saveScale, hasReset, true);
+                    hasReset = false;
+
+                } else if (mode == MOVE) {
+                    long dragTime = System.currentTimeMillis();
+
+                    velocity = (float) distanceBetween(curr, last) / (dragTime - lastDragTime) * FRICTION;
+                    lastDragTime = dragTime;
+
+                    checkAndSetTranslate(deltaX, deltaY);
+                    lastDelta.set(deltaX, deltaY);
+                }
+                last.set(curr.x, curr.y);
+                break;
         }
 
-        public void run() {
-            mTimerHandler.sendEmptyMessage(type);
+        if (zoomEnable) {
+            setImageMatrix(matrix);
+            invalidate();
         }
+        return false;
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -620,46 +526,6 @@ public class TouchImageView extends ImageView {
         }
     }
 
-    class TimeHandler extends Handler {
-        private final WeakReference<TouchImageView> mService;
-
-        TimeHandler(TouchImageView view) {
-            mService = new WeakReference<TouchImageView>(view);
-
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case DOUBLE_CLICK:
-                    if (null != mService) {
-                        mService.get().performClick();
-                        if (mService.get().mOnClickListener != null)
-                            mService.get().mOnClickListener.onClick(mService.get());
-                    }
-                    break;
-
-                case LONG_TOUCH:
-                    if (mLongTouchTimer != null) {
-                        mLongTouchTimer.cancel();
-                    }
-                    if (mode == DRAG) {
-                        if (onTouchClearListener != null) {//如果是按下状态，并且是模糊图，才可以转换成touch_clear状态
-                            mode = TOUCH_CLEAR;
-                            onTouchClearListener.onTouchClear(last.x, last.y, (int)matrixX, (int)matrixY, saveScale, hasReset, true);
-                            hasReset = false;
-                        } else {
-                            onLongTouchListener.onLongTouch();
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     /**
      * 触摸监听
      */
@@ -679,7 +545,6 @@ public class TouchImageView extends ImageView {
      */
     public void resetImageView(){
         if (saveScale != 1) {//有缩放过程，需要还原
-            if (mClickTimer != null) mClickTimer.cancel();
             PictureAirLog.out("----------> saveScale != 1");
             matrix.postScale(minScale / saveScale, minScale / saveScale, width / 2, height / 2);
             saveScale = minScale;
