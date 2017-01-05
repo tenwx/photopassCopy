@@ -335,7 +335,7 @@ public class PictureAirDbManager {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         List<PhotoInfo> list;
         QueryBuilder<PhotoInfo> queryBuilder = photoInfoDao.queryBuilder()
-                .where(PhotoInfoDao.Properties.PhotoPassCode.eq(ppCode), PhotoInfoDao.Properties.ShootDate.eq(shoodDate));
+                .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shoodDate));
         if (queryBuilder.count() > 0) {
             list = queryBuilder.build().forCurrentThread().list();
             if (list != null) {
@@ -431,7 +431,7 @@ public class PictureAirDbManager {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getPhotoPassCode().equals(ppCode)) {//只有一张卡
                     photoInfo = photoInfoDao.queryBuilder()
-                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()), PhotoInfoDao.Properties.PhotoPassCode.eq(ppCode))
+                            .where(PhotoInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()), PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"))
                             .build().forCurrentThread().unique();
                     if (photoInfo != null) {
                         photoInfoDao.delete(photoInfo);
@@ -1262,6 +1262,7 @@ public class PictureAirDbManager {
             jsonInfo = new JsonInfo();
             jsonInfo.setJsonType(type);
             jsonInfo.setJsonString(JsonInfo.updateRefreshStr(jsonStr, false));
+            jsonInfoDao.insert(jsonInfo);
         }
     }
 
@@ -1343,7 +1344,7 @@ public class PictureAirDbManager {
     public static synchronized boolean needGetFromNet(String jsonString) {
         JsonInfoDao jsonInfoDao = MyApplication.getInstance().getDaoSession().getJsonInfoDao();
         QueryBuilder<JsonInfo> queryBuilder = jsonInfoDao.queryBuilder()
-                .where(JsonInfoDao.Properties.JsonString.like("%" + jsonString + "%"));
+                .where(JsonInfoDao.Properties.JsonString.like("%" + jsonString + "%"), JsonInfoDao.Properties.JsonType.eq(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE));
         if (queryBuilder.count() > 0) {//之前有加载过
             JsonInfo jsonInfo = queryBuilder.build().forCurrentThread().unique();
             return jsonInfo.getJsonString().contains("unRefreshed");//是否有刷新标记

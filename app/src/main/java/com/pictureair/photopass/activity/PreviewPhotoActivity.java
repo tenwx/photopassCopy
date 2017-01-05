@@ -92,6 +92,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private PWToast newToast;
     private SharePop sharePop;
+    private boolean isShareDialogShowing = false;
     private MyApplication myApplication;
     private PhotoInfo photoInfo;
     private BottomSheetDialog sheetDialog;
@@ -180,10 +181,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case SharePop.DISMISS_DIALOG:
+                isShareDialogShowing = false;
                 dismissPWProgressDialog();
                 break;
 
             case SharePop.SHOW_DIALOG:
+                isShareDialogShowing = true;
                 showPWProgressDialog(null);
                 break;
 
@@ -1049,12 +1052,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             portraitOrientation();
         }
 
-//        if (dia != null) {
-//            WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
-//            layoutParams.width = ScreenUtil.getScreenWidth(this);
-//            dia.getWindow().setAttributes(layoutParams);
-//        }
-
         if (pictureWorksDialog != null) {
             pictureWorksDialog.autoFitScreen();
         }
@@ -1165,7 +1162,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onResume();
         if (sharePop != null) {
             PictureAirLog.out("sharePop not null");
-            if (shareType != SharePop.TWITTER) {
+            if (shareType != SharePop.TWITTER && isShareDialogShowing) {
                 PictureAirLog.out("dismiss dialog");
                 dismissPWProgressDialog();
             }

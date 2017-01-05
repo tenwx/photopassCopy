@@ -115,6 +115,9 @@ public class SocketUtil {
                 socketType = SocketEvent.SOCKET_PHOTO;
                 photoId = updateJsonObject.getString("id");
                 PictureAirDbManager.updatePhotoBought(photoId, isDelete);
+                if (isDelete) {
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

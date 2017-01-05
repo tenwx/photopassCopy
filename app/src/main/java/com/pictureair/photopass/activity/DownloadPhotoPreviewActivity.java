@@ -68,6 +68,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
     private SharePop sharePop;
 
+    private boolean isShareDialogShowing = false;
+
     private int shareType = 0;
 
     private Handler previewPhotoHandler;
@@ -150,10 +152,12 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 break;
 
             case SharePop.DISMISS_DIALOG:
+                isShareDialogShowing = false;
                 dismissPWProgressDialog();
                 break;
 
             case SharePop.SHOW_DIALOG:
+                isShareDialogShowing = true;
                 showPWProgressDialog(null);
                 break;
 
@@ -424,7 +428,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         super.onResume();
         if (sharePop != null) {
             PictureAirLog.out("sharePop not null");
-            if (shareType != SharePop.TWITTER) {
+            if (shareType != SharePop.TWITTER && isShareDialogShowing) {
                 PictureAirLog.out("dismiss dialog");
                 dismissPWProgressDialog();
             }

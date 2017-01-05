@@ -178,7 +178,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //重新加载数据
                 PictureAirLog.out("onclick with reload");
                 showPWProgressDialog();
-                getPPList(true, false, false);
+                getPPList(true, false);
                 break;
 
             case PPPPop.POP_SCAN:
@@ -201,7 +201,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case REFRESH_ALL_PHOTOS:
                 if (!hasHidden) {
                     showPWProgressDialog();
-                    getPPList(false, true, false);
+                    getPPList(false, true);
 
                 } else {
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
@@ -290,7 +290,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
         }
         //获取全部的pp
-        getPPList(true, false, false);
+        getPPList(true, false);
         return view;
     }
 
@@ -298,7 +298,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 获取pp列表
      * @param needGetLocationData 是否需要继续获取location等信息
      */
-    private void getPPList(final boolean needGetLocationData, final boolean refresh, final boolean dismissDia) {
+    private void getPPList(final boolean needGetLocationData, final boolean refresh) {
         PictureAirLog.d("get pp list ----> " + needGetLocationData);
         API2.getPPSByUserId().compose(this.<JSONObject>bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -315,8 +315,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             getLocationPhotos(refresh);
                         } else if (needGetLocationData) {//不是刷新操作，需要获取地点信息
                             getLocationData(false);
-                        } else if (dismissDia) {
-                            dismissPWProgressDialog();
                         }
                     }
 
@@ -326,9 +324,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             getLocationPhotos(refresh);
                         } else if (needGetLocationData) {
                             getLocationData(false);
-                        } else if (dismissDia) {
-                            dismissPWProgressDialog();
-                            showViewPager();
                         }
 
                         //通知首页更新PP列表
@@ -553,7 +548,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 });
 
-        getPPList(false, true, false);
+        getPPList(false, true);
         showLeadView();
     }
 
@@ -741,7 +736,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
-            getPPList(false, false, true);
+            //加卡，删卡，需要更新pplist信息，删图片，需要更新locationPhoto信息，因此此处全部处理
+            getPPList(false, true);
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
     }

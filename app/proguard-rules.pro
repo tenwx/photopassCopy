@@ -32,7 +32,6 @@
 -keepattributes InnerClasses,LineNumberTable
 -keepattributes *Annotation*
 -keepattributes Signature
--keepattributes Signture
 
 #将api自带的设置避免混淆
 -keep public class * extends android.app.Activity

@@ -222,6 +222,18 @@ public class PWStickySectionRecyclerView extends FrameLayout {
     }
 
     /**
+     * 更新header数据
+     */
+    public void refreshHeaderView() {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dealWithStickyHeader(recyclerView);
+            }
+        }, 50);
+    }
+
+    /**
      * 返回当前处理状态
      * @return
      */

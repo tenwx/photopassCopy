@@ -869,6 +869,84 @@ public class AppUtil {
     }
 
     /**
+     * 转成list<list<A>>的形式
+     * @param list
+     * @return
+     */
+    public static ArrayList<ArrayList<PhotoInfo>> sortPhotoList(ArrayList<PhotoInfo> list) {
+        //先按location分类
+        ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
+        boolean findPosition = false;
+        for (int i = 0; i < list.size(); i++) {
+            if (resultArrayList.size() > 1) {//从第三个开始插入
+                for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
+                    if (resultArrayList.get(j).getLocationName().equals(list.get(i).getLocationName())) {
+                        if (!resultArrayList.get(j + 1).getLocationName().equals(list.get(i).getLocationName())) {
+                            findPosition = true;
+                            resultArrayList.add(j + 1, list.get(i));
+                            break;
+                        }
+                    }
+                }
+
+                if (findPosition) {//找到
+                    findPosition = false;
+                } else {//没有找到，直接放在后面
+                    resultArrayList.add(list.get(i));
+                }
+
+            } else {//小于3个的时候
+                resultArrayList.add(list.get(i));
+            }
+        }
+
+        //按照location分类成list
+        ArrayList<ArrayList<PhotoInfo>> resultLists = new ArrayList<>();
+        ArrayList<PhotoInfo> itemList = new ArrayList<>();
+
+        for (int i = 0; i < resultArrayList.size(); i++) {
+            if (i == 0) {
+                itemList.add(resultArrayList.get(i));
+            } else {
+                if (resultArrayList.get(i).getLocationName().equals(itemList.get(itemList.size() - 1).getLocationName())) {//当前的地点和新的列表中最后一个地点一样
+                    itemList.add(resultArrayList.get(i));
+                } else {//不是同一个地点
+                    resultLists.add(itemList);
+                    itemList = new ArrayList<>();
+                    itemList.add(resultArrayList.get(i));
+                }
+            }
+        }
+
+        if (itemList.size() > 0) {//如果大于0，说明列表中还有数据没有加到最终的列表中
+            resultLists.add(itemList);
+        }
+        return resultLists;
+    }
+
+    /**
+     * 将list<list<A>>转成list<A> 并设置sectionId，header，和locationPhotoCount
+     * @param list
+     * @return
+     */
+    public static ArrayList<PhotoInfo> getHeaderSortedPhotoList(ArrayList<ArrayList<PhotoInfo>> list) {
+        ArrayList<PhotoInfo> resultList = new ArrayList<>();
+        ArrayList<PhotoInfo> itemList;
+        for (int i = 0; i < list.size(); i++) {
+            itemList = list.get(i);
+            for (int j = 0; j < itemList.size(); j++) {
+                itemList.get(j).setSectionId(i);
+                itemList.get(j).setCurrentLocationPhotoCount(itemList.size());
+                resultList.add(itemList.get(j));
+                if (j == 0) {//说明是第一个，需要设置header
+                    resultList.add(itemList.get(j));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    /**
      * 按照地点快速排序
      *
      * @param list

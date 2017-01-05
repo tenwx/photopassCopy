@@ -79,7 +79,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private TextView ppCardTv, ppTimeTv;
 	private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 
-	private ArrayList<PhotoInfo> albumArrayList;
+	private ArrayList<ArrayList<PhotoInfo>> originalLists;//原始数据列表
+	private ArrayList<PhotoInfo> albumArrayList;//展示数据列表
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
 	private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
 
@@ -105,11 +106,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private int newCount;
 	private PWDialog pictureWorksDialog;
 	private SharePop sharePop;
+	private boolean isShareDialogShowing = false;
 	private int shareType = 0;
 	private int prepareDownloadCount;
 	private String userId;
 	private int oldCount = 0;
-	private int ppPhotoCount, refreshCount, loadMoreCount;
+	private int ppPhotoCount;
 	private String ppRefreshTime, ppRefreshIds, ppLoadMoreTime, ppLoadMoreIds;
 	private GoodsInfo pppGoodsInfo = null;
 	private String[] photoUrls;
@@ -124,10 +126,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					break;
 
 				case SharePop.DISMISS_DIALOG:
+					isShareDialogShowing = false;
 					dismissPWProgressDialog();
 					break;
 
 				case SharePop.SHOW_DIALOG:
+					isShareDialogShowing = true;
 					showPWProgressDialog(null);
 					break;
 
@@ -164,8 +168,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					//删除本地列表数据操作
 					deleteNetworkPhotos();
 					selectCount -= photopassPhotoslist.size();
+					photoCount -= photopassPhotoslist.size();
 					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, true);
+					SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
 					dealAfterDeleted();
+					pwStickySectionRecyclerView.notifyDataSetChanged();
+					pwStickySectionRecyclerView.refreshHeaderView();
 					break;
 
 				case API1.GET_PPP_SUCCESS:
@@ -361,6 +369,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sharePop = new SharePop(this);
 		albumArrayList = new ArrayList<>();
+		originalLists = new ArrayList<>();
 		settingUtil = new SettingUtil();
 		ppCode = getIntent().getStringExtra("ppCode");
 		shootDate = getIntent().getStringExtra("shootDate");
@@ -453,6 +462,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					if (albumArrayList.size() == 0) {
 						getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
 					} else {//直接显示照片
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								dismissPWProgressDialog();
+							}
+						});
 						pwStickySectionRecyclerView.post(new Runnable() {
 							@Override
 							public void run() {
@@ -503,7 +518,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		super.onResume();
 		if (sharePop != null) {
 			PictureAirLog.out("sharePop not null");
-			if (shareType != SharePop.TWITTER) {
+			if (shareType != SharePop.TWITTER && isShareDialogShowing) {
 				PictureAirLog.out("dismiss dialog");
 				dismissPWProgressDialog();
 			}
@@ -542,8 +557,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			ppRefreshIds = AppUtil.getRepeatRefreshIds(dbList);
 			ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(dbList);
 
+			PictureAirLog.d("sort time start--->");
+			originalLists.clear();
+			originalLists.addAll(AppUtil.sortPhotoList(dbList));
+
 			albumArrayList.clear();
-			albumArrayList.addAll(AppUtil.insertSortFavouritePhotos(dbList, true));
+			albumArrayList.addAll(AppUtil.getHeaderSortedPhotoList(originalLists));
+			PictureAirLog.d("sort time end--->");
 		}
 	}
 
@@ -585,25 +605,28 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 								ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(resultList);
 							}
 						}
-						return AppUtil.insertSortFavouritePhotos(resultList, true);
+						newCount = resultList.size();
+						if (type == API1.GET_NEW_PHOTOS) {
+							originalLists.addAll(0, AppUtil.sortPhotoList(resultList));//刷新的数据，需要加载在最前面
+
+						} else if (type == API1.GET_OLD_PHOTOS) {
+							originalLists.addAll(AppUtil.sortPhotoList(resultList));
+
+						} else {
+							ppPhotoCount = resultList.size();
+							originalLists.clear();
+							originalLists.addAll(AppUtil.sortPhotoList(resultList));
+						}
+
+						return AppUtil.getHeaderSortedPhotoList(originalLists);
 					}
 				})
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(new RxSubscribe<ArrayList<PhotoInfo>>() {
 					@Override
 					public void _onNext(ArrayList<PhotoInfo> photoInfos) {
-						newCount = photoInfos.size();
-						if (type == API1.GET_NEW_PHOTOS) {
-							refreshCount = photoInfos.size();
-							albumArrayList.addAll(0, photoInfos);//刷新的数据，需要加载在最前面
-						} else if (type == API1.GET_OLD_PHOTOS) {
-							loadMoreCount = photoInfos.size();
-							albumArrayList.addAll(photoInfos);
-						} else {
-							albumArrayList.clear();
-							ppPhotoCount = photoInfos.size();
-							albumArrayList.addAll(photoInfos);
-						}
+						albumArrayList.clear();
+						albumArrayList.addAll(photoInfos);
 					}
 
 					@Override
@@ -937,17 +960,28 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 * 2.删除本地列表操作
 		 */
 		PictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist, ppCode + ",");
-
+		/**
+		 * 1.删除originalLists的数据
+		 * 2.重新将数据源list的数据转成所需的list
+		 */
+		boolean hasFound;
 		for (int i = 0; i < photopassPhotoslist.size(); i++) {
-			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
-			while (iterator.hasNext()) {
-				PhotoInfo photoInfo = iterator.next();
-				if (photoInfo.getPhotoOriginalURL().equals(photopassPhotoslist.get(i).getPhotoOriginalURL())) {
-					iterator.remove();
-					break;
+			hasFound = false;
+			for (int j = 0; j < originalLists.size(); j++) {
+				Iterator<PhotoInfo> iterator = originalLists.get(j).iterator();
+				while (iterator.hasNext()) {
+					PhotoInfo photoInfo = iterator.next();
+					if (photoInfo.getPhotoOriginalURL().equals(photopassPhotoslist.get(i).getPhotoOriginalURL())) {
+						iterator.remove();
+						hasFound = true;
+						break;
+					}
 				}
+				if (hasFound) break;
 			}
 		}
+		albumArrayList.clear();
+		albumArrayList.addAll(AppUtil.getHeaderSortedPhotoList(originalLists));
 	}
 
 	/**
@@ -970,7 +1004,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			noCountView.setVisibility(View.VISIBLE);
 			noCountTextView.setText(R.string.no_photo_in_airpass);
 		}
-
 		dismissPWProgressDialog();
 	}
 

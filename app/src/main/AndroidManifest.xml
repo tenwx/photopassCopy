@@ -149,11 +149,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.MyPPActivity"
-            android:configChanges="keyboard|orientation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.PreviewPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
