@@ -1,6 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -20,6 +19,7 @@ import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.components.RxActivity;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView, PWDialog.OnPWDialogClickListener, StickerView.OnStickItemDeleteListener {
@@ -266,7 +266,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public Activity getEditPhotView() {
+    public RxActivity getEditPhotView() {
         return this;
     }
 

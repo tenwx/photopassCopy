@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -10,17 +8,22 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private EditTextWithClear oldPassword, newPassword;
@@ -28,48 +31,6 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     private PWToast newToast;
     private boolean isSele = true;
     private ImageButton radio;
-
-    private final Handler modifyPasswordHandler = new ModifyPasswordHandler(this);
-
-    private static class ModifyPasswordHandler extends Handler{
-        private final WeakReference<ModifyPasswordActivity> mActivity;
-
-        public ModifyPasswordHandler(ModifyPasswordActivity activity){
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    /**
-     * 处理Message
-     * @param msg
-     */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-
-            case API1.MODIFY_PWD_SUCCESS:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(R.string.modify_password_success, Common.TOAST_SHORT_TIME);
-                ModifyPasswordActivity.this.finish();
-                break;
-
-            case API1.MODIFY_PWD_FAILED:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            default:
-                break;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +75,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
                         case AppUtil.PWD_AVAILABLE:
                             // 密码可用
                             showPWProgressDialog();
-                            API1.modifyPwd(oldPassword.getText().toString(), newPassword.getText().toString(), modifyPasswordHandler);
+                            modifyPassword(oldPassword.getText().toString(), newPassword.getText().toString());
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
@@ -161,6 +122,32 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
 
     }
 
+    private void modifyPassword(String pOldPwd, String pNewPwd) {
+        API2.modifyPwd(pOldPwd, pNewPwd)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.modify_password_success, Common.TOAST_SHORT_TIME);
+                        ModifyPasswordActivity.this.finish();
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
@@ -188,6 +175,5 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        modifyPasswordHandler.removeCallbacksAndMessages(null);
     }
 }

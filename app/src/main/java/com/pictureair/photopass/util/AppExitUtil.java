@@ -2,17 +2,19 @@ package com.pictureair.photopass.util;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.widget.PWToast;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by milo on 15/12/29.
@@ -22,32 +24,6 @@ import com.pictureair.photopass.widget.PWToast;
  */
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
-
-    private Handler myHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.LOGOUT_FAILED:
-                case API1.LOGOUT_SUCCESS:
-                    exit();
-
-                    Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    MyApplication.getInstance().startActivity(i);
-
-                    AppManager.getInstance().AppExit(MyApplication.getInstance());
-                    break;
-                case API1.SOCKET_DISCONNECT_FAILED:
-                case API1.SOCKET_DISCONNECT_SUCCESS:
-                    API1.Logout(myHandler);
-                    break;
-
-                default:
-                    break;
-            }
-            return false;
-        }
-    });
 
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
@@ -62,7 +38,7 @@ public class AppExitUtil {
     public void AppReLogin() {
         //断开推送
         PWToast.getInstance(MyApplication.getInstance()).setTextAndShow(R.string.please_relogin, Toast.LENGTH_SHORT);
-        API1.noticeSocketDisConnect(myHandler);
+        AppLogout();
     }
 
     /**
@@ -70,7 +46,56 @@ public class AppExitUtil {
      */
     public void AppLogout() {
         //断开推送
-        API1.noticeSocketDisConnect(myHandler);
+        API2.noticeSocketDisConnect()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        Logout();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        Logout();
+                    }
+                });
+    }
+
+    private void logoutProcess() {
+        exit();
+
+        Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MyApplication.getInstance().startActivity(i);
+
+        AppManager.getInstance().AppExit(MyApplication.getInstance());
+    }
+
+    private void Logout() {
+        API2.Logout()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+
+                    @Override
+                    public void onCompleted() {
+                        logoutProcess();
+                    }
+
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        logoutProcess();
+                    }
+                });
     }
 
     public void exit() {
