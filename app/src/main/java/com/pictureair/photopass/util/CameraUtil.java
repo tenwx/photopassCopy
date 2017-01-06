@@ -181,7 +181,7 @@ public class CameraUtil {
 		public static void scan(String file,Context context) {
 			new PWMediaScanner(context, file, "image/*", new PWMediaScanner.ScannerListener() {
 				@Override
-				public void OnScannerFinish() {
+				public void OnScannerFinish(String path) {
 
 				}
 			});

@@ -647,9 +647,9 @@ public class DownloadService extends Service {
      */
     private void scan(String file,final DownloadFileStatus fileStatus) {
         // TODO Auto-generated method stub
-        new PWMediaScanner(this, file, null, new PWMediaScanner.ScannerListener() {
+        new PWMediaScanner(MyApplication.getInstance(), file, null, new PWMediaScanner.ScannerListener() {
             @Override
-            public void OnScannerFinish() {
+            public void OnScannerFinish(String file) {
                 saveFileToDb(fileStatus);
 
             }

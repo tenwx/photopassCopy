@@ -14,7 +14,7 @@ public class PWMediaScanner implements MediaScannerConnection.MediaScannerConnec
     private ScannerListener mListener;
 
     public interface ScannerListener{
-        void OnScannerFinish();
+        void OnScannerFinish(String path);
     }
 
     public PWMediaScanner (Context context, String file, String mimeType, ScannerListener listener){
@@ -33,6 +33,6 @@ public class PWMediaScanner implements MediaScannerConnection.MediaScannerConnec
     @Override
     public void onScanCompleted(String path, Uri uri) {
         msc.disconnect();
-        mListener.OnScannerFinish();
+        mListener.OnScannerFinish(path);
     }
 }

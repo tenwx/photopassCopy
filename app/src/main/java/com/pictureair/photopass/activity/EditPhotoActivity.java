@@ -2,6 +2,8 @@ package com.pictureair.photopass.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,7 +19,6 @@ import com.pictureair.photopass.editPhoto.presenter.PWEditPresenter;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.components.RxActivity;
 
@@ -30,7 +31,7 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
     private ImageButton mTempSave;
     private TextView mRotate, mLeft90, mRight90, mTitle, mReallySave, mFrame, mFilter, mSticker;
     private LinearLayout mRotetaView;
-    private HorizontalListView mHorizontalListView;
+    private RecyclerView mHorizontalListView;
     private PWDialog pictureWorksDialog;
     private StickerView mStickerView;
 
@@ -53,7 +54,10 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
         mRight90 = (TextView) findViewById(R.id.tv_right90);
         mReallySave = (TextView) findViewById(R.id.tv_really_save);
         mFrame = (TextView) findViewById(R.id.tv_edit_frame);
-        mHorizontalListView = (HorizontalListView) findViewById(R.id.horizontalListView);
+        mHorizontalListView = (RecyclerView) findViewById(R.id.horizontalListView);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mHorizontalListView.setLayoutManager(manager);
         mFilter = (TextView) findViewById(R.id.tv_edit_filter);
         mSticker = (TextView) findViewById(R.id.tv_edit_sticker);
         mPhotoFrame = (ImageView) findViewById(R.id.iv_photoframe);

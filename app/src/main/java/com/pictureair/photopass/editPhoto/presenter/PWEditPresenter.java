@@ -74,6 +74,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private MyHandler mHandler;
     //对象
     private PhotoInfo photoInfo;
+    private EditScannerListener scannerListener;
 
 
     public void onCreate(IPWEditView pwEditViewInterface){
@@ -92,7 +93,8 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         photoInfo = pwEditView.getEditPhotView().getIntent().getParcelableExtra("photo");
         photoPath = pwEditView.getEditPhotView().getIntent().getStringExtra("photoPath");
         isOnLine = pwEditView.getEditPhotView().getIntent().getBooleanExtra("isOnLine",false);
-        loadImageFormPath();  //加载图片，用ImageLoader加载，故不用新开线程。
+        scannerListener = new EditScannerListener(this);
+        loadImageFormPath();  //加载图片，用ImageLoader加、载，故不用新开线程。
         // 获取网络饰品与边框
 //        API1.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""), mHandler);
         getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""));
@@ -504,20 +506,30 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     // 扫描SD卡
     private void scan(final String file) {
         // TODO Auto-generated method stub
-        // TODO Auto-generated method stub
-        new PWMediaScanner(pwEditView.getEditPhotView(), file, null, new PWMediaScanner.ScannerListener() {
-            @Override
-            public void OnScannerFinish() {
-                // TODO Auto-generated method stub
-                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
-                // 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
+        new PWMediaScanner(MyApplication.getInstance(), file, null, scannerListener);
+    }
+
+    private void onScanFinish(String file) {
+        SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
+        // 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
 //                Intent intent = new Intent();
 //                intent.putExtra("photoUrl", file);
 //                pwEditView.getEditPhotView().setResult(11, intent);
 //                PictureAirLog.out("set result--------->");
-                pwEditView.finishActivity();
-            }
-        });
+        pwEditView.finishActivity();
+    }
+
+    private static class EditScannerListener implements PWMediaScanner.ScannerListener {
+
+        WeakReference<PWEditPresenter> weakReference;
+        public EditScannerListener(PWEditPresenter presenter) {
+            weakReference = new WeakReference<PWEditPresenter>(presenter);
+        }
+
+        @Override
+        public void OnScannerFinish(String path) {
+               weakReference.get().onScanFinish(path);
+        }
     }
 
     @Override //点击相框按钮进行的操作。

@@ -6,12 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDialogClickListener {
+public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapter.EditHolder> implements PWDialog.OnPWDialogClickListener {
     private Context mContext;
     private List<String> stickerPathList;
     private int editType = PhotoCommon.EditNone;
@@ -59,7 +59,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private long secondFileProgress = 0;//文件下载进度
     private PWDialog pwDialog;
     private PWToast myToast;
-    private HolderView holderView;
+    private EditHolder selectHolder;
     private int position;
     private int bmpWidth;
     private int bmpHeight;
@@ -68,13 +68,34 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     private boolean mLocal;
 
 
+    class EditHolder extends RecyclerView.ViewHolder {
+        ImageView editImageview;//编辑的图片
+        TextView editText;//文字
+        ProgressBar progressBar;//进度条
+        LinearLayout itemLayout;//布局
+        ImageView maskImageView;//蒙版
+        RelativeLayout itemRelativeLayout;
+        TextView fileSizeTextView;//文件大小
+
+        public EditHolder(View itemView) {
+            super(itemView);
+            editImageview = (ImageView) itemView.findViewById(R.id.editImageview);
+            editText = (TextView) itemView.findViewById(R.id.editTextview);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+            itemLayout = (LinearLayout) itemView.findViewById(R.id.item);
+            maskImageView = (ImageView) itemView.findViewById(R.id.frame_mask);
+            itemRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.edit_item);
+            fileSizeTextView = (TextView) itemView.findViewById(R.id.file_size);
+        }
+    }
+
     private Handler downloadHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_PROGRESS:
-                    HolderView holderView = (HolderView) msg.obj;
-                    holderView.progressBar.setProgress(msg.arg1);
-                    holderView.fileSizeTextView.setText(msg.arg1 + "%");
+                    EditHolder holder = (EditHolder) msg.obj;
+                    holder.progressBar.setProgress(msg.arg1);
+                    holder.fileSizeTextView.setText(msg.arg1 + "%");
                     break;
 
                 default:
@@ -82,7 +103,6 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             }
         }
 
-        ;
     };
 
     public EditActivityAdapter(Context context, String photoPath, List<String> stickerPathList, int editType, ArrayList<FrameOrStikerInfo> frameInfos, int width, int height, boolean local,Handler handler) {
@@ -99,7 +119,93 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     }
 
     @Override
-    public int getCount() {
+    public EditHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.edit_item, parent, false);
+        EditHolder editHolder = new EditHolder(view);
+        return editHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(EditHolder holder, int position) {
+        holder.editText.setVisibility(View.GONE);
+        holder.maskImageView.setVisibility(View.GONE);
+        holder.fileSizeTextView.setVisibility(View.INVISIBLE);
+        holder.progressBar.setVisibility(View.INVISIBLE);
+        if (editType == PhotoCommon.EditFilter) {//滤镜
+            LayoutParams layoutParams = holder.itemRelativeLayout.getLayoutParams();
+            layoutParams.height = ScreenUtil.dip2px(mContext, 50);
+            layoutParams.width = ScreenUtil.dip2px(mContext, 50);
+
+            LayoutParams layoutParams1 = holder.itemLayout.getLayoutParams();
+            layoutParams1.width = layoutParams.width;
+
+            holder.itemLayout.setLayoutParams(layoutParams1);
+            holder.itemRelativeLayout.setLayoutParams(layoutParams);
+
+            GlideUtil.load(mContext, stickerPathList.get(position), R.drawable.decoration_bg, R.drawable.ic_failed, holder.editImageview);
+            holder.editText.setText(filterText[position]);
+            holder.editText.setVisibility(View.VISIBLE);
+            holder.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holder, position));
+        }
+        if (editType == PhotoCommon.EditSticker) {//饰品
+            LayoutParams layoutParams = holder.itemRelativeLayout.getLayoutParams();
+            layoutParams.height = ScreenUtil.dip2px(mContext, 60);
+            layoutParams.width = ScreenUtil.dip2px(mContext, 60);
+            holder.itemRelativeLayout.setLayoutParams(layoutParams);
+
+            LayoutParams layoutParams1 = holder.editImageview.getLayoutParams();
+            layoutParams1.width = ScreenUtil.dip2px(mContext, 50);
+            layoutParams1.height = ScreenUtil.dip2px(mContext, 50);
+            holder.editImageview.setLayoutParams(layoutParams1);
+
+            LayoutParams layoutParams2 = holder.itemLayout.getLayoutParams();
+            layoutParams2.width = layoutParams.width;
+            holder.itemLayout.setLayoutParams(layoutParams2);
+
+            if (frameInfos.get(position).getOnLine() == 1) {//网络图片
+                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holder.editImageview);
+            } else {//本地assets图片
+                GlideUtil.load(mContext, frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holder.editImageview);
+            }
+            holder.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
+            holder.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holder, position));
+        }
+
+        if (editType == PhotoCommon.EditFrame) {//边框
+            LayoutParams layoutParams = holder.itemRelativeLayout.getLayoutParams();
+            LayoutParams layoutParam1 = holder.editImageview.getLayoutParams();
+            LayoutParams layoutParams2 = holder.itemLayout.getLayoutParams();
+            if (mLocal) {
+                GlideUtil.loadTarget(mContext, mPhotoPath, bmpWidth, bmpHeight, new FrameListTarget(holder, position));
+            } else {
+                GlideUtil.load(mContext, mPhotoPath, new FrameListTarget(holder, position));
+            }
+
+            if (bmpWidth > bmpHeight) {
+                layoutParams.height = LayoutParams.MATCH_PARENT;
+                layoutParams.width = ScreenUtil.dip2px(mContext, 80);
+                layoutParams2.width =  layoutParams.width + 10;
+
+                layoutParam1.height = ScreenUtil.dip2px(mContext, 60);
+                layoutParam1.width = ScreenUtil.dip2px(mContext, 80);
+            } else {
+                layoutParams.height = LayoutParams.MATCH_PARENT;
+                layoutParams.width = ScreenUtil.dip2px(mContext, 65*3/4);
+                layoutParams2.width = layoutParams.width + 10;
+
+                layoutParam1.height = ScreenUtil.dip2px(mContext, 80);
+                layoutParam1.width = ScreenUtil.dip2px(mContext, 60);
+            }
+            holder.itemLayout.setLayoutParams(layoutParams2);
+            holder.itemRelativeLayout.setLayoutParams(layoutParams);
+            holder.editImageview.setLayoutParams(layoutParam1);
+            PWEditUtil.setMargins(holder.itemRelativeLayout, 5, 5, 5, 5);
+            holder.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holder, position));
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
             return frameInfos.size();
         } else {
@@ -107,130 +213,17 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         }
     }
 
-
-    @Override
-    public Object getItem(int position) {
-        if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
-            return frameInfos.get(position);
-        } else {
-            return stickerPathList.get(position);
-        }
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        HolderView holderView = null;
-        // 布局混乱：如果position等于0的时候，重新加载布局。
-        if (position == 0) {
-            convertView = null;
-        }
-        if (convertView == null) {
-            holderView = new HolderView();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.edit_item, parent, false);
-            holderView.editImageview = (ImageView) convertView.findViewById(R.id.editImageview);
-            holderView.editText = (TextView) convertView.findViewById(R.id.editTextview);
-            holderView.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
-            holderView.itemLayout = (LinearLayout) convertView.findViewById(R.id.item);
-            holderView.maskImageView = (ImageView) convertView.findViewById(R.id.frame_mask);
-            holderView.itemRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.edit_item);
-            holderView.fileSizeTextView = (TextView) convertView.findViewById(R.id.file_size);
-            convertView.setTag(holderView);
-        } else {
-            holderView = (HolderView) convertView.getTag();
-        }
-
-        holderView.editText.setVisibility(View.GONE);
-        holderView.maskImageView.setVisibility(View.GONE);
-        holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
-        holderView.progressBar.setVisibility(View.INVISIBLE);
-        if (editType == PhotoCommon.EditFilter) {//滤镜
-            LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-            layoutParams.height = ScreenUtil.dip2px(mContext, 50);
-            layoutParams.width = ScreenUtil.dip2px(mContext, 50);
-            holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-            GlideUtil.load(mContext, stickerPathList.get(position), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
-            holderView.editText.setText(filterText[position]);
-            holderView.editText.setVisibility(View.VISIBLE);
-            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
-        }
-        if (editType == PhotoCommon.EditSticker) {//饰品
-            LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-            layoutParams.height = ScreenUtil.dip2px(mContext, 60);
-            layoutParams.width = ScreenUtil.dip2px(mContext, 60);
-            holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-
-            LayoutParams layoutParams1 = holderView.editImageview.getLayoutParams();
-            layoutParams1.width = ScreenUtil.dip2px(mContext, 50);
-            layoutParams1.height = ScreenUtil.dip2px(mContext, 50);
-            holderView.editImageview.setLayoutParams(layoutParams1);
-
-            if (frameInfos.get(position).getOnLine() == 1) {//网络图片
-                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
-            } else {//本地assets图片
-                GlideUtil.load(mContext, frameInfos.get(position).getOriginalPathPortrait(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
-            }
-            holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
-            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
-        }
-
-        if (editType == PhotoCommon.EditFrame) {//边框
-            LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-            LayoutParams layoutParam1 = holderView.editImageview.getLayoutParams();
-            if (mLocal) {
-                GlideUtil.loadTarget(mContext, mPhotoPath, bmpWidth, bmpHeight, new FrameListTarget(holderView, position));
-            } else {
-                GlideUtil.load(mContext, mPhotoPath, new FrameListTarget(holderView, position));
-            }
-
-            if (bmpWidth > bmpHeight) {
-                layoutParams.height = LayoutParams.MATCH_PARENT;
-                layoutParams.width = ScreenUtil.dip2px(mContext, 80);
-
-                layoutParam1.height = ScreenUtil.dip2px(mContext, 60);
-                layoutParam1.width = ScreenUtil.dip2px(mContext, 80);
-            } else {
-                layoutParams.height = LayoutParams.MATCH_PARENT;
-                layoutParams.width = ScreenUtil.dip2px(mContext, 65*3/4);
-
-                layoutParam1.height = ScreenUtil.dip2px(mContext, 80);
-                layoutParam1.width = ScreenUtil.dip2px(mContext, 60);
-            }
-
-            holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-            holderView.editImageview.setLayoutParams(layoutParam1);
-            PWEditUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
-            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
-        }
-        return convertView;
-    }
-
-    class HolderView {
-        ImageView editImageview;//编辑的图片
-        TextView editText;//文字
-        ProgressBar progressBar;//进度条
-        LinearLayout itemLayout;//布局
-        ImageView maskImageView;//蒙版
-        RelativeLayout itemRelativeLayout;
-        TextView fileSizeTextView;//文件大小
-    }
-
-
     /**
      * item点击监听
      *
      * @author bauer_bao
      */
     private class ItemOnClickListener implements OnClickListener {
-        private HolderView holderView;
+        private EditHolder itemClickHolder;
         private int position;
 
-        public ItemOnClickListener(HolderView holderView, int position) {
-            this.holderView = holderView;
+        public ItemOnClickListener(EditHolder holderView, int position) {
+            this.itemClickHolder = holderView;
             this.position = position;
         }
 
@@ -238,19 +231,19 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
         public void onClick(View v) {
             if(editType == PhotoCommon.EditFrame) {
                 if (frameInfos.get(position).getOnLine() == 1 && frameInfos.get(position).getIsDownload() == 0) {//网络图片，并且未下载
-                    holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
-                    holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-                    holderView.progressBar.setProgress(0);
-                    downloadFrame(position, true, holderView);
-                    downloadFrame(position, false, holderView);
+                    itemClickHolder.progressBar.setVisibility(View.VISIBLE);//开始下载
+                    itemClickHolder.fileSizeTextView.setVisibility(View.VISIBLE);
+                    itemClickHolder.progressBar.setProgress(0);
+                    downloadFrame(position, true, itemClickHolder);
+                    downloadFrame(position, false, itemClickHolder);
                     if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
                         myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
 
                     } else if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_MOBILE) {//使用流量
-                        showDownloadDialog(holderView, position);
+                        showDownloadDialog(itemClickHolder, position);
 
                     } else {//wifi
-                        prepareDownload(holderView, position);
+                        prepareDownload(itemClickHolder, position);
                     }
 
                 } else {//本地图片，或者网络图片已经下载
@@ -277,11 +270,11 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     /**
      * 创建下载对话框
      *
-     * @param holderView
+     * @param holder
      * @param position
      */
-    private void showDownloadDialog(HolderView holderView, int position) {
-        this.holderView = holderView;
+    private void showDownloadDialog(EditHolder holder, int position) {
+        this.selectHolder = holder;
         this.position = position;
 
         if (pwDialog == null) {
@@ -306,7 +299,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             case DialogInterface.BUTTON_POSITIVE:
                 if (dialogId == DOWNLOAD_DIALOG) {
                     PictureAirLog.out("positive button");
-                    prepareDownload(holderView, position);
+                    prepareDownload(this.selectHolder, position);
                 }
                 break;
         }
@@ -315,15 +308,15 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     /**
      * 准备下载
      *
-     * @param holderView
+     * @param holder
      * @param position
      */
-    private void prepareDownload(HolderView holderView, int position) {
-        holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
-        holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-        holderView.progressBar.setProgress(0);
-        downloadFrame(position, true, holderView);
-        downloadFrame(position, false, holderView);
+    private void prepareDownload(EditHolder holder, int position) {
+        holder.progressBar.setVisibility(View.VISIBLE);//开始下载
+        holder.fileSizeTextView.setVisibility(View.VISIBLE);
+        holder.progressBar.setProgress(0);
+        downloadFrame(position, true, holder);
+        downloadFrame(position, false, holder);
     }
 
     /**
@@ -331,9 +324,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
      *
      * @param position
      * @param firstTime
-     * @param holderView
+     * @param holder
      */
-    private void downloadFrame(final int position, final boolean firstTime, final HolderView holderView) {
+    private void downloadFrame(final int position, final boolean firstTime, final EditHolder holder) {
         String downloadNameString = null;
         String url = null;
         if (firstTime) {
@@ -480,7 +473,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 //				System.out.println("progress:"+ firstFileProgress + "-" + secondFileProgress);
                 Message message = downloadHandler.obtainMessage();
                 message.what = UPDATE_PROGRESS;
-                message.obj = holderView;
+                message.obj = holder;
                 if (firstFileFailOrExist || secondFileFailOrExist) {//有文件存在，或者下载失败，需要在进度上加50
                     message.arg1 = (int) (50 + bytesWritten * 50 / totalSize);
                 } else {//都可以正常下载，下载进度取两者平均值
@@ -488,9 +481,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
                 }
                 downloadHandler.sendMessage(message);
                 if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理
-                    holderView.progressBar.setVisibility(View.GONE);
-                    holderView.maskImageView.setVisibility(View.GONE);
-                    holderView.fileSizeTextView.setVisibility(View.GONE);
+                    holder.progressBar.setVisibility(View.GONE);
+                    holder.maskImageView.setVisibility(View.GONE);
+                    holder.fileSizeTextView.setVisibility(View.GONE);
                     frameInfos.get(position).setIsDownload(1);
                     firstFileFailOrExist = false;
                     secondFileFailOrExist = false;
@@ -503,40 +496,40 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
     }
 
     private class FrameListTarget extends SimpleTarget<Bitmap> {
-        private  HolderView holderView;
+        private  EditHolder frameListHolder;
         private int position;
-        public FrameListTarget(HolderView holderView, int position) {
-            this.holderView = holderView;
+        public FrameListTarget(EditHolder holderView, int position) {
+            this.frameListHolder = holderView;
             this.position = position;
         }
 
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
             if (bitmap == null || bitmap.isRecycled()) return;
-            holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
-            holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
+            frameListHolder.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            frameListHolder.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
             if (frameInfos.get(position).getOnLine() == 1) {
                 // 网络边框。 3.0版本
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, frameListHolder.editImageview);
                 }else{
-                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, frameListHolder.editImageview);
                 }
 
                 if (frameInfos.get(position).getIsDownload() == 0) {
-                    holderView.maskImageView.setVisibility(View.VISIBLE);
-                    holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-                    holderView.fileSizeTextView.setText(frameInfos.get(position).getFileSize() / 1024 / 1024 + "M");
+                    frameListHolder.maskImageView.setVisibility(View.VISIBLE);
+                    frameListHolder.fileSizeTextView.setVisibility(View.VISIBLE);
+                    frameListHolder.fileSizeTextView.setText(frameInfos.get(position).getFileSize() / 1024 / 1024 + "M");
                 }else {
-                    holderView.maskImageView.setVisibility(View.GONE);
-                    holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
+                    frameListHolder.maskImageView.setVisibility(View.GONE);
+                    frameListHolder.fileSizeTextView.setVisibility(View.INVISIBLE);
                 }
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathH160(), R.drawable.decoration_bg, R.drawable.ic_failed, frameListHolder.editImageview);
                 } else {
-                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
+                    GlideUtil.load(mContext, frameInfos.get(position).getThumbnailPathV160(), R.drawable.decoration_bg, R.drawable.ic_failed, frameListHolder.editImageview);
                 }
             }
         }

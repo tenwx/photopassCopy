@@ -256,14 +256,14 @@
             android:textSize="@dimen/text_size_14" />
     </LinearLayout>
 
-    <com.pictureair.photopass.widget.HorizontalListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/horizontalListView"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/pp_bottom_bar_height"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:cacheColorHint="@color/transparent"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/ll_rotate_bar"
