@@ -69,15 +69,11 @@ public class API1 {
     /**
      * 获取视频信息
      */
-
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2080;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2081;
 
     public static final int GET_AD_LOCATIONS_FAILED = 2090;
     public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
-
-    public static final int DELETE_PHOTOS_SUCCESS = 2101;
-    public static final int DELETE_PHOTOS_FAILED = 2100;
 
     /**
      * 发现
@@ -134,9 +130,6 @@ public class API1 {
     public static final int UPLOAD_PHOTO_SUCCESS = 5061;
     public static final int UPLOAD_PHOTO_FAILED = 5060;
     public static final int UPLOAD_PHOTO_PROGRESS = 5062;
-
-    public static final int GET_PPP_SUCCESS = 5071;
-    public static final int GET_PPP_FAILED = 5070;
 
     //PP & PP＋模块
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
@@ -345,112 +338,6 @@ public class API1 {
         });
         return task;
     }
-
-    /**
-     * 删除网络图片
-     * @param tokenId
-     * @param handler
-     */
-    public static BasicResultCallTask removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (ids != null) {
-            params.put(Common.SHARE_PHOTO_ID, ids.toJSONString());
-        }
-        if (ppCode != null) {
-            params.put(Common.PP, ppCode);
-        }
-        PictureAirLog.out("param---->" + params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.out("delete photos----->" + jsonObject);
-                handler.sendEmptyMessage(DELETE_PHOTOS_SUCCESS);
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.out("delete photos failed--->" + status);
-                handler.obtainMessage(DELETE_PHOTOS_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 获取已收藏的地点信息
-     *
-     * @param tokenId
-     * @param handler
-     */
-    public static BasicResultCallTask getFavoriteLocations(String tokenId, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.d(TAG, "get favorite locations success" + jsonObject.toString());
-                handler.obtainMessage(GET_FAVORITE_LOCATION_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_FAVORITE_LOCATION_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 收藏或者取消收藏地址获取已收藏的地点信息
-     *
-     * @param tokenId    必填，token
-     * @param locationId locationId:string，必填，location的locationId
-     * @param action     必填，操作（可选值：add，remove），收藏或取消收藏
-     * @param handler
-     */
-    public static BasicResultCallTask editFavoriteLocations(String tokenId, String locationId,
-                                                            String action, final int position, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        if (locationId != null) {
-            params.put(Common.LOCATION_ID, locationId);
-        }
-        if (action != null) {
-            params.put(Common.ACTION, action);
-        }
-        BasicResultCallTask task = HttpUtil1.asyncPost(
-                Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params,
-                new HttpCallback() {
-
-                    @Override
-                    public void onSuccess(JSONObject jsonObject) {
-                        super.onSuccess(jsonObject);
-                        PictureAirLog
-                                .out("edit favorite location info success ----->"
-                                        + jsonObject.toString());
-                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_SUCCESS,
-                                position, 0, jsonObject).sendToTarget();
-
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-                        super.onFailure(status);
-                        PictureAirLog
-                                .out("get favorite location info failed----->"
-                                        + status);
-                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_FAILED,
-                                status, 0).sendToTarget();
-                    }
-                });
-        return task;
-    }
-
 
     /**
      * 获取有广告的地点

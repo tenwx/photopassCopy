@@ -141,7 +141,7 @@ public class BlurUtil {
 	}
 
 	/**
-	 * 制作模糊图片
+	 * 制作模糊图片 fastBlur
 	 * @param sentBitmap
 	 * @param radius
 	 * @param canReuseInBitmap

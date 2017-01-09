@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.AMapLocation;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -24,17 +25,22 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * discover页面location的适配器
@@ -58,7 +64,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
     public static final int LOVE = 102;
     public static final int MORE = 103;
     public static final int STOPLOCATION = 104;
-    private static final String TAG = "DicoverLocationAdapter";
 
     private HashMap<String, Integer> activatedLocationMap;
 
@@ -327,11 +332,30 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                 }
             } else if (clickIndex == LOVE) {
                 mHandler.sendEmptyMessage(STOPLOCATION);
+                String action;
                 if (list.get(position).islove == 1) {
-                    API1.editFavoriteLocations(MyApplication.getTokenId(), list.get(position).locationId, "remove", position, mHandler);
+                    action = "remove";
                 } else {
-                    API1.editFavoriteLocations(MyApplication.getTokenId(), list.get(position).locationId, "add", position, mHandler);
+                    action = "add";
                 }
+                API2.editFavoriteLocations(MyApplication.getTokenId(), list.get(position).locationId, action)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new RxSubscribe<JSONObject>() {
+                            @Override
+                            public void _onNext(JSONObject jsonObject) {
+
+                            }
+
+                            @Override
+                            public void _onError(int status) {
+                                PWToast.getInstance(context).setTextAndShow(ReflectionUtil.getStringId(context, status), Common.TOAST_SHORT_TIME);
+                            }
+
+                            @Override
+                            public void onCompleted() {
+                                updateIsLove(position);
+                            }
+                        });
             } else {
                 final Message msg = new Message();
                 msg.what = clickIndex;

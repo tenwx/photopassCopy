@@ -22,16 +22,20 @@
 
 # 指定代码的压缩级别
 -optimizationpasses 5
+#包明不混合大小写
 -dontusemixedcaseclassnames
-# 是否混淆第三方jar
+# 不要跳过混淆第三方jar成员变量
 -dontskipnonpubliclibraryclassmembers
+# 不要跳过第三方类
 -dontskipnonpubliclibraryclasses
+#不要预校验
 -dontpreverify
+#混淆时是否记录日志
 -verbose
+# 混淆时所采用的算法
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
--keepattributes InnerClasses,LineNumberTable
--keepattributes *Annotation*
--keepattributes Signature
+#保留一些属性
+-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
 
 #将api自带的设置避免混淆
 -keep public class * extends android.app.Activity
@@ -43,41 +47,15 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 
+#忽略警告
 -ignorewarnings
+
+#如果引用了v4或者v7包、fragment
 -dontwarn android.support.v4.**
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.app.** { *; }
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.app.Fragment
-
-#支付宝避免混淆
--keep class com.alipay.android.app.IAlixPay{*;}
--keep class com.alipay.android.app.IAlixPay$Stub{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
--keep class com.alipay.sdk.app.PayTask{ public *;}
--keep class com.alipay.sdk.app.AuthTask{ public *;}
-
-#微信支付避免混淆
--keep class com.tencent.mm.sdk.** { *;}
-
-#避免混淆银联支付
--keep class com.unionpay.** {*;}
--keep class org.simalliance.openmobileapi.** {*;}
--keep class org.simalliance.openmobileapi.service.** {*;}
-
-#短信验证和分享避免混淆
--keep class android.net.http.SslError
--keep class android.webkit.**{*;}
--keep class cn.sharesdk.**{*;}
--keep class m.framework.**{*;}
--keep class com.mob.**{*;}
--keep class com.sina.**{*;}
--keep class **.R$* {*;}
--keep class **.R{*;}
--dontwarn cn.sharesdk.**
--dontwarn com.mob.**
--dontwarn **.R$*
 
 #保持 native 的方法不去混淆
 -keepclasseswithmembernames class * {
@@ -139,7 +117,34 @@
     public <fields>;
 }
 
--keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
+#支付宝避免混淆
+-keep class com.alipay.android.app.IAlixPay{*;}
+-keep class com.alipay.android.app.IAlixPay$Stub{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
+-keep class com.alipay.sdk.app.PayTask{ public *;}
+-keep class com.alipay.sdk.app.AuthTask{ public *;}
+
+#微信支付避免混淆
+-keep class com.tencent.mm.sdk.** { *;}
+
+#避免混淆银联支付
+-keep class com.unionpay.** {*;}
+-keep class org.simalliance.openmobileapi.** {*;}
+-keep class org.simalliance.openmobileapi.service.** {*;}
+
+#短信验证和分享避免混淆
+-keep class android.net.http.SslError
+-keep class android.webkit.**{*;}
+-keep class cn.sharesdk.**{*;}
+-keep class m.framework.**{*;}
+-keep class com.mob.**{*;}
+-keep class com.sina.**{*;}
+-keep class **.R$* {*;}
+-keep class **.R{*;}
+-dontwarn cn.sharesdk.**
+-dontwarn com.mob.**
+-dontwarn **.R$*
 
 #友盟混淆
 -keepclassmembers class * {

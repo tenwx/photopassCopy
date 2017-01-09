@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -57,6 +58,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -84,8 +87,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
 	private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
 
-	private final static int GET_PHOTOS_DONE = 13;
-	private final static int START_DELETE_NETWORK_PHOTOS = 14;
 	private final static int DELETE_DIALOG = 16;
 	private static final int GO_SETTING_DIALOG = 17;
 	private static final int DOWNLOAD_DIALOG = 18;
@@ -115,6 +116,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private String ppRefreshTime, ppRefreshIds, ppLoadMoreTime, ppLoadMoreIds;
 	private GoodsInfo pppGoodsInfo = null;
 	private String[] photoUrls;
+	private String cartId = null;
 	private SimpleDateFormat sdf;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
@@ -133,120 +135,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				case SharePop.SHOW_DIALOG:
 					isShareDialogShowing = true;
 					showPWProgressDialog(null);
-					break;
-
-				case GET_PHOTOS_DONE://获取图片成功
-					dismissPWProgressDialog();
-					if (albumArrayList.size() == 0){
-						noCountView.setVisibility(View.VISIBLE);
-						noCountTextView.setText(R.string.no_photo_in_airpass);
-					}
-					break;
-
-				case START_DELETE_NETWORK_PHOTOS://开始删除网络图片
-					JSONArray ids = new JSONArray();
-					for (int i = 0; i < photopassPhotoslist.size(); i++) {
-						ids.add(photopassPhotoslist.get(i).getPhotoId());
-					}
-					PictureAirLog.out("ids---->" + ids);
-					PictureAirLog.out("ppCode---->" + ppCode);
-					API1.removePhotosFromPP(MyApplication.getTokenId(), ids, ppCode, editStoryAlbumHandler);
-					break;
-
-				case API1.DELETE_PHOTOS_FAILED://判断本地图片是否删除完毕，并且更具有没有本地图片而显示不同的提示
-					//需要处理
-					netWorkFailed = true;
-					dealAfterDeleted();
-					break;
-
-				case API1.DELETE_PHOTOS_SUCCESS://判断本地图片是否删除完毕
-					/**
-					 * 1.删除列表内的数据
-					 * 2.判断本地数据是否处理完毕
-					 */
-					netWorkFailed = false;
-					//删除本地列表数据操作
-					deleteNetworkPhotos();
-					selectCount -= photopassPhotoslist.size();
-					photoCount -= photopassPhotoslist.size();
-					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, true);
-					SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-					dealAfterDeleted();
-					pwStickySectionRecyclerView.notifyDataSetChanged();
-					pwStickySectionRecyclerView.refreshHeaderView();
-					break;
-
-				case API1.GET_PPP_SUCCESS:
-					if (ppPhotoCount >= 10 && API2.PPPlist.size() == 0) {
-						pictureWorksDialog.setPWDialogId(FIRST_TEN_PHOTOS_TIP_DIALOG)
-								.setPWDialogMessage(R.string.pp_first_up10_msg)
-								.setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
-								.setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
-								.pwDilogShow();
-						settingUtil.insertSettingFirstPP10Status(userId);
-					} else if (API2.PPPlist.size() > 0) {
-						settingUtil.insertSettingFirstPP10Status(userId);
-					}
-					break;
-
-				case API1.GET_GOODS_SUCCESS:
-					List<GoodsInfo> allGoodsList1 = new ArrayList<>();
-
-					GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-					if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-						allGoodsList1.addAll(goodsInfoJson.getGoods());
-					}
-					//获取PP+
-					for (GoodsInfo goodsInfo : allGoodsList1) {
-						if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-							pppGoodsInfo = goodsInfo;
-							break;
-						}
-					}
-					photoUrls = new String[pppGoodsInfo.getPictures().size()];
-					for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
-						photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
-					}
-					//调用addToCart API1
-					API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, editStoryAlbumHandler);
-					break;
-
-				case API1.GET_GOODS_FAILED:
-					dismissPWProgressDialog();
-					myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-					break;
-
-				case API1.ADD_TO_CART_FAILED:
-					dismissPWProgressDialog();
-					myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-					break;
-
-				case API1.ADD_TO_CART_SUCCESS:
-					JSONObject jsonObject1 = (JSONObject) msg.obj;
-					int currentCartCount = SPUtils.getInt(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-
-					String cartId = jsonObject1.getString("cartId");
-					dismissPWProgressDialog();
-					//生成订单
-					Intent intent3 = new Intent(EditStoryAlbumActivity.this, SubmitOrderActivity.class);
-					ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-					CartItemInfo cartItemInfo = new CartItemInfo();
-					cartItemInfo.setCartId(cartId);
-					cartItemInfo.setProductName(pppGoodsInfo.getName());
-					cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-					cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-					cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-					cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-					cartItemInfo.setQty(1);
-					cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-					cartItemInfo.setPictures(photoUrls);
-					cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-					cartItemInfo.setCartProductType(3);
-
-					orderinfoArrayList.add(cartItemInfo);
-					intent3.putExtra("orderinfo", orderinfoArrayList);
-					startActivity(intent3);
 					break;
 
 				case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://重新加载
@@ -439,46 +327,56 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		});
 		pwStickySectionRecyclerView.initDate(albumArrayList, false);
 		pwStickySectionRecyclerView.setOnPullListener(this);
-		new Thread(new Runnable() {
+		Observable.create(new Observable.OnSubscribe<Boolean>() {
+
 			@Override
-			public void run() {
-				if (PictureAirDbManager.needGetFromNet(JsonInfo.getNeedRefreshString(ppCode, shootDate))) {//需要从网络获取全部数据
-					PictureAirLog.d("need re-get photos");
-					//开始从网络获取数据
-					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
-				} else {//从数据库获取数据
-					PictureAirLog.d("get photos from db");
-					//从数据库获取数据, 并且需要设置oldCount数量
-					getPhotosFromDB();
-
-					//判断用户是否超过10张照片
-					if (settingUtil.isFirstPP10(userId)) {
-						//第一次 PP数量到 10 。
-//						API1.getPPPSByUserId(MyApplication.getTokenId(), editStoryAlbumHandler);
-						getPPPsByUserId(MyApplication.getTokenId());
-					}
-					PictureAirLog.d("photos from db size->" + albumArrayList.size());
-					//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
-					if (albumArrayList.size() == 0) {
-						getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
-					} else {//直接显示照片
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								dismissPWProgressDialog();
-							}
-						});
-						pwStickySectionRecyclerView.post(new Runnable() {
-							@Override
-							public void run() {
-								pwStickySectionRecyclerView.notifyDataSetChanged();
-							}
-						});
-					}
-				}
+			public void call(Subscriber<? super Boolean> subscriber) {
+				subscriber.onNext(PictureAirDbManager.needGetFromNet(JsonInfo.getNeedRefreshString(ppCode, shootDate)));
 			}
-		}).start();
+		}).subscribeOn(Schedulers.io())
+				.compose(this.<Boolean>bindToLifecycle())
+				.map(new Func1<Boolean, Integer>() {
 
+					@Override
+					public Integer call(Boolean aBoolean) {
+						PictureAirLog.d("need get photos from net-->" + aBoolean);
+						if (!aBoolean) {
+							//从数据库中获取数据
+							getPhotosFromDB();
+							//判断用户是否超过10张照片
+							if (settingUtil.isFirstPP10(userId)) {
+								//第一次 PP数量到 10 。
+								getPPPsByUserId(MyApplication.getTokenId());
+							}
+						}
+						return null;
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+
+				.subscribe(new Subscriber<Object>() {
+					@Override
+					public void onCompleted() {
+
+					}
+
+					@Override
+					public void onError(Throwable e) {
+
+					}
+
+					@Override
+					public void onNext(Object Object) {
+						PictureAirLog.d("photos from db size->" + albumArrayList.size());
+						//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
+						if (albumArrayList.size() == 0) {
+							getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+						} else {//直接显示照片
+							pwStickySectionRecyclerView.notifyDataSetChanged();
+							dismissPWProgressDialog();
+						}
+					}
+				});
 	}
 
 	private void getPPPsByUserId(String tokenId) {
@@ -840,18 +738,110 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	 * 初始化数据
 	 */
 	private void getGoods() {
-		//从缓层中获取数据
-		String goodsByACache = ACache.get(this).getAsString(Common.ALL_GOODS);
-		if (goodsByACache != null && !goodsByACache.equals("")) {
-			editStoryAlbumHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
-		} else {
-			//从网络获取商品,先检查网络
-			if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-				API1.getGoods(editStoryAlbumHandler);
-			} else {
-				myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-			}
+		if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+			myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+			return;
 		}
+		//从缓层中获取数据
+		Observable.just(ACache.get(this).getAsString(Common.ALL_GOODS))
+				.subscribeOn(Schedulers.io())
+				.flatMap(new Func1<String, Observable<JSONObject>>() {
+					@Override
+					public Observable<JSONObject> call(String s) {
+						if (!TextUtils.isEmpty(s)) {
+							PictureAirLog.d("goods is not null");
+							return Observable.just(JSONObject.parseObject(s));
+						} else {
+							PictureAirLog.d("goods is null");
+							//从网络获取商品,先检查网络
+							return API2.getGoods()
+									.map(new Func1<JSONObject, JSONObject>() {
+										@Override
+										public JSONObject call(JSONObject jsonObject) {
+											ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+											return jsonObject;
+										}
+									});
+						}
+					}
+				})
+				.compose(this.<JSONObject>bindToLifecycle())
+				//解析json
+				.map(new Func1<JSONObject, GoodsInfo>() {
+					@Override
+					public GoodsInfo call(JSONObject jsonObject) {
+						PictureAirLog.d("parse goods json");
+						List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+						GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+						if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+							allGoodsList1.addAll(goodsInfoJson.getGoods());
+						}
+						//获取PP+
+						for (GoodsInfo goodsInfo : allGoodsList1) {
+							if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+								pppGoodsInfo = goodsInfo;
+								break;
+							}
+						}
+						photoUrls = new String[pppGoodsInfo.getPictures().size()];
+						for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+							photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+						}
+						return pppGoodsInfo;
+					}
+				})
+				//加入购物车
+				.flatMap(new Func1<GoodsInfo, Observable<JSONObject>>() {
+					@Override
+					public Observable<JSONObject> call(GoodsInfo goodsInfo) {
+						PictureAirLog.d("start add to goods key:" + goodsInfo.getGoodsKey());
+						//调用addToCart API1
+						return API2.addToCart(goodsInfo.getGoodsKey(), 1, true, null);
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new RxSubscribe<JSONObject>() {
+					@Override
+					public void _onNext(JSONObject jsonObject) {
+						PictureAirLog.d("add to cart success--> " + jsonObject);
+
+						int currentCartCount = SPUtils.getInt(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+						SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+						cartId = jsonObject.getString("cartId");
+						PictureAirLog.d("cartid--> " + cartId);
+
+					}
+
+					@Override
+					public void _onError(int status) {
+						dismissPWProgressDialog();
+						myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+					}
+
+					@Override
+					public void onCompleted() {
+						dismissPWProgressDialog();
+						//生成订单
+						Intent intent3 = new Intent(EditStoryAlbumActivity.this, SubmitOrderActivity.class);
+						ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+						CartItemInfo cartItemInfo = new CartItemInfo();
+						cartItemInfo.setCartId(cartId);
+						cartItemInfo.setProductName(pppGoodsInfo.getName());
+						cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+						cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+						cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+						cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+						cartItemInfo.setQty(1);
+						cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+						cartItemInfo.setPictures(photoUrls);
+						cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+						cartItemInfo.setCartProductType(3);
+
+						orderinfoArrayList.add(cartItemInfo);
+						intent3.putExtra("orderinfo", orderinfoArrayList);
+						startActivity(intent3);
+					}
+				});
 	}
 
 	private void downloadPic(){
@@ -955,33 +945,66 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	 * 删除本地列表的数据
 	 */
 	private void deleteNetworkPhotos() {
-		/**
-		 * 1.删除数据库的操作（照片表和收藏表都要删除），同时需要判断是否输入多张PP卡
-		 * 2.删除本地列表操作
-		 */
-		PictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist, ppCode + ",");
-		/**
-		 * 1.删除originalLists的数据
-		 * 2.重新将数据源list的数据转成所需的list
-		 */
-		boolean hasFound;
-		for (int i = 0; i < photopassPhotoslist.size(); i++) {
-			hasFound = false;
-			for (int j = 0; j < originalLists.size(); j++) {
-				Iterator<PhotoInfo> iterator = originalLists.get(j).iterator();
-				while (iterator.hasNext()) {
-					PhotoInfo photoInfo = iterator.next();
-					if (photoInfo.getPhotoOriginalURL().equals(photopassPhotoslist.get(i).getPhotoOriginalURL())) {
-						iterator.remove();
-						hasFound = true;
-						break;
+		Observable.just(photopassPhotoslist)
+				.subscribeOn(Schedulers.io())
+				.compose(this.<ArrayList<PhotoInfo>>bindToLifecycle())
+				.map(new Func1<ArrayList<PhotoInfo>, ArrayList<ArrayList<PhotoInfo>>>() {
+
+					@Override
+					public ArrayList<ArrayList<PhotoInfo>> call(ArrayList<PhotoInfo> photoInfos) {
+						/**
+						 * 1.删除数据库的操作（照片表和收藏表都要删除），同时需要判断是否输入多张PP卡
+						 * 2.删除本地列表操作
+						 */
+						PictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photoInfos, ppCode + ",");
+						/**
+						 * 1.删除originalLists的数据
+						 * 2.重新将数据源list的数据转成所需的list
+						 */
+						boolean hasFound;
+						for (int i = 0; i < photoInfos.size(); i++) {
+							hasFound = false;
+							for (int j = 0; j < originalLists.size(); j++) {
+								Iterator<PhotoInfo> iterator = originalLists.get(j).iterator();
+								while (iterator.hasNext()) {
+									PhotoInfo photoInfo = iterator.next();
+									if (photoInfo.getPhotoOriginalURL().equals(photoInfos.get(i).getPhotoOriginalURL())) {
+										iterator.remove();
+										hasFound = true;
+										break;
+									}
+								}
+								if (hasFound) break;
+							}
+						}
+						selectCount -= photoInfos.size();
+						photoCount -= photoInfos.size();
+						return originalLists;
 					}
-				}
-				if (hasFound) break;
-			}
-		}
-		albumArrayList.clear();
-		albumArrayList.addAll(AppUtil.getHeaderSortedPhotoList(originalLists));
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Subscriber<ArrayList<ArrayList<PhotoInfo>>>() {
+					@Override
+					public void onCompleted() {
+
+						SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, true);
+						SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+						dealAfterDeleted();
+						pwStickySectionRecyclerView.notifyDataSetChanged();
+						pwStickySectionRecyclerView.refreshHeaderView();
+					}
+
+					@Override
+					public void onError(Throwable e) {
+
+					}
+
+					@Override
+					public void onNext(ArrayList<ArrayList<PhotoInfo>> arrayLists) {
+						albumArrayList.clear();
+						albumArrayList.addAll(AppUtil.getHeaderSortedPhotoList(arrayLists));
+					}
+				});
 	}
 
 	/**
@@ -1007,6 +1030,108 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		dismissPWProgressDialog();
 	}
 
+	/**
+	 * 获取需要删除的照片
+	 */
+	private void getDeletePhotos() {
+		Observable.just(albumArrayList)
+				.subscribeOn(Schedulers.io())
+				.compose(this.<ArrayList<PhotoInfo>>bindToLifecycle())
+				.map(new Func1<ArrayList<PhotoInfo>, ArrayList<PhotoInfo>>() {
+
+					@Override
+					public ArrayList<PhotoInfo> call(ArrayList<PhotoInfo> photoInfos) {
+						//查找需要删除的照片
+						ArrayList<PhotoInfo> list = new ArrayList<>();
+						for (int i = 1; i < photoInfos.size(); i++) {
+							if (photoInfos.get(i).getSectionId() == photoInfos.get(i - 1).getSectionId()) {
+								if (photoInfos.get(i).getIsSelected() == 1) {//选中的照片
+									if (photoInfos.get(i).getIsOnLine() == 1) {//网络照片
+										list.add(photoInfos.get(i));
+									}
+								}
+							}
+						}
+						return list;
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Subscriber<ArrayList<PhotoInfo>>() {
+					@Override
+					public void onCompleted() {
+						PictureAirLog.d("get delete photos-->" + photopassPhotoslist.size());
+						if (photopassPhotoslist.size() > 0) {
+							deletePhotos();
+						} else {
+							dismissPWProgressDialog();
+						}
+					}
+
+					@Override
+					public void onError(Throwable e) {
+						dismissPWProgressDialog();
+
+					}
+
+					@Override
+					public void onNext(ArrayList<PhotoInfo> photoInfos) {
+						photopassPhotoslist.clear();
+						photopassPhotoslist.addAll(photoInfos);
+
+					}
+				});
+	}
+
+	private void deletePhotos() {
+		Observable.just(photopassPhotoslist)
+				.subscribeOn(Schedulers.io())
+				.flatMap(new Func1<ArrayList<PhotoInfo>, Observable<JSONArray>>() {
+					@Override
+					public Observable<JSONArray> call(ArrayList<PhotoInfo> photoInfos) {
+						JSONArray ids = new JSONArray();
+						for (int i = 0; i < photopassPhotoslist.size(); i++) {
+							ids.add(photopassPhotoslist.get(i).getPhotoId());
+						}
+						PictureAirLog.out("ids---->" + ids);
+						return Observable.just(ids);
+					}
+				})
+				.flatMap(new Func1<JSONArray, Observable<JSONObject>>() {
+					@Override
+					public Observable<JSONObject> call(JSONArray jsonArray) {
+						PictureAirLog.out("ppCode---->" + ppCode);
+						return API2.removePhotosFromPP(MyApplication.getTokenId(), jsonArray, ppCode);
+					}
+				})
+				.compose(this.<JSONObject>bindToLifecycle())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new RxSubscribe<JSONObject>() {
+					@Override
+					public void _onNext(JSONObject jsonObject) {
+
+					}
+
+					@Override
+					public void _onError(int status) {
+						PictureAirLog.d("delete photo error");
+						netWorkFailed = true;
+						dealAfterDeleted();
+					}
+
+					@Override
+					public void onCompleted() {
+						PictureAirLog.d("delete photo completed");
+						/**
+						 * 1.删除列表内的数据
+						 * 2.判断本地数据是否处理完毕
+						 */
+						netWorkFailed = false;
+						//删除本地列表数据操作
+						deleteNetworkPhotos();
+					}
+				});
+	}
+
 	@Override
 	public void onPWDialogButtonClicked(int which, int dialogId) {
 		switch (which) {
@@ -1014,28 +1139,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				if (dialogId == DELETE_DIALOG) {
 					UmengUtil.onEvent(EditStoryAlbumActivity.this, Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
 					showPWProgressDialog(R.string.is_loading);
-					new Thread() {
-						public void run() {
-							photopassPhotoslist.clear();
-							for (int i = 1; i < albumArrayList.size(); i++) {
-								if (albumArrayList.get(i).getSectionId() == albumArrayList.get(i - 1).getSectionId()) {
-									if (albumArrayList.get(i).getIsSelected() == 1) {//选中的照片
-										if (albumArrayList.get(i).getIsOnLine() == 1) {//网络照片
-											photopassPhotoslist.add(albumArrayList.get(i));
-										}
-									}
-								}
+					getDeletePhotos();
 
-							}
-
-							if (photopassPhotoslist.size() > 0) {
-								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
-							} else {
-
-							}
-
-						}
-					}.start();
 				} else if (dialogId == HAS_UNPAY_PHOTOS_DIALOG) {
 					startDownload(true);
 

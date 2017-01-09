@@ -10,7 +10,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -31,19 +30,26 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.android.FragmentEvent;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航
@@ -57,31 +63,21 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 
     //申明类
-    private PWToast myToast;
     private DiscoverLocationAdapter discoverLocationAdapter;
     private SensorManager sensorManager;// 传感器管理器
     private Sensor sensor_orientation;
     private MySensorEventListener mySensorEventListener;// 传感器监听
-    private MyApplication app;
-    private Thread locationThread;
     private DiscoverLocationItemInfo info;
     private LocationUtil locationUtil;
 
     //申明变量
     private static final String TAG = "FragmentPageDiscover";
-    private static final int CHANGE_LOCATION = 111;
-    private static final int STOP_LOCATION = 222;
-    private static final int FINISH_LOADING = 333;
-    private static final int WAIT_LOCATION = 444;
     private float rotate_degree = 0;// x轴的旋转角度
     private ArrayList<DiscoverLocationItemInfo> locationList;
-    private ArrayList<String> favoriteList;
     private NumberFormat distanceFormat;//距离的小数点
-    private boolean isLoading = false;// 加载线程判断
     private boolean locationStart = false; //开启实时定位标记
     private int activateLocationCount = 0;//记录总共激活定位的数量
     private int locationActivatedIndex = -1;//记录激活定位的索引值
-    private int id = 0;
 
     private static final int REQUEST_LOCATION_PERMISSION = 2;
     private boolean mIsAskLocationPermission = false;
@@ -92,116 +88,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case API1.GET_ALL_LOCATION_FAILED:
-                    PictureAirLog.out("get location failed");
-                    String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
-                    fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
-                    break;
-
-                case API1.GET_ALL_LOCATION_SUCCESS:
-                    //获取全部的location
-                    PictureAirLog.d(TAG, "get location success============" + msg.obj);
-                    locationList.clear();
-                    if (msg.obj != null) {
-                        locationList.addAll(
-                                AppUtil.getLocation(
-                                        activity,
-                                        msg.obj.toString(),
-                                        false));
-                    }
-                    locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
-                    API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
-                    break;
-
-                case API1.GET_FAVORITE_LOCATION_FAILED:
-                    fragmentPageDiscoverHandler.sendEmptyMessage(WAIT_LOCATION);
-                    break;
-
-                //获取收藏地址成功
-                case API1.GET_FAVORITE_LOCATION_SUCCESS:
-                    PictureAirLog.d(TAG, "get favorite success");
-                    try {
-                        JSONObject favoriteJsonObject = JSONObject.parseObject(msg.obj.toString());
-                        JSONArray jsonArray = favoriteJsonObject.getJSONArray("favoriteLocations");
-                        if (jsonArray != null) {
-                            for (int i = 0; i < jsonArray.size(); i++) {
-                                favoriteList.add(jsonArray.getString(i));
-                            }
-                        }
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    //设置location的isLove属性
-                    for (int i = 0; i < favoriteList.size(); i++) {
-                        for (int j = 0; j < locationList.size(); j++) {
-                            if (favoriteList.get(i).equals(locationList.get(j).locationId)) {
-                                locationList.get(j).islove = 1;
-                                break;
-                            }
-                        }
-                    }
-                    fragmentPageDiscoverHandler.sendEmptyMessage(WAIT_LOCATION);
-                    break;
-
-                case WAIT_LOCATION:
-                    //开启线程等待第一次定位的结束，如果结束了，就显示出来
-                    new Thread() {
-                        public void run() {
-                            while (!isLoading) {
-                                if (locationUtil.locationChanged) {
-                                    Looper.prepare();
-                                    isLoading = true;
-                                    PictureAirLog.d(TAG, "location is ready");
-                                    fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
-                                }
-                            }
-                        }
-
-                        ;
-                    }.start();
-                    break;
-
-                //加载完毕之后
-                case FINISH_LOADING:
-                    if (discoverLocationAdapter == null) {
-                        PictureAirLog.out("discover adapter is null");
-                        discoverLocationAdapter = new DiscoverLocationAdapter(locationList, activity, fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
-                        discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
-                        discoverListView.setAdapter(discoverLocationAdapter);
-                        discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
-                    } else {
-                        PictureAirLog.out("discover adapter is not null");
-                        discoverLocationAdapter.notifyDataSetChanged();
-                    }
-                    discoverListView.setVisibility(View.VISIBLE);
-                    noNetWorkOrNoCountView.setVisibility(View.GONE);
-                    dismissPWProgressDialog();
-                    break;
-
-                //定位的时候
-                case CHANGE_LOCATION:
-                    info = locationList.get(msg.arg1);
-                    LocationItem item = (LocationItem) msg.obj;
-                    final double lat_a = info.latitude;// 纬度,目标地点不会变化
-                    final double lng_a = info.longitude;// 经度
-                    double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
-                    double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
-                    double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
-                    // 距离
-                    item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
-                    double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
-                    PictureAirLog.out("degree----->" + rotate_degree + "; d---> " + d);
-                    // 角度
-                    item.locationLeadImageView.setRotation((float) d - rotate_degree);
-                    break;
-
-                //停止定位
-                case STOP_LOCATION:
-                    LocationItem item2 = (LocationItem) msg.obj;
-                    item2.locationLeadImageView.setImageResource(R.drawable.direction_icon);
-                    break;
-
                 case DiscoverLocationAdapter.MAGICSHOOT:
                     PictureAirLog.d(TAG, "magic shoot on click");
                     break;
@@ -214,19 +100,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     //重新加载购物车数据
                     PictureAirLog.out("onclick with reload");
                     locationList.clear();
-                    favoriteList.clear();
-                    API1.getLocationInfo(activity, MyApplication.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+                    getLocationInfo();
                     break;
 
-                //收藏地点失败
-                case API1.EDIT_FAVORITE_LOCATION_FAILED:
-                    id = ReflectionUtil.getStringId(activity, msg.arg1);
-                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.EDIT_FAVORITE_LOCATION_SUCCESS:
-                    discoverLocationAdapter.updateIsLove(msg.arg1);
-                    break;
                 default:
                     break;
             }
@@ -250,12 +126,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         sensor_orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
         //初始化数据
-        myToast = new PWToast(activity);
         locationUtil = new LocationUtil(activity);
-        app = (MyApplication) activity.getApplication();
         locationStart = true;
         locationList = new ArrayList<>();
-        favoriteList = new ArrayList<>();
         distanceFormat = NumberFormat.getNumberInstance();
         distanceFormat.setMaximumFractionDigits(1);
 
@@ -286,7 +159,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 mIsAskLocationPermission = false;
                 return;
             }
-            isLoading = false;
             locationStart = true;
             requesLocationPermission();
         }
@@ -314,7 +186,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         if (!hidden) {//显示发现页面，需要获取location信息与当前的坐标
             PictureAirLog.out("show discover---->");
             //获取数据
-            isLoading = false;
             locationStart = true;
             showPWProgressDialog();
             getLocationInfo();
@@ -323,27 +194,175 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         } else {//隐藏发现页面
             PictureAirLog.out("hide discover---->");
             locationStart = false;
-            isLoading = false;
             stopService();
 
         }
     }
 
     private void getLocationInfo() {
-        String expireTime = ACache.get(activity).getAsString(Common.CACHE_LOCATION_TIMER);
-        String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
+        final String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
+        Observable.just(locationCache)
+                .subscribeOn(Schedulers.io())
+                .compose(this.<String>bindToLifecycle())
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String str) {
+                        String time = ACache.get(activity).getAsString(Common.CACHE_LOCATION_TIMER);
+                        if (TextUtils.isEmpty(time) || TextUtils.isEmpty(str)) {
+                            //超时 或者 没有location数据，需要重新获取
+                            //此处不需要直接将location的信息添加时间。因为其他地方没有做为空的处理，做起来也比较麻烦，添加了很多逻辑，因此使用另一个变量来记录时间
+                            PictureAirLog.out("start get lcoation info");
+                            ACache.get(activity).put(Common.CACHE_LOCATION_TIMER, "time", ACache.TIME_DAY);//记录访问记录，设置一天缓存时间
+                            return API2.getLocationInfo(MyApplication.getTokenId())
+                                    .map(new Func1<JSONObject, JSONObject>() {
+                                        @Override
+                                        public JSONObject call(JSONObject jsonObject) {
+                                            ACache.get(activity).put(Common.DISCOVER_LOCATION, jsonObject.toString());
+                                            return jsonObject;
+                                        }
+                                    });
 
-        if (TextUtils.isEmpty(expireTime) || TextUtils.isEmpty(locationCache)) {
-            //超时 或者 没有location数据，需要重新获取
-            //此处不需要直接将location的信息添加时间。因为其他地方没有做为空的处理，做起来也比较麻烦，添加了很多逻辑，因此使用另一个变量来记录时间
-            PictureAirLog.out("start get lcoation info");
-            API1.getLocationInfo(activity, app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
-            ACache.get(activity).put(Common.CACHE_LOCATION_TIMER, "time", ACache.TIME_DAY);//记录访问记录，设置一天缓存时间
-        } else {
-            PictureAirLog.out("not get lcoation info");
-            //直接获取缓存内容
-            fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
-        }
+                        } else {
+                            PictureAirLog.out("not get lcoation info");
+                            //直接获取缓存内容
+                            return Observable.just(JSONObject.parseObject(str));
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        //获取全部的location
+                        PictureAirLog.d(TAG, "get location success============" + jsonObject);
+                        locationList.clear();
+                        if (jsonObject != null) {
+                            locationList.addAll(AppUtil.getLocation(activity, jsonObject.toString(), false));
+                        }
+                        locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
+                        getFavoriteLocationInfo();
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        //失败了，取上次的缓存
+                        PictureAirLog.out("get location failed");
+                        if (TextUtils.isEmpty(locationCache)){//失败
+                            discoverListView.setVisibility(View.GONE);
+                            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+                            noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageDiscoverHandler, true);
+                            dismissPWProgressDialog();
+                        } else {
+                            _onNext(JSONObject.parseObject(locationCache));
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    /**
+     * 获取收藏地点
+     */
+    private void getFavoriteLocationInfo() {
+        PictureAirLog.d("get favorite data");
+        API2.getFavoriteLocations(MyApplication.getTokenId())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .map(new Func1<JSONObject, ArrayList<String>>() {
+
+                    @Override
+                    public ArrayList<String> call(JSONObject jsonObject) {
+                        ArrayList<String> list = new ArrayList<>();
+                        try {
+                            JSONArray jsonArray = jsonObject.getJSONArray("favoriteLocations");
+                            if (jsonArray != null) {
+                                for (int i = 0; i < jsonArray.size(); i++) {
+                                    list.add(jsonArray.getString(i));
+                                }
+                            }
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                        //设置location的isLove属性
+                        for (int i = 0; i < list.size(); i++) {
+                            for (int j = 0; j < locationList.size(); j++) {
+                                if (list.get(i).equals(locationList.get(j).locationId)) {
+                                    locationList.get(j).islove = 1;
+                                    break;
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<ArrayList<String>>() {
+                    @Override
+                    public void _onNext(ArrayList<String> strings) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        waitLocationFinished();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        waitLocationFinished();
+                    }
+                });
+    }
+
+    /**
+     * 等待地点获取完毕
+     */
+    private void waitLocationFinished() {
+        //开启线程等待第一次定位的结束，如果结束了，就显示出来
+        Observable.interval(50, 50, TimeUnit.MILLISECONDS)
+                .compose(this.<Long>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        PictureAirLog.d("wait location");
+                        if (locationUtil.locationChanged) {
+                            PictureAirLog.d(TAG, "location is ready");
+                            discoverListView.setVisibility(View.VISIBLE);
+                            noNetWorkOrNoCountView.setVisibility(View.GONE);
+                            if (discoverLocationAdapter == null) {
+                                PictureAirLog.out("discover adapter is null");
+                                discoverLocationAdapter = new DiscoverLocationAdapter(locationList, activity, fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
+                                discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
+                                discoverListView.setAdapter(discoverLocationAdapter);
+                                discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
+                            } else {
+                                PictureAirLog.out("discover adapter is not null");
+                                discoverLocationAdapter.notifyDataSetChanged();
+                            }
+                            dismissPWProgressDialog();
+
+                            unsubscribe();
+                        }
+
+                    }
+                });
     }
 
     /**
@@ -370,11 +389,20 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         if (position + 1 >= firstVisiblePosition && position - 1 <= lastVisiblePosition) {
             if (view.getTag() instanceof LocationItem && locationStart) {
                 LocationItem item = (LocationItem) view.getTag();
-                Message msg = new Message();
-                msg.obj = item;
-                msg.arg1 = position;
-                msg.what = CHANGE_LOCATION;
-                fragmentPageDiscoverHandler.sendMessage(msg);
+
+                //定位的时候
+                info = locationList.get(position);
+                final double lat_a = info.latitude;// 纬度,目标地点不会变化
+                final double lng_a = info.longitude;// 经度
+                double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
+                double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
+                double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
+                // 距离
+                item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
+                double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+                PictureAirLog.out("degree----->" + rotate_degree + "; d---> " + d);
+                // 角度
+                item.locationLeadImageView.setRotation((float) d - rotate_degree);
             }
         }
     }
@@ -439,34 +467,40 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             sensorManager.registerListener(mySensorEventListener, sensor_orientation, SensorManager.SENSOR_DELAY_UI);//点击定位的时候，注册监听
         }
         activateLocationCount++;
-        locationThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                do {
-                    updateLocation(position, view);
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        Observable.interval(50, 50, TimeUnit.MILLISECONDS)
+                .compose(this.<Long>bindUntilEvent(FragmentEvent.STOP))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
                     }
-                }
-                while (locationStart && activatedHashMap.get(position + "") == 1);//view.getY() >= 0 && view.getY() <= discoverListView.getHeight() - 100 &&
-                //将图标改为静止状态
-                Message msg = new Message();
-                msg.obj = item;
-                msg.arg1 = position;
-                msg.what = STOP_LOCATION;
 
-                fragmentPageDiscoverHandler.sendMessage(msg);
-                activateLocationCount--;
-                if (activateLocationCount == 0) {//取消定位
-                    sensorManager.unregisterListener(mySensorEventListener);//不使用的时候，取消监听
-                    discoverLocationAdapter.disableLocationActivated(position);
-                    locationActivatedIndex = -1;
-                }
-            }
-        });
-        locationThread.start();
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        updateLocation(position, view);
+                        PictureAirLog.d("update location---> " + locationStart + activatedHashMap.get(position + ""));
+                        //view.getY() >= 0 && view.getY() <= discoverListView.getHeight() - 100 &&
+                        //将图标改为静止状态
+                        if (!locationStart || activatedHashMap.get(position + "") != 1) {
+                            PictureAirLog.d("stop location");
+                            //停止定位
+                            item.locationLeadImageView.setImageResource(R.drawable.direction_icon);
+                            activateLocationCount--;
+                            if (activateLocationCount == 0) {//取消定位
+                                sensorManager.unregisterListener(mySensorEventListener);//不使用的时候，取消监听
+                                discoverLocationAdapter.disableLocationActivated(position);
+                                locationActivatedIndex = -1;
+                            }
+                            //停止计时循环
+                            unsubscribe();
+                        }
+                    }
+                });
     }
 
     @Override
