@@ -314,7 +314,7 @@ public class API2 {
      *
      * @param tokenId
      */
-    public static Observable<JSONObject> getNewPhotosInfo(String tokenId, String photoId) {//, final int id
+    public static Observable<JSONObject> getNewPhotosInfo(String tokenId, String photoId) {
         Map<String, Object> params = new HashMap<>();
         JSONArray ids = new JSONArray();
         ids.add(photoId);
@@ -370,7 +370,7 @@ public class API2 {
      * @param url
      * @param params
      */
-    public static Observable<JSONObject> addScanCodeToUser(String url, Map params) {//final String type,
+    public static Observable<JSONObject> addScanCodeToUser(String url, Map params) {
 
         return post(url, params, null);
     }
@@ -1244,7 +1244,7 @@ public class API2 {
      * @param photoID   id
      * @param shareType 视频还是照片
      */
-    public static Observable<JSONObject> getShareUrl(String photoID, String shareType) {//final int id,
+    public static Observable<JSONObject> getShareUrl(String photoID, String shareType) {
         Map<String, Object> params = new HashMap<>();
         JSONObject orgJSONObject = new JSONObject();
         try {
@@ -1267,11 +1267,11 @@ public class API2 {
      *
      * @param longURL
      */
-    public static Observable<JSONObject> getShortUrl(String longURL) {//, final int id
+    public static Observable<JSONObject> getShortUrl(String longURL) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LONG_URL, longURL);
-        PictureAirLog.out("get share url----------------" + params.toString());
+        PictureAirLog.out("get short url----------------" + params.toString());
 
         return post(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, null);
     }

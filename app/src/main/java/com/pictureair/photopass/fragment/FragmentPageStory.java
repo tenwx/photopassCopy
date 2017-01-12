@@ -363,7 +363,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .compose(this.<JSONObject>bindToLifecycle())
                 .map(new Func1<JSONObject, ArrayList<DiscoverLocationItemInfo>>() {
                     @Override
                     public ArrayList<DiscoverLocationItemInfo> call(JSONObject jsonObject) {
@@ -389,6 +388,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<ArrayList<DailyPPCardInfo>>bindToLifecycle())
                 .subscribe(new RxSubscribe<ArrayList<DailyPPCardInfo>>() {
                     @Override
                     public void _onNext(ArrayList<DailyPPCardInfo> dailyPPCardInfos) {
@@ -448,7 +448,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private void getLocationPhotos(final boolean isRefresh) {
         API2.getLocationPhoto(MyApplication.getTokenId())
-                .compose(this.<JSONObject>bindToLifecycle())
                 .map(new Func1<JSONObject, ArrayList<DailyPPCardInfo>>() {
                     @Override
                     public ArrayList<DailyPPCardInfo> call(JSONObject jsonObject) {
@@ -461,6 +460,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<ArrayList<DailyPPCardInfo>>bindToLifecycle())
                 .subscribe(new RxSubscribe<ArrayList<DailyPPCardInfo>>() {
                     @Override
                     public void _onNext(ArrayList<DailyPPCardInfo> strings) {
@@ -580,7 +580,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void getADInfo() {
         PictureAirLog.d("get ad info");
         API2.getADLocations()
-                .compose(this.<JSONObject>bindToLifecycle())
                 .doOnNext(new Action1<JSONObject>() {
                     @Override
                     public void call(JSONObject jsonObject) {
@@ -593,6 +592,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         app.setGetADLocationSuccess(true);
                     }
                 })
+                .compose(this.<JSONObject>bindToLifecycle())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
@@ -667,7 +667,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //获取banner数据
                 API2.getBannerPhotos(MyApplication.getTokenId())
-                        .compose(this.<JSONObject>bindToLifecycle())
                         .map(new Func1<JSONObject, ArrayList<String>>() {
 
                             @Override
@@ -676,6 +675,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
+                        .compose(this.<ArrayList<String>>bindToLifecycle())
                         .subscribe(new RxSubscribe<ArrayList<String>>() {
                             @Override
                             public void _onNext(ArrayList<String> strings) {
@@ -951,7 +951,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
              */
             Observable.from(list)
                     .subscribeOn(Schedulers.io())
-                    .compose(this.<PPinfo>bindToLifecycle())
                     .map(new Func1<PPinfo, Object>() {
 
                         @Override
@@ -979,6 +978,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.bindToLifecycle())
                     .subscribe(new RxSubscribe<Object>() {
 
                         @Override
@@ -1037,7 +1037,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         }
                     }
                 })
-                .compose(this.<JSONObject>bindToLifecycle())
                 //解析json
                 .map(new Func1<JSONObject, GoodsInfo>() {
                     @Override
@@ -1072,6 +1071,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {

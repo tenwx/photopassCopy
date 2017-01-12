@@ -1,13 +1,11 @@
 package com.pictureair.photopass.util;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DealingInfo;
@@ -43,21 +41,6 @@ public class API1 {
     public static final int GET_NEW_PHOTOS = 2;//获取最新图片
     public static final int GET_OLD_PHOTOS = 3;//获取旧图片
 
-    /**
-     * Story
-     */
-    public static final int GET_ALL_LOCATION_FAILED = 2000;
-    public static final int GET_ALL_LOCATION_SUCCESS = 2001;
-
-    /**
-     * 扫描
-     */
-    public static final int CHECK_CODE_FAILED = 2030;
-    public static final int CHECK_CODE_SUCCESS = 2031;
-
-    public static final int ADD_SCANE_CODE_FAIED = 2040;
-    public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
-    public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
 
     //选择已有PP＋
     public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 2051;
@@ -74,15 +57,6 @@ public class API1 {
 
     public static final int GET_AD_LOCATIONS_FAILED = 2090;
     public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
-
-    /**
-     * 发现
-     */
-    public static final int GET_FAVORITE_LOCATION_FAILED = 3000;
-    public static final int GET_FAVORITE_LOCATION_SUCCESS = 3001;
-
-    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3010;
-    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3011;
 
 
     //Shop模块 start
@@ -153,14 +127,6 @@ public class API1 {
     public static final int DOWNLOAD_FILE_SUCCESS = 6051;
     public static final int DOWNLOAD_FILE_PROGRESS = 6052;
 
-    //分享链接
-    public static final int GET_SHARE_URL_SUCCESS = 6061;
-    public static final int GET_SHARE_URL_FAILED = 6060;
-
-    //获取短连接
-    public static final int GET_SHORT_URL_SUCCESS = 6071;
-    public static final int GET_SHORT_URL_FAILED = 6070;
-
     /**
      * 下载头像或者背景文件
      *
@@ -209,35 +175,6 @@ public class API1 {
         return task;
     }
 
-
-    /**
-     * 获取所有的地址信息
-     *
-     * @param context
-     * @param handler
-     */
-    public static BasicResultCallTask getLocationInfo(final Context context, String tokenId, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, new HttpCallback() {
-
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
-                handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.out("get location info failed----->" + status);
-                handler.obtainMessage(GET_ALL_LOCATION_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
     /**
      * 获取照片的最新数据
      *
@@ -273,67 +210,6 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 检查扫描的结果是否正确，并且返回是否已经被使用
-     *
-     * @param code
-     * @param handler
-     */
-    public static BasicResultCallTask checkCodeAvailable(String code, String tokenId, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (code != null) {
-            params.put(Common.CODE, code);
-        }
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.out("check code success--->" + jsonObject.toString());
-                handler.obtainMessage(CHECK_CODE_SUCCESS, jsonObject.getString("codeType")).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(CHECK_CODE_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 绑定扫描码到用户
-     *
-     * @param url
-     * @param params
-     * @param type
-     * @param handler
-     */
-    public static BasicResultCallTask addScanCodeToUser(String url, Map params, final String type, final Handler handler) {
-        BasicResultCallTask task = HttpUtil1.asyncPost(url, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.out("add scan code success---->" + type);
-                if ("pp".equals(type)) {
-                    handler.obtainMessage(ADD_PP_CODE_TO_USER_SUCCESS).sendToTarget();
-                } else if ("ppp".equals(type)) {//ppp
-                    handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
-                } else {//coupon
-                    handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS, jsonObject).sendToTarget();
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(ADD_SCANE_CODE_FAIED, status, 0).sendToTarget();
             }
         });
         return task;
@@ -996,78 +872,6 @@ public class API1 {
     /***************************************
      * 推送 End
      **************************************/
-
-    /**
-     * 获取分享的URL
-     *
-     * @param photoID   id
-     * @param shareType 视频还是照片
-     * @param id        点击id
-     * @param handler
-     */
-    public static BasicResultCallTask getShareUrl(String photoID, String shareType, final int id, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        JSONObject orgJSONObject = new JSONObject();
-        try {
-            orgJSONObject.put(Common.SHARE_MODE, shareType);
-            orgJSONObject.put(Common.SHARE_PHOTO_ID, photoID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
-        params.put(Common.IS_USE_SHORT_URL, false);
-        //BASE_URL_TEST2 测试成功
-        PictureAirLog.out("get share url----------------" + params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
-
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
-                handler.obtainMessage(GET_SHARE_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "获取分享失败" + status);
-                handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 获取分享的URL
-     *
-     * @param longURL
-     * @param id        点击id
-     * @param handler
-     */
-    public static BasicResultCallTask getShortUrl(String longURL, final int id, final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LONG_URL, longURL);
-        PictureAirLog.out("get share url----------------" + params.toString());
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHORT_URL, params, new HttpCallback() {
-
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
-                handler.obtainMessage(GET_SHORT_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "获取分享失败" + status);
-                handler.obtainMessage(GET_SHORT_URL_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
 
     /**
      * 获取照片的最新数据,并后台统计图片的下载数量

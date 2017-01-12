@@ -450,7 +450,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 super.doOnSubscribe();
                 showPWProgressDialog();
             }
-        }).compose(this.<JSONObject>bindToLifecycle())
+        })
                 .map(new Func1<JSONObject, List<PPinfo>>() {
                     @Override
                     public List<PPinfo> call(JSONObject jsonObject) {
@@ -462,7 +462,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                         ppList.remove(deletePosition);
                         return ppList;
                     }
-                }).observeOn(AndroidSchedulers.mainThread())
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<List<PPinfo>>bindToLifecycle())
                 .subscribe(new RxSubscribe<List<PPinfo>>() {
                     @Override
                     public void _onNext(List<PPinfo> pPinfos) {

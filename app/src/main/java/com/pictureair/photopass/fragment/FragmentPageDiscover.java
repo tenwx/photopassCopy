@@ -203,7 +203,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         final String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
         Observable.just(locationCache)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<String>bindToLifecycle())
                 .flatMap(new Func1<String, Observable<JSONObject>>() {
                     @Override
                     public Observable<JSONObject> call(String str) {
@@ -230,6 +229,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
@@ -271,7 +271,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private void getFavoriteLocationInfo() {
         PictureAirLog.d("get favorite data");
         API2.getFavoriteLocations(MyApplication.getTokenId())
-                .compose(this.<JSONObject>bindToLifecycle())
                 .map(new Func1<JSONObject, ArrayList<String>>() {
 
                     @Override
@@ -302,6 +301,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<ArrayList<String>>bindToLifecycle())
                 .subscribe(new RxSubscribe<ArrayList<String>>() {
                     @Override
                     public void _onNext(ArrayList<String> strings) {

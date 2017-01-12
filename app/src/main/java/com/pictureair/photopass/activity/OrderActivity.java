@@ -23,13 +23,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter2;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PaymentOrderInfo;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
 import com.pictureair.photopass.fragment.OrderFragment;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
@@ -247,7 +247,6 @@ public class OrderActivity extends BaseFragmentActivity {
     public void getData() {
 
         API2.getOrderInfo()
-                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .map(new Func1<JSONObject, JSONObject>() {
                     @Override
                     public JSONObject call(JSONObject jsonObject) {
@@ -257,6 +256,7 @@ public class OrderActivity extends BaseFragmentActivity {
 
                     }
                 })
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override

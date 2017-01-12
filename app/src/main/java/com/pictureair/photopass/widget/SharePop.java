@@ -17,6 +17,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -24,12 +25,15 @@ import com.mob.tools.utils.UIHandler;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
+import com.trello.rxlifecycle.components.RxActivity;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,6 +53,7 @@ import cn.sharesdk.twitter.Twitter;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.sharesdk.wechat.moments.WechatMoments.ShareParams;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.mob.tools.utils.R.getStringRes;
 
@@ -85,60 +90,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         this.context = context;
         initPopupWindow();
     }
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.GET_SHARE_URL_SUCCESS:
-                    //拿到shareUrl
-                    JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
-                    shareUrl = shareInfo.getString("shareUrl");
-                    PictureAirLog.d(TAG, "tokenid----->" + MyApplication.getTokenId());
-                    PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
-
-                    if (isOnline && !isVideo && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
-                        API1.getNewPhotosInfo(MyApplication.getTokenId(), photoId, msg.arg1, mHandler);
-
-                    } else {
-                        startShare(msg.arg1);
-
-                    }
-                    break;
-
-                case API1.GET_SHORT_URL_SUCCESS://拿到了短链接
-                    JSONObject shortUrlInfo = (JSONObject)msg.obj;
-                    if (shortUrlInfo.containsKey("shortUrl")) {
-                        shareUrl = shortUrlInfo.getString("shortUrl");
-                    }
-                    PictureAirLog.out("result--->" + shareUrl);
-                    startShare(msg.arg1);
-                    break;
-
-                case API1.GET_NEW_PHOTOS_INFO_SUCCESS:
-                    PhotoInfo photoInfo = (PhotoInfo) msg.obj;
-                    imageUrl = photoInfo.getPhotoThumbnail_1024();
-                    startShare(msg.arg1);
-                    break;
-
-                case API1.GET_SHORT_URL_FAILED:
-                case API1.GET_NEW_PHOTOS_INFO_FAILED:
-                case API1.GET_SHARE_URL_FAILED:
-                    PictureAirLog.d(TAG, "error--" + msg.arg1);
-                    //获取url失败，1.通知notify，2、关闭sdk
-                    dismissDialog();
-                    shareUrl = null;
-                    int resId = getStringRes(context, "http_error_code_401");
-                    if (resId > 0) {
-                        showNotification(2000, context.getString(resId));
-                    }
-                    ShareSDK.stopSDK();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     private void initPopupWindow() {
         ShareSDK.initSDK(context);
@@ -565,14 +516,14 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     startShare(v.getId());
                 } else {//网络图片，需要获取shareURL
                     PictureAirLog.d(TAG, "online get share url");
-                    API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+                    getShareUrl(photoId, shareFileType, v.getId());
                 }
                 break;
 
             case R.id.sina:
                 PictureAirLog.d(TAG, "share on click--->");
                 if (isVideo) {//视频需要直接获取短连接
-                    API1.getShortUrl(imageUrl, v.getId(), mHandler);
+                    getShortUrl(v.getId());
 
                 } else if (!isOnline) {//本地图片，直接开始分享
                     PictureAirLog.d(TAG, "local");
@@ -580,7 +531,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
 
                 } else {//网络图片，需要获取shareURL
                     PictureAirLog.d(TAG, "online get share url");
-                    API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+                    getShareUrl(photoId, shareFileType, v.getId());
 
                 }
                 break;
@@ -596,6 +547,131 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         if (isShowing()) {
             dismiss();
         }
+    }
+
+    /**
+     * 获取短连接
+     * @param vId
+     */
+    private void getShortUrl(final int vId) {
+        API2.getShortUrl(imageUrl)
+                .compose(((RxActivity)context).<JSONObject>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        if (jsonObject.containsKey("shortUrl")) {
+                            shareUrl = jsonObject.getString("shortUrl");
+                        }
+                        PictureAirLog.out("result--->" + shareUrl);
+                        startShare(vId);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        netWorkError(status);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    /**
+     * 获取分享的url
+     * @param photoId
+     * @param shareType
+     * @param vId
+     */
+    private void getShareUrl(final String photoId, String shareType, final int vId) {
+        PictureAirLog.d("get share Url");
+        API2.getShareUrl(photoId, shareType)
+                .compose(((RxActivity)context).<JSONObject>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        //拿到shareUrl
+                        shareUrl = jsonObject.getString("shareUrl");
+                        PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
+
+                        if (isOnline && !isVideo && (vId == R.id.wechat || vId == R.id.wechat_moments || vId == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
+                            getNewPhotoInfo(photoId, vId);
+
+                        } else {
+                            startShare(vId);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        netWorkError(status);
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
+    }
+
+    /**
+     * 获取图片最新的状态
+     * @param photoId
+     * @param vId
+     */
+    private void getNewPhotoInfo(String photoId, final int vId) {
+        PictureAirLog.d("get new photo info");
+        API2.getNewPhotosInfo(MyApplication.getTokenId(), photoId)
+                .compose(((RxActivity)context).<JSONObject>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        netWorkError(status);
+                    }
+
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.out("jsonobject---->" + jsonObject.toString());
+                        JSONArray photos = jsonObject.getJSONArray("photos");
+                        if (photos.size() > 0) {
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                            PictureAirLog.out("jsonobject---->" + photoInfo.getPhotoThumbnail_1024());
+                            imageUrl = photoInfo.getPhotoThumbnail_1024();
+                            startShare(vId);
+
+                        } else {
+                            _onError(401);
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 请求失败的处理
+     * @param status
+     */
+    private void netWorkError(int status) {
+        PictureAirLog.d(TAG, "error--" + status);
+        //获取url失败，1.通知notify，2、关闭sdk
+        dismissDialog();
+        shareUrl = null;
+        int resId = getStringRes(context, "http_error_code_401");
+        if (resId > 0) {
+            showNotification(2000, context.getString(resId));
+        }
+        ShareSDK.stopSDK();
     }
 
     private void createThumbNail(final int id) {

@@ -334,7 +334,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				subscriber.onNext(PictureAirDbManager.needGetFromNet(JsonInfo.getNeedRefreshString(ppCode, shootDate)));
 			}
 		}).subscribeOn(Schedulers.io())
-				.compose(this.<Boolean>bindToLifecycle())
 				.map(new Func1<Boolean, Integer>() {
 
 					@Override
@@ -353,7 +352,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				})
 				.observeOn(AndroidSchedulers.mainThread())
-
+				.compose(this.bindToLifecycle())
 				.subscribe(new Subscriber<Object>() {
 					@Override
 					public void onCompleted() {
@@ -765,7 +764,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						}
 					}
 				})
-				.compose(this.<JSONObject>bindToLifecycle())
 				//解析json
 				.map(new Func1<JSONObject, GoodsInfo>() {
 					@Override
@@ -800,6 +798,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				})
 				.observeOn(AndroidSchedulers.mainThread())
+				.compose(this.<JSONObject>bindToLifecycle())
 				.subscribe(new RxSubscribe<JSONObject>() {
 					@Override
 					public void _onNext(JSONObject jsonObject) {
@@ -947,7 +946,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private void deleteNetworkPhotos() {
 		Observable.just(photopassPhotoslist)
 				.subscribeOn(Schedulers.io())
-				.compose(this.<ArrayList<PhotoInfo>>bindToLifecycle())
 				.map(new Func1<ArrayList<PhotoInfo>, ArrayList<ArrayList<PhotoInfo>>>() {
 
 					@Override
@@ -983,6 +981,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				})
 				.observeOn(AndroidSchedulers.mainThread())
+				.compose(this.<ArrayList<ArrayList<PhotoInfo>>>bindToLifecycle())
 				.subscribe(new Subscriber<ArrayList<ArrayList<PhotoInfo>>>() {
 					@Override
 					public void onCompleted() {
@@ -1036,7 +1035,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private void getDeletePhotos() {
 		Observable.just(albumArrayList)
 				.subscribeOn(Schedulers.io())
-				.compose(this.<ArrayList<PhotoInfo>>bindToLifecycle())
 				.map(new Func1<ArrayList<PhotoInfo>, ArrayList<PhotoInfo>>() {
 
 					@Override
@@ -1056,6 +1054,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				})
 				.observeOn(AndroidSchedulers.mainThread())
+				.compose(this.<ArrayList<PhotoInfo>>bindToLifecycle())
 				.subscribe(new Subscriber<ArrayList<PhotoInfo>>() {
 					@Override
 					public void onCompleted() {

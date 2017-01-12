@@ -35,7 +35,6 @@ import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
-import com.trello.rxlifecycle.components.RxActivity;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -186,8 +185,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     private void getSingleGoods(final boolean update) {
 
         API2.getSingleGoods(dealingInfo.getDealingUrl(), MyApplication.getInstance().getLanguageType())
-                .compose(((RxActivity)PanicBuyActivity.this).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose((PanicBuyActivity.this).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
