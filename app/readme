@@ -1,10 +1,12 @@
 更新日志   bauer
 
 
--------16/x/xx--------
-versionCode 10     versionName "2.x.x"
+-------17/01/xx--------
+versionCode 10     versionName "2.0.1"
 更新要点：
-1.
+1.登录二次加密bug修复
+2.升级银联支付控件
+3.修复部分友盟bug
 
 -------16/11/25--------
 versionCode 9     versionName "2.0.0"
