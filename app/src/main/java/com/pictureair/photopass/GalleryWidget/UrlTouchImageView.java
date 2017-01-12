@@ -156,7 +156,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         params = new LayoutParams(screenW / 3, screenW / 3);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         progressImageView.setLayoutParams(params);
-        progressImageView.setImageResource(R.drawable.loading_0);
+        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, R.drawable.loading_0), progressImageView);
         this.addView(progressImageView);
 
         //设置视频播放按钮
@@ -211,7 +211,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
 
             @Override
             public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
-                progressImageView.setImageResource(getImageResource(100));
+                GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
                 mImageView.setVisibility(VISIBLE);
                 mImageView.setScaleType(ScaleType.MATRIX);
                 mImageView.setImageBitmap(loadedImage);
@@ -239,7 +239,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                     @Override
                     public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
                         PictureAirLog.out("width--->" + bitmap.getWidth() + "===" + bitmap.getHeight());
-                        progressImageView.setImageResource(getImageResource(100));
+                        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
                         progressImageView.setVisibility(GONE);
                         mImageView.setScaleType(ScaleType.MATRIX);
                         mImageView.setVisibility(VISIBLE);
@@ -305,7 +305,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
      * 根据照片的购买情况确定布局和显示模式
      */
     private void showBlurView() {
-        progressImageView.setImageResource(getImageResource(100));
+        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
         mImageView.setVisibility(VISIBLE);
         mImageView.setScaleType(ScaleType.MATRIX);
         mImageView.setImageBitmap(oriBlurBmp);

@@ -13,6 +13,9 @@ android {
         versionCode 10
         versionName "2.0.1"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
+        ndk {//so文件的过滤
+            abiFilters "armeabi", "armeabi-v7a"
+        }
     }
 
     packagingOptions {

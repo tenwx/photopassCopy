@@ -79,7 +79,8 @@
             android:name=".activity.WelcomeActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/StartActivityTheme"/>
         <activity
             android:name=".activity.MainTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

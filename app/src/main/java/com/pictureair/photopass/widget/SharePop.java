@@ -687,7 +687,6 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                 switch (msg.arg1) {
                     case 1: {
                         // 成功
-                        API1.shareCallBack(shareId, sharePlatform);
                         int resId = getStringRes(context, "share_completed");
                         if (resId > 0) {
                             showNotification(2000, context.getString(resId));
