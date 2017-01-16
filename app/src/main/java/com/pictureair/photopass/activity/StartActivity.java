@@ -152,8 +152,8 @@ public class StartActivity extends BaseActivity implements Callback {
         }
 
         Intent intent = new Intent(StartActivity.this, tarClass);
-        finish();
         startActivity(intent);
+        finish();
     }
 
 

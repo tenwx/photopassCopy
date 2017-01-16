@@ -35,7 +35,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;

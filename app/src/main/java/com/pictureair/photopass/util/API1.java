@@ -109,14 +109,6 @@ public class API1 {
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
 
-    //从订单中获取所有优惠卷
-    public static final int GET_COUPON_SUCCESS = 5141;
-    public static final int GET_COUPON_FAILED = 5140;
-
-    //添加一张优惠卷
-    public static final int INSERT_COUPON_SUCCESS = 5151;
-    public static final int INSERT_COUPON_FAILED = 5150;
-
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
@@ -806,18 +798,6 @@ public class API1 {
     /***************************************Shop模块 end**************************************/
 
 
-    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
-            + "'version': '2.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
-            + " 'mandatory': 'true',  '__v': 0, "
-            + " 'versionOS': ['android'], "
-            + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
-            + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
-            + "'downloadChannel':[ {'channel':'website',"
-            + "'downloadUrl':'http://www.disneyphotopass.com.cn/downloads/android/photopass/PhotoPassV1.1.0-website.apk'},"
-            + " { 'channel':'tencent',"
-            + "'downloadUrl':'http://dd.myapp.com/16891/2FA495F1283F48658CEACFF53DB6F856.apk?fsname=com.pictureair.photopass_1.1.1_4.apk'}]}}";
-
-
     /***************************************推送 Start**************************************/
     /**
      * socket链接后处理方法
@@ -1030,103 +1010,6 @@ public class API1 {
         return task;
     }
     /**************************************下载图片 End**************************************/
-
-    /**
-     * 根据商品查询所有可以使用的优惠卷
-     * 1. tokenId
-     * 2. cartItemIds:array<string>,用户选中的购物项(可选)
-     */
-    public static BasicResultCallTask getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
-        Map<String,Object> params = new HashMap<>();
-        if (null != cartItemIds) {//订单页面发来的请求
-            params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
-        if (null != MyApplication.getTokenId()){
-            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        }
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 添加优惠卷
-     * * 两个业务处理AB
-     * A在me中进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * B在订单页面进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
-     */
-    public static BasicResultCallTask addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
-        Map<String,Object> params = new HashMap<>();
-        if (null != cartItemIds) {//订单页面发来的请求
-            params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
-        if (couponsCode != null) {
-            params.put(Common.couponCode, couponsCode);
-        }
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, MyApplication.getTokenId());
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 从me中进入查询抵用劵
-     *
-     * @param handler
-     */
-    public static BasicResultCallTask getCoupons(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "============" + jsonObject);
-                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "============" + status);
-                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
 
     public static void cancelAllRequest() {
         CallTaskManager.getInstance().cancleAllTask();
