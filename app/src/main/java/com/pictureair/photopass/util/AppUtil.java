@@ -1718,6 +1718,27 @@ public class AppUtil {
         return filename;
     }
 
+    public static String getReallyFileNameWithoutSuffix(String url,int isVideo) {
+        if (TextUtils.isEmpty(url)) {
+            return "";
+        }
+        String filename = url;
+        if (isVideo == 0){
+            if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
+                filename = filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4);
+            } else {
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+            }
+        } else {//如果是视频数据，文件名统一经过md5处理
+            if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4));
+            } else {
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1));
+            }
+        }
+        return filename;
+    }
+
     /**
      * 从cursor中获取photoInfo，不支持收藏表
      * @param cursor
@@ -2070,5 +2091,13 @@ public class AppUtil {
             }
         }
         return repeatBottomId;
+    }
+
+    /**
+     * 通知媒体库更新
+     * */
+    public static void fileScan(Context context, String file){
+        Uri data = Uri.parse("file://" +file);
+        context.sendBroadcast(new  Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
     }
 }

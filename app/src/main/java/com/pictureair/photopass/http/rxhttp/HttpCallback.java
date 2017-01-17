@@ -1,11 +1,6 @@
 package com.pictureair.photopass.http.rxhttp;
 
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import java.io.File;
-
 /**
  * Created by milo on 15/12/7.
  * 创建Http请求辅助类

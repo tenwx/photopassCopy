@@ -47,7 +47,6 @@
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/head"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -75,7 +74,6 @@
                     android:id="@+id/tv_download"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/pp_dp_16"
                     android:padding="@dimen/pp_dp_16"
                     android:text="@string/download_tpye"
@@ -156,7 +154,6 @@
                     android:id="@+id/setting_about"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/pp_dp_16"
                     android:padding="@dimen/pp_dp_16"
                     android:text="@string/mypage_about"
@@ -172,7 +169,6 @@
                     android:id="@+id/setting_language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/pp_dp_16"
                     android:padding="@dimen/pp_dp_16"
                     android:text="@string/setting_language"

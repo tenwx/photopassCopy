@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuff;
@@ -37,6 +38,8 @@ public class CircleProgressImage extends ImageView {
     private boolean isNewMask = true;
     RectF mBorderRect;
     public boolean mCanDraw = true;
+    private DrawFilter drawFilter;
+    private Paint ringPaint;
 
     public CircleProgressImage(Context paramContext, AttributeSet paramAttributeSet) {
         super(paramContext, paramAttributeSet);
@@ -67,6 +70,12 @@ public class CircleProgressImage extends ImageView {
         mBorderPaint.setAntiAlias(true);
         mBorderPaint.setColor(borderColor);
         mBorderPaint.setStrokeWidth(borderWidth);
+
+        drawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+        ringPaint = new Paint();
+        ringPaint.setAntiAlias(true);
+        ringPaint.setStyle(Paint.Style.STROKE);
+        ringPaint.setColor(Color.parseColor("#8E8E8E"));
     }
 
     @Override
@@ -82,7 +91,7 @@ public class CircleProgressImage extends ImageView {
         }
 
         try {
-            canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
+            canvas.setDrawFilter(drawFilter);
             int layer = canvas.saveLayer(0, 0, getWidth(), getHeight(), null, Canvas.ALL_SAVE_FLAG);
             drawable.setBounds((int)(getWidth()/4f), (int)(getWidth()/4f), (int)(getWidth()*3/4f), (int)(getHeight()*3/4f));
             drawable.draw(canvas);
@@ -92,10 +101,6 @@ public class CircleProgressImage extends ImageView {
 //            }
 //            canvas.drawBitmap(shape, 0, 0, slipPaint);
             //画圆环
-                Paint ringPaint = new Paint();
-                ringPaint.setAntiAlias(true);
-                ringPaint.setStyle(Paint.Style.STROKE);
-                ringPaint.setColor(Color.parseColor("#8E8E8E"));
                 ringPaint.setStrokeWidth(borderWidth);
                 if (mBorderRect == null) {
                     mBorderRect = new RectF();

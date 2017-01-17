@@ -106,14 +106,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 if (reconnecFile != null && (reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE
                         || reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_UPLOADING)){
                     reconnecFile.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
-                    reconnecFile.setCurrentSize("0");
                     reconnecFile.setLoadSpeed("0");
-                    reconnecFile.setTotalSize("0");
                     Object tag = view.getTag();
                     if (tag instanceof PhotoDownloadingAdapter.Holder){
                         PhotoDownloadingAdapter.Holder holder = (PhotoDownloadingAdapter.Holder)tag;
                         if (holder != null){
-                            holder.tv_size.setText("0MB/0MB");
                             holder.tv_speed.setText("0KB/S");
                             holder.tv_status.setText(MyApplication.getInstance().getString(R.string.photo_download_reconnect));
                             holder.img_status.mCanDraw = false;

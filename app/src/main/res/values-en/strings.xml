@@ -2,7 +2,7 @@
     <string name="app_name">PhotoPass</string>
     <string name="share_app_name">Shanghai Disney PhotoPass</string>
     <!-- start activity start-->
-    <string name="app_update">Updating data...</string>
+    <string name="app_update">Updating data&#8230;</string>
     <!-- start activity end-->
     <!-- login activity start-->
     <string name="user_login">Account</string>

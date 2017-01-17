@@ -15,7 +15,7 @@ public class PhotoDownLoadInfo {
     private Long id;//自增长id
     private String photoId;
     private String url;
-    private String size;
+    private long size;
     private String previewUrl;
     private String shootTime;
     private String downLoadTime;
@@ -27,18 +27,18 @@ public class PhotoDownLoadInfo {
     private int videoWidth;
     private int videoHeight;
     private int isVideo;
+    private long readLength;
 
     @Transient
     private boolean isSelect;//表示是否被勾选
     @Transient
     private int selectPos;
 
-    @Generated(hash = 423114192)
-    public PhotoDownLoadInfo(Long id, String photoId, String url, String size,
-                             String previewUrl, String shootTime, String downLoadTime,
-                             String failedTime, String userId, String status,
-                             String photoThumbnail_512, String photoThumbnail_1024, int videoWidth,
-                             int videoHeight, int isVideo) {
+    @Generated(hash = 430359003)
+    public PhotoDownLoadInfo(Long id, String photoId, String url, long size, String previewUrl,
+            String shootTime, String downLoadTime, String failedTime, String userId, String status,
+            String photoThumbnail_512, String photoThumbnail_1024, int videoWidth, int videoHeight,
+            int isVideo, long readLength) {
         this.id = id;
         this.photoId = photoId;
         this.url = url;
@@ -54,6 +54,7 @@ public class PhotoDownLoadInfo {
         this.videoWidth = videoWidth;
         this.videoHeight = videoHeight;
         this.isVideo = isVideo;
+        this.readLength = readLength;
     }
 
     @Generated(hash = 73030779)
@@ -82,14 +83,6 @@ public class PhotoDownLoadInfo {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getSize() {
-        return this.size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
     }
 
     public String getPreviewUrl() {
@@ -194,5 +187,21 @@ public class PhotoDownLoadInfo {
 
     public void setSelectPos(int selectPos) {
         this.selectPos = selectPos;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public long getReadLength() {
+        return readLength;
+    }
+
+    public void setReadLength(long readLength) {
+        this.readLength = readLength;
     }
 }

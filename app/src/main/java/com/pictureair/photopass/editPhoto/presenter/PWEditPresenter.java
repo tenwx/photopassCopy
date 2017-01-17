@@ -33,7 +33,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.LocationUtil;
-import com.pictureair.photopass.util.PWMediaScanner;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.trello.rxlifecycle.android.ActivityEvent;
@@ -74,7 +73,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private MyHandler mHandler;
     //对象
     private PhotoInfo photoInfo;
-    private EditScannerListener scannerListener;
 
 
     public void onCreate(IPWEditView pwEditViewInterface){
@@ -93,7 +91,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         photoInfo = pwEditView.getEditPhotView().getIntent().getParcelableExtra("photo");
         photoPath = pwEditView.getEditPhotView().getIntent().getStringExtra("photoPath");
         isOnLine = pwEditView.getEditPhotView().getIntent().getBooleanExtra("isOnLine",false);
-        scannerListener = new EditScannerListener(this);
         loadImageFormPath();  //加载图片，用ImageLoader加、载，故不用新开线程。
         // 获取网络饰品与边框
 //        API1.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""), mHandler);
@@ -506,7 +503,8 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     // 扫描SD卡
     private void scan(final String file) {
         // TODO Auto-generated method stub
-        new PWMediaScanner(MyApplication.getInstance(), file, null, scannerListener);
+        AppUtil.fileScan(pwEditView.getEditPhotView(), file);
+        onScanFinish(file);
     }
 
     private void onScanFinish(String file) {
@@ -517,19 +515,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
 //                pwEditView.getEditPhotView().setResult(11, intent);
 //                PictureAirLog.out("set result--------->");
         pwEditView.finishActivity();
-    }
-
-    private static class EditScannerListener implements PWMediaScanner.ScannerListener {
-
-        WeakReference<PWEditPresenter> weakReference;
-        public EditScannerListener(PWEditPresenter presenter) {
-            weakReference = new WeakReference<PWEditPresenter>(presenter);
-        }
-
-        @Override
-        public void OnScannerFinish(String path) {
-               weakReference.get().onScanFinish(path);
-        }
     }
 
     @Override //点击相框按钮进行的操作。

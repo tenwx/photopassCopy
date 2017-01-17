@@ -103,6 +103,13 @@ public interface PhotoPassAuthApi {
     Observable<ResponseBody> download(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
+     * 断点续传
+     * */
+    @Streaming
+    @GET
+    Observable<ResponseBody> download(@Header("RANGE") String start, @Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
+
+    /**
      * 异步get请求，有请求参数
      *
      * @param  url 请求url

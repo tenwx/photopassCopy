@@ -1300,128 +1300,34 @@ public class API2 {
     }
 
     /**
-     * >>>>>>> feeec6a01b02967d5108228ed709ba5a5d821487
+     *
      * 获取照片的最新数据,并后台统计图片的下载数量
      *
-     * @param tokenId
-     * @param hasOriginalUrl 是否有原图
      */
-    public static Observable<JSONObject> getPhotosInfo(String tokenId, final boolean hasOriginalUrl, final DownloadFileStatus fileStatus) {
-        Map<String, Object> params = new HashMap<>();
-
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.ISDOWNLOAD, true);
-        //有原图是字符串downloadPhotoIds，没有原图是传ids ，jsonArray
-        if (hasOriginalUrl) {
-            params.put(Common.DOWNLOAD_PHOTO_IDS, fileStatus.getPhotoId());
-        } else {
-            JSONArray ids = new JSONArray();
-            ids.add(fileStatus.getPhotoId());
-            params.put(Common.EPPP_IDS, ids.toString());
-
-        }
-
+    public static Observable<JSONObject> getPhotosInfo(Map<String, Object> params) {
         return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
     }
 
     /**************************************下载图片 Start**************************************/
     /**
-     * 下载图片的接口。
+     * 普通下载接口。
      *
-     * @param fileStatus
      */
-    public static Observable<InputStream> downLoadPhotosWithUrl(final DownloadFileStatus fileStatus, final Handler adapterHandler, final HttpCallback callback) {
-        PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
-
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<InputStream> observable = request.download(fileStatus.getNewUrl(), new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<ResponseBody, Observable<InputStream>>() {
-                    @Override
-                    public Observable<InputStream> call(final ResponseBody responseBody) {
-                        return RxHelper.createData(responseBody.byteStream());
-                    }
-                });
-
-        return observable;
-
-
-//        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), new HttpCallback() {
-//            long startTime = System.currentTimeMillis();
-//            long lastTime = startTime;
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                PictureAirLog.e(TAG, "调用下载照片API成功");
-//                Message msg =  handler.obtainMessage();
-//                msg.what = DOWNLOAD_PHOTO_SUCCESS;
-//                Bundle bundle = new Bundle();
-//                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
-//                bundle.putParcelable("url",fileStatus);
-//                bundle.putByteArray("binaryData",binaryData);
-//                msg.setData(bundle);
-//                handler.sendMessage(msg);
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
-//                Message msg =  handler.obtainMessage();
-//                msg.what = DOWNLOAD_PHOTO_FAILED;
-//                Bundle bundle = new Bundle();
-//                if (status != 404) {
-//                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-//                } else {
-//                    if (fileStatus.isVideo() == 0) {
-//                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-//                    } else {
-//                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-//                    }
-//                }
-//                bundle.putParcelable("url",fileStatus);
-//                bundle.putInt("status",status);
-//                msg.setData(bundle);
-//                handler.sendMessage(msg);
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                double currentSize = bytesWritten/1000d/1000d;
-//                double total = totalSize/1000d/1000d;
-//                String c = AppUtil.formatData(currentSize);
-//                String t = AppUtil.formatData(total);
-//                fileStatus.setCurrentSize(c);
-//                fileStatus.setTotalSize(t);
-//                long currentTime = System.currentTimeMillis();
-//                float usedTime = (currentTime-lastTime)/1000f;
-//                float keepTime = (currentTime-startTime)/1000f;
-//                if (usedTime > 0.2) {
-//                    lastTime = currentTime;
-//                    double downSpeed = (bytesWritten / 1000d) / keepTime;
-//                    String ds = AppUtil.formatData(downSpeed);
-//                    fileStatus.setLoadSpeed(ds);
-//                    if (adapterHandler != null) {
-//                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-//                    }
-//                }
-//            }
-//        });
-//        return task;
+    public static Observable<ResponseBody> downLoadPhotosWithUrl(String url, HttpCallback callback) {
+        PictureAirLog.out("downloadurl photo--->" + url);
+        return download(url, callback);
     }
+
+    /**
+     * 断点下载
+     * */
+    public static Observable<ResponseBody> continueDownload(long length, String url, HttpCallback callback) {
+        PictureAirLog.out("downloadurl photo--->" + url);
+        return downloadContinue(length, url, callback);
+    }
+
+
+
     /**************************************下载图片 End**************************************/
 
     /**
@@ -1816,6 +1722,65 @@ public class API2 {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
+        return observable;
+    }
+
+    /**断点续传*/
+    private static Observable<ResponseBody> downloadContinue(long length, String url, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<ResponseBody> observable = request.download("bytes=" + length + "-", url, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread());
+        return observable;
+    }
+
+    /**普通下载*/
+    private static Observable<ResponseBody> download(String url, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<ResponseBody> observable = request.download(url, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread());
+        return observable;
+    }
+
+    private static Observable<ResponseBody> download(String url, Map<String, Object> params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<ResponseBody> observable = request.download(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread());
         return observable;
     }
 }

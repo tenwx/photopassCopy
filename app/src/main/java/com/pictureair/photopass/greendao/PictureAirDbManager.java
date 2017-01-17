@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 
 import net.sqlcipher.SQLException;
 
+import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
@@ -997,23 +998,6 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 根据photid获取下载成功的图片信息
-     *
-     * */
-    public static List<PhotoDownLoadInfo> getPhotosByPhotoId(String photoId){
-        PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
-        List<PhotoDownLoadInfo> photos = new ArrayList<>();
-
-        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder()
-                .where(PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId), PhotoDownLoadInfoDao.Properties.Status.eq("true"));
-
-        if (queryBuilder.count() > 0) {
-            photos = queryBuilder.build().forCurrentThread().list();
-        }
-        return photos;
-    }
-
-    /**
      *
      * 插入下载图片信息
      *
@@ -1042,6 +1026,7 @@ public class PictureAirDbManager {
             photoDownLoadInfo.setPhotoThumbnail_1024(fileStatus.getPhotoThumbnail_1024());
             photoDownLoadInfo.setVideoWidth(fileStatus.getVideoWidth());
             photoDownLoadInfo.setVideoHeight(fileStatus.getVideoHeight());
+            photoDownLoadInfo.setReadLength(fileStatus.getCurrentSize());
 
             photoDownLoadInfos.add(photoDownLoadInfo);
         }
@@ -1053,9 +1038,8 @@ public class PictureAirDbManager {
     public static synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photoList;
-        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
         for (int i = 0; i < list.size(); i++) {
-            queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()));
+            QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder().where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()));
             if (queryBuilder.count() > 0) {
                 photoList = queryBuilder.build().forCurrentThread().list();
                 photoDownLoadInfoDao.deleteInTx(photoList);
@@ -1134,7 +1118,7 @@ public class PictureAirDbManager {
      * 更新状态为load的图片信息
      *
      * */
-    public static synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String failedTime){
+    public static synchronized void updateLoadPhotos(String userId, String status,String downloadTime,long size, long readLength, String photoId,String failedTime){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder()
                 .where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(photoId));
@@ -1147,6 +1131,7 @@ public class PictureAirDbManager {
                 photoDownLoadInfo.setStatus(status);
                 photoDownLoadInfo.setDownLoadTime(downloadTime);
                 photoDownLoadInfo.setSize(size);
+                photoDownLoadInfo.setReadLength(readLength);
 
             }
             photoDownLoadInfoDao.updateInTx(photoDownLoadInfos);
@@ -1159,13 +1144,12 @@ public class PictureAirDbManager {
      * 用列表循环更新状态为load的图片信息，较单个的更新速度更快
      *
      * */
-    public static synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
+    public static synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,List<PhotoDownLoadInfo> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
-        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder();
 
         for (int i = 0; i < list.size(); i++) {
             PhotoDownLoadInfo info = list.get(i);
-            queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(info.getPhotoId()));
+            QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder().where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(info.getPhotoId()));
 
             if (queryBuilder.count() > 0) {
                 List<PhotoDownLoadInfo> photoDownLoadInfos = queryBuilder.build().forCurrentThread().list();
@@ -1174,8 +1158,6 @@ public class PictureAirDbManager {
                     photoDownLoadInfo.setFailedTime("");
                     photoDownLoadInfo.setStatus(status);
                     photoDownLoadInfo.setDownLoadTime(downloadTime);
-                    photoDownLoadInfo.setSize(size);
-
                 }
                 photoDownLoadInfoDao.updateInTx(photoDownLoadInfos);
             }
