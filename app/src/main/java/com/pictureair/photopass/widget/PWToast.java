@@ -51,7 +51,7 @@ public class PWToast extends Toast {
         //实例化ImageView和TextView对象
         textView = (TextView) view.findViewById(R.id.toast_textview);
         toast.setView(view);
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);// 设置toast位置
+        toast.setGravity(Gravity.FILL_HORIZONTAL, 0, 0);// 设置toast位置
     }
 
     /**

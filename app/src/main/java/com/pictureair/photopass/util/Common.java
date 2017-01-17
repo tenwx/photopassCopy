@@ -13,7 +13,7 @@ public class Common {
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
-    public static final int[] NEED_RELOGIN_VERSION_CODE = new int[]{9, 10};//对应版本号需要重新登录，记录的都是versionCode
+    public static final int[] NEED_RELOGIN_VERSION_CODE = new int[]{9, 11};//对应版本号需要重新登录，记录的都是versionCode
 
     /**
      * 外网可访问的8.3测试服务器

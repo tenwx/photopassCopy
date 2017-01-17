@@ -19,6 +19,7 @@ package com.pictureair.photopass.zxing.camera;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -46,8 +47,17 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
 
     AutoFocusManager(Context context, Camera camera) {
         this.camera = camera;
-        String currentFocusMode = camera.getParameters().getFocusMode();
-        useAutoFocus = FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
+        String currentFocusMode = null;
+        try {
+            currentFocusMode = camera.getParameters().getFocusMode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!TextUtils.isEmpty(currentFocusMode)) {
+            useAutoFocus = FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
+        } else {
+            useAutoFocus = true;
+        }
         Log.i(TAG, "Current focus mode '" + currentFocusMode + "'; use auto focus? " + useAutoFocus);
         start();
     }

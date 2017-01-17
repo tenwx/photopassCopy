@@ -1390,40 +1390,19 @@ public class API2 {
      */
     public static Observable<JSONObject> getCartItemCoupons(JSONArray cartItemIds) {
         Map<String, Object> params = new HashMap<>();
-        if (null != cartItemIds) {//订单页面发来的请求
-            params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
         if (null != MyApplication.getTokenId()) {
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         }
+        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
 
-        return get(Common.BASE_URL_TEST + Common.GET_COUPONS, params, null);
-    }
-
-
-    /**
-     * 添加优惠卷
-     * * 两个业务处理AB
-     * A在me中进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * B在订单页面进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
-     */
-    public static Observable<JSONObject> addCoupons(String couponsCode, JSONArray cartItemIds) {
-        Map<String, Object> params = new HashMap<>();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
-        if (couponsCode != null) {
-            params.put(Common.couponCode, couponsCode);
-        }
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, MyApplication.getTokenId());
+            return get(Common.BASE_URL_TEST + Common.GET_COUPONS, params, null);
 
-        return post(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, null);
+        } else {//从me中进入查询抵用劵
+            return get(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, null);
+
+        }
     }
 
     /**
@@ -1445,18 +1424,6 @@ public class API2 {
         PictureAirLog.v(TAG, "previewCoupon params：" + params);
 
         return post(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, null);
-    }
-
-    /**
-     * 从me中进入查询抵用劵
-     */
-    public static Observable<JSONObject> getCoupons() {
-        Map<String, Object> params = new HashMap<>();
-
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
-
-        return get(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, null);
     }
 
     /**

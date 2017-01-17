@@ -180,9 +180,13 @@ final class CameraConfigurationManager {
     }
 
     void setTorch(Camera camera, boolean newSetting) {
-        Camera.Parameters parameters = camera.getParameters();
-        doSetTorch(parameters, newSetting);
-        camera.setParameters(parameters);
+        try {
+            Camera.Parameters parameters = camera.getParameters();
+            doSetTorch(parameters, newSetting);
+            camera.setParameters(parameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initializeTorch(Camera.Parameters parameters) {

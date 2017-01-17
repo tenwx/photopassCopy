@@ -572,6 +572,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							if (refreshLayout.isRefreshing()) {
 								refreshLayout.setRefreshing(false);
 							}
+							if (newCount == 0) {
+								myToast.setTextAndShow(R.string.nomore, Common.TOAST_SHORT_TIME);
+							}
 
 						} else {//加载更多
 							refreshLayout.setEnabled(true);
@@ -936,7 +939,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			refreshLayout.setEnabled(true);
 			pwStickySectionRecyclerView.setEditMode(editMode);
 		} else {
-			finish();
+			if (tipRl.isShown()) {
+				SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_APP, Common.STORY_EDIT_TIP_VIEW, true);
+				tipRl.setVisibility(View.GONE);
+			} else {
+				finish();
+			}
 		}
 	}
 
