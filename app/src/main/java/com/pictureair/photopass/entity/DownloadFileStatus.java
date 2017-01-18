@@ -14,8 +14,8 @@ public class DownloadFileStatus implements Parcelable{
     private String photoThumbnail_1024;//缩略图1024尺寸的路径
     private String originalUrl;//原图路径
     private String newUrl;//新请求的路径
-    private String currentSize;
-    private String totalSize;
+    private long currentSize;
+    private long totalSize;
     private String loadSpeed;
     private String photoId;
     private int isVideo;
@@ -50,8 +50,8 @@ public class DownloadFileStatus implements Parcelable{
         this.photoThumbnail_1024 = source.readString();
         this.originalUrl = source.readString();
         this.newUrl = source.readString();
-        this.currentSize = source.readString();
-        this.totalSize = source.readString();
+        this.currentSize = source.readLong();
+        this.totalSize = source.readLong();
         this.loadSpeed =source.readString();
         this.photoId = source.readString();
         this.isVideo = source.readInt();
@@ -66,8 +66,8 @@ public class DownloadFileStatus implements Parcelable{
         this.lastStatus = source.readInt();
     }
 
-    public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, String currentSize,
-                              String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,
+    public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, long currentSize,
+                              long totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,
                               String failedTime,int videoWidth,int videoHeight) {
         if (url == null) url = "";
         if (photoThumbnail_512 == null) photoThumbnail_512 = "";
@@ -135,25 +135,25 @@ public class DownloadFileStatus implements Parcelable{
         this.newUrl = newUrl;
     }
 
-    public String getCurrentSize() {
+    public long getCurrentSize() {
         return currentSize;
     }
 
-    public void setCurrentSize(String currentSize) {
-        if (!TextUtils.isEmpty(currentSize)){
-            currentSize = format(currentSize);
-        }
+    public void setCurrentSize(long currentSize) {
+//        if (!TextUtils.isEmpty(currentSize)){
+//            currentSize = format(currentSize);
+//        }
         this.currentSize = currentSize;
     }
 
-    public String getTotalSize() {
+    public long getTotalSize() {
         return totalSize;
     }
 
-    public void setTotalSize(String totalSize) {
-        if (!TextUtils.isEmpty(totalSize)){
-            totalSize = format(totalSize);
-        }
+    public void setTotalSize(long totalSize) {
+//        if (!TextUtils.isEmpty(totalSize)){
+//            totalSize = format(totalSize);
+//        }
         this.totalSize = totalSize;
     }
 
@@ -253,8 +253,8 @@ public class DownloadFileStatus implements Parcelable{
         dest.writeString(photoThumbnail_1024);
         dest.writeString(originalUrl);
         dest.writeString(newUrl);
-        dest.writeString(currentSize);
-        dest.writeString(totalSize);
+        dest.writeLong(currentSize);
+        dest.writeLong(totalSize);
         dest.writeString(loadSpeed);
         dest.writeString(photoId);
         dest.writeInt(isVideo);

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.widget.CircleProgressImage;
 
@@ -82,9 +83,14 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                     holder.img.setTag(R.id.glide_image_tag, fileStatus.getPhotoThumbnail());
                 }
 
+                double currentSize = fileStatus.getCurrentSize()/1000d/1000d;
+                double total = fileStatus.getTotalSize()/1000d/1000d;
+                String c = AppUtil.formatData(currentSize);
+                String t = AppUtil.formatData(total);
+
                 switch (fileStatus.status) {
                     case DownloadFileStatus.DOWNLOAD_STATE_WAITING:
-                        holder.tv_size.setText("0MB/0MB");
+                        holder.tv_size.setText("0.00MB/0.00MB");
                         holder.tv_speed.setText("0KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_waiting));
                         holder.img_status.setImageResource(R.drawable.photo_status_wait);
@@ -92,7 +98,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         holder.img_status.setProgress(0);
                         break;
                     case DownloadFileStatus.DOWNLOAD_STATE_FINISH:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/" + t + "MB");
                         holder.tv_speed.setText(fileStatus.getLoadSpeed()+"KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_loading));
                         holder.img_status.setImageResource(R.drawable.photo_status_load);
@@ -105,7 +111,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         }
                         break;
                     case DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/" + t + "MB");
                         holder.tv_speed.setText(fileStatus.getLoadSpeed()+"KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_loading));
                         holder.img_status.setImageResource(R.drawable.photo_status_load);
@@ -118,7 +124,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         }
                         break;
                     case DownloadFileStatus.DOWNLOAD_STATE_FAILURE:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/" + t + "MB");
                         holder.tv_speed.setText("0KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
                         holder.img_status.setImageResource(R.drawable.photo_status_error);
@@ -127,7 +133,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         break;
 
                     case DownloadFileStatus.DOWNLOAD_STATE_RECONNECT:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/"+ t +"MB");
                         holder.tv_speed.setText("0KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
                         holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
@@ -135,7 +141,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         holder.img_status.setProgress(0);
                         break;
                     case DownloadFileStatus.DOWNLOAD_STATE_SELECT:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/" + t + "MB");
                         holder.tv_speed.setText("0KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
                         if (fileStatus.select == 0) {
@@ -147,7 +153,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         holder.img_status.setProgress(0);
                         break;
                     case DownloadFileStatus.DOWNLOAD_STATE_UPLOADING:
-                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_size.setText(c + "MB/" + t + "MB");
                         holder.tv_speed.setText("0KB/S");
                         holder.tv_status.setText(mContext.getString(R.string.photo_download_upload));
                         holder.img_status.setImageResource(R.drawable.photo_status_error);

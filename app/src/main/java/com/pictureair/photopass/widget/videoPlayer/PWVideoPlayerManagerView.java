@@ -15,13 +15,22 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.http.BinaryCallBack;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.HttpCallback;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.RxActivity;
 
 import java.io.File;
+
+import okhttp3.ResponseBody;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
 
 /**
  * Created by bauer_bao on 16/9/7.
@@ -39,7 +48,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
     private Context context;
     private OnVideoPlayerViewEventListener videoPlayerViewEventListener;
-    private BinaryCallBack task;
+    private Subscription subscription;
 
     private static final String TAG = PWVideoPlayerManagerView.class.getSimpleName();
     private final static int TIME = 3000;
@@ -78,17 +87,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                     }
                     break;
 
-                case API1.DOWNLOAD_FILE_SUCCESS:
-                    PictureAirLog.out("file path-->" + msg.obj.toString());
-                    videoPlayerView.setVideoPath(msg.obj.toString());
-                    break;
-
-                case API1.DOWNLOAD_FILE_FAILED:
-                    loadingIV.setVisibility(GONE);
-                    loadingTV.setText(R.string.http_error_code_401);
-                    break;
-
-                case API1.DOWNLOAD_FILE_PROGRESS:
+                case API2.DOWNLOAD_FILE_PROGRESS:
                     int progress = msg.arg1;
                     int total = msg.arg2;
                     int currentProgress = 0;
@@ -307,9 +306,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
         isPaused = true;
         handler.removeMessages(PROGRESS_CHANGED);
 
-        if (task != null) {
-            task.cancle();
-
+        if (subscription != null) {
+            subscription.unsubscribe();
         }
     }
 
@@ -336,7 +334,8 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                 PictureAirLog.out("file path-->" + file.toString());
                 videoPlayerView.setVideoPath(file.toString());
             } else {//文件不存在，需要从网络下载
-                task = API1.downloadHeadFile(videoPath, context.getCacheDir() + File.separator + "video" + File.separator, fileName, handler);
+                subscription = downloadHeadFile(videoPath, context.getCacheDir() + File.separator + "video" + File.separator, fileName);
+
             }
 
         }else{
@@ -344,6 +343,47 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
             loadingTV.setText(R.string.permission_storage_message);
         }
     }
+
+    private Subscription downloadHeadFile(String url, final String folderPath, final String fileName) {
+
+        Subscription subscription = API2.downloadHeadFile(url, new HttpCallback() {
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                handler.obtainMessage(API2.DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
+            }
+        }).map(new Func1<ResponseBody, String>() {
+            @Override
+            public String call(ResponseBody responseBody) {
+                try {
+                    return AppUtil.writeFile(responseBody, folderPath, fileName);
+                } catch (Exception e) {
+                    throw Exceptions.propagate(e);
+                }
+            }
+        }).compose(((RxActivity)context).<String>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<String>() {
+                    @Override
+                    public void _onNext(String s) {
+                        PictureAirLog.out("file path-->" + s);
+                        videoPlayerView.setVideoPath(s);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        loadingIV.setVisibility(GONE);
+                        loadingTV.setText(R.string.http_error_code_401);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                    }
+                });
+        return subscription;
+
+    }
+
 
     /**
      * 显示控制栏

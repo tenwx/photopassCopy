@@ -121,12 +121,14 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     }
 
     private void addAccountToView() {
+
         if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {
             String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
             if (forgetActivity.equals(whatActivity)){
                 if (!acount.contains("@")) {
-                    if (acount.length() == 13 && acount.startsWith("86")) {
-                        et_write_phone.setText(acount.substring(2, acount.length()));
+                    String[] data = acount.split(",");
+                    if (data != null && data.length == 2) {
+                        et_write_phone.setText(data[1]);
                     }
                 }
             }
@@ -404,7 +406,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                 return;
             }
         }
-        registerTool.submit(identifyStr, currentCode + phoneStr, pwdStr);
+        registerTool.submit(identifyStr, currentCode + "," + phoneStr, pwdStr);
     }
 
     /**
@@ -550,7 +552,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            registerTool.sendSMSValidateCode(currentCode + phoneStr);
+            registerTool.sendSMSValidateCode(currentCode + "," + phoneStr);
         }
     }
 }

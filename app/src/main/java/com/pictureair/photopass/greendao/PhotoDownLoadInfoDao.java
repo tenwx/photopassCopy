@@ -27,7 +27,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property PhotoId = new Property(1, String.class, "photoId", false, "PHOTO_ID");
         public final static Property Url = new Property(2, String.class, "url", false, "URL");
-        public final static Property Size = new Property(3, String.class, "size", false, "SIZE");
+        public final static Property Size = new Property(3, long.class, "size", false, "SIZE");
         public final static Property PreviewUrl = new Property(4, String.class, "previewUrl", false, "PREVIEW_URL");
         public final static Property ShootTime = new Property(5, String.class, "shootTime", false, "SHOOT_TIME");
         public final static Property DownLoadTime = new Property(6, String.class, "downLoadTime", false, "DOWN_LOAD_TIME");
@@ -39,6 +39,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         public final static Property VideoWidth = new Property(12, int.class, "videoWidth", false, "VIDEO_WIDTH");
         public final static Property VideoHeight = new Property(13, int.class, "videoHeight", false, "VIDEO_HEIGHT");
         public final static Property IsVideo = new Property(14, int.class, "isVideo", false, "IS_VIDEO");
+        public final static Property ReadLength = new Property(15, long.class, "readLength", false, "READ_LENGTH");
     }
 
 
@@ -57,7 +58,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"PHOTO_ID\" TEXT," + // 1: photoId
                 "\"URL\" TEXT," + // 2: url
-                "\"SIZE\" TEXT," + // 3: size
+                "\"SIZE\" INTEGER NOT NULL ," + // 3: size
                 "\"PREVIEW_URL\" TEXT," + // 4: previewUrl
                 "\"SHOOT_TIME\" TEXT," + // 5: shootTime
                 "\"DOWN_LOAD_TIME\" TEXT," + // 6: downLoadTime
@@ -68,7 +69,8 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
                 "\"PHOTO_THUMBNAIL_1024\" TEXT," + // 11: photoThumbnail_1024
                 "\"VIDEO_WIDTH\" INTEGER NOT NULL ," + // 12: videoWidth
                 "\"VIDEO_HEIGHT\" INTEGER NOT NULL ," + // 13: videoHeight
-                "\"IS_VIDEO\" INTEGER NOT NULL );"); // 14: isVideo
+                "\"IS_VIDEO\" INTEGER NOT NULL ," + // 14: isVideo
+                "\"READ_LENGTH\" INTEGER NOT NULL );"); // 15: readLength
     }
 
     /** Drops the underlying database table. */
@@ -95,11 +97,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         if (url != null) {
             stmt.bindString(3, url);
         }
- 
-        String size = entity.getSize();
-        if (size != null) {
-            stmt.bindString(4, size);
-        }
+        stmt.bindLong(4, entity.getSize());
  
         String previewUrl = entity.getPreviewUrl();
         if (previewUrl != null) {
@@ -143,6 +141,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         stmt.bindLong(13, entity.getVideoWidth());
         stmt.bindLong(14, entity.getVideoHeight());
         stmt.bindLong(15, entity.getIsVideo());
+        stmt.bindLong(16, entity.getReadLength());
     }
 
     @Override
@@ -163,11 +162,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         if (url != null) {
             stmt.bindString(3, url);
         }
- 
-        String size = entity.getSize();
-        if (size != null) {
-            stmt.bindString(4, size);
-        }
+        stmt.bindLong(4, entity.getSize());
  
         String previewUrl = entity.getPreviewUrl();
         if (previewUrl != null) {
@@ -211,6 +206,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         stmt.bindLong(13, entity.getVideoWidth());
         stmt.bindLong(14, entity.getVideoHeight());
         stmt.bindLong(15, entity.getIsVideo());
+        stmt.bindLong(16, entity.getReadLength());
     }
 
     @Override
@@ -224,7 +220,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // photoId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // url
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // size
+            cursor.getLong(offset + 3), // size
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // previewUrl
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // shootTime
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // downLoadTime
@@ -235,7 +231,8 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // photoThumbnail_1024
             cursor.getInt(offset + 12), // videoWidth
             cursor.getInt(offset + 13), // videoHeight
-            cursor.getInt(offset + 14) // isVideo
+            cursor.getInt(offset + 14), // isVideo
+            cursor.getLong(offset + 15) // readLength
         );
         return entity;
     }
@@ -245,7 +242,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setPhotoId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSize(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setSize(cursor.getLong(offset + 3));
         entity.setPreviewUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setShootTime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDownLoadTime(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
@@ -257,6 +254,7 @@ public class PhotoDownLoadInfoDao extends AbstractDao<PhotoDownLoadInfo, Long> {
         entity.setVideoWidth(cursor.getInt(offset + 12));
         entity.setVideoHeight(cursor.getInt(offset + 13));
         entity.setIsVideo(cursor.getInt(offset + 14));
+        entity.setReadLength(cursor.getLong(offset + 15));
      }
     
     @Override

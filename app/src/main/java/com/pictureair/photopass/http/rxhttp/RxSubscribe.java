@@ -2,6 +2,7 @@ package com.pictureair.photopass.http.rxhttp;
 
 import com.pictureair.photopass.util.PictureAirLog;
 
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -25,7 +26,12 @@ public abstract class RxSubscribe<T> extends Subscriber<T> {
             _onError(((ServerException) e).getState());
         } else {
             PictureAirLog.e(e.toString());
-            _onError(HTTP_ERROR);
+            if (e != null && e instanceof HttpException) {
+                HttpException exception = (HttpException) e;
+                _onError(exception.code());
+            } else {
+                _onError(HTTP_ERROR);
+            }
         }
 
     }

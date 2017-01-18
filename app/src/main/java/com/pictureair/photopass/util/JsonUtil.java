@@ -392,7 +392,7 @@ public class JsonUtil {
     /**
      * 用户信息解析
      */
-    public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
+    public static void getUserInfo(final Context context, JSONObject object, String account, String password) throws JSONException {
         //此处不建议使用SPUtil类
         SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
@@ -435,13 +435,15 @@ public class JsonUtil {
             e.putString(Common.USERINFO_BIRTHDAY, obj.getString("birthday").split("T")[0]);
         }
 
-        e.putString(Common.USERINFO_ACCOUNT, account);
+        String realAccount = AppUtil.getCorrectAccount(account);
+        e.putString(Common.USERINFO_ACCOUNT, realAccount);
         e.putBoolean(Common.USERINFO_ISLOGIN, true);
 
         //在app sharedPreference中加入用户名，用于登录的时候获取
         SharedPreferences asp = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE);
         SharedPreferences.Editor ae = asp.edit();
         ae.putString(Common.USERINFO_ACCOUNT, account);
+        ae.putString(Common.USERINFO_PASSWORD,  AESKeyHelper.encryptString(password, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
         ae.commit();
 
         String headUrl;

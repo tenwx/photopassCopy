@@ -101,7 +101,8 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
 
     private void findPwd() {
-        API2.findPwd(pwd, phone)
+        String realPhone = AppUtil.getCorrectAccount(phone);
+        API2.findPwd(pwd, realPhone)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -164,7 +165,8 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     }
 
     private void sendSMSCode() {
-        API2.sendSMSValidateCode( tokenId, phone, languageType, true)
+        String realPhone = AppUtil.getCorrectAccount(phone);
+        API2.sendSMSValidateCode( tokenId, realPhone, languageType, true)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -186,7 +188,8 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     }
 
     private void validateCode(String validateCode) {
-        API2.validateCode(tokenId, validateCode, phone, true)
+        String realPhone = AppUtil.getCorrectAccount(phone);
+        API2.validateCode(tokenId, validateCode, realPhone, true)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {

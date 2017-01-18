@@ -53,6 +53,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -89,6 +90,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import okhttp3.ResponseBody;
 
 /**
  * 公共类的方法
@@ -1718,6 +1721,27 @@ public class AppUtil {
         return filename;
     }
 
+    public static String getReallyFileNameWithoutSuffix(String url,int isVideo) {
+        if (TextUtils.isEmpty(url)) {
+            return "";
+        }
+        String filename = url;
+        if (isVideo == 0){
+            if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
+                filename = filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4);
+            } else {
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+            }
+        } else {//如果是视频数据，文件名统一经过md5处理
+            if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4));
+            } else {
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1));
+            }
+        }
+        return filename;
+    }
+
     /**
      * 从cursor中获取photoInfo，不支持收藏表
      * @param cursor
@@ -2070,5 +2094,79 @@ public class AppUtil {
             }
         }
         return repeatBottomId;
+    }
+
+    /**
+     * 通知媒体库更新
+     * */
+    public static void fileScan(Context context, String file){
+        Uri data = Uri.parse("file://" +file);
+        context.sendBroadcast(new  Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
+    }
+
+    /**
+     *
+     * sp中保存的acccount格式：
+     * 手机号格式"86,12345678901"
+     * 邮箱格式"123@163.com"
+     * 通过此函数将手机号改成正常格式"8612345678901"
+     * */
+    public static String getCorrectAccount(String account) {
+
+        if (!account.contains("@")) {
+            String[] data = account.split(",");
+            return data[0]+data[1];
+        } else {
+            return account;
+        }
+    }
+
+    /**
+     *
+     * 根据路径保存文件
+     * */
+    public static String writeFile(ResponseBody responseBody, String folderPath, String fileName) throws Exception{
+
+        byte[] buff = new byte[1024];
+        int res = 0;
+        FileOutputStream fos = null;
+        InputStream is = null;
+        try {
+            File folder = new File(folderPath);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            File file = new File(folderPath + fileName);
+            file.createNewFile();
+            fos = new FileOutputStream(file);
+            is = responseBody.byteStream();
+            while ((res = is.read(buff)) != -1) {
+                fos.write(buff, 0, res);
+            }
+            is.close();
+            fos.close();
+            responseBody.close();
+            return folderPath + fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            }catch (Exception e1) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            }catch (Exception e1) {
+                e.printStackTrace();
+            }
+            responseBody.close();
+            throw e;
+        }
+
     }
 }

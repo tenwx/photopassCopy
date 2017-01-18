@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.GlideUtil;
 
 import java.util.List;
@@ -75,7 +76,11 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
                 holder.img.setTag(R.id.glide_image_tag, previewUrl);
             }
             holder.tv_shootTime.setText(info.getShootTime());
-            holder.tv_size.setText(info.getSize()+"MB");
+
+            double total = info.getSize()/1000d/1000d;
+            String t = AppUtil.formatData(total);
+
+            holder.tv_size.setText(t + "MB");
             holder.tv_loadTime.setText(info.getDownLoadTime());
             if (!select){
                 holder.img_select.setVisibility(View.GONE);

@@ -3,25 +3,18 @@ package com.pictureair.photopass.util;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DealingInfo;
-import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.http.BasicResultCallTask;
-import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,63 +102,14 @@ public class API1 {
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
 
-    //下载
-    public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
-    public static final int DOWNLOAD_PHOTO_FAILED = 6040;
-    public final static int DOWNLOAD_PHOTO_GET_URL_SUCCESS = 6042;
+    //从订单中获取所有优惠卷
+    public static final int GET_COUPON_SUCCESS = 5141;
+    public static final int GET_COUPON_FAILED = 5140;
 
-    //下载文件
-    public static final int DOWNLOAD_FILE_FAILED = 6050;
-    public static final int DOWNLOAD_FILE_SUCCESS = 6051;
-    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
+    //添加一张优惠卷
+    public static final int INSERT_COUPON_SUCCESS = 5151;
+    public static final int INSERT_COUPON_FAILED = 5150;
 
-    /**
-     * 下载头像或者背景文件
-     *
-     * @param downloadUrl
-     * @param folderPath
-     * @param fileName
-     */
-    public static BinaryCallBack downloadHeadFile(String downloadUrl, final String folderPath, final String fileName, final Handler handler) {
-        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
-            @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                try {
-                    File folder = new File(folderPath);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
-                    File file = new File(folderPath + fileName);
-                    file.createNewFile();
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(binaryData);
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                handler.obtainMessage(DOWNLOAD_FILE_SUCCESS, folderPath + fileName).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(DOWNLOAD_FILE_FAILED, status, 0).sendToTarget();
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                handler.obtainMessage(DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
-            }
-        });
-
-        return task;
-    }
 
     /**
      * 获取照片的最新数据
@@ -798,6 +742,18 @@ public class API1 {
     /***************************************Shop模块 end**************************************/
 
 
+    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
+            + "'version': '2.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
+            + " 'mandatory': 'true',  '__v': 0, "
+            + " 'versionOS': ['android'], "
+            + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
+            + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
+            + "'downloadChannel':[ {'channel':'website',"
+            + "'downloadUrl':'http://www.disneyphotopass.com.cn/downloads/android/photopass/PhotoPassV1.1.0-website.apk'},"
+            + " { 'channel':'tencent',"
+            + "'downloadUrl':'http://dd.myapp.com/16891/2FA495F1283F48658CEACFF53DB6F856.apk?fsname=com.pictureair.photopass_1.1.1_4.apk'}]}}";
+
+
     /***************************************推送 Start**************************************/
     /**
      * socket链接后处理方法
@@ -854,162 +810,101 @@ public class API1 {
      **************************************/
 
     /**
-     * 获取照片的最新数据,并后台统计图片的下载数量
-     *
-     * @param tokenId
-     * @param hasOriginalUrl 是否有原图
-     * @param handler
+     * 根据商品查询所有可以使用的优惠卷
+     * 1. tokenId
+     * 2. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static BasicResultCallTask getPhotosInfo(String tokenId, final Handler handler,final boolean hasOriginalUrl, final DownloadFileStatus fileStatus) {
+    public static BasicResultCallTask getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
         Map<String,Object> params = new HashMap<>();
-
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.ISDOWNLOAD, true);
-        //有原图是字符串downloadPhotoIds，没有原图是传ids ，jsonArray
-        if (hasOriginalUrl) {
-            params.put(Common.DOWNLOAD_PHOTO_IDS, fileStatus.getPhotoId());
-        } else {
-            JSONArray ids = new JSONArray();
-            ids.add(fileStatus.getPhotoId());
-            params.put(Common.EPPP_IDS, ids.toString());
-
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
-
-            private void sendNoDataMsg () {
-                Message msg = handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_FAILED;
-                Bundle bundle = new Bundle();
-                if (fileStatus.isVideo() == 0) {
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                } else {
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                }
-                bundle.putParcelable("url", fileStatus);
-                bundle.putInt("status", 404);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            }
-
+        if (null != MyApplication.getTokenId()){
+            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        }
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.out("jsonobject---->" + jsonObject.toString());
-                JSONArray photos = jsonObject.getJSONArray("photos");
-                if (!hasOriginalUrl) {
-                    if (photos.size() > 0) {
-                        PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-                        fileStatus.setNewUrl(photoInfo.getPhotoOriginalURL());
-                        if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
-                            handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-                        } else {
-                            sendNoDataMsg();
-                        }
-                    } else {
-                        sendNoDataMsg();
-                    }
-                } else {
-                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-                }
+                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                if (hasOriginalUrl) {//如果有原图链接的情况直接下载
-                    fileStatus.setNewUrl(fileStatus.getOriginalUrl());
-                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();
-                } else {
-                    Message msg = handler.obtainMessage();
-                    msg.what = DOWNLOAD_PHOTO_FAILED;
-                    Bundle bundle = new Bundle();
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    bundle.putParcelable("url", fileStatus);
-                    bundle.putInt("status", 401);
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
-                }
+                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
         });
-
         return task;
     }
 
-    /**************************************下载图片 Start**************************************/
+
     /**
-     * 下载图片的接口。
+     * 添加优惠卷
+     * * 两个业务处理AB
+     * A在me中进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * B在订单页面进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
+     */
+    public static BasicResultCallTask addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
+        Map<String,Object> params = new HashMap<>();
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
+        }
+        if (couponsCode != null) {
+            params.put(Common.couponCode, couponsCode);
+        }
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        PictureAirLog.e(TAG, MyApplication.getTokenId());
+
+        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
+            }
+        });
+        return task;
+    }
+
+    /**
+     * 从me中进入查询抵用劵
      *
      * @param handler
-     * @param fileStatus
      */
-    public static BinaryCallBack downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
-        PictureAirLog.out("downloadurl photo--->" + fileStatus.getNewUrl());
-        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), new HttpCallback() {
-            long startTime = System.currentTimeMillis();
-            long lastTime = startTime;
+    public static BasicResultCallTask getCoupons(final Handler handler) {
+        Map<String,Object> params = new HashMap<>();
+
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
+
+        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
             @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                PictureAirLog.e(TAG, "调用下载照片API成功");
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_SUCCESS;
-                Bundle bundle = new Bundle();
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
-                bundle.putParcelable("url",fileStatus);
-                bundle.putByteArray("binaryData",binaryData);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "============" + jsonObject);
+                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
-                Message msg =  handler.obtainMessage();
-                msg.what = DOWNLOAD_PHOTO_FAILED;
-                Bundle bundle = new Bundle();
-                if (status != 404) {
-                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                } else {
-                    if (fileStatus.isVideo() == 0) {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_UPLOADING;
-                    } else {
-                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    }
-                }
-                bundle.putParcelable("url",fileStatus);
-                bundle.putInt("status",status);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                double currentSize = bytesWritten/1000d/1000d;
-                double total = totalSize/1000d/1000d;
-                String c = AppUtil.formatData(currentSize);
-                String t = AppUtil.formatData(total);
-                fileStatus.setCurrentSize(c);
-                fileStatus.setTotalSize(t);
-                long currentTime = System.currentTimeMillis();
-                float usedTime = (currentTime-lastTime)/1000f;
-                float keepTime = (currentTime-startTime)/1000f;
-                if (usedTime > 0.2) {
-                    lastTime = currentTime;
-                    double downSpeed = (bytesWritten / 1000d) / keepTime;
-                    String ds = AppUtil.formatData(downSpeed);
-                    fileStatus.setLoadSpeed(ds);
-                    if (adapterHandler != null) {
-                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-                    }
-                }
+                PictureAirLog.e(TAG, "============" + status);
+                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
         });
         return task;
     }
-    /**************************************下载图片 End**************************************/
 
     public static void cancelAllRequest() {
         CallTaskManager.getInstance().cancleAllTask();

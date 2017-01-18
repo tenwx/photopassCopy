@@ -18,9 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -192,11 +194,17 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
             if (!mIsMsgLogin) {
                 if (acount.contains("@")) {
                     userName.setText(acount);
+                    if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_PASSWORD, "").equals("")) {
+                        String pass = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_PASSWORD, "");
+                        pass = AESKeyHelper.decryptString(pass, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
+                        password.setText(pass);
+                    }
                 }
             } else {
                 if (!acount.contains("@")) {
-                    if (acount.length() == 13 && acount.startsWith("86")) {
-                        userName.setText(acount.substring(2, acount.length()));
+                    String[] data = acount.split(",");
+                    if (data != null && data.length == 2) {
+                        userName.setText(data[1]);
                     }
                 }
             }
@@ -281,7 +289,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 } else if (!checkMsg()) {
                     return;
                 }
-                signAndLoginUtil.start(countryCode + phoneStr, null, false, false, null, null, null, null,Common.LOGINTYPE, smsStr);
+                signAndLoginUtil.start(countryCode + "," +phoneStr, null, false, false, null, null, null, null,Common.LOGINTYPE, smsStr);
 
                 break;
 
@@ -438,7 +446,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            registerTool.sendSMSValidateCode(countryCode + phoneStr);
+            registerTool.sendSMSValidateCode(countryCode + "," + phoneStr);
         }
     }
 
