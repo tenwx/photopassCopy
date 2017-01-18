@@ -3,8 +3,10 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +39,20 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
         this.context = this;
         AppUtil.initLanguage(context);
         createPWProgressDialog();
+        immersiveMode();
+    }
+
+    /**
+     * 沉浸式状态栏设置
+     */
+    private void immersiveMode() {
+        //在layout中设置,防止状态栏和内容重叠在一起
+        //android:fitsSystemWindows="true"
+        //android:clipToPadding="true"
+        //设置状态栏和导航栏透明
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
     @Override

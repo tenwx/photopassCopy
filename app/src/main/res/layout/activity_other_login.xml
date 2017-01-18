@@ -3,6 +3,7 @@
     android:id="@+id/login_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/ImmersiveMode"
     android:background="@drawable/login_register_background"
     android:orientation="vertical"
     >

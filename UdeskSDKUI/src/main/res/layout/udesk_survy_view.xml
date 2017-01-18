@@ -3,7 +3,8 @@
     android:layout_width="280dp"
     android:layout_height="335dp"
     android:background="@color/udesk_color_bg_white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/ImmersiveMode">
 
 
     <TextView

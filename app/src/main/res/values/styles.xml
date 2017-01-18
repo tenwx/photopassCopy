@@ -116,7 +116,7 @@
 
     <!-- TAB -->
 
-    <style name="Theme.PageIndicatorDefaults" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.PageIndicatorDefaults" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
         <item name="android:windowNoTitle">true</item>
     </style>

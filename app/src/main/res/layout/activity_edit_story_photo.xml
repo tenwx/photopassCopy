@@ -3,7 +3,8 @@
     android:id="@+id/editStoryPhotoRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background">
+    android:background="@color/pp_light_gray_background"
+    style="@style/ImmersiveMode">
 
     <RelativeLayout
         android:id="@+id/layout1"

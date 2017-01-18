@@ -2,16 +2,14 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.tencent.bugly.crashreport.CrashReport;
 
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
@@ -45,6 +43,9 @@ public class UdeskWebViewUrlAcivity extends Activity{
             }
         };
         mwebView.setWebChromeClient(wcc);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 //        setUrlTile();
     }
 

@@ -161,11 +161,15 @@ public final class CameraManager {
      * Asks the camera hardware to begin drawing preview frames to the screen.
      */
     public synchronized void startPreview() {
-        OpenCamera theCamera = camera;
-        if (theCamera != null && !previewing) {
-            theCamera.getCamera().startPreview();
-            previewing = true;
-            autoFocusManager = new AutoFocusManager(context, theCamera.getCamera());
+        try {
+            OpenCamera theCamera = camera;
+            if (theCamera != null && !previewing) {
+                theCamera.getCamera().startPreview();
+                previewing = true;
+                autoFocusManager = new AutoFocusManager(context, theCamera.getCamera());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

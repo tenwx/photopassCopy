@@ -2,10 +2,11 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -33,6 +34,9 @@ public class UdeskHelperArticleActivity extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.udesk_articleactivity_view);
 			settingTitlebar();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			}
 			udeskLoading = findViewById(R.id.udesk_loading);
 			udeskSubject = (TextView) findViewById(R.id.udesk_subject);
 			udeskWebView = (WebView) findViewById(R.id.udesk_help_content_webview);

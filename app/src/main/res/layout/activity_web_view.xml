@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    style="@style/ImmersiveMode"
     tools:context="com.pictureair.photopass.activity.WebViewActivity">
 
     <include
@@ -29,7 +30,7 @@
             android:layout_alignParentTop="true"
             android:indeterminateOnly="false"
             android:max="100"
-            android:progressDrawable="@drawable/progress_bar_style"></ProgressBar>
+            android:progressDrawable="@drawable/progress_bar_style"/>
 
     </RelativeLayout>
 

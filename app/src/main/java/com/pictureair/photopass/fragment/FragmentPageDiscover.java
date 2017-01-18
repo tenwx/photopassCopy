@@ -114,6 +114,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_discover, null);
+        setImmersiveMode(view);
         PictureAirLog.out("discover on create");
 
         //初始化控件

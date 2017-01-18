@@ -56,4 +56,9 @@
         <!--<item name="android:backgroundDimEnabled">false</item>-->
     </style>
 
+    <style name="ImmersiveMode">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:clipToPadding">true</item>
+    </style>
+
 </resources>

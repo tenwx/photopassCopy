@@ -2,13 +2,14 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,8 +18,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import cn.udesk.R;
 import cn.udesk.JsonUtils;
+import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
@@ -54,6 +55,9 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
 
     private void initView() {
         settingTitlebar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         mNoDataView = findViewById(R.id.udesk_navi_may_search_fail);
         naviToIm = findViewById(R.id.udesk_navi_to_im);
         naviToIm.setOnClickListener(this);

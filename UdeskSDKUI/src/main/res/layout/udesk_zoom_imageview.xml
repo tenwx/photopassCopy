@@ -3,7 +3,8 @@
     android:id="@+id/udesk_panel_zoom_imageview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/udesk_black" >
+    android:background="@color/udesk_black"
+    style="@style/ImmersiveMode">
 
     <Button
         android:id="@+id/udesk_zoom_save"

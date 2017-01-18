@@ -171,6 +171,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_shop, null);
         newToast = new PWToast(MyApplication.getInstance());
+        setImmersiveMode(view);
         //找控件
         shoppingBag = (ImageView) view.findViewById(R.id.frag3_cart);
         cartCountTextView = (TextView) view.findViewById(R.id.textview_cart_count);

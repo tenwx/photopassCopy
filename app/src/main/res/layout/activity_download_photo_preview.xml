@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    style="@style/ImmersiveMode">
     <RelativeLayout
         android:id="@+id/download_preview_titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/white" >
+         >
 
         <ImageView
             android:id="@+id/download_preview_back"

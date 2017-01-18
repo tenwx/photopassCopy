@@ -310,7 +310,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         LayoutParams params = new LayoutParams(screenW / 3, screenW / 3);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         progressImageView.setLayoutParams(params);
-        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, R.drawable.loading_0), progressImageView);
+        GlideUtil.load(mContext.getApplicationContext(), GlideUtil.getDrawableUrl(mContext, R.drawable.loading_0), progressImageView);
         photoContainerRl.addView(progressImageView);
 
         //设置视频播放按钮
@@ -356,7 +356,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
      */
     public void setUrl(String imageUrl, boolean isEncrypted) {
         //使用imageloader加载图片
-        GlideUtil.load(mContext, imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
+        GlideUtil.load(mContext.getApplicationContext(), imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 super.onLoadFailed(e, errorDrawable);
@@ -365,7 +365,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
 
             @Override
             public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
-                GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
+                GlideUtil.load(mContext.getApplicationContext(), GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
                 mImageView.setVisibility(VISIBLE);
                 mImageView.setScaleType(ScaleType.MATRIX);
                 mImageView.setImageBitmap(loadedImage);
@@ -382,7 +382,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
     public void setImagePath(String imagePath) {
         //为什么设置800，800，本地图片尽量不需要去加载原图，容易OOM，因此只要加载特定尺寸即可。
         //测试发现，800，800，不是最终的bitmap大小，而是和原图相比缩小了1倍，需要继续验证。
-        GlideUtil.load(mContext, GlideUtil.getFileUrl(imagePath), 800, 800, defaultType == 1,//defauleType为1，说明从下载页面进入，此时不需要缓存机制
+        GlideUtil.load(mContext.getApplicationContext(), GlideUtil.getFileUrl(imagePath), 800, 800, defaultType == 1,//defauleType为1，说明从下载页面进入，此时不需要缓存机制
                 new RequestListener<String, Bitmap>() {
                     @Override
                     public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
@@ -393,7 +393,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                     @Override
                     public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
                         PictureAirLog.out("width--->" + bitmap.getWidth() + "===" + bitmap.getHeight());
-                        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
+                        GlideUtil.load(mContext.getApplicationContext(), GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
                         progressImageView.setVisibility(GONE);
                         mImageView.setScaleType(ScaleType.MATRIX);
                         mImageView.setVisibility(VISIBLE);
@@ -462,7 +462,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         if (oriBlurBmp == null) {
             return;
         }
-        GlideUtil.load(mContext, GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
+        GlideUtil.load(mContext.getApplicationContext(), GlideUtil.getDrawableUrl(mContext, getImageResource(100)), progressImageView);
         mImageView.setVisibility(VISIBLE);
         mImageView.setScaleType(ScaleType.MATRIX);
         mImageView.setImageBitmap(oriBlurBmp);

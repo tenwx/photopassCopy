@@ -1053,8 +1053,8 @@ public class PictureAirDbManager {
     public static synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
         List<PhotoDownLoadInfo> photoList;
-        QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
         for (int i = 0; i < list.size(); i++) {
+            QueryBuilder queryBuilder = photoDownLoadInfoDao.queryBuilder();
             queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(list.get(i).getPhotoId()));
             if (queryBuilder.count() > 0) {
                 photoList = queryBuilder.build().forCurrentThread().list();
@@ -1161,9 +1161,9 @@ public class PictureAirDbManager {
      * */
     public static synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
         PhotoDownLoadInfoDao photoDownLoadInfoDao = MyApplication.getInstance().getDaoSession().getPhotoDownLoadInfoDao();
-        QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder();
 
         for (int i = 0; i < list.size(); i++) {
+            QueryBuilder<PhotoDownLoadInfo> queryBuilder = photoDownLoadInfoDao.queryBuilder();
             PhotoDownLoadInfo info = list.get(i);
             queryBuilder.where(PhotoDownLoadInfoDao.Properties.UserId.eq(userId), PhotoDownLoadInfoDao.Properties.PhotoId.eq(info.getPhotoId()));
 

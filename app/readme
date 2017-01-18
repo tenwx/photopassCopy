@@ -19,6 +19,8 @@ versionCode 11     versionName "3.0.0"
 13.优化模糊图控件
 14.水平list替代成recyclerview
 15.需要强制更新
+16.4.4以上使用沉浸式状态栏
+17.下载图片支持断点下载
 
 
 

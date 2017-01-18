@@ -3,12 +3,12 @@ package cn.udesk.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -48,6 +48,9 @@ public class UdeskRobotActivity extends Activity {
 	}
 
 	private void initView() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		}
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 		settingTitlebar(tranfer);
 		mwebView = (WebView) findViewById(R.id.udesk_robot_webview);

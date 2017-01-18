@@ -1,13 +1,12 @@
 package cn.udesk.activity;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +46,9 @@ public class UdeskZoomImageActivty extends Activity implements
 
 		saveIdBtn = findViewById(R.id.udesk_zoom_save);
 		saveIdBtn.setOnClickListener(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		}
 	}
 
 	@Override

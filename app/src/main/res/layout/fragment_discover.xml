@@ -4,11 +4,18 @@
     android:layout_height="fill_parent"
     android:background="@color/gray_light">
 
+    <View
+        android:id="@+id/status_bar_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:id="@+id/discover_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/status_bar_empty_view"
         android:layout_centerHorizontal="true"
         android:background="@color/white">
 

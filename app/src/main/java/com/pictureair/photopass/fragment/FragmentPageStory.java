@@ -218,6 +218,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         PictureAirLog.out("story flow ---> on create----->story");
         context = getActivity();
         View view = inflater.inflate(R.layout.fragment_story, null);
+        setImmersiveMode(view);
         //获取控件
         scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
         scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
