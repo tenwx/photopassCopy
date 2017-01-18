@@ -1,7 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.os.Handler;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -9,7 +8,6 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.SendAddress;
@@ -21,7 +19,6 @@ import com.pictureair.photopass.http.rxhttp.RxHelper;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +28,6 @@ import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.pictureair.photopass.util.API1.GET_NEW_PHOTOS;
@@ -86,7 +82,9 @@ public class API2 {
     public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
     public static final int UPDATE_PROFILE_COUNTRY = 5015;
 
+    //下载文件
     public static final int DOWNLOAD_APK_FAILED = 6010;
+    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
 
     /**
      * 发送设备ID获取tokenId
@@ -146,65 +144,10 @@ public class API2 {
      * 下载头像或者背景文件
      *
      * @param downloadUrl
-     * @param folderPath
-     * @param fileName
      */
-    public static Observable<InputStream> downloadHeadFile(String downloadUrl, final String folderPath, final String fileName, final HttpCallback callback) {
+    public static Observable<ResponseBody> downloadHeadFile(String downloadUrl, final HttpCallback callback) {
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<InputStream> observable = request.download(downloadUrl, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<ResponseBody, Observable<InputStream>>() {
-                    @Override
-                    public Observable<InputStream> call(ResponseBody responseBody) {
-                        return RxHelper.createData(responseBody.byteStream());
-                    }
-                });
-        return observable;
-
-//        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                try {
-//                    File folder = new File(folderPath);
-//                    if (!folder.exists()) {
-//                        folder.mkdirs();
-//                    }
-//                    File file = new File(folderPath + fileName);
-//                    file.createNewFile();
-//                    FileOutputStream fos = new FileOutputStream(file);
-//                    fos.write(binaryData);
-//                    fos.close();
-//                } catch (FileNotFoundException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//                handler.obtainMessage(DOWNLOAD_FILE_SUCCESS, folderPath + fileName).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.obtainMessage(DOWNLOAD_FILE_FAILED, status, 0).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                handler.obtainMessage(DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
-//            }
-//        });
-//
-//        return task;
+        return download(downloadUrl, callback);
     }
 
     /**
@@ -469,24 +412,7 @@ public class API2 {
     public static Observable<JSONObject> updateUserImage(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.upload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
+        return upload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, callback);
     }
 
 
@@ -500,24 +426,7 @@ public class API2 {
     public static Observable<JSONObject> SetPhoto(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
 
-        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.upload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, new ProgressListener() {
-            @Override
-            public void update(long bytesRead, long contentLength) {
-                if (callback != null) callback.onProgress(bytesRead, contentLength);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (callback != null) callback.doOnSubscribe();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
+        return upload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, callback);
     }
 
     /**
@@ -1748,6 +1657,27 @@ public class API2 {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread());
+        return observable;
+    }
+
+    private static Observable<JSONObject> upload(String url, final Map<String, RequestBody> params, final HttpCallback callback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        Observable<JSONObject> observable = request.upload(url, params, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (callback != null) callback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (callback != null) callback.doOnSubscribe();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.<JSONObject>handleResult());
+
         return observable;
     }
 }

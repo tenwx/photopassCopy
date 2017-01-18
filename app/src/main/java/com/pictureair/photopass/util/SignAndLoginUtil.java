@@ -16,7 +16,10 @@ import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
 
+import okhttp3.ResponseBody;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
 
 /**
  * 接受loginActicity中传来的手机号和密码
@@ -125,7 +128,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                     @Override
                     public void onCompleted() {
                         goSignOrLogin();
-                        PictureAirLog.e("getTokenId", "onCompleted end");
+                        PictureAirLog.out("getTokenId onCompleted end");
                     }
                 });
 
@@ -139,9 +142,12 @@ public class SignAndLoginUtil implements Handler.Callback {
         }
     }
 
+
+
     private void register() {
-        PictureAirLog.e("register", "register start");
-        API2.Register(account, pwd)
+        PictureAirLog.out("register start");
+        String userAccount = AppUtil.getCorrectAccount(account);
+        API2.Register(userAccount, pwd)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -170,21 +176,22 @@ public class SignAndLoginUtil implements Handler.Callback {
                     @Override
                     public void onCompleted() {
                         login();
-                        PictureAirLog.e("register", "onCompleted end");
+                        PictureAirLog.out("register onCompleted end");
                     }
                 });
     }
 
     private void login() {
-        PictureAirLog.e("login", "login start");
-        API2.Login(account, pwd, loginType, verificationCode)
+        PictureAirLog.out("login start");
+        String userAccount = AppUtil.getCorrectAccount(account);
+        API2.Login(userAccount, pwd, loginType, verificationCode)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
 
-                        JsonUtil.getUserInfo(context, jsonObject, account, null);
+                        JsonUtil.getUserInfo(context, jsonObject, account, pwd);
 
                     }
 
@@ -214,11 +221,11 @@ public class SignAndLoginUtil implements Handler.Callback {
                     public void onCompleted() {
                         String headUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
                         if (headUrl != null) {//头像不为空，下载头像文件
-                            API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH, handler);
+                            downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH);
                         }
                         String bgUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BGPHOTO, null);
                         if (bgUrl != null) {//背景不为空，下载背景文件
-                            API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT, handler);
+                            downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT);
                         }
 
                         if (needModifyInfo) {//需要修改个人信息
@@ -227,18 +234,51 @@ public class SignAndLoginUtil implements Handler.Callback {
                             updateProfileSuccess();
                         }
 
-                        PictureAirLog.e("login", "onCompleted end");
+                        PictureAirLog.out("login onCompleted end");
                     }
                 });
     }
 
+    private void downloadHeadFile(String url, final String folderPath, final String fileName) {
+        API2.downloadHeadFile(url, null)
+                .map(new Func1<ResponseBody, String >() {
+                    @Override
+                    public String call(ResponseBody responseBody) {
+                        try {
+                            return AppUtil.writeFile(responseBody, folderPath, fileName);
+                        } catch (Exception e) {
+                            throw Exceptions.propagate(e);
+                        }
+                    }
+                }).compose(((RxActivity)context).<String>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<String>() {
+                    @Override
+                    public void _onNext(String s) {
+                        PictureAirLog.out("photopath:" + s);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.out("download head file error");
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
+
+    }
+
 
     private void updateProfile() {
-        PictureAirLog.e("updateProfile", "updateProfile start");
+        PictureAirLog.out("updateProfile start");
         API2.updateProfile(AESKeyHelper.decryptString(
                 SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""),
                 PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
-                name, birthday, gender, country, "")//, API1.UPDATE_PROFILE_ALL
+                name, birthday, gender, country, "")
          .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
          .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -255,14 +295,14 @@ public class SignAndLoginUtil implements Handler.Callback {
                     @Override
                     public void onCompleted() {
                         updateProfileSuccess();
-                        PictureAirLog.e("updateProfile", "onCompleted end");
+                        PictureAirLog.out("updateProfile onCompleted end");
                     }
                 });
     }
 
 
     private void getCarts() {
-        PictureAirLog.e("getCarts", "getCarts start");
+        PictureAirLog.out("getCarts start");
         API2.getCarts(null)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -289,7 +329,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                     public void onCompleted() {
                         //登录成功，跳转界面
                         loginsuccess();
-                        PictureAirLog.e("getCarts", "onCompleted end");
+                        PictureAirLog.out("getCarts onCompleted end");
                     }
                 });
     }

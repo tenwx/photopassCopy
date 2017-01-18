@@ -3,25 +3,18 @@ package com.pictureair.photopass.util;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.DealingInfo;
-import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.http.BasicResultCallTask;
-import com.pictureair.photopass.http.BinaryCallBack;
 import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,59 +110,6 @@ public class API1 {
     public static final int INSERT_COUPON_SUCCESS = 5151;
     public static final int INSERT_COUPON_FAILED = 5150;
 
-
-    //下载文件
-    public static final int DOWNLOAD_FILE_FAILED = 6050;
-    public static final int DOWNLOAD_FILE_SUCCESS = 6051;
-    public static final int DOWNLOAD_FILE_PROGRESS = 6052;
-
-    /**
-     * 下载头像或者背景文件
-     *
-     * @param downloadUrl
-     * @param folderPath
-     * @param fileName
-     */
-    public static BinaryCallBack downloadHeadFile(String downloadUrl, final String folderPath, final String fileName, final Handler handler) {
-        BinaryCallBack task = HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
-            @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                try {
-                    File folder = new File(folderPath);
-                    if (!folder.exists()) {
-                        folder.mkdirs();
-                    }
-                    File file = new File(folderPath + fileName);
-                    file.createNewFile();
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(binaryData);
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                handler.obtainMessage(DOWNLOAD_FILE_SUCCESS, folderPath + fileName).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(DOWNLOAD_FILE_FAILED, status, 0).sendToTarget();
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                handler.obtainMessage(DOWNLOAD_FILE_PROGRESS, (int)bytesWritten, (int)totalSize).sendToTarget();
-            }
-        });
-
-        return task;
-    }
 
     /**
      * 获取照片的最新数据

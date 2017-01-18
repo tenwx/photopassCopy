@@ -18,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -258,11 +260,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
 
     private void addAccountToView() {
-        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "").equals("")) {
             String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_ACCOUNT, "");
             if (!acount.contains("@")) {
-                if (acount.length() == 13 && acount.startsWith("86")) {
-                    userName.setText(acount.substring(2, acount.length()));
+                String[] data = acount.split(",");
+                if (data != null && data.length == 2) {
+                    userName.setText(data[1]);
+                }
+                if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_PASSWORD, "").equals("")) {
+                    String pass = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.USERINFO_PASSWORD, "");
+                    pass= AESKeyHelper.decryptString(pass, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP,0));
+                    password.setText(pass);
                 }
             }
         }
@@ -300,7 +308,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
                     case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
-                        signAndLoginUtil.start(countryCode + userName.getText().toString().trim(),
+
+                        signAndLoginUtil.start(countryCode + "," + userName.getText().toString().trim(),
                                 password.getText().toString(), false, false, null, null, null, null, null, null);// 登录
                         break;
 

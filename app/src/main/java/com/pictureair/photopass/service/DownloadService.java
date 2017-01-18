@@ -821,7 +821,7 @@ public class DownloadService extends Service {
                     PictureAirLog.e("writecache exception", "hasException");
                     //需要关闭reponsebody,否则内存泄漏
                     responseBody.close();
-                    throw Exceptions.propagate(new ServerException(401));
+                    throw Exceptions.propagate(e);
                 }
             }
         }).subscribe(new RxSubscribe<DownloadFileStatus>() {
