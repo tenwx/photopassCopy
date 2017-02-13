@@ -824,7 +824,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         return;
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).getPhotoOriginalURL());
-                    sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
+                    sharePop.setShareInfo(photolist.get(mViewPager.getCurrentItem()), false, previewPhotoHandler);
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
                     showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);

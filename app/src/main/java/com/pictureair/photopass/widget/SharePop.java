@@ -134,10 +134,15 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
      * 设置需要分享的信息
      *
      * @param photoInfo
+     * @param isDownloadShare 下载图片预览页面用的参数
      * @param handler
      */
-    public void setshareinfo(PhotoInfo photoInfo, Handler handler) {
-        isOnline = photoInfo.getIsOnLine() == 1;
+    public void setShareInfo(PhotoInfo photoInfo, boolean isDownloadShare, Handler handler) {
+        if (isDownloadShare) {
+            isOnline = true;
+        } else {
+            isOnline = photoInfo.getIsOnLine() == 1;
+        }
         isVideo = photoInfo.getIsVideo() == 1;
         if (isOnline || isVideo) {//网络或者视频
             imagePath = null;

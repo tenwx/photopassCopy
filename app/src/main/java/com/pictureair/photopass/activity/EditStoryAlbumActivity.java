@@ -697,7 +697,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				PictureAirLog.d("share--->");
 				for (int i = 0; i < albumArrayList.size(); i++) {
 					if (albumArrayList.get(i).getIsSelected() == 1) {
-						sharePop.setshareinfo(albumArrayList.get(i), editStoryAlbumHandler);
+						sharePop.setShareInfo(albumArrayList.get(i), false, editStoryAlbumHandler);
 						break;
 					}
 				}

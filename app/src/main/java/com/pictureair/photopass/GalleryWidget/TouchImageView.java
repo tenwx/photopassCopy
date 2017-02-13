@@ -254,8 +254,10 @@ public class TouchImageView extends ImageView implements View.OnTouchListener, V
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);
-        bmWidth = bm.getWidth();
-        bmHeight = bm.getHeight();
+        if (bm != null) {
+            bmWidth = bm.getWidth();
+            bmHeight = bm.getHeight();
+        }
     }
 
     @Override

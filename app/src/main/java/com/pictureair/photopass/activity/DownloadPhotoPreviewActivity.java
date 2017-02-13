@@ -169,7 +169,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
                 //初始化底部索引按钮
-                updateIndexTools(true);
+                updateIndexTools();
 
                 PictureAirLog.v(TAG, "----------------------->initing...3");
 
@@ -191,7 +191,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                     public void onPageScrollStateChanged(int arg0) {
                         PictureAirLog.v(TAG, "----------------------->initing...5");
                         if (arg0 == 0) {//结束滑动
-                            updateIndexTools(false);
+                            updateIndexTools();
                         }
                     }
                 });
@@ -280,7 +280,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.setVideoHeight(downLoadInfo.getVideoHeight());
                         photoInfo.setVideoWidth(downLoadInfo.getVideoWidth());
                         photoInfo.setIsEnImage(1);
-                        photoInfo.setIsOnLine(1);//因为都是网络图片，也都有保存photoid，本地图还要压缩，并且上传，因此就以网络图处理
+                        photoInfo.setIsOnLine(0);
                         photolist.add(photoInfo);
                     }
                 }
@@ -414,7 +414,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 break;
 
             case R.id.download_preview_share:
-                sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()), previewPhotoHandler);
+                sharePop.setShareInfo(photolist.get(mViewPager.getCurrentItem()), true, previewPhotoHandler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
 
@@ -438,7 +438,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     /**
      * 更新底部索引工具
      */
-    private void updateIndexTools(boolean isOnCreate) {
+    private void updateIndexTools() {
         PictureAirLog.v(TAG, "updateIndexTools-------->" + currentPosition);
         previewPhotoHandler.obtainMessage(CHECK_EXIST, currentPosition, 0).sendToTarget();
         //更新序列号
