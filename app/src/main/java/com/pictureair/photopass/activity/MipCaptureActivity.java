@@ -186,21 +186,25 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 if (msg.obj != null) {
                     Bundle bundle = (Bundle) msg.obj;
                     PictureAirLog.out("status-------->" + bundle.getInt("status"));
-                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
+                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {//获取抵用券对象，并且使用eventbus返回
                         EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type"), (CouponInfo) bundle.getSerializable("coupon")));
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS) {//扫描ppp并且成功绑定到用户
                         //进入ppp页面
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                         API2.PPPlist.clear();
                         intent2.putExtra("upgradePP", true);
                         startActivity(intent2);
 
-                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {//扫码pp并且成功绑定到用户
                         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                         int currentPPCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0);
                         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, currentPPCount + 1);
 
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_COUPON_TO_USER_NOT_RETURN_SUCCESS) {//扫码coupon并且成功绑定到用户
+                        //进入coupon页面
+                        Intent intent2 = new Intent(MipCaptureActivity.this, CouponActivity.class);
+                        startActivity(intent2);
                     }
                     finish();
 //                } else {

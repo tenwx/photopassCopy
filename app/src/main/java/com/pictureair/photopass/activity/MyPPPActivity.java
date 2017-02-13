@@ -24,8 +24,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.JsonInfo;
@@ -82,7 +80,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private ArrayList<PPPinfo> listNoUse;// 已过期已用完的pp+
 
     private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
-    private int currentPosition = 0;//记录选中的项的索引值
 
     private String errorMessage = "";
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
@@ -91,7 +88,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private List<GoodsInfo> allGoodsList;//全部商品
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
-    private String PPCode;
 
     // 选择PP＋需要的组件
     private TextView ok;
@@ -163,7 +159,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
      * @param msg
      */
     private void dealHandler(Message msg) {
-        Intent intent;
         switch (msg.what) {
             case SCAN_PPP_CODE_SUCCESS:
                 if (isOnResume) {
@@ -186,45 +181,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 GetPPPList();
                 break;
 
-//            case API1.ADD_TO_CART_FAILED:
-//                dismissPWProgressDialog();
-//                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-//
-//                break;
-//
-//            case API1.ADD_TO_CART_SUCCESS:
-//                dismissPWProgressDialog();
-//                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
-//                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-//                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-//                String cartId = jsonObject.getString("cartId");
-//
-//                //生成订单
-//                Intent intent1 = new Intent(MyPPPActivity.this, SubmitOrderActivity.class);
-//                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-//                CartItemInfo cartItemInfo = new CartItemInfo();
-//                cartItemInfo.setCartId(cartId);
-//                cartItemInfo.setProductName(pppGoodsInfo.getName());
-//                cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-//                cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-//                cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-//                cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-//                cartItemInfo.setQty(1);
-//                cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-//                cartItemInfo.setPictures(photoUrls);
-//                cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-//                cartItemInfo.setCartProductType(3);
-//
-//                orderinfoArrayList.add(cartItemInfo);
-//                intent1.putExtra("orderinfo", orderinfoArrayList);
-//                startActivity(intent1);
-//                break;
-
             case 2:
                 ok.setText(formaStringPPP(listPPPAdapter.getMap().size(),1));
                 if (listPPPAdapter.getMap().size() >=1){
                     ok.setEnabled(true);
-                    ok.setTextColor(getResources().getColor(R.color.white));
+                    ok.setTextColor(getResources().getColor(R.color.pp_blue));
                 }else{
                     ok.setEnabled(false);
                     ok.setTextColor(getResources().getColor(R.color.gray_light5));
@@ -407,8 +368,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         MyApplication.getInstance().setNeedRefreshPPPList(true);
         button_buy_ppp.setOnClickListener(this);
         button_scan_ppp.setOnClickListener(this);
-//		optionImageView.setOnClickListener(this);
-//		optoinTextView.setOnClickListener(this);
         refreshLayout.setListView(listPPP);
         refreshLayout.setOnRefreshListener(this);
         ll_guide_layout.setOnClickListener(this);

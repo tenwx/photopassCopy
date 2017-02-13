@@ -103,7 +103,6 @@ public class API2 {
         return get(Common.BASE_URL_TEST + Common.GET_TOKENID, params, null);
     }
 
-
     /**
      * 登录
      *
@@ -146,7 +145,6 @@ public class API2 {
      * @param downloadUrl
      */
     public static Observable<ResponseBody> downloadHeadFile(String downloadUrl, final HttpCallback callback) {
-
         return download(downloadUrl, callback);
     }
 
@@ -183,7 +181,6 @@ public class API2 {
         params.put(Common.PHONE, "+" + phone);
         params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
         params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
-
         PictureAirLog.v(TAG, "sendSMSValidateCode params：" + params.toString());
 
         return post(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, null);
@@ -199,7 +196,6 @@ public class API2 {
      * msgType:string,选填，可选值（register,forgotPassword）
      */
     public static Observable<JSONObject> validateCode(final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
-
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (validateCode != null) {
@@ -314,7 +310,6 @@ public class API2 {
      * @param params
      */
     public static Observable<JSONObject> addScanCodeToUser(String url, Map params) {
-
         return post(url, params, null);
     }
 
@@ -411,7 +406,6 @@ public class API2 {
      */
     public static Observable<JSONObject> updateUserImage(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-
         return upload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, callback);
     }
 
@@ -425,7 +419,6 @@ public class API2 {
      */
     public static Observable<JSONObject> SetPhoto(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-
         return upload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, callback);
     }
 
@@ -492,7 +485,6 @@ public class API2 {
      * @param params 参数
      */
     public static Observable<JSONObject> hidePPs(Map params) {
-
         return post(Common.BASE_URL_TEST + Common.HIDE_PPS, params, null);
     }
 
@@ -538,10 +530,8 @@ public class API2 {
      * @param params params
      */
     public static Observable<JSONObject> bindPPPToUser(Map params) {
-
         return post(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, null);
     }
-
 
     /**
      * 帮助
@@ -608,8 +598,6 @@ public class API2 {
 
 
     /***************************************Shop模块 start**************************************/
-
-
     /**
      * 获取全部商品
      */

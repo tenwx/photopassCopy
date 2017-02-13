@@ -105,12 +105,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                 }
             });
-            recyclerViewSectionViewHolder.previewTV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.previewClick(position);
-                }
-            });
             recyclerViewSectionViewHolder.downloadRL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,7 +117,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                         dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, recyclerViewSectionViewHolder.bgIV);
                 recyclerViewSectionViewHolder.downloadRL.setVisibility(View.VISIBLE);
                 recyclerViewSectionViewHolder.buyTV.setVisibility(View.GONE);
-                recyclerViewSectionViewHolder.previewTV.setVisibility(View.GONE);
                 recyclerViewSectionViewHolder.albumIV.setVisibility(View.GONE);
 
             } else {
@@ -137,7 +130,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 recyclerViewSectionViewHolder.expireTV.setText(context.getString(R.string.story_blur_expire_time));
                 recyclerViewSectionViewHolder.downloadRL.setVisibility(View.GONE);
                 recyclerViewSectionViewHolder.buyTV.setVisibility(View.VISIBLE);
-                recyclerViewSectionViewHolder.previewTV.setVisibility(View.VISIBLE);
                 recyclerViewSectionViewHolder.albumIV.setVisibility(View.VISIBLE);
                 GlideUtil.load(context, dailyPPCardInfoArrayList.get(position).getAlbumCoverPhoto().getPhotoThumbnail_128(),
                         dailyPPCardInfoArrayList.get(position).getLocationPhoto().getIsEnImage() == 1, new SimpleTarget<Bitmap>() {
@@ -189,7 +181,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
     public class StickySectionHeaderViewHolder extends RecyclerView.ViewHolder {
         private ImageView bgIV, albumIV;
-        private TextView dateTV, ppCodeTV, buyTV, previewTV, expireTV, titleTV;
+        private TextView dateTV, ppCodeTV, buyTV, expireTV, titleTV;
         private RelativeLayout downloadRL;
 
         public StickySectionHeaderViewHolder(View itemView) {
@@ -198,7 +190,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             dateTV = (TextView) itemView.findViewById(R.id.daily_pp_header_date_tv);
             ppCodeTV = (TextView) itemView.findViewById(R.id.daily_pp_header_card_no_tv);
             buyTV = (TextView) itemView.findViewById(R.id.daily_pp_header_buy_tv);
-            previewTV = (TextView) itemView.findViewById(R.id.daily_pp_header_preview_tv);
             downloadRL = (RelativeLayout) itemView.findViewById(R.id.daily_pp_header_download_rl);
             expireTV = (TextView) itemView.findViewById(R.id.daily_pp_header_bottom_tip_tv);
             titleTV = (TextView) itemView.findViewById(R.id.daily_pp_header_title_tv);
@@ -230,7 +221,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     public interface OnRecyclerViewItemClickListener {
         void downloadClick(int position);
         void buyClick(int position);
-        void previewClick(int position);
         void itemClick(int position);
     }
 

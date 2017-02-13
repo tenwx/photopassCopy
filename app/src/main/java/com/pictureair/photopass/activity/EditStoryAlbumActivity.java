@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -722,8 +723,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			case R.id.edit_album_buy_tv://购买ppp
 				showPWProgressDialog();
-				//获取商品（以后从缓存中取）
-				getGoods();
+				//判断是否有可用的ppp
+				getaValiablePPP();
 				break;
 
 			case R.id.tip_rl:
@@ -734,6 +735,55 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * 获取可用的ppp
+	 */
+	private void getaValiablePPP() {
+		API2.getPPPsByShootDate(shootDate)
+				.compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new RxSubscribe<JSONObject>() {
+					@Override
+					public void _onNext(JSONObject jsonObject) {
+						API2.PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
+						if (API2.PPPlist.size() > 0) {//有可用的ppp
+
+							JSONArray pps = new JSONArray();
+							JSONObject jb = new JSONObject();
+							try {
+								jb.put("code", ppCode);
+								jb.put("bindDate", shootDate);
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							pps.add(jb);
+
+							dismissPWProgressDialog();
+
+							Intent intent = new Intent(EditStoryAlbumActivity.this, MyPPPActivity.class);
+							intent.putExtra("ppsStr", pps.toString());
+							intent.putExtra("isUseHavedPPP", true);
+							startActivity(intent);
+
+						} else {//无可用的ppp，需要购买ppp
+							//获取商品（以后从缓存中取）
+							getGoods();
+						}
+					}
+
+					@Override
+					public void _onError(int status) {
+						myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+					}
+
+					@Override
+					public void onCompleted() {
+
+					}
+				});
 	}
 
 	/**

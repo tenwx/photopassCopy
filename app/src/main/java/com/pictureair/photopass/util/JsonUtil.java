@@ -3,7 +3,6 @@ package com.pictureair.photopass.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -302,6 +301,9 @@ public class JsonUtil {
             JSONArray photos = location.getJSONArray("loc");
             PhotoInfo photoInfo;
             for (int j = 0; j < photos.size(); j++) {
+                if (j >= 2) {//只取第一和第二个点
+                    break;
+                }
                 dailyPPCardInfo = new DailyPPCardInfo();
                 JSONObject photo = photos.getJSONObject(j);
                 if (photo.containsKey("photoInfos")) {
@@ -340,7 +342,8 @@ public class JsonUtil {
                     list.add(dailyPPCardInfo);
                 }
             }
-            if (photos.size() % 2 != 0) {//如果是奇数，需要补一个位置
+
+            if (list.size() % 2 == 0) {//如果是奇数个地点（因为包括了一个header），需要补一个位置
                 dailyPPCardInfo = new DailyPPCardInfo();
                 dailyPPCardInfo.setPpCode("occupy");
                 dailyPPCardInfo.setSectionId(index);

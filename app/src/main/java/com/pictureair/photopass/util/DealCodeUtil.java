@@ -74,6 +74,11 @@ public class DealCodeUtil {
 	 */
 	public static final int STATE_ADD_PPP_TO_USER_NOT_RETURN_SUCCESS = 3;
 
+	/**
+	 * 绑定coupon成功，不需要返回信息
+	 */
+	public static final int STATE_ADD_COUPON_TO_USER_NOT_RETURN_SUCCESS = 2;
+
 	private int id = 0;
 	
 	public DealCodeUtil(Context context, Intent intent, boolean isInputAct, Handler handler) {
@@ -163,12 +168,8 @@ public class DealCodeUtil {
 								getInfo(code, codeType);
 							}
 						} else {//故事页面
-							if (codeType.equals("coupon")) {//故事页面扫了coupon，提示无效的卡
-								myToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
-								handler.sendEmptyMessage(DEAL_CODE_FAILED);
-							} else {
-								getInfo(code, codeType);
-							}
+							getInfo(code, codeType);
+
 						}
 					}
 
@@ -391,18 +392,25 @@ public class DealCodeUtil {
 
 								}
 							} else {//coupon
-								//1.ppp,不会出现
-								//2.scan，直接绑定，也可以返回数据，scan页面也不会处理
-								//3.coupon，直接绑定，并且返回数据
-								//解析json
-								PictureAirLog.out("coupon---->" + jsonObject.toString());
-								CouponInfo couponInfo = JsonUtil.getCouponInfo(jsonObject.getJSONObject("PPP"));
-								//将对象放入bundle3中
-								bundle3.putInt("status", STATE_RETURN_MSG);
-								PictureAirLog.out("coupon---->" + couponInfo == null ? " null " : "not null");
-								bundle3.putSerializable("coupon", couponInfo);
-								PictureAirLog.out("scan coupon ok");
+								//1.从ppp页面进入扫码,不会出现
+								//2.从主页进入扫码，直接绑定，也可以返回数据，scan页面也不会处理
+								//3.从coupon进入扫码，直接绑定，并且返回数据
+								if (dealWay == null) {//从主页进入
+									bundle3.putInt("status", STATE_ADD_COUPON_TO_USER_NOT_RETURN_SUCCESS);
+									PictureAirLog.out("scan coupon ok 5555");
+
+								} else {//从coupon页面进入
+									//解析json
+									PictureAirLog.out("coupon---->" + jsonObject.toString());
+									CouponInfo couponInfo = JsonUtil.getCouponInfo(jsonObject.getJSONObject("PPP"));
+									//将对象放入bundle3中
+									bundle3.putInt("status", STATE_RETURN_MSG);
+									PictureAirLog.out("coupon---->" + couponInfo == null ? " null " : "not null");
+									bundle3.putSerializable("coupon", couponInfo);
+									PictureAirLog.out("scan coupon ok");
+								}
 								handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
+
 							}
 						}
 

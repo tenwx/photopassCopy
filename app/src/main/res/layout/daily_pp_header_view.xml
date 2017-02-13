@@ -74,28 +74,12 @@
         android:textSize="@dimen/text_size_12" />
 
     <TextView
-        android:id="@+id/daily_pp_header_preview_tv"
+        android:id="@+id/daily_pp_header_buy_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/pp_dp_10"
-        android:drawableTop="@drawable/story_preview"
-        android:shadowColor="@color/gray_shadow"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:text="@string/preview"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_14" />
-
-    <TextView
-        android:id="@+id/daily_pp_header_buy_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/pp_dp_10"
-        android:layout_toLeftOf="@+id/daily_pp_header_preview_tv"
         android:drawableTop="@drawable/story_buy"
         android:shadowColor="@color/gray_shadow"
         android:shadowDx="1"

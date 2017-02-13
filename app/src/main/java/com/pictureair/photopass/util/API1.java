@@ -11,7 +11,6 @@ import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.http.BasicResultCallTask;
-import com.pictureair.photopass.http.CallTaskManager;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 
 import java.io.FileNotFoundException;
@@ -27,13 +26,11 @@ import okhttp3.RequestBody;
  * 所有与后台的交互都封装到此类
  */
 public class API1 {
-
     private static final String TAG = "API";
 
     public static final int GET_DEFAULT_PHOTOS = 1;//获取默认图片
     public static final int GET_NEW_PHOTOS = 2;//获取最新图片
     public static final int GET_OLD_PHOTOS = 3;//获取旧图片
-
 
     //选择已有PP＋
     public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 2051;
@@ -101,15 +98,6 @@ public class API1 {
     //PP & PP＋模块
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
-
-    //从订单中获取所有优惠卷
-    public static final int GET_COUPON_SUCCESS = 5141;
-    public static final int GET_COUPON_FAILED = 5140;
-
-    //添加一张优惠卷
-    public static final int INSERT_COUPON_SUCCESS = 5151;
-    public static final int INSERT_COUPON_FAILED = 5150;
-
 
     /**
      * 获取照片的最新数据
@@ -808,107 +796,5 @@ public class API1 {
     /***************************************
      * 推送 End
      **************************************/
-
-    /**
-     * 根据商品查询所有可以使用的优惠卷
-     * 1. tokenId
-     * 2. cartItemIds:array<string>,用户选中的购物项(可选)
-     */
-    public static BasicResultCallTask getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
-        Map<String,Object> params = new HashMap<>();
-        if (null != cartItemIds) {//订单页面发来的请求
-            params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
-        if (null != MyApplication.getTokenId()){
-            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        }
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-
-    /**
-     * 添加优惠卷
-     * * 两个业务处理AB
-     * A在me中进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * B在订单页面进入的添加优惠卷
-     * 1. tokenId
-     * 2. 优惠code
-     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
-     */
-    public static BasicResultCallTask addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
-        Map<String,Object> params = new HashMap<>();
-        if (null != cartItemIds) {//订单页面发来的请求
-            params.put(Common.CART_ITEM_IDS, cartItemIds);
-        }
-        if (couponsCode != null) {
-            params.put(Common.couponCode, couponsCode);
-        }
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, MyApplication.getTokenId());
-
-        BasicResultCallTask task = HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    /**
-     * 从me中进入查询抵用劵
-     *
-     * @param handler
-     */
-    public static BasicResultCallTask getCoupons(final Handler handler) {
-        Map<String,Object> params = new HashMap<>();
-
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
-
-        BasicResultCallTask task = HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "============" + jsonObject);
-                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                PictureAirLog.e(TAG, "============" + status);
-                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
-            }
-        });
-        return task;
-    }
-
-    public static void cancelAllRequest() {
-        CallTaskManager.getInstance().cancleAllTask();
-        CallTaskManager.getInstance().clearAllTask();
-    }
 
 }

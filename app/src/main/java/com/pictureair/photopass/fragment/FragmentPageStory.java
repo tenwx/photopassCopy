@@ -868,12 +868,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     }
 
     @Override
-    public void previewClick(int position) {
-        PictureAirLog.d("preview click-->" + position);
-        itemClick(position);
-    }
-
-    @Override
     public void itemClick(int position) {
         PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode());
         //进入相册
