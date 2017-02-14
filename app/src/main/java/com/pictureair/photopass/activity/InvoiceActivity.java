@@ -2,8 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,7 +20,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SendAddressAdapter;
 import com.pictureair.photopass.entity.InvoiceInfo;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
@@ -31,10 +30,12 @@ import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.NoScrollListView;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 public class InvoiceActivity extends BaseActivity implements View.OnClickListener {
     private final static int ADD_ADDRESS=101;
@@ -62,66 +63,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private int curEditItemPosition=-1;
     //当前发票所有信息
     private InvoiceInfo invoiceInfo;
-    private final Handler invoiceHandler = new InvoiceHandler(this);
-
-
-    private static class InvoiceHandler extends Handler {
-        private final WeakReference<InvoiceActivity> mActivity;
-
-        public InvoiceHandler(InvoiceActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    /**
-     * 处理Message
-     *
-     * @param msg
-     */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case API1.ADDRESS_LIST_SUCCESS://获取所有地址列表
-                getAddressData(msg);
-                addressAdapter.setCurrentIndex(0);
-                addressAdapter.notifyDataSetChanged();
-                break;
-
-            case API1.ADD_ADDRESS_LIST_SUCCESS://添加新地址
-                addAddressItem(newAddAddress,msg);
-                break;
-
-            case API1.ADD_ADDRESS_LIST_FAILED:
-                PWToast.getInstance(this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.MODIFY_ADDRESS_LIST_SUCCESS://修改地址
-                updateAddressItem(newAddAddress,curEditItemPosition);
-                addressAdapter.setModifying(false);
-                break;
-
-            case API1.MODIFY_ADDRESS_LIST_FAILED://修改地址失败
-                addressAdapter.setModifying(false);
-                PWToast.getInstance(this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-        }
-    }
-
-    private void getAddressData(Message msg) {
-        JSONObject resultJsonObject = (JSONObject) msg.obj;
-
-        PictureAirLog.out("resi;t===>" + resultJsonObject.toJSONString());
-        listData.addAll(JsonUtil.getAddressList(resultJsonObject));
-        Collections.sort(listData);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,7 +157,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             public void clickItem(int position,SendAddress address) {
                 curEditItemPosition=position;
                 newAddAddress=address;
-                API1.modifyInvoiceAddress(invoiceHandler,address);
+                modifyInvoiceAddress(address);
             }
         });
 
@@ -225,7 +166,36 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
     //加载地址
     private void loadData(){
-        API1.getInvoiceAddressList(invoiceHandler);
+        API2.getInvoiceAddressList()
+                .map(new Func1<JSONObject, ArrayList<SendAddress>>() {
+
+                    @Override
+                    public ArrayList<SendAddress> call(JSONObject jsonObject) {
+                        PictureAirLog.out("resi;t===>" + jsonObject.toJSONString());
+                        return JsonUtil.getAddressList(jsonObject);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<ArrayList<SendAddress>>bindToLifecycle())
+                .subscribe(new RxSubscribe<ArrayList<SendAddress>>() {
+                    @Override
+                    public void _onNext(ArrayList<SendAddress> sendAddresses) {
+                        listData.addAll(sendAddresses);
+                        Collections.sort(listData);
+                        addressAdapter.setCurrentIndex(0);
+                        addressAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**
@@ -358,7 +328,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                     address=parseAddressData(data);
                     if(null!=address){
                         newAddAddress=address;
-                        API1.addInvoiceAddress(invoiceHandler,address);
+                        addInvoiceAddress(address);
                     }
                     break;
                 case MODI_ADDRESS://修改地址
@@ -369,13 +339,75 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                     } else {
                         address=parseModifyAddressData(data);
                         if(null!=address){
-                            newAddAddress=address;
-                            API1.modifyInvoiceAddress(invoiceHandler,address);
+                            newAddAddress = address;
+                            modifyInvoiceAddress(address);
                         }
                     }
                     break;
             }
         }
+    }
+
+    /**
+     * 修改收货地址
+     * @param modifyAddress
+     */
+    private void modifyInvoiceAddress(SendAddress modifyAddress) {
+        API2.modifyInvoiceAddress(modifyAddress)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("modify address success---> " + jsonObject.toJSONString());
+                        updateAddressItem(newAddAddress, curEditItemPosition);
+                        addressAdapter.setModifying(false);
+                    }
+
+                    @Override
+                    public void _onError(int status) {//修改地址失败
+                        addressAdapter.setModifying(false);
+                        PWToast.getInstance(InvoiceActivity.this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    /**
+     * 添加收货地址
+     * @param address
+     */
+    private void addInvoiceAddress(SendAddress address) {
+        API2.addInvoiceAddress(address)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("addinvoice address-->" + jsonObject.toString());
+                        if(jsonObject.containsKey("addressId")){
+                            newAddAddress.setAddressId(jsonObject.getString("addressId"));
+                        }
+                        listData.add(newAddAddress);
+                        addressAdapter.setCurrentIndex(listData.size()-1);
+                        addressAdapter.setModifying(false);
+                        addressAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PWToast.getInstance(InvoiceActivity.this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     //设置发票信息
@@ -439,21 +471,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    //添加新地址
-    private void addAddressItem(SendAddress address,Message msg){
-        JSONObject resultJsonObject = (JSONObject) msg.obj;
-        if(null != resultJsonObject && resultJsonObject.containsKey("addressId")){
-            address.setAddressId(resultJsonObject.getString("addressId"));
-        }
-        listData.add(address);
-        addressAdapter.setCurrentIndex(listData.size()-1);
-        addressAdapter.setModifying(false);
-        addressAdapter.notifyDataSetChanged();
-    }
-
     //更新修改后的地址
     private void updateAddressItem(SendAddress address,int position){
-        SendAddress sendAddress=listData.get(position);
+        SendAddress sendAddress = listData.get(position);
         sendAddress.setName(address.getName());
         sendAddress.setMobilePhone(address.getMobilePhone());
         sendAddress.setProvince(address.getProvince());

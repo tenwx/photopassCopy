@@ -26,7 +26,6 @@ import java.util.Map;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
@@ -559,27 +558,6 @@ public class API2 {
     }
 
     /**
-     * 使用体验卡绑定未购买的图片
-     *
-     * @param pppCode  体验卡卡号
-     * @param photoIds 绑定的图片
-     */
-    public static Observable<JSONObject> useExperiencePPP(String pppCode, JSONArray photoIds) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (pppCode != null) {
-            params.put(Common.EPPP, pppCode);
-        }
-        if (photoIds != null) {
-            params.put(Common.EPPP_IDS, photoIds.toJSONString());
-        }
-        PictureAirLog.out("photo ids --->" + photoIds);
-        PictureAirLog.out("params--->" + params.toString());
-
-        return post(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, null);
-    }
-
-    /**
      * 从用户中移除pp
      *
      * @param ppCode pp码
@@ -897,11 +875,12 @@ public class API2 {
     /**
      * 删除发票的地址
      */
-    public static Observable<JSONObject> deleteInvoiceAddress(String[] ids) {
+    public static Observable<JSONObject> deleteInvoiceAddress(JSONArray ids) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("addressesIds", ids);
 
+        PictureAirLog.d("params---> " + params.toString());
         return delete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, null);
     }
 
@@ -1440,7 +1419,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
@@ -1468,7 +1446,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
@@ -1497,7 +1474,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
@@ -1526,7 +1502,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
         return observable;
     }
@@ -1554,7 +1529,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
@@ -1583,7 +1557,6 @@ public class API2 {
                         if (progressCallback != null) progressCallback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;
@@ -1604,8 +1577,7 @@ public class API2 {
                     public void call() {
                         if (callback != null) callback.doOnSubscribe();
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread());
+                });
         return observable;
     }
 
@@ -1624,8 +1596,7 @@ public class API2 {
                     public void call() {
                         if (callback != null) callback.doOnSubscribe();
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread());
+                });
         return observable;
     }
 
@@ -1643,8 +1614,7 @@ public class API2 {
                     public void call() {
                         if (callback != null) callback.doOnSubscribe();
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread());
+                });
         return observable;
     }
 
@@ -1663,7 +1633,6 @@ public class API2 {
                         if (callback != null) callback.doOnSubscribe();
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.<JSONObject>handleResult());
 
         return observable;

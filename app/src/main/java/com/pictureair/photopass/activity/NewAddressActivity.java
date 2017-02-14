@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,14 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.CityModel;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CountyModel;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ProvinceModel;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
@@ -45,6 +47,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 public class NewAddressActivity extends BaseActivity implements View.OnClickListener {
     private String AddressXML;// xml格式的中国省市区信息
@@ -67,30 +71,6 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
     private SendAddress address;
     private LinearLayout provinceLL,cityLL,countryLL;
     private View provinceLine,cityLine,countryLine;
-
-    private Handler newAddressHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.DELETE_ADDRESS_LIST_SUCCESS:
-                    dismissPWProgressDialog();
-                    Intent intent = new Intent();
-                    intent.putExtra("isDeleteAdd", true);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                    break;
-
-                case API1.DELETE_ADDRESS_LIST_FAILED:
-                    dismissPWProgressDialog();
-                    PWToast.getInstance(NewAddressActivity.this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    break;
-
-                default:
-                    break;
-            }
-            return false;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -366,14 +346,46 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             case R.id.delete_address:
                 //执行删除操作
                 showPWProgressDialog();
-                String[] ids = new String[1];
-                ids[0] = address.getAddressId();
-                API1.deleteInvoiceAddress(newAddressHandler, ids);
+                JSONArray ids = new JSONArray();
+                ids.add(address.getAddressId());
+                deleteInvoiceAddress(ids);
                 break;
 
             default:
                 break;
         }
+    }
+
+    /**
+     * 删除收货地址
+     * @param ids
+     */
+    private void deleteInvoiceAddress(JSONArray ids) {
+        API2.deleteInvoiceAddress(ids)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("delete address success --> " + jsonObject.toJSONString());
+                        dismissPWProgressDialog();
+                        Intent intent = new Intent();
+                        intent.putExtra("isDeleteAdd", true);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        PWToast.getInstance(NewAddressActivity.this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**

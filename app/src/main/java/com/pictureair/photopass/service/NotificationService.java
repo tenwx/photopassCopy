@@ -1,5 +1,6 @@
 package com.pictureair.photopass.service;
 
+import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
@@ -10,7 +11,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  *
  * @author talon
  */
-public class NotificationService extends android.app.Service {
+public class NotificationService extends Service {
     private static final String TAG = "NotificationService";
     private NotificationServiceHelp notificationServiceHelp;
 

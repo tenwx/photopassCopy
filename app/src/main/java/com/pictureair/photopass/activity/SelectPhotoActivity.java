@@ -16,20 +16,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -116,38 +112,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
             case 111:
                 okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
-                break;
-
-            case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED://制作视频失败
-            case API1.ADD_PHOTO_TO_PPP_FAILED://升级照片失败
-                // 处理失败，数据错误
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
-                PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
-                break;
-
-            case API1.ADD_PHOTO_TO_PPP_SUCCESS://升级照片成功
-                PictureAirLog.out("add photo to ppp success");
-                dismissPWProgressDialog();
-                /**
-                 * 1.kill掉多余的activity
-                 * 2.跳转到图片清晰页面预览图片
-                 * 3.设置跳转到story标记
-                 */
-                // 找出购买的info，并且将购买属性改为1
-                photoURLlist.get(0).setIsPaid(1);
-
-                Intent intent = new Intent(SelectPhotoActivity.this, PreviewPhotoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 0);
-                bundle.putString("tab", "other");
-                bundle.putParcelableArrayList("photos", photoURLlist);
-                intent.putExtra("bundle", bundle);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
-                AppManager.getInstance().killActivity(MyPPPActivity.class);
-                myApplication.setMainTabIndex(-1);
-                startActivity(intent);
-                finish();
                 break;
 
             default:
@@ -383,14 +347,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     intent.putExtra("photopath", photoURLlist);
                     setResult(20, intent);
                     finish();
-                } else if (activity.equals("mypppactivity")) {
-                    //绑定图片到ppp
-                    showPWProgressDialog();
-                    JSONArray photoIds = new JSONArray();
-                    for (int i = 0; i < photoURLlist.size(); i++) {
-                        photoIds.add(photoURLlist.get(i).getPhotoId());
-                    }
-                    API1.useExperiencePPP(getIntent().getStringExtra("pppCode"), photoIds, selectPhotoHandler);
                 }
                 break;
             default:

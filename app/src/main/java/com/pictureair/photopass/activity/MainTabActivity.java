@@ -46,11 +46,11 @@ import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PPInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -63,15 +63,16 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-
 
 /**
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
@@ -108,6 +109,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private TextView specialDealTitleTV;
     private TextView specialDealContentTV;
     private DealingInfo dealingInfo;
+    private long localTime;
     private boolean isDealing = false;
 
     //记录退出的时候的两次点击的间隔时间
@@ -799,7 +801,61 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         PictureAirLog.d("get specialdeal goods-->" + needUpdate + showLeadView);
         if (!needUpdate && !showLeadView) {//不需要更新apk，并且不需要显示引导层，才需要显示抢购
             //如果活动进行中，则不需要重新获取数据
-            API1.getDealingGoods(MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType(), handler);
+            API2.getDealingGoods(MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType())
+                    .map(new Func1<JSONObject, DealingInfo>() {
+                        @Override
+                        public DealingInfo call(JSONObject jsonObject) {
+                            localTime = System.currentTimeMillis();
+                            PictureAirLog.d("getDealingGoods localTime",new Date(localTime).toString());
+                            PictureAirLog.json(jsonObject.toString());
+                            return JsonUtil.getDealingInfo(jsonObject);
+                        }
+                    })
+                    .compose(this.<DealingInfo>bindToLifecycle())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RxSubscribe<DealingInfo>() {
+                        @Override
+                        public void _onNext(DealingInfo dealInfo) {
+                            if (dealInfo != null) {
+                                try {
+                                    PictureAirLog.d("getDealingGoods getCurrTime", dealInfo.getCurrTime());
+                                    Date currentSystemServerDate = AppUtil.getDateLocalFromStr(dealInfo.getCurrTime());//服务器时间转换成手机本地时间,目的是不同时区可以准确计时
+                                    PictureAirLog.d("getDealingGoods format", currentSystemServerDate.toString());
+                                    dealInfo.setTimeOffset(localTime - currentSystemServerDate.getTime());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (dealingInfo != null) {//比较误差，取误差最小值
+                                    if (Math.abs(dealingInfo.getTimeOffset()) < Math.abs(dealInfo.getTimeOffset())) {
+                                        dealInfo.setTimeOffset(dealingInfo.getTimeOffset());
+
+                                    }
+                                }
+
+                                dealingInfo = dealInfo;
+                                if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2 || dealingInfo.getState() == -3) {
+                                    showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
+                                } else if (dealingInfo.getState() == 0){//活动结束
+                                    isDealing = false;
+                                    EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, false, false));
+                                }
+
+                            } else {
+                                _onError(401);
+                            }
+                        }
+
+                        @Override
+                        public void _onError(int status) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+                    });
         }
     }
 
@@ -863,28 +919,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
             case START_CHECK_UPDATE:
                 checkUpdateManager.startCheck();
-                break;
-
-            case API1.GET_DEALING_GOODS_SUCCESS:
-                PictureAirLog.d(msg.obj.toString());
-                DealingInfo curDealingInfo = (DealingInfo) msg.obj;
-                if (dealingInfo != null) {//比较误差，取误差最小值
-                    if (Math.abs(dealingInfo.getTimeOffset()) < Math.abs(curDealingInfo.getTimeOffset())) {
-                        curDealingInfo.setTimeOffset(dealingInfo.getTimeOffset());
-
-                    }
-                }
-                dealingInfo = curDealingInfo;
-
-                if (dealingInfo.getState() == 1 || dealingInfo.getState() == -2 || dealingInfo.getState() == -3) {
-                    showSpecialDealDialog();//抢购活动，需要在更新提示框之后出现
-                } else if (dealingInfo.getState() == 0){//活动结束
-                    isDealing = false;
-                    EventBus.getDefault().post(new MainTabOnClickEvent(dealingInfo, false, false));
-                }
-                break;
-
-            case API1.GET_DEALING_GOODS_FAILED:
                 break;
 
             default:

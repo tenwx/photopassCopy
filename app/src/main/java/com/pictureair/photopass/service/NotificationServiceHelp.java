@@ -6,7 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -19,6 +20,7 @@ import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
+import rx.Subscription;
 
 /**
  * NotificationService 的辅助类
@@ -31,18 +33,51 @@ public class NotificationServiceHelp {
     private static SocketIO socket;
     private boolean isConnected = false; // socket是否链接的状态。（ 如果判断socket 是否为空，这个变量是不是可以不要 ）
     private SocketUtil socketUtil;
+    private Subscription subscription1, subscription2;
 
     private Handler notificationHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case SOCKET_CONNECT_SUCCESS: // 链接成功
-                    API1.noticeSocketConnect();
+                    subscription1 = API2.noticeSocketConnect()
+                            .subscribe(new RxSubscribe<com.alibaba.fastjson.JSONObject>() {
+                                @Override
+                                public void _onNext(com.alibaba.fastjson.JSONObject jsonObject) {
+
+                                }
+
+                                @Override
+                                public void _onError(int status) {
+                                    PictureAirLog.v(TAG, "noticeSocketConnect 链接失败,状态码：" + status);
+                                }
+
+                                @Override
+                                public void onCompleted() {
+                                    PictureAirLog.v(TAG, "noticeSocketConnect 链接成功");
+                                }
+                            });
                     break;
 
                 case SocketUtil.SOCKET_RECEIVE_DATA: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
                     if (msg.obj != null) {
-                        API1.clearSocketCachePhotoCount(msg.obj.toString());
+                        subscription2 = API2.clearSocketCachePhotoCount(msg.obj.toString())
+                                .subscribe(new RxSubscribe<com.alibaba.fastjson.JSONObject>() {
+                                    @Override
+                                    public void _onNext(com.alibaba.fastjson.JSONObject jsonObject) {
+
+                                    }
+
+                                    @Override
+                                    public void _onError(int status) {
+                                        PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
+                                    }
+
+                                    @Override
+                                    public void onCompleted() {
+                                        PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息成功");
+                                    }
+                                });
                     }
                     break;
 
@@ -101,6 +136,14 @@ public class NotificationServiceHelp {
      */
     public void destoryService() {
         notificationHandler.removeCallbacksAndMessages(null);
+        if (subscription1 != null && !subscription1.isUnsubscribed()) {
+            subscription1.unsubscribe();
+            PictureAirLog.d("service desotry---> 1:" + subscription1.isUnsubscribed());
+        }
+        if (subscription2 != null && !subscription2.isUnsubscribed()) {
+            subscription2.unsubscribe();
+            PictureAirLog.d("service desotry---> 2:" + subscription2.isUnsubscribed());
+        }
     }
 
     /**

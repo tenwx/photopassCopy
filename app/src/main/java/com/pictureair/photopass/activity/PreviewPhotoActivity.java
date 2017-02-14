@@ -66,14 +66,16 @@ import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -134,12 +136,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private TextView editTV, shareTV, downloadTV, makeGiftTV;
 
-    private Date date;
-    private SimpleDateFormat simpleDateFormat;
     private CartItemInfoJson cartItemInfoJson;//存放意见购买后的购物信息
 
     private static final int GET_LOCATION_AD = 777;
-    private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int NO_PHOTOS_AND_RETURN = 1002;
 
     private static final int LOCAL_PHOTO_EDIT_DIALOG = 1003;
@@ -322,56 +321,77 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case GET_LOCATION_AD:
+                PictureAirLog.d("start get location info from net");
                 final int oldPositon = msg.arg1;
                 if (myApplication.isGetADLocationSuccess()) {
                     //从数据库中查找
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String adStr = PictureAirDbManager.getADByLocationId(photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
-                            previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPositon, 0, adStr).sendToTarget();
-                        }
-                    }).start();
+                    Observable.just(photoInfo.getLocationId())
+                            .subscribeOn(Schedulers.io())
+                            .map(new Func1<String, String>() {
+
+                                @Override
+                                public String call(String str) {
+                                    return PictureAirDbManager.getADByLocationId(str, MyApplication.getInstance().getLanguageType());
+
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(this.<String>bindToLifecycle())
+                            .subscribe(new Subscriber<String>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(String s) {
+                                    setADtext(s, oldPositon);
+                                }
+                            });
 
                 } else {
                     //从网络获取
-                    API1.getADLocations(oldPositon, previewPhotoHandler);
+                    API2.getADLocations()
+                            .map(new Func1<JSONObject, String>() {
+                                @Override
+                                public String call(JSONObject jsonObject) {
+                                    PictureAirLog.out("ad location----> " + jsonObject.toString());
+                                    /**
+                                     * 1.存入数据库
+                                     * 2.在application中记录结果
+                                     */
+                                    String adString = PictureAirDbManager.insertADLocations(jsonObject.getJSONArray("locations"),
+                                            photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
+                                    myApplication.setGetADLocationSuccess(true);
+                                    return adString;
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(this.<String>bindToLifecycle())
+                            .subscribe(new RxSubscribe<String>() {
+                                @Override
+                                public void _onNext(String str) {
+                                    setADtext(str, oldPositon);
+                                }
+
+                                @Override
+                                public void _onError(int status) {
+
+                                }
+
+                                @Override
+                                public void onCompleted() {
+
+                                }
+                            });
                 }
                 dismissPWProgressDialog();
                 break;
-
-            case GET_LOCATION_AD_DONE:
-                if (msg.arg1 == currentPosition) {
-                    //如果获取的对应索引值，依旧是当期的索引值，则显示广告
-                    UrlTouchImageView imageView = (UrlTouchImageView)mViewPager.findViewById(currentPosition);
-                    if (imageView != null) {
-                        imageView.setADText(msg.obj.toString());
-                    }
-                }
-                break;
-
-            case API1.GET_AD_LOCATIONS_SUCCESS:
-                PictureAirLog.out("ad location---->" + msg.obj.toString());
-                final int oldPosition1 = msg.arg1;
-                final JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
-                myApplication.setGetADLocationSuccess(true);
-                /**
-                 * 1.存入数据库
-                 * 2.在application中记录结果
-                 */
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String adString = PictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
-                            photoInfo.getLocationId(), MyApplication.getInstance().getLanguageType());
-                        previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPosition1, 0, adString).sendToTarget();
-                    }
-                }).start();
-                break;
-
-            case API1.GET_AD_LOCATIONS_FAILED:
-                break;
-
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API2.PPPlist.size() > 0) {
@@ -433,7 +453,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         settingUtil = new SettingUtil();
         newToast = new PWToast(this);
         sharePop = new SharePop(this);
-        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
 
@@ -465,6 +484,20 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    /**
+     * 设置广告文案
+     * @param str
+     * @param oldP
+     */
+    private void setADtext(String str, int oldP){
+        if (oldP == currentPosition) {
+            //如果获取的对应索引值，依旧是当期的索引值，则显示广告
+            UrlTouchImageView imageView = (UrlTouchImageView)mViewPager.findViewById(currentPosition);
+            if (imageView != null) {
+                imageView.setADText(str);
+            }
+        }
+    }
 
     private void getSouvenirPhotos() {
         String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
