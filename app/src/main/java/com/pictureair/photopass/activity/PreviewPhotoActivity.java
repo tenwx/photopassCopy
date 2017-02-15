@@ -35,6 +35,7 @@ import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.GalleryWidget.UrlTouchImageView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.controller.GetLastestVideoInfoBiz;
 import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
 import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
@@ -49,7 +50,6 @@ import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -136,8 +136,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private TextView editTV, shareTV, downloadTV, makeGiftTV;
 
-    private CartItemInfoJson cartItemInfoJson;//存放意见购买后的购物信息
-
     private static final int GET_LOCATION_AD = 777;
     private static final int NO_PHOTOS_AND_RETURN = 1002;
 
@@ -152,9 +150,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private PWDialog pictureWorksDialog;
 
-    private List<GoodsInfo> allGoodsList;//全部商品
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
+    private String cartId = null;
 
     private Handler previewPhotoHandler;
 
@@ -187,101 +185,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case SharePop.SHOW_DIALOG:
                 isShareDialogShowing = true;
                 showPWProgressDialog(null);
-                break;
-
-            case API1.BUY_PHOTO_SUCCESS:
-                dismissPWProgressDialog();
-                cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
-                if (cartItemInfoJson.getItems().size() == 0) {
-                    break;
-                }
-                PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
-                //将当前购买的照片信息存放到application中
-                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).getPhotoId(), tabName, null, null);
-                if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
-                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
-                } else {
-                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
-                }
-                List<CartItemInfo> cartItemInfoList = cartItemInfoJson.getItems();
-                Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo> orderinfo = new ArrayList<>();
-                CartItemInfo cartItemInfo = cartItemInfoList.get(0);
-                cartItemInfo.setCartProductType(2);
-                orderinfo.add(cartItemInfo);
-                int curCarts = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, curCarts + 1);
-                intent.putExtra("orderinfo", orderinfo);
-                startActivity(intent);
-                break;
-
-            case API1.BUY_PHOTO_FAILED:
-                //购买失败
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.GET_GOODS_SUCCESS:
-                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                if (goodsInfoJson != null && goodsInfoJson.getGoods() != null && goodsInfoJson.getGoods().size() > 0) {
-                    allGoodsList = goodsInfoJson.getGoods();
-                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                    //获取PP+
-                    for (GoodsInfo goodsInfo : allGoodsList) {
-                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                            pppGoodsInfo = goodsInfo;
-                            //封装购物车宣传图
-                            photoUrls = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
-                            }
-                            break;
-                        }
-                    }
-                    API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, previewPhotoHandler);
-                }
-                break;
-
-            case API1.GET_GOODS_FAILED:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.ADD_TO_CART_FAILED:
-                dismissPWProgressDialog();
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                break;
-
-            case API1.ADD_TO_CART_SUCCESS:
-                dismissPWProgressDialog();
-                JSONObject jsonObject = (JSONObject) msg.obj;
-                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-                String cartId = jsonObject.getString("cartId");
-
-                myApplication.setIsBuyingPhotoInfo(null, null, photolist.get(currentPosition).getPhotoPassCode(), photolist.get(currentPosition).getShootDate());
-                myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY);
-
-                //生成订单
-                Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                CartItemInfo cartItemInfo1 = new CartItemInfo();
-                cartItemInfo1.setCartId(cartId);
-                cartItemInfo1.setProductName(pppGoodsInfo.getName());
-                cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
-                cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
-                cartItemInfo1.setQty(1);
-                cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
-                cartItemInfo1.setPictures(photoUrls);
-                cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
-                cartItemInfo1.setCartProductType(3);
-
-                orderinfoArrayList.add(cartItemInfo1);
-                intent1.putExtra("orderinfo", orderinfoArrayList);
-                startActivity(intent1);
                 break;
 
             case 7://操作比较耗时，会影响oncreate绘制
@@ -393,29 +296,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 dismissPWProgressDialog();
                 break;
 
-            case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
-                if (API2.PPPlist.size() > 0) {
-                    //将 tabname 存入sp
-                    SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
-                    SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
-
-                    if (sheetDialog.isShowing()) {
-                        sheetDialog.dismiss();
-                    }
-
-                    intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
-                    intent.putExtra("photoPassCode",photoInfo.getPhotoPassCode());
-                    intent.putExtra("shootTime",photoInfo.getShootDate());
-                    startActivity(intent);
-                } else {
-                    newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
-                }
-                break;
-
-            case API1.GET_PPPS_BY_SHOOTDATE_FAILED:
-                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
             case NO_PHOTOS_AND_RETURN://没有图片
                 dismissPWProgressDialog();
                 finish();
@@ -448,6 +328,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
         sheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//解决弹出对话框之后，状态栏的沉浸式效果消失了
+            sheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
         previewPhotoHandler = new Handler(this);
         settingUtil = new SettingUtil();
@@ -935,7 +818,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 showPWProgressDialog();
-                API1.buyPhoto(photoInfo.getPhotoId(), previewPhotoHandler);
+                buyPhoto(photoInfo.getPhotoId());
                 break;
 
             case R.id.preview_blur_dialog_buy_ppp_ll:
@@ -952,7 +835,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 showPWProgressDialog();
                 //获取商品
-                getALlGoods();
+                getGoods();
                 break;
 
             case R.id.preview_blur_dialog_upgrade_photo_ll:
@@ -969,7 +852,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     return;
                 }else{
-//                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.getShootDate());
                     getPPPsByShootDate(photoInfo.getShootDate());
                 }
                 break;
@@ -978,6 +860,62 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
         }
     }
+
+    /**
+     * 购买照片
+     * @param photoId
+     */
+    private void buyPhoto(String photoId) {
+        API2.buyPhoto(photoId)
+                .map(new Func1<JSONObject, CartItemInfoJson>() {
+                    @Override
+                    public CartItemInfoJson call(JSONObject jsonObject) {
+                        return JsonTools.parseObject(jsonObject, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<CartItemInfoJson>bindToLifecycle())
+                .subscribe(new RxSubscribe<CartItemInfoJson>() {
+                    @Override
+                    public void _onNext(CartItemInfoJson cartItemInfoJson) {
+                        dismissPWProgressDialog();
+                        if (cartItemInfoJson.getItems().size() == 0) {
+                            return;
+                        }
+                        PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
+                        //将当前购买的照片信息存放到application中
+                        myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).getPhotoId(), tabName, null, null);
+                        if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
+                        } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
+                        } else {
+                            myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
+                        }
+                        List<CartItemInfo> cartItemInfoList = cartItemInfoJson.getItems();
+                        Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfo = new ArrayList<>();
+                        CartItemInfo cartItemInfo = cartItemInfoList.get(0);
+                        cartItemInfo.setCartProductType(2);
+                        orderinfo.add(cartItemInfo);
+                        int curCarts = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, curCarts + 1);
+                        intent.putExtra("orderinfo", orderinfo);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        //购买失败
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
     private void getPPPsByShootDate(String shootDate) {
         API2.getPPPsByShootDate(shootDate)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
@@ -1017,22 +955,117 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     /**
-     * 初始化数据
+     * 购买ppp
      */
-    public void getALlGoods() {
-        //从缓层中获取数据
-        String goodsByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS);
-        if (goodsByACache != null && !goodsByACache.equals("")) {
-            previewPhotoHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
-        } else {
-            //从网络获取商品,先检查网络
-            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(previewPhotoHandler);
-            } else {
-                //提醒检查网络
-                newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-            }
+    private void getGoods() {
+        if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+            newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            return;
         }
+        //从缓层中获取数据
+        Observable.just(ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS))
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String s) {
+                        if (!TextUtils.isEmpty(s)) {
+                            PictureAirLog.d("goods is not null");
+                            return Observable.just(JSONObject.parseObject(s));
+                        } else {
+                            PictureAirLog.d("goods is null");
+                            //从网络获取商品,先检查网络
+                            return API2.getGoods()
+                                    .map(new Func1<JSONObject, JSONObject>() {
+                                        @Override
+                                        public JSONObject call(JSONObject jsonObject) {
+                                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+                                            return jsonObject;
+                                        }
+                                    });
+                        }
+                    }
+                })
+                //解析json
+                .map(new Func1<JSONObject, GoodsInfo>() {
+                    @Override
+                    public GoodsInfo call(JSONObject jsonObject) {
+                        PictureAirLog.d("parse goods json");
+                        List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+                        GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                        if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                            allGoodsList1.addAll(goodsInfoJson.getGoods());
+                        }
+                        PictureAirLog.v(TAG, "goods size: " + allGoodsList1.size());
+                        //获取PP+
+                        for (GoodsInfo goodsInfo : allGoodsList1) {
+                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                                pppGoodsInfo = goodsInfo;
+                                break;
+                            }
+                        }
+                        photoUrls = new String[pppGoodsInfo.getPictures().size()];
+                        for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+                            photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+                        }
+                        return pppGoodsInfo;
+                    }
+                })
+                //加入购物车
+                .flatMap(new Func1<GoodsInfo, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(GoodsInfo goodsInfo) {
+                        PictureAirLog.d("start add to goods key:" + goodsInfo.getGoodsKey());
+                        //调用addToCart API1
+                        return API2.addToCart(goodsInfo.getGoodsKey(), 1, true, null);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("add to cart success--> " + jsonObject);
+                        int currentCartCount = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+                        cartId = jsonObject.getString("cartId");
+                        PictureAirLog.d("cartid--> " + cartId);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+
+                        myApplication.setIsBuyingPhotoInfo(null, null, photolist.get(currentPosition).getPhotoPassCode(), photolist.get(currentPosition).getShootDate());
+                        myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY);
+
+                        //生成订单
+                        Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo1 = new CartItemInfo();
+                        cartItemInfo1.setCartId(cartId);
+                        cartItemInfo1.setProductName(pppGoodsInfo.getName());
+                        cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                        cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
+                        cartItemInfo1.setQty(1);
+                        cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
+                        cartItemInfo1.setPictures(photoUrls);
+                        cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo1.setCartProductType(3);
+
+                        orderinfoArrayList.add(cartItemInfo1);
+                        intent1.putExtra("orderinfo", orderinfoArrayList);
+                        startActivity(intent1);
+                    }
+                });
+
     }
 
     @Override
@@ -1293,10 +1326,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         showPWProgressDialog(R.string.is_loading);
 
         if (lastestVideoInfoPresenter == null) {
-            lastestVideoInfoPresenter = new GetLastestVideoInfoPresenter(this, this, MyApplication.getTokenId());
+            lastestVideoInfoPresenter = new GetLastestVideoInfoPresenter(this, this);
         }
 
-        lastestVideoInfoPresenter.videoInfoClick(photolist.get(position).getPhotoId(), position);
+        lastestVideoInfoPresenter.videoInfoClick(photolist.get(position).getPhotoId(), MyApplication.getTokenId(), position);
     }
 
     @Override
@@ -1318,11 +1351,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         dismissPWProgressDialog();
 
         switch (dealStatus) {
-            case GetLastestVideoInfoPresenter.NETWORK_ERROR://网络问题
+            case GetLastestVideoInfoBiz.NETWORK_ERROR://网络问题
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
-            case GetLastestVideoInfoPresenter.VIDEO_MAKING://依旧在制作中
+            case GetLastestVideoInfoBiz.VIDEO_MAKING://依旧在制作中
                 pictureWorksDialog.setPWDialogId(VIDEO_STILL_MAKING_DIALOG)
                         .setPWDialogMessage(R.string.magic_in_the_making)
                         .setPWDialogNegativeButton(null)
@@ -1330,8 +1363,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         .pwDilogShow();
                 break;
 
-            case GetLastestVideoInfoPresenter.VIDEO_FINISHED://已经制作完成
+            case GetLastestVideoInfoBiz.VIDEO_FINISHED://已经制作完成
                 //list拿错数据
+                PictureAirLog.d("result--->" + checkByNetwork);
                 PhotoInfo info;
                 if (checkByNetwork) {
                     info = photoInfo;

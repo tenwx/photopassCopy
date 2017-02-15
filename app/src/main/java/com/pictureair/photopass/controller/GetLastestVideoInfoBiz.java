@@ -1,61 +1,141 @@
 package com.pictureair.photopass.controller;
 
 import android.content.Context;
-import android.os.Handler;
 
-import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.http.rxhttp.ServerException;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.JsonUtil;
+import com.pictureair.photopass.util.PictureAirLog;
+import com.trello.rxlifecycle.components.RxActivity;
+
+import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bauer_bao on 16/9/18.
  */
 public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
     private Context context;
-    private Handler handler;
+    private GetLastestVideoInfoListener listener;
+    private PhotoInfo lastestVideoInfo;
+
+    public static final int VIDEO_MAKING = 11;
+    public static final int VIDEO_FINISHED = 12;
+    public static final int NETWORK_ERROR = 13;
+
     /**
-     * 需要从网络获取最新数据
+     * 不需要从网络获取最新数据，为了和服务器返回的数字码错开，因此数字比较大
      */
-    public static final int NEED_GET_NEW_INFO = 101;
+    public static final int NEEDNOT_GET_NEW_INFO = 11100;
+
     /**
      * 拿到最新的数据，并且视频已经制作完成
      */
-    public static final int GET_RIGHT_VIDEO_INFO_DONE = 102;
+    public static final int GET_RIGHT_VIDEO_INFO_DONE = 11102;
+
     /**
      * 拿到最新的数据，但是视频还没有制作完成
      */
-    public static final int GET_RIGHT_VIDEO_INFO_FAILED = 103;
+    public static final int GET_RIGHT_VIDEO_INFO_FAILED = 11103;
 
-    public GetLastestVideoInfoBiz(Context context, Handler handler) {
+    public GetLastestVideoInfoBiz(Context context, GetLastestVideoInfoListener listener) {
         this.context = context;
-        this.handler = handler;
+        this.listener = listener;
     }
 
     @Override
-    public void needGetLastestVideoInfoFromNetByDB(String photoId) {
-        //查询数据库
-        boolean result = PictureAirDbManager.needGetLastestVideoInfoFromNetwork(photoId);
-        handler.obtainMessage(NEED_GET_NEW_INFO, result).sendToTarget();
-    }
+    public void getNewPhotoInfo(final String photoId, final String tokenId) {
+        Observable.just(photoId)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        //查询数据库
+                        return PictureAirDbManager.needGetLastestVideoInfoFromNetwork(s);
+                    }
+                })
+                .flatMap(new Func1<Boolean, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(Boolean aBoolean) {
+                        PictureAirLog.out("need get the info from net ? the flag by db is " + aBoolean);
+                        if (aBoolean) {//需要从网络获取
+                            return API2.getNewPhotosInfo(tokenId, photoId);
+                        } else {//已经是最新的，无需从网络获取
+                            return Observable.error(new ServerException(NEEDNOT_GET_NEW_INFO));
+                        }
+                    }
+                })
+                .flatMap(new Func1<JSONObject, Observable<PhotoInfo>>() {
+                    @Override
+                    public Observable<PhotoInfo> call(JSONObject jsonObject) {
+                        PictureAirLog.out("jsonobject---->" + jsonObject.toString());
+                        JSONArray photos = jsonObject.getJSONArray("photos");
+                        if (photos.size() > 0) {
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                            PictureAirLog.out("1024url---->" + photoInfo.getPhotoThumbnail_1024());
+                            return Observable.just(photoInfo);
 
-    @Override
-    public void getLastestVideoInfoFromNet(String tokenId, String photoId, Handler handler) {
-        API1.getNewPhotosInfo(tokenId, photoId, 0, handler);
-    }
+                        } else {
+                            PictureAirLog.d("no size");
+                            return Observable.error(new ServerException(401));
+                        }
+                    }
+                })
+                .map(new Func1<PhotoInfo, Integer>() {
+                    @Override
+                    public Integer call(PhotoInfo photoInfo) {
+                        PictureAirLog.out("get the lastset video info");
+                        lastestVideoInfo = photoInfo;
+                        PictureAirDbManager.updatePhotoInfo(photoInfo);
 
-    @Override
-    public void updateLastestVideoInfo(PhotoInfo videoInfo) {
-        PictureAirDbManager.updatePhotoInfo(videoInfo);
+                        //判断从网络获取的视频数据是否已经制作完成
+                        if (AppUtil.isOldVersionOfTheVideo(photoInfo.getPhotoOriginalURL(), photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoThumbnail_512(), photoInfo.getPhotoThumbnail_128())) {
+                            //依旧不是最新的url
+                            PictureAirLog.d("still not new");
+                            return GET_RIGHT_VIDEO_INFO_FAILED;
 
-        //判断从网络获取的视频数据是否已经制作完成
-        if (AppUtil.isOldVersionOfTheVideo(videoInfo.getPhotoOriginalURL(), videoInfo.getPhotoThumbnail_1024(), videoInfo.getPhotoThumbnail_512(), videoInfo.getPhotoThumbnail_128())) {
-            //依旧不是最新的url
-            handler.sendEmptyMessage(GET_RIGHT_VIDEO_INFO_FAILED);
+                        } else {
+                            //拿到了制作完成的url
+                            PictureAirLog.d("got the new url");
+                            return GET_RIGHT_VIDEO_INFO_DONE;
+                        }
+                    }
+                })
+                .compose(((RxActivity)context).<Integer>bindToLifecycle())
+                .subscribe(new RxSubscribe<Integer>() {
+                    @Override
+                    public void _onNext(Integer integer) {
+                        PictureAirLog.d("onnext result-->" + integer);
+                        if (integer == GET_RIGHT_VIDEO_INFO_FAILED) {//视频依旧在制作中
+                            listener.getVideoInfoCompleted(VIDEO_MAKING, null, true);
 
-        } else {
-            //拿到了制作完成的url
-            handler.sendEmptyMessage(GET_RIGHT_VIDEO_INFO_DONE);
-        }
+                        } else if (integer == GET_RIGHT_VIDEO_INFO_DONE) {//获取制作好的视频成功
+                            lastestVideoInfo.setId(1L);
+                            listener.getVideoInfoCompleted(VIDEO_FINISHED, lastestVideoInfo, true);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.d("onerror result-->" + status);
+                        if (status == NEEDNOT_GET_NEW_INFO) {//已经是最新的数据，不需要从网络获取
+                            listener.getVideoInfoCompleted(VIDEO_FINISHED, null, false);
+                        } else {//网络请求失败 或者 请求到的数据为空
+                            listener.getVideoInfoCompleted(NETWORK_ERROR, null, false);
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 }

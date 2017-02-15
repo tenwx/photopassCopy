@@ -29,9 +29,6 @@ import rx.Observable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-import static com.pictureair.photopass.util.API1.GET_NEW_PHOTOS;
-import static com.pictureair.photopass.util.API1.GET_OLD_PHOTOS;
-
 /**
  * Created by pengwu on 16/11/9.
  *
@@ -74,8 +71,6 @@ import static com.pictureair.photopass.util.API1.GET_OLD_PHOTOS;
 public class API2 {
     private static final String TAG = "API";
 
-    public static final int GET_CART_SUCCESS = 4021;
-
     public static final int UPDATE_PROFILE_NAME = 5012;
     public static final int UPDATE_PROFILE_GENDER = 5013;
     public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
@@ -84,6 +79,10 @@ public class API2 {
     //下载文件
     public static final int DOWNLOAD_APK_FAILED = 6010;
     public static final int DOWNLOAD_FILE_PROGRESS = 6052;
+
+    public static final int GET_DEFAULT_PHOTOS = 1;//获取默认图片
+    public static final int GET_NEW_PHOTOS = 2;//获取最新图片
+    public static final int GET_OLD_PHOTOS = 3;//获取旧图片
 
     /**
      * 发送设备ID获取tokenId
@@ -408,19 +407,6 @@ public class API2 {
         return upload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, callback);
     }
 
-
-    /**
-     * 上传个人图片信息，头像或背景图
-     *
-     * @param params
-     * @param position 修改图片的时候需要这个参数来定位
-     * @throws FileNotFoundException
-     */
-    public static Observable<JSONObject> SetPhoto(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
-        // 需要更新服务器中用户背景图片信息
-        return upload(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, callback);
-    }
-
     /**
      * 更新用户信息
      *
@@ -596,13 +582,7 @@ public class API2 {
      */
     public static Observable<JSONObject> getCarts(JSONArray cartIdsArray) {
         PictureAirLog.out("getCarts---》" + MyApplication.getTokenId());
-        final int flag;//表示请求类型： 初始化/选中取消选中
         Map<String, Object> params = new HashMap<>();
-//        if (cartIdsArray == null) {
-//            flag = -1;
-//        } else {
-//              flag = GET_CART_SUCCESS;
-//        }
         if (cartIdsArray != null && cartIdsArray.size() > 0) {
             params.put("cartItemIds", cartIdsArray.toString());
         }

@@ -39,14 +39,7 @@ import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * 产品预览，处理商品的合成
@@ -62,7 +55,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private ViewGroup anim_mask_layout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
     private ArrayList<PhotoInfo> list;
-
 
     private int upload_index = 0;
 
@@ -112,23 +104,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 message.what = API1.UPLOAD_PHOTO_SUCCESS;
                                 message.obj = "start";
                                 handler.sendMessage(message);
-                            } else {//还没有上传
-                                PictureAirLog.v(TAG, "not uploaded, starting upload");
-                                String photourl = list.get(upload_index).getPhotoOriginalURL();
-                                PictureAirLog.v(TAG, "上传的图片URL" + photourl);
-                                // 需要上传选择的图片
-                                File file = new File(photourl);
-                                Map<String,RequestBody> params = new HashMap<>();
-                                try {
-                                    RequestBody requestParams = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
-                                    RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
-                                    params.put("file\";filename=\""+file.getName(), fileBody);
-                                    params.put(Common.USERINFO_TOKENID,requestParams);
-                                    API1.SetPhoto(params, handler, upload_index);
-                                } catch (FileNotFoundException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
                             }
                         } else {//服务器上获取的图片，只需要将photoid获取就行
                             PhotoInfo info = list.get(upload_index);

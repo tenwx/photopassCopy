@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -28,8 +28,9 @@ import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
 import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -41,6 +42,11 @@ import com.pictureair.photopass.widget.PWToast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * shop类
@@ -98,57 +104,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case API1.GET_GOODS_SUCCESS://成功获取商品
-                dismissPWProgressDialog();
-                if (refreshLayout.isRefreshing()) {
-                    refreshLayout.setRefreshing(false);
-                }
-                allGoodsList.clear();
-                PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
-                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                    allGoodsList = goodsInfoJson.getGoods();
-                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                    refreshLayout.setVisibility(View.VISIBLE);
-                    noNetWorkOrNoCountView.setVisibility(View.GONE);
-                    //更新界面
-                    shopGoodListViewAdapter.refresh(allGoodsList);
-                }
-
-                //获取收货地址列表
-                String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
-                PictureAirLog.i(TAG, "initData: addressByACache: " + addressByACache);
-                if (addressByACache == null || addressByACache.equals("")) {
-                    API1.getOutlets(fragmentPageShopHandler);
-                }
-                break;
-
-            case API1.GET_GOODS_FAILED://获取商品失败
-                //显示重新加载界面
-                if (refreshLayout.isRefreshing()) {
-                    refreshLayout.setRefreshing(false);
-                }
-                dismissPWProgressDialog();
-                showNetWorkView();
-                break;
-
-            case API1.GET_OUTLET_ID_SUCCESS:
-                //获取自提地址成功
-                dismissPWProgressDialog();
-                AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
-                if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                    //存入缓存
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
-                    }
-                }
-                break;
-
-            case API1.GET_OUTLET_ID_FAILED:
-                //获取自提地址失败
-                dismissPWProgressDialog();
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
@@ -228,7 +183,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 FragmentPageShop.this.startActivity(intent);
             }
         });
-        xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, null));
 
         initData(false);//初始化数据
         return view;
@@ -248,19 +202,132 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             goodsByACache = ACache.get(activity).getAsString(Common.ALL_GOODS);
         }
         PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
-        if (goodsByACache != null && !goodsByACache.equals("")) {
-            fragmentPageShopHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+        getGoods(goodsByACache);
+    }
+
+    /**
+     * 获取商品信息
+     */
+    private void getGoods(String goodsCache) {
+        //从网络获取商品,先检查网络
+        if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
+            Observable.just(goodsCache)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap(new Func1<String, Observable<JSONObject>>() {
+                        @Override
+                        public Observable<JSONObject> call(String s) {
+                            if (!TextUtils.isEmpty(s)) {
+                                return Observable.just(JSONObject.parseObject(s));
+
+                            } else {
+                                return API2.getGoods()
+                                        .map(new Func1<JSONObject, JSONObject>() {
+                                            @Override
+                                            public JSONObject call(JSONObject jsonObject) {
+                                                ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+                                                return jsonObject;
+                                            }
+                                        });
+                            }
+                        }
+                    })
+                    .map(new Func1<JSONObject, GoodsInfoJson>() {
+                        @Override
+                        public GoodsInfoJson call(JSONObject jsonObject) {
+                            return JsonTools.parseObject(jsonObject, GoodsInfoJson.class);//GoodsInfoJson.getString()
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<GoodsInfoJson>bindToLifecycle())
+                    .subscribe(new RxSubscribe<GoodsInfoJson>() {
+                        @Override
+                        public void _onNext(GoodsInfoJson goodsInfoJson) {
+                            PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
+                            allGoodsList.clear();
+                            if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                                allGoodsList.addAll(goodsInfoJson.getGoods());
+                                PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                                refreshLayout.setVisibility(View.VISIBLE);
+                                noNetWorkOrNoCountView.setVisibility(View.GONE);
+                                //更新界面
+                                shopGoodListViewAdapter.refresh(allGoodsList);
+                                if (refreshLayout.isRefreshing()) {
+                                    refreshLayout.setRefreshing(false);
+                                }
+                                dismissPWProgressDialog();
+
+                                //获取收货地址列表
+                                String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
+                                PictureAirLog.i(TAG, "initData: addressByACache: " + addressByACache);
+                                if (addressByACache == null || addressByACache.equals("")) {
+                                    getOutLets();
+                                }
+                            } else {
+                                _onError(401);
+                            }
+
+                        }
+
+                        @Override
+                        public void _onError(int status) {
+                            //显示重新加载界面
+                            if (refreshLayout.isRefreshing()) {
+                                refreshLayout.setRefreshing(false);
+                            }
+                            dismissPWProgressDialog();
+                            showNetWorkView();
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+                    });
         } else {
-            //从网络获取商品,先检查网络
-            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(fragmentPageShopHandler);
-            } else {
-                if (refreshLayout.isRefreshing()) {
-                    refreshLayout.setRefreshing(false);
-                }
-                showNetWorkView();
+            if (refreshLayout.isRefreshing()) {
+                refreshLayout.setRefreshing(false);
             }
+            showNetWorkView();
         }
+    }
+
+    /**
+     * 获取门店地址
+     */
+    private void getOutLets() {
+        API2.getOutlets()
+                .map(new Func1<JSONObject, JSONObject>() {
+                    @Override
+                    public JSONObject call(JSONObject jsonObject) {
+                        PictureAirLog.d("get outlet success");
+                        AddressJson addressJson = JsonTools.parseObject(jsonObject, AddressJson.class);
+                        if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                            //存入缓存
+                            if (TextUtils.isEmpty(ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS))) {
+                                ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, jsonObject.toString(), ACache.TIME_DAY);
+                            }
+                        }
+                        return jsonObject;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dismissPWProgressDialog();
+                    }
+                });
     }
 
     /**
@@ -312,41 +379,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         fragmentPageShopHandler.removeCallbacksAndMessages(null);
-    }
-
-    /**
-     * 解决SwipeRefreshLayout下拉刷新冲突
-     */
-    public static class SwipeListViewOnScrollListener implements AbsListView.OnScrollListener {
-
-        private SwipeRefreshLayout mSwipeView;
-        private AbsListView.OnScrollListener mOnScrollListener;
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView,
-                                             AbsListView.OnScrollListener onScrollListener) {
-            mSwipeView = swipeView;
-            mOnScrollListener = onScrollListener;
-        }
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
-            View firstView = absListView.getChildAt(firstVisibleItem);
-
-            // 当firstVisibleItem是第0位。如果firstView==null说明列表为空，需要刷新;或者top==0说明已经到达列表顶部, 也需要刷新
-            if (firstVisibleItem == 0 && (firstView == null || firstView.getTop() == 0)) {
-                mSwipeView.setEnabled(true);
-            } else {
-                mSwipeView.setEnabled(false);
-            }
-            if (null != mOnScrollListener) {
-                mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
-        }
     }
 
     @Override

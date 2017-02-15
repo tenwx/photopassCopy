@@ -20,7 +20,7 @@ import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
@@ -382,7 +382,7 @@ public class PictureAirDbManager {
                 }
             }
 
-            if (type == API1.GET_NEW_PHOTOS || type == API1.GET_OLD_PHOTOS) {
+            if (type == API2.GET_NEW_PHOTOS || type == API2.GET_OLD_PHOTOS) {
                 //1.先查询数据库是否有新的数据，如果有，则更新信息
                 //2.如果没有，则插入
                 PhotoInfo dbPhotoInfo = photoInfoDao.queryBuilder()

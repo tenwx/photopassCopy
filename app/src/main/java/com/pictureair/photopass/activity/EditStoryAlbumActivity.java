@@ -35,7 +35,6 @@ import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -142,7 +141,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					PictureAirLog.d("click reload-----");
 					showPWProgressDialog();
 					//开始从网络获取数据
-					getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+					getPhotosFromNetWork(API2.GET_DEFAULT_PHOTOS, null, null);
 					break;
 
 				default:
@@ -235,7 +234,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			public void onRefresh() {
 				PictureAirLog.out("start refresh");
 				if (albumArrayList.size() != 0 && !pwStickySectionRecyclerView.isLoadMore() && !editMode) {//有数量，不在加载更多，也没有编辑状态
-					getPhotosFromNetWork(API1.GET_NEW_PHOTOS, ppRefreshTime, ppRefreshIds);
+					getPhotosFromNetWork(API2.GET_NEW_PHOTOS, ppRefreshTime, ppRefreshIds);
 				}
 			}
 		});
@@ -370,7 +369,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						PictureAirLog.d("photos from db size->" + albumArrayList.size());
 						//判断本地数量是否为0，如果为0，需要重新从服务器获取数据
 						if (albumArrayList.size() == 0) {
-							getPhotosFromNetWork(API1.GET_DEFAULT_PHOTOS, null, null);
+							getPhotosFromNetWork(API2.GET_DEFAULT_PHOTOS, null, null);
 						} else {//直接显示照片
 							pwStickySectionRecyclerView.notifyDataSetChanged();
 							dismissPWProgressDialog();
@@ -478,7 +477,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					@Override
 					public ArrayList<PhotoInfo> call(JSONObject jsonObject) {
 						//删除此卡此天所有数据
-						if (type == API1.GET_DEFAULT_PHOTOS) {
+						if (type == API2.GET_DEFAULT_PHOTOS) {
 							PictureAirDbManager.deleteAllInfoFromTable(ppCode, shootDate);
 
 						}
@@ -488,26 +487,26 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						ArrayList<PhotoInfo> resultList = PictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, type,
 								MyApplication.getInstance().getLanguageType(), locationList);
 						if (resultList.size() > 0) {
-							if (type == API1.GET_DEFAULT_PHOTOS) {
+							if (type == API2.GET_DEFAULT_PHOTOS) {
 								ppRefreshTime = resultList.get(0).getReceivedOn();
 								ppRefreshIds = AppUtil.getRepeatRefreshIds(resultList);
 								ppLoadMoreTime = resultList.get(resultList.size() - 1).getReceivedOn();
 								ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(resultList);
 
-							} else if (type == API1.GET_NEW_PHOTOS) {
+							} else if (type == API2.GET_NEW_PHOTOS) {
 								ppRefreshTime = resultList.get(0).getReceivedOn();
 								ppRefreshIds = AppUtil.getRepeatRefreshIds(resultList);
 
-							} else if (type == API1.GET_OLD_PHOTOS) {
+							} else if (type == API2.GET_OLD_PHOTOS) {
 								ppLoadMoreTime = resultList.get(resultList.size() - 1).getReceivedOn();
 								ppLoadMoreIds = AppUtil.getRepeatLoadMoreIds(resultList);
 							}
 						}
 						newCount = resultList.size();
-						if (type == API1.GET_NEW_PHOTOS) {
+						if (type == API2.GET_NEW_PHOTOS) {
 							originalLists.addAll(0, AppUtil.sortPhotoList(resultList));//刷新的数据，需要加载在最前面
 
-						} else if (type == API1.GET_OLD_PHOTOS) {
+						} else if (type == API2.GET_OLD_PHOTOS) {
 							originalLists.addAll(AppUtil.sortPhotoList(resultList));
 
 						} else {
@@ -530,7 +529,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					@Override
 					public void _onError(int status) {
 						//获取照片失败
-						if (type == API1.GET_DEFAULT_PHOTOS) {
+						if (type == API2.GET_DEFAULT_PHOTOS) {
 							ppRefreshIds = null;
 							ppRefreshTime = null;
 							ppLoadMoreIds = null;
@@ -541,7 +540,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, editStoryAlbumHandler, true);
 							editImageView.setEnabled(false);
 
-						} else if (type == API1.GET_NEW_PHOTOS) {
+						} else if (type == API2.GET_NEW_PHOTOS) {
 							PictureAirLog.d("refresh" + refreshLayout.isRefreshing());
 							if (refreshLayout.isRefreshing()) {
 								refreshLayout.setRefreshing(false);
@@ -549,7 +548,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							//弹toast提示
 							myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 
-						} else if (type == API1.GET_OLD_PHOTOS) {
+						} else if (type == API2.GET_OLD_PHOTOS) {
 							refreshLayout.setEnabled(true);
 							if (pwStickySectionRecyclerView.isLoadMore()) {
 								pwStickySectionRecyclerView.setIsLoadMore(false);
@@ -563,13 +562,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 					@Override
 					public void onCompleted() {
-						if (type == API1.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要更新对应的数据
+						if (type == API2.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要更新对应的数据
 							PictureAirDbManager.updateRefreshedPPFlag(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
 							//显示无网络页面
 							noNetWorkOrNoCountView.setVisibility(View.GONE);
 							editImageView.setEnabled(true);
 							dismissPWProgressDialog();
-						} else if (type == API1.GET_NEW_PHOTOS) {//刷新
+						} else if (type == API2.GET_NEW_PHOTOS) {//刷新
 							if (refreshLayout.isRefreshing()) {
 								refreshLayout.setRefreshing(false);
 							}
@@ -1231,7 +1230,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			pwStickySectionRecyclerView.setIsLoadMore(true);
 			pwStickySectionRecyclerView.setLoadMoreType(StickyRecycleAdapter.LOAD_MORE_LOADING);
 			refreshLayout.setEnabled(false);
-			getPhotosFromNetWork(API1.GET_OLD_PHOTOS, ppLoadMoreTime, ppLoadMoreIds);
+			getPhotosFromNetWork(API2.GET_OLD_PHOTOS, ppLoadMoreTime, ppLoadMoreIds);
 		}
 	}
 }
