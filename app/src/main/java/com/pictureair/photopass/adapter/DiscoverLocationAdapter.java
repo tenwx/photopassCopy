@@ -60,7 +60,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
     private OnUpdateLocationListener onUpdateLocationListener;
     private int screenWidth = 0;
 
-    public static final int MAGICSHOOT = 101;
     public static final int LOVE = 102;
     public static final int MORE = 103;
     public static final int STOPLOCATION = 104;
@@ -175,7 +174,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.discover_listview_item, null);
             viewHolder = new LocationItem();
             viewHolder.locationNameTextView = (TextView) convertView.findViewById(R.id.place_name);//地点名称
-            viewHolder.makegiftImageView = (ImageView) convertView.findViewById(R.id.discover_makegift);//制作图片按钮
             viewHolder.locationPhotoImageView = (ImageView) convertView.findViewById(R.id.discover_location_photo);//地点默认背景图片
             viewHolder.favoriteImageView = (ImageView) convertView.findViewById(R.id.discover_love);//喜爱按钮
             viewHolder.locationLeadImageView = (ImageView) convertView.findViewById(R.id.discover_direction);//地点导航
@@ -264,8 +262,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         } else {
             viewHolder.favoriteImageView.setImageResource(R.drawable.discover_no_like);
         }
-        //设置制作按钮的监听
-        viewHolder.makegiftImageView.setOnClickListener(new OnItemChildClickListener(MAGICSHOOT, position, viewHolder));
         //设置显示详情的按钮监听
         viewHolder.showDetailImageView.setOnClickListener(new OnItemChildClickListener(MORE, position, viewHolder));
         //初始化详情地址的可视状态

@@ -70,6 +70,9 @@ android {
             }
         }
     }
+
+    //微信支付请求网络的框架使用旧的httpclient，因此需要
+    useLibrary 'org.apache.http.legacy'
 }
 
 repositories {
@@ -100,8 +103,6 @@ dependencies {
     compile files('libs/libammsdk.jar')
     //动画
     compile files('libs/nineoldandroids-2.4.0.jar')
-    //apache网络库
-    compile files('libs/org.apache.http.legacy.jar')
     //sharesdk分享
     compile files('libs/MobCommons-2016.1107.1809.jar')
     compile files('libs/MobTools-2016.1107.1809.jar')

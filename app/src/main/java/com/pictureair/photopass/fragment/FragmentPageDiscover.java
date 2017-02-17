@@ -88,10 +88,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case DiscoverLocationAdapter.MAGICSHOOT:
-                    PictureAirLog.d(TAG, "magic shoot on click");
-                    break;
-
                 case DiscoverLocationAdapter.STOPLOCATION:
                     locationStart = false;
                     break;

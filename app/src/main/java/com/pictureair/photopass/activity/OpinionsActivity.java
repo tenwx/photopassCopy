@@ -1,20 +1,13 @@
 package com.pictureair.photopass.activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.support.v4.app.NotificationCompat;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 
 import java.util.HashMap;
@@ -22,11 +15,7 @@ import java.util.Map;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.config.UdeskConfig;
-import cn.udesk.messagemanager.UdeskMessageManager;
-import cn.udesk.model.MsgNotice;
-import cn.udesk.model.UdeskCommodityItem;
 
 public class OpinionsActivity extends BaseActivity implements View.OnClickListener{
 

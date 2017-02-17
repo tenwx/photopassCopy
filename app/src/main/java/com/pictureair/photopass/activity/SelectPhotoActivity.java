@@ -10,7 +10,6 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,7 +21,6 @@ import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -42,13 +40,12 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private static final String TAG = "SelectPhotoActivity";
     //申明控件
     private ImageView rtLayout;
-    private Button btnGoToSelectPhoto;
     private TextView okButton;
     private GridView gridView;
     private ViewPhotoGridViewAdapter photoPassAdapter;
     private RelativeLayout noPhotoRelativeLayout;
     private TextView noPhotoTextView;
-    private ImageView noPhotoImageView, ivDisneyNullPhoto;
+    private ImageView noPhotoImageView;
 
     private PWToast newToast;
     private MyApplication myApplication;
@@ -63,7 +60,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
     private Context context;
     //底部view
-    private TextView tvDisneyNullPhoto;
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
     private static final int GET_PHOTOS_DONE = 10101;
@@ -153,21 +149,14 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         gridView = (GridView) findViewById(R.id.gridView_all);
         gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         //空照片介绍页面
-        btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
-        btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         noPhotoTextView = (TextView) findViewById(R.id.no_photo_textView);
         noPhotoImageView = (ImageView) findViewById(R.id.no_photo_iv);
         okButton = (TextView) findViewById(R.id.button1);
-        ivDisneyNullPhoto = (ImageView) findViewById(R.id.iv_disney_null_photo);
-        tvDisneyNullPhoto = (TextView) findViewById(R.id.tv_disney_null_photo);
 
         //绑定监听
-        tvDisneyNullPhoto.setOnClickListener(this);
-        ivDisneyNullPhoto.setOnClickListener(this);
         rtLayout.setOnClickListener(this);
         okButton.setOnClickListener(this);
-        btnGoToSelectPhoto.setOnClickListener(this);
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
@@ -302,21 +291,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.tv_disney_null_photo:
-            case R.id.iv_disney_null_photo:
-            case R.id.ll_shop_photo:
-            case R.id.btn_goto_select:
-                //删除所有aty，只剩下mainTab页面，
-                //将mainTab切换到shop Tab
-                AppManager.getInstance().killOtherActivity(MainTabActivity.class);
-                myApplication.setMainTabIndex(3);
-                break;
-
             case R.id.rlrt://返回按钮
                 finish();
                 break;
 
-            case R.id.tv_select_photo_ok:
             case R.id.button1://选择确定按钮
                 if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);

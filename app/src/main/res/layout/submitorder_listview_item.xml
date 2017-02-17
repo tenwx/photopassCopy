@@ -64,15 +64,6 @@
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
-        <ImageView
-            android:id="@+id/showOrHeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/imageView_pd"
-            android:layout_centerHorizontal="true"
-            android:adjustViewBounds="true"
-            android:src="@drawable/good_show_photo"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <GridLayout

@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
@@ -29,7 +28,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private ArrayList<ImageView> imageViews;
     private List<CartPhotosInfo> gridviewlist;
-    private ArrayList<ArrayList<ImageView>> gridLayoutLists;
     private String currency;
     private static final String TAG = "SubmitOrderListViewAdapter";
 
@@ -38,7 +36,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         this.currency = currency;
         this.arrayList = list;
         layoutInflater = LayoutInflater.from(context);
-        gridLayoutLists = new ArrayList<>();
     }
 
     @Override
@@ -68,8 +65,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
             viewHolder.goodPriceTextView = (TextView) convertView.findViewById(R.id.textView_pr);
             viewHolder.goodQuentityTextView = (TextView) convertView.findViewById(R.id.editText_count1);
             viewHolder.goodPhotosGridLayout = (GridLayout) convertView.findViewById(R.id.gridView_cartphoto);
-            viewHolder.goodRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.submitOrderRelativeLayout);
-            viewHolder.showOrHidePhotoImageView = (ImageView) convertView.findViewById(R.id.showOrHeight);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -84,8 +79,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         if (Common.ppp.equals(arrayList.get(position).getProductName()) || Common.SINGLE_PPP.equals(arrayList.get(position).getProductName())) {//ppp产品 或 拼单
             PictureAirLog.v(TAG, "ppp product");
             viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
-            viewHolder.showOrHidePhotoImageView.setVisibility(View.GONE);
-            viewHolder.goodRelativeLayout.setClickable(false);
         } else {//为其他产品
             PictureAirLog.v(TAG, "other procut");
 
@@ -112,7 +105,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                     GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(gridviewlist.get(i).getIsEncrypted()), imageView);
                 }
                 imageView.setScaleType(ScaleType.CENTER_CROP);
-                imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageViews.add(imageView);
                 //imageview设置监听 订单确认界面无法选图片 和修改数量
                 viewHolder.goodPhotosGridLayout.addView(imageView, params);
@@ -122,12 +114,10 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         if (arrayList.get(position).getPictures() != null && arrayList.get(position).getPictures().length > 0) {
             GlideUtil.load(context, Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
         }
-        gridLayoutLists.add(imageViews);
         viewHolder.goodQuentityTextView.setText("x" + arrayList.get(position).getQty());//数量
         viewHolder.currencyTextView.setText(currency);//单位
         viewHolder.goodPriceTextView.setText(arrayList.get(position).getUnitPrice() + "");//单价
         viewHolder.goodNameTextView.setText(arrayList.get(position).getProductNameAlias());
-        viewHolder.goodRelativeLayout.setClickable(true);
         return convertView;
     }
 
@@ -138,7 +128,5 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         TextView goodPriceTextView;
         TextView goodQuentityTextView;
         GridLayout goodPhotosGridLayout;
-        RelativeLayout goodRelativeLayout;
-        ImageView showOrHidePhotoImageView;
     }
 }

@@ -56,37 +56,18 @@
             />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_content"
+    <GridView
+        android:id="@+id/gridView_all"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_disney_video_foot"
-        android:layout_below="@+id/layout1"
         android:background="@color/gray_light"
-        android:visibility="visible">
-
-        <GridView
-            android:id="@+id/gridView_all"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/gray_light"
-            android:gravity="center"
-            android:horizontalSpacing="5dp"
-            android:listSelector="@null"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:stretchMode="columnWidth" />
-
-        <LinearLayout
-            android:id="@+id/ll_null_photo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-            <include layout="@layout/empty_video_layout" />
-        </LinearLayout>
-    </RelativeLayout>
-
+        android:layout_below="@+id/layout1"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:listSelector="@null"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" />
 
     <RelativeLayout
         android:id="@+id/no_photo_relativelayout"
@@ -141,94 +122,4 @@
                 android:textSize="@dimen/text_size_16" />
         </RelativeLayout>
     </RelativeLayout>
-
-
-    <!-- Disney foot start-->
-    <LinearLayout
-        android:id="@+id/ll_disney_video_foot"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_bottom_bar_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:drawableTop="@drawable/button_select_model"
-                android:visibility="invisible"
-                android:gravity="center"
-                android:text="@string/disney_video_selectphoto_model"
-                android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="10dp"></LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_shop_photo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:drawableTop="@drawable/buy_photo"
-                android:gravity="center"
-                android:text="@string/disney_video_go_to_select_photo"
-                android:textColor="@color/pp_purple"
-                android:textSize="@dimen/text_size_14" />
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_select_photo_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/pp_dp_10"
-        android:drawableTop="@drawable/icon_disneyvideo_ok"
-        android:gravity="center"
-        android:text="@string/disney_video_edit_photo_null"
-        android:textColor="@color/gray_light5"
-        android:textSize="@dimen/text_size_14"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tv_bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_14"
-        android:background="@drawable/bubble"
-        android:text="@string/disney_video_bubble"
-        android:textColor="@color/white"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:visibility="gone"
-        android:paddingBottom="@dimen/pp_dp_10"
-        android:layout_above="@+id/tv_select_photo_ok"/>
-
-    <!-- Disney foot end-->
-
 </RelativeLayout>

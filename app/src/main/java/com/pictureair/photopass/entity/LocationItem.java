@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 public class LocationItem {
 	public TextView locationNameTextView;//地点名称
-	public ImageView makegiftImageView;//制作图片按钮
 	public ImageView locationPhotoImageView;//地点默认背景图片
 	public ImageView favoriteImageView;//喜爱按钮
 	public ImageView locationLeadImageView;//地点导航
