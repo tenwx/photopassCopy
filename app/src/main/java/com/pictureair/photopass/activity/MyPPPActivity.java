@@ -243,9 +243,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         refreshLayout.finishRefreshing();
     }
 
+    /**显示引导层*/
     private void showGuideView(){
         boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
-        if (!isGuide) {
+        if (!isGuide) {//引导层没显示过，则保存状态
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, true);
             //调整imageview大小
             View view = listPPP.getChildAt(0);

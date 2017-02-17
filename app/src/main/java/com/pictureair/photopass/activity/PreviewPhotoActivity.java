@@ -384,6 +384,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    /**
+     *
+     * 获取纪念照
+     * 如果没有纪念照则显示没有照片的页面
+     * 如果有纪念照则保存一次照片数据，后续如果网络获取纪念照失败，则直接读取保存的数据
+     * */
     private void getSouvenirPhotos() {
         String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
         API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode)
