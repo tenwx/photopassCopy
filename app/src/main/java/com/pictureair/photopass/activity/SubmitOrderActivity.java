@@ -2,8 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -34,10 +32,8 @@ import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.InvoiceInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -49,7 +45,6 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,16 +61,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private ListView infoListView;
     private SubmitOrderListViewAdapter submitorderAdapter;
 
-    private ArrayList<PhotoInfo> updatephotolist;
     private float totalprice = 0;
     private int cartCount = 0;
-    private static final int CHANGE_PHOTO = 1;//修改图片
-    private int payType = 0;//支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
 
     private PWToast newToast;
 
     private JSONArray cartItemIds;
-    private JSONObject cartItemId;
     private String orderId = "";
     private String currency;
     private String deliveryType = "3";//物流方式 (1和3拼接在一起的)
@@ -93,15 +84,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
-    private float depletePrice = 0;//优惠减免费用
     private float straightwayPreferentialPrice = 0;//优惠立减
-    private float promotionPreferentialPrice = 0;//优惠抵扣
-    private float preferentialPrice = 0;//优惠减免总费用
     private float invoicePay=0;//快递费用
-    private float resultPrice = 0;//初始总费用
-
-//    private static final int PAY_SUCCESS = 10001;//支付成功
-//    private static final int PAY_FAILED = 10002;//失败
 
     private JSONArray couponCodes;//优惠券
 
@@ -111,62 +95,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int fromPanicBuy = 0;
     private String dealingKey;
     private JSONArray goods;
-
-    private final Handler submitOrderHandler = new SubmitOrderHandler(this);
-
-
-    private static class SubmitOrderHandler extends Handler {
-        private final WeakReference<SubmitOrderActivity> mActivity;
-
-        public SubmitOrderHandler(SubmitOrderActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    /**
-     * 处理Message
-     *
-     * @param msg
-     */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case CHANGE_PHOTO:
-                selectPhoto(msg.arg1);
-                break;
-
-            case API1.UPLOAD_PHOTO_FAILED:
-                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-
-            case API1.UPLOAD_PHOTO_SUCCESS:
-                PictureAirLog.v(TAG, "UPLOAD_PHOTO_SUCCESS " + msg.obj.toString());
-                JSONObject result = (JSONObject) msg.obj;
-                String photoUrlString = null;
-                String photoIdString = null;
-                photoUrlString = result.getString("photoUrl");
-                photoIdString = result.getString("photoId");
-                PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
-                PhotoInfo itemInfo = updatephotolist.get(0);
-                itemInfo.setPhotoId(photoIdString);
-                itemInfo.setPhotoOriginalURL(photoUrlString);
-                PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
-                updatephotolist.set(0, itemInfo);
-                break;
-
-            default:
-                break;
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -858,13 +786,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         totalpriceTextView.setText(((int) payPrice + ""));
     }
 
-    //选择照片
-    private void selectPhoto(int requestCode) {
-        Intent intent = new Intent(this, SelectPhotoActivity.class);
-        intent.putExtra("activity", "cartactivity");
-        startActivityForResult(intent, requestCode);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -921,8 +842,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + jsonObject);
 
                         straightwayPreferentialPrice = Float.valueOf(jsonObject.getString("straightwayPreferentialPrice"));//优惠折扣
-                        promotionPreferentialPrice = Float.valueOf(jsonObject.getString("promotionPreferentialPrice"));//优惠立减
-                        preferentialPrice = Float.valueOf(jsonObject.getString("preferentialPrice"));//优惠减免总费用
+//                        promotionPreferentialPrice = Float.valueOf(jsonObject.getString("promotionPreferentialPrice"));//优惠立减
+//                        preferentialPrice = Float.valueOf(jsonObject.getString("preferentialPrice"));//优惠减免总费用
                         totalprice = Float.valueOf(jsonObject.getString("resultPrice"));//初始总费用
                         payPrice = Float.valueOf(jsonObject.getString("totalPrice"));//实际支付总价
 
@@ -991,7 +912,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        submitOrderHandler.removeCallbacksAndMessages(null);
     }
 
     private class MyURLSpan extends ClickableSpan {

@@ -24,7 +24,6 @@ import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -33,7 +32,6 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -72,8 +70,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     private CartInfoAdapter cartAdapter;
 
-    private PWProgressBarDialog dialog;
-
     private String userId = "";
     private PWToast newToast;
 
@@ -81,7 +77,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private CartItemInfoJson cartItemInfoJson;//存放返回的数据
     private ArrayList<CartItemInfo> selectCartInfoList;//存放勾选的购物车
     private List<CartItemInfo> deleteCartItemInfoList;//存放删除的购物车
-    private int position = 0;//记录当前操作项位置（10 + n）
 
     private final Handler cartHandler = new CartHandler(this);
 
@@ -111,34 +106,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         int currentCartCounts;
         switch (msg.what) {
-            case API1.UPLOAD_PHOTO_FAILED:
-                dismissPWProgressDialog();
-
-                isDelete = false;
-                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                editTextView.setEnabled(true);
-                break;
-
-            case API1.UPLOAD_PHOTO_SUCCESS:
-                JSONArray embedPhotos = (JSONArray) msg.obj;
-                PictureAirLog.v(TAG, "embedPhotos: " + embedPhotos);
-                position = msg.arg1;//位置
-                CartItemInfo cartItemInfo = cartInfoList.get(position / 10);
-                API1.modifyCart(cartItemInfo.getCartId(), cartItemInfo.getGoodsKey(), cartItemInfo.getQty(), embedPhotos, cartHandler, dialog);
-
-                break;
-            case API1.MODIFY_CART_SUCCESS:
-                PictureAirLog.v(TAG, "MODIFY_CART_SUCCESS: " + "uodate cart");
-                dialog.pwProgressBarDialogDismiss();
-                //更新本地购物车
-                changephoto(position, updatephotolist);
-
-                break;
-            case API1.MODIFY_CART_FAILED:
-                dialog.pwProgressBarDialogDismiss();
-                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                break;
-
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
                 PictureAirLog.v(TAG, "onclick with reload");
@@ -224,8 +191,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
         newToast = new PWToast(this);
-        //上传进度条
-        dialog = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
         rtButton = (ImageView) findViewById(R.id.ret_relyt);
         rtButton.setOnClickListener(this);
         paymentButton = (Button) findViewById(R.id.button3_pm);
@@ -736,44 +701,66 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     //目前合成图片均为pp上的图片
                 }
             }
-
-            Message msg = cartHandler.obtainMessage();
-            msg.what = API1.UPLOAD_PHOTO_SUCCESS;
-            msg.arg1 = requestCode;
-            msg.obj = jsonArray;
-            cartHandler.sendMessage(msg);
-            dialog.pwProgressBarDialogShow();
+            changeCartPhotos(requestCode, jsonArray);
         }
     }
 
     /**
-     * 1.找到动态添加的imageview，并替换对应的图片
-     * 2.更新orderinfo的arraylist信息
-     * 3.修改数据库
-     *
+     * 修改购物项中的照片
      * @param position
-     * @param photoList
+     * @param jsonArray
      */
-    private void changephoto(int position, ArrayList<PhotoInfo> photoList) {
-        PictureAirLog.v(TAG, "并替换对应的图片");
-        List<CartPhotosInfo> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
-        for (PhotoInfo photoInfo : photoList) {
-            //构建购物车图片对象
-            PictureAirLog.v(TAG, "update url: " + photoInfo.getPhotoOriginalURL());
-            CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
-            cartPhotosInfo.setPhotoUrl(photoInfo.getPhotoThumbnail_128());//缩略图
-            cartPhotosInfo.setPhotoId(photoInfo.getPhotoId());
-            cartPhotosInfo.setIsEncrypted(photoInfo.getIsEnImage());
-            oriphoto.add(cartPhotosInfo);
-        }
+    private void changeCartPhotos(final int position, JSONArray jsonArray) {
+        showPWProgressDialog();
+        PictureAirLog.v(TAG, "embedPhotos: " + jsonArray);
+        CartItemInfo cartItemInfo = cartInfoList.get(position / 10);
+        API2.modifyCart(cartItemInfo.getCartId(), cartItemInfo.getGoodsKey(), cartItemInfo.getQty(), jsonArray)
+                .map(new Func1<JSONObject, List<CartPhotosInfo>>() {
+                    @Override
+                    public List<CartPhotosInfo> call(JSONObject jsonObject) {
+                        List<CartPhotosInfo> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
+                        for (PhotoInfo photoInfo : updatephotolist) {
+                            //构建购物车图片对象
+                            PictureAirLog.v(TAG, "update url: " + photoInfo.getPhotoOriginalURL());
+                            CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
+                            cartPhotosInfo.setPhotoUrl(photoInfo.getPhotoThumbnail_128());//缩略图
+                            cartPhotosInfo.setPhotoId(photoInfo.getPhotoId());
+                            cartPhotosInfo.setIsEncrypted(photoInfo.getIsEnImage());
+                            oriphoto.add(cartPhotosInfo);
+                        }
+                        return oriphoto;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<List<CartPhotosInfo>>bindToLifecycle())
+                .subscribe(new RxSubscribe<List<CartPhotosInfo>>() {
+                    @Override
+                    public void _onNext(List<CartPhotosInfo> list) {
+                        PictureAirLog.v(TAG, "MODIFY_CART_SUCCESS: " + "uodate cart");
+                        dismissPWProgressDialog();
 
-        //获取指定购物车项
-        CartItemInfo map = cartInfoList.get(position / 10);
-        map.setEmbedPhotos(oriphoto);
-        map.setHasPhoto(true);
-        //替换指定item
-        cartInfoList.set(position / 10, map);
-        cartAdapter.refresh(cartInfoList);
+                        /**
+                         * 1.找到动态添加的imageview，并替换对应的图片
+                         * 2.更新orderinfo的arraylist信息
+                         * 3.修改数据库
+                         */
+                        //获取指定购物车项
+                        cartInfoList.get(position / 10).setEmbedPhotos(list);
+                        cartInfoList.get(position / 10).setHasPhoto(true);
+                        cartAdapter.refresh(cartInfoList);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     @Override

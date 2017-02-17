@@ -2,8 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,17 +27,22 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
-import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 产品预览，处理商品的合成
@@ -56,12 +59,9 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private ImageView buyImg;// 这是在界面上跑的小图片
     private ArrayList<PhotoInfo> list;
 
-    private int upload_index = 0;
-
     private int recordcount = 0; //记录数据库中有几条记录
     private TextView counTextView;
 
-    private PWProgressBarDialog dialog;
     private BannerView_PreviewCompositeProduct bannerView_Preview;
     private boolean isbuynow = false;
 
@@ -72,114 +72,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private String picUrl = "";
 
     private PWToast newToast;
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.UPLOAD_PHOTO_SUCCESS://多文件上传,上传完成之后开始添加购物车
-                    PictureAirLog.v(TAG, msg.obj.toString() + "uploadphotosuccess");
-                    if (!"start".equals(msg.obj.toString())) {
-                        //说明是调用接口之后返回的数据，需要更新photoId和photoURL
-                        JSONObject result = (JSONObject) msg.obj;
-                        String photoUrlString = null;
-                        String photoIdString = null;
-                        photoUrlString = result.getString("photoUrl");
-                        photoIdString = result.getString("photoId");
-                        PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
-                        PhotoInfo info = list.get(upload_index - 1);
-                        info.setIsUploaded(1);
-                        info.setPhotoId(photoIdString);
-                        info.setPhotoOriginalURL(photoUrlString);
-                        list.set(upload_index - 1, info);
-                    }
-                    if (upload_index < list.size()) {
-                        if (list.get(upload_index).getIsOnLine() == 0) {//需要将图片上传
-
-                            if (list.get(upload_index).getIsUploaded() == 1) {//已经上传过了
-                                PictureAirLog.v(TAG, "has already uploaded");
-                                PhotoInfo selectPhotoItemInfo = list.get(upload_index);
-                                selectPhotoItemInfo.setPhotoId(list.get(upload_index).getPhotoId());
-                                selectPhotoItemInfo.setPhotoOriginalURL(list.get(upload_index).getPhotoOriginalURL());
-                                list.set(upload_index, selectPhotoItemInfo);
-                                Message message = handler.obtainMessage();
-                                message.what = API1.UPLOAD_PHOTO_SUCCESS;
-                                message.obj = "start";
-                                handler.sendMessage(message);
-                            }
-                        } else {//服务器上获取的图片，只需要将photoid获取就行
-                            PhotoInfo info = list.get(upload_index);
-                            info.setPhotoId(list.get(upload_index).getPhotoId());
-                            info.setPhotoOriginalURL(list.get(upload_index).getPhotoThumbnail_512());
-                            list.set(upload_index, info);
-                            Message message = handler.obtainMessage();
-                            message.what = API1.UPLOAD_PHOTO_SUCCESS;
-                            message.obj = "start";
-                            handler.sendMessage(message);
-                        }
-                        upload_index++;
-                    } else {//开始加入购物车
-                        upload_index = 0;
-                        if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//需要批量加入
-                            JSONArray goodsArray = new JSONArray();
-                            JSONObject goodsObject;
-                            for (int i = 0; i < list.size(); i++) {
-                                goodsObject = new JSONObject();
-                                goodsObject.put(Common.GOODS_KEY, goodsInfo.getGoodsKey());
-                                goodsObject.put(Common.QTY, 1);
-                                goodsObject.put(Common.IS_JUST_BUY, isbuynow);
-
-                                JSONArray embedPhotos = new JSONArray();
-                                JSONObject embedPhoto = new JSONObject();
-                                embedPhoto.put(Common.PHOTO_ID, list.get(i).getPhotoId());
-                                embedPhotos.add(embedPhoto);
-
-                                goodsObject.put(Common.EMBEDPHOTOS, embedPhotos);
-                                goodsArray.add(goodsObject);
-                            }
-                            PictureAirLog.out("goods----->" + goodsArray.toJSONString());
-                            API1.batchAddToCarts(MyApplication.getTokenId(), goodsArray.toJSONString(), handler);
-
-                        } else {//正常加入购物车
-                            //编辑传入照片的信息
-                            JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
-                            for (int i = 0; i < list.size(); i++) {
-                                JSONObject photoid = new JSONObject();
-                                photoid.put("photoId", list.get(i).getPhotoId());
-                                embedPhotos.add(photoid);
-                            }
-                            PictureAirLog.v(TAG, embedPhotos.toString());
-                            API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos, handler);
-                        }
-                    }
-                    break;
-
-                case API1.ADD_TO_CART_SUCCESS://加入购物车成功
-                    addCartSuccess(msg.obj, false);
-                    break;
-
-                case API1.BATCH_ADD_TO_CARTS_SUCCESS://批量加入购物车成功
-                    JSONObject object = (JSONObject) msg.obj;
-                    addCartSuccess(object.getJSONArray("cartItemIds"), true);
-                    break;
-
-                case API1.BATCH_ADD_TO_CARTS_FAILED:
-                case API1.ADD_TO_CART_FAILED:
-                case API1.UPLOAD_PHOTO_FAILED:
-                    dialog.pwProgressBarDialogDismiss();
-                    upload_index = 0;
-                    //				Toast.makeText(PreviewproductActivity.this, "Upload photo failed", Common.TOAST_SHORT_TIME).show();
-                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    break;
-                case API1.UPLOAD_PHOTO_PROGRESS:
-                    Bundle bundle = msg.getData();
-                    long bytesWritten = bundle.getLong("bytesWritten");
-                    long totalSize = bundle.getLong("totalSize");
-                    dialog.setProgress(bytesWritten,totalSize);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,9 +105,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         shoppingcartButton.setOnClickListener(this);
         buynowButton.setTypeface(MyApplication.getInstance().getFontBold());
         addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
-
-        //上传进度条
-        dialog = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
 
         recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
@@ -343,31 +232,13 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 break;
 
             case R.id.button_buy_now:
-                //检查网络
-                if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-                Message msg = handler.obtainMessage();
-                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = true;//buy now
-                msg.obj = "start";
-                handler.sendMessage(msg);
-                dialog.pwProgressBarDialogShow();
+                addCartAndBuy();
                 break;
 
             case R.id.button_add_to_cart://先要上传选择的图片，然后再加入购物车
-                //检查网络
-                if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-                Message message = handler.obtainMessage();
-                message.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = false;//add to cart
-                message.obj = "start";
-                handler.sendMessage(message);
-                dialog.pwProgressBarDialogShow();
+                addCartAndBuy();
                 break;
 
             case R.id.textview_cart_count:
@@ -387,12 +258,101 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     }
 
     /**
+     * 加入购物车
+     */
+    private void addCartAndBuy() {
+        //检查网络
+        if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+            newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+            return;
+        }
+        showPWProgressDialog();
+        Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<ArrayList<PhotoInfo>, ArrayList<PhotoInfo>>() {
+                    @Override
+                    public ArrayList<PhotoInfo> call(ArrayList<PhotoInfo> arrayList) {
+                        for (int i = 0; i < arrayList.size(); i++) {
+                            //服务器上获取的图片，只需要将photoid获取就行
+                            PhotoInfo info = arrayList.get(i);
+                            info.setPhotoOriginalURL(info.getPhotoThumbnail_512());
+                        }
+                        return arrayList;
+                    }
+                })
+                .flatMap(new Func1<ArrayList<PhotoInfo>, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(ArrayList<PhotoInfo> photoInfos) {
+                        //开始加入购物车
+                        if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//需要批量加入
+                            JSONArray goodsArray = new JSONArray();
+                            JSONObject goodsObject;
+                            for (int i = 0; i < photoInfos.size(); i++) {
+                                goodsObject = new JSONObject();
+                                goodsObject.put(Common.GOODS_KEY, goodsInfo.getGoodsKey());
+                                goodsObject.put(Common.QTY, 1);
+                                goodsObject.put(Common.IS_JUST_BUY, isbuynow);
+
+                                JSONArray embedPhotos = new JSONArray();
+                                JSONObject embedPhoto = new JSONObject();
+                                embedPhoto.put(Common.PHOTO_ID, photoInfos.get(i).getPhotoId());
+                                embedPhotos.add(embedPhoto);
+                                goodsObject.put(Common.EMBEDPHOTOS, embedPhotos);
+                                goodsArray.add(goodsObject);
+                            }
+                            PictureAirLog.out("goods----->" + goodsArray.toJSONString());
+                            return API2.batchAddToCarts(MyApplication.getTokenId(), goodsArray.toJSONString());
+
+                        } else {//正常加入购物车
+                            //编辑传入照片的信息
+                            JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
+                            for (int i = 0; i < photoInfos.size(); i++) {
+                                JSONObject photoid = new JSONObject();
+                                photoid.put("photoId", photoInfos.get(i).getPhotoId());
+                                embedPhotos.add(photoid);
+                            }
+                            PictureAirLog.v(TAG, embedPhotos.toString());
+                            return API2.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos);
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("add to cart ---> " + jsonObject);
+                        if (jsonObject.containsKey("cartItemIds")) {
+                            //批量加入购物车成功
+                            addCartSuccess(jsonObject.getJSONArray("cartItemIds"), true);
+                        } else if (jsonObject.containsKey("cartId")) {
+                            //加入购物车成功
+                            addCartSuccess(jsonObject, false);
+                        } else {
+                            _onError(401);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    /**
      * 处理购物车
      * @param result 返回结果
      * @param isBatch 是否是批量处理
      */
     private void addCartSuccess(Object result, boolean isBatch){
-        dialog.pwProgressBarDialogDismiss();
+        dismissPWProgressDialog();
         PictureAirLog.out("result---->" + result);
         JSONArray addcartArray;
 

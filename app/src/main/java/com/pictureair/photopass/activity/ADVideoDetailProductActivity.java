@@ -2,8 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,8 @@ import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.http.rxhttp.ServerException;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -43,7 +42,10 @@ import com.trello.rxlifecycle.android.ActivityEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bauer_bao on 16/9/2.
@@ -73,81 +75,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
     private boolean isBuyNow = false;
-
-    private Handler adVideoHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.GET_GOODS_SUCCESS:
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                    }
-                    //获取PP+
-                    for (GoodsInfo goodsInfo : allGoodsList) {
-                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                            pppGoodsInfo = goodsInfo;
-                            //封装购物车宣传图
-                            photoUrls = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
-                            }
-                            break;
-                        }
-                    }
-                    dismissPWProgressDialog();
-                    break;
-
-                case API1.GET_GOODS_FAILED:
-                case API1.ADD_TO_CART_FAILED:
-                    dismissPWProgressDialog();
-                    pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.ADD_TO_CART_SUCCESS:
-                    JSONObject jsonObject = (JSONObject) msg.obj;
-                    int currentCartCount = SPUtils.getInt(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                    SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-
-                    String cartId = jsonObject.getString("cartId");
-                    dismissPWProgressDialog();
-                    if (isBuyNow) {
-                        MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.getPhotoPassCode(), videoInfo.getShootDate());
-                        MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
-
-                        //生成订单
-                        Intent intent = new Intent(ADVideoDetailProductActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                        CartItemInfo cartItemInfo = new CartItemInfo();
-                        cartItemInfo.setCartId(cartId);
-                        cartItemInfo.setProductName(pppGoodsInfo.getName());
-                        cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-                        cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                        cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-                        cartItemInfo.setQty(1);
-                        cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-                        cartItemInfo.setPictures(photoUrls);
-                        cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-                        cartItemInfo.setCartProductType(3);
-
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putExtra("orderinfo", orderinfoArrayList);
-                        startActivity(intent);
-                    } else {
-                        buyImg = new ImageView(ADVideoDetailProductActivity.this);// buyImg是动画的图片
-                        buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                        setAnim(buyImg);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-            return false;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,18 +120,74 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     }
 
     private void getGoods() {
-        String goodsByACache = ACache.get(this).getAsString(Common.ALL_GOODS);
-        PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
-        if (goodsByACache != null && !goodsByACache.equals("")) {
-            adVideoHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
-        } else {
-            //从网络获取商品,先检查网络
-            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(adVideoHandler);
-            } else {
-                adVideoHandler.sendEmptyMessage(API1.GET_GOODS_FAILED);
-            }
-        }
+        //从网络获取商品,先检查网络
+        Observable.just(AppUtil.getNetWorkType(MyApplication.getInstance()))
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Integer, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(Integer integer) {
+                        if (integer != 0) {
+                            String goodsByACache = ACache.get(ADVideoDetailProductActivity.this).getAsString(Common.ALL_GOODS);
+                            PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
+                            if (!TextUtils.isEmpty(goodsByACache)) {
+                                return Observable.just(JSONObject.parseObject(goodsByACache));
+                            } else {
+                                return API2.getGoods()
+                                        .map(new Func1<JSONObject, JSONObject>() {
+                                            @Override
+                                            public JSONObject call(JSONObject jsonObject) {
+                                                ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+                                                return jsonObject;
+                                            }
+                                        });
+                            }
+                        } else {
+                            return Observable.error(new ServerException(401));
+                        }
+                    }
+                })
+                .map(new Func1<JSONObject, JSONObject>() {
+                    @Override
+                    public JSONObject call(JSONObject jsonObject) {
+                        GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject, GoodsInfoJson.class);//GoodsInfoJson.getString()
+                        if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                            allGoodsList = goodsInfoJson.getGoods();
+                            PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                        }
+                        //获取PP+
+                        for (GoodsInfo goodsInfo : allGoodsList) {
+                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                                pppGoodsInfo = goodsInfo;
+                                //封装购物车宣传图
+                                photoUrls = new String[goodsInfo.getPictures().size()];
+                                for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                                    photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                                }
+                                break;
+                            }
+                        }
+                        return jsonObject;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     @Override
@@ -240,7 +223,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     return;
                 }else{
                     showPWProgressDialog();
-//                    API1.getPPPsByShootDate(adVideoHandler, videoInfo.getShootDate());
                     getPPPsByShootDate(videoInfo.getShootDate());
                 }
                 break;
@@ -309,8 +291,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
     @Override
     protected void onDestroy() {
-        adVideoHandler.removeCallbacksAndMessages(null);
-
         if (!MyApplication.getInstance().getBuyPPPStatus().equals(Common.FROM_AD_ACTIVITY_PAYED)) {//如果已经购买完成，则不需要清除数据，否则才会清除
             MyApplication.getInstance().setBuyPPPStatus("");
             //按返回，把状态全部清除
@@ -339,7 +319,58 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private void addtocart() {
         showPWProgressDialog();
         //调用addToCart API1
-        API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, isBuyNow, null, adVideoHandler);
+        API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, isBuyNow, null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        int currentCartCount = SPUtils.getInt(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+
+                        String cartId = jsonObject.getString("cartId");
+                        dismissPWProgressDialog();
+                        if (isBuyNow) {
+                            MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.getPhotoPassCode(), videoInfo.getShootDate());
+                            MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
+
+                            //生成订单
+                            Intent intent = new Intent(ADVideoDetailProductActivity.this, SubmitOrderActivity.class);
+                            ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                            CartItemInfo cartItemInfo = new CartItemInfo();
+                            cartItemInfo.setCartId(cartId);
+                            cartItemInfo.setProductName(pppGoodsInfo.getName());
+                            cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                            cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+                            cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                            cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+                            cartItemInfo.setQty(1);
+                            cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+                            cartItemInfo.setPictures(photoUrls);
+                            cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+                            cartItemInfo.setCartProductType(3);
+
+                            orderinfoArrayList.add(cartItemInfo);
+                            intent.putExtra("orderinfo", orderinfoArrayList);
+                            startActivity(intent);
+                        } else {
+                            buyImg = new ImageView(ADVideoDetailProductActivity.this);// buyImg是动画的图片
+                            buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
+                            setAnim(buyImg);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**

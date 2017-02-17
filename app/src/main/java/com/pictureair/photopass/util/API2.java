@@ -16,9 +16,7 @@ import com.pictureair.photopass.http.rxhttp.ApiFactory;
 import com.pictureair.photopass.http.rxhttp.HttpCallback;
 import com.pictureair.photopass.http.rxhttp.PhotoPassAuthApi;
 import com.pictureair.photopass.http.rxhttp.RxHelper;
-import com.pictureair.photopass.widget.PWProgressBarDialog;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -394,19 +392,6 @@ public class API2 {
 
     /***************************************我的模块 start**************************************/
 
-
-    /**
-     * 更新用户头像或头部背景图
-     *
-     * @param params
-     * @param position 修改图片的时候需要这个参数来定位
-     * @throws FileNotFoundException
-     */
-    public static Observable<JSONObject> updateUserImage(Map<String, RequestBody> params, final int position, final HttpCallback callback) throws FileNotFoundException {
-        // 需要更新服务器中用户背景图片信息
-        return upload(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, callback);
-    }
-
     /**
      * 更新用户信息
      *
@@ -462,70 +447,6 @@ public class API2 {
         params.put(Common.USERINFO_TOKENID, tokenId);
 
         return get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, null);
-    }
-
-    /**
-     * 隐藏PP
-     *
-     * @param params 参数
-     */
-    public static Observable<JSONObject> hidePPs(Map params) {
-        return post(Common.BASE_URL_TEST + Common.HIDE_PPS, params, null);
-    }
-
-    /**
-     * 将pp绑定到ppp
-     *
-     * @param tokenId  token
-     * @param pps      pps
-     * @param bindDate bind
-     * @param ppp      ppp
-     */
-    public static Observable<JSONObject> bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.PPS, pps);
-        if (bindDate != null) {
-            params.put(Common.bindDate, bindDate);
-        }
-        if (ppp != null) {
-            params.put(Common.ppp1, ppp);
-        }
-
-        return post(Common.BASE_URL_TEST + Common.BIND_PPS_TO_PPP, params, null);
-    }
-
-    /**
-     * 绑定PP卡到用户
-     */
-    public static Observable<JSONObject> addCodeToUser(String ppCode) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (ppCode != null) {
-            params.put(Common.CUSTOMERID, ppCode);
-        }
-
-        return get(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, null);
-    }
-
-
-    /**
-     * 扫描PPP并绑定用户
-     *
-     * @param params params
-     */
-    public static Observable<JSONObject> bindPPPToUser(Map params) {
-        return post(Common.BASE_URL_TEST + Common.BIND_PPP_TO_USER, params, null);
-    }
-
-    /**
-     * 帮助
-     */
-    public static Observable<JSONObject> getHelp() {
-        Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-
-        return get(Common.BASE_URL_TEST + Common.ME_HELP, params, null);
     }
 
     /**
@@ -642,7 +563,7 @@ public class API2 {
      * @param qty         商品数量(可选)
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      */
-    public static Observable<JSONObject> modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final PWProgressBarDialog diaBarPop, final HttpCallback callback) {
+    public static Observable<JSONObject> modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos) {
         PictureAirLog.v(TAG, "modifyCart");
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -655,7 +576,7 @@ public class API2 {
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
 
-        return put(url, params, callback);
+        return put(url, params, null);
     }
 
 
@@ -937,69 +858,6 @@ public class API2 {
         return get(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, null);
     }
 
-//    /**
-//     * 下载apk文件
-//     *
-//     * @param downloadURL 下載路徑
-//     * @param handler
-//     */
-//    public static void downloadAPK(final Context content,String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler) {
-//
-//        HttpUtil1.asyncDownloadBinaryData(downloadURL, new HttpCallback() {
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                customProgressBarPop.setProgress(bytesWritten,totalSize);
-//            }
-//        });
-//    }
-
-//    /**
-//     * 下载apk文件
-//     * @param content
-//     * @param threadInfo
-//     * @param handler
-//     */
-//    public static void downloadAPK2(final Context content,final ThreadInfo threadInfo, final Handler handler) {
-//        final Intent intent = new Intent(BreakpointDownloadService.ACTION_UPDATE);
-//
-//        HttpUtil1.asyncDownloadBinaryData(threadInfo.getUrl(), new HttpCallback() {
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//
-//                intent.putExtra("bytesWritten", bytesWritten);
-//                intent.putExtra("totalSize", totalSize);
-//                content.sendBroadcast(intent);
-//            }
-//        });
-//    }
-
-
     /***************************************推送 Start**************************************/
     /**
      * socket链接后处理方法
@@ -1133,29 +991,6 @@ public class API2 {
     }
 
     /**
-     * <<<<<<< HEAD
-     * =======
-     * 分享成功的回调，通知服务器已经成功分享
-     *
-     * @param shareId
-     * @param platform
-     */
-    public static Observable<JSONObject> shareCallBack(String shareId, String platform) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (shareId != null) {
-            params.put(Common.SHARE_ID, shareId);
-        }
-        if (platform != null) {
-            params.put(Common.SHARE_PLATFORM, platform);
-        }
-
-        PictureAirLog.e("----shareCallBack:", "" + params.toString());
-
-        return post(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, null);
-    }
-
-    /**
      *
      * 获取照片的最新数据,并后台统计图片的下载数量
      *
@@ -1165,14 +1000,6 @@ public class API2 {
     }
 
     /**************************************下载图片 Start**************************************/
-    /**
-     * 普通下载接口。
-     *
-     */
-    public static Observable<ResponseBody> downLoadPhotosWithUrl(String url, HttpCallback callback) {
-        PictureAirLog.out("downloadurl photo--->" + url);
-        return download(url, callback);
-    }
 
     /**
      * 断点下载
@@ -1181,8 +1008,6 @@ public class API2 {
         PictureAirLog.out("downloadurl photo--->" + url);
         return downloadContinue(length, url, callback);
     }
-
-
 
     /**************************************下载图片 End**************************************/
 

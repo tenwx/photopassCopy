@@ -87,18 +87,6 @@
             android:src="@drawable/back_blue"
             android:layout_above="@+id/make_gift_line"/>
 
-        <ImageView
-            android:id="@+id/addimage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_dp_5"
-            android:layout_toLeftOf="@id/button_cart"
-            android:scaleType="fitCenter"
-            android:src="@drawable/addphoto"
-            android:visibility="gone"
-            android:layout_above="@+id/make_gift_line"/>
-
         <View
             android:id="@id/make_gift_line"
             android:layout_width="match_parent"

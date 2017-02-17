@@ -41,18 +41,28 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.AESKeyHelper;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.trello.rxlifecycle.components.RxActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.ResponseBody;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class UrlTouchImageView extends RelativeLayout implements TouchImageView.OnTouchClearListener, TouchImageView.OnLongTouchListener {
     protected TouchImageView mImageView;
@@ -94,8 +104,6 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
     private PhotoEventListener photoEventListener;
 
     private static final int LOAD_FILE_FAILED = 1;
-    private static final int LOAD_FROM_LOCAL = 444;
-    private static final int GET_BMP_COMPLTETION = 555;
     private static final String TAG = UrlTouchImageView.class.getSimpleName();
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -103,42 +111,12 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case LOAD_FILE_FAILED://加载失败
+                    PictureAirLog.d("load with error");
                     Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), (defaultType == 0) ? R.drawable.ic_failed : R.drawable.preview_error);
                     mImageView.setVisibility(VISIBLE);
                     mImageView.setScaleType(ScaleType.CENTER);
                     mImageView.setImageBitmap(bitmap);//如果这里直接用setImageResource，导致没有左右滑动
                     progressImageView.setVisibility(GONE);
-                    break;
-
-                case GET_BMP_COMPLTETION:
-                    //添加模糊
-                    if (null != oriClearBmp) {
-                        showBlurView();
-                    } else {
-                        handler.sendEmptyMessage(LOAD_FILE_FAILED);
-                    }
-                    break;
-
-                case LOAD_FROM_LOCAL:
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            byte[] arg2 = null;
-                            try {
-                                arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
-                            } catch (Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            if (null != arg2)
-                                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-
-                            createBlurBmp();
-
-                            handler.sendEmptyMessage(GET_BMP_COMPLTETION);
-                            super.run();
-                        }
-                    }.start();
                     break;
 
                 default:
@@ -278,8 +256,6 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
             cardRl.setBackgroundColor(Color.TRANSPARENT);
             layoutParams2.setMargins(0, 0, 0, 0);
             photoContainerRl.setLayoutParams(layoutParams2);
-
-
         }
 
         if (clearMode == 0) {//模糊图片
@@ -355,7 +331,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
      * @param imageUrl 网络图片路径
      */
     public void setUrl(String imageUrl, boolean isEncrypted) {
-        //使用imageloader加载图片
+        //加载图片
         GlideUtil.load(mContext.getApplicationContext(), imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
@@ -406,53 +382,124 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
      * 设置blur url
      * @param blurImageUrl
      */
-    public void setBlurImageUrl(String blurImageUrl, String photoId) {
+    public void setBlurImageUrl(final String blurImageUrl, String photoId) {
         dirFile = new File(getContext().getApplicationContext().getCacheDir() + "/" + photoId + Common.OFFSET);//创建一个以ID为名字的文件，放入到app缓存文件下
-
         PictureAirLog.v(TAG, dirFile.toString());
         PictureAirLog.v(TAG, "photo URL ------->" + blurImageUrl);
-        if (dirFile.exists()) {//如果文件存在
-            PictureAirLog.v(TAG, "file exists");
-            handler.sendEmptyMessageDelayed(LOAD_FROM_LOCAL, 200);
-        } else {//如果文件不存在，下载文件到缓存
-            PictureAirLog.v(TAG, "file is not exist");
-            HttpUtil1.asyncDownloadBinaryData(blurImageUrl, new HttpCallback() {
-                @Override
-                public void onSuccess(byte[] binaryData) {
-                    super.onSuccess(binaryData);
-                    byte[] data = AppUtil.getRealByte(binaryData);
-                    if (data == null) {
-                        data = binaryData;
-                    }
-                    try {
-                        AESKeyHelper.encrypt(data, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    createBlurBmp();
-                    handler.sendEmptyMessage(GET_BMP_COMPLTETION);
-                }
+        Observable.just(dirFile.exists())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            //如果文件存在
+                            PictureAirLog.v(TAG, "file exists");
+                            byte[] arg2 = null;
+                            try {
+                                arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            if (null != arg2) {
+                                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                            } else {//失败
+                                return Observable.just(false);
 
-                @Override
-                public void onFailure(int status) {
-                    super.onFailure(status);
-                    handler.sendEmptyMessage(GET_BMP_COMPLTETION);
-                }
-            });
-        }
-    }
+                            }
+                            if (oriClearBmp == null) {//失败
+                                return Observable.just(false);
 
-    /**
-     * 创建模糊图
-     */
-    private void createBlurBmp() {
-        if (oriClearBmp != null) {
-            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
-            maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1);
-            oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
-        }
+                            } else {//成功
+                                return Observable.just(true);
+
+                            }
+                        } else {
+                            //如果文件不存在，下载文件到缓存
+                            PictureAirLog.v(TAG, "file is not exist");
+                            return API2.downloadHeadFile(blurImageUrl, null)
+                                    .map(new Func1<ResponseBody, Boolean>() {
+                                        @Override
+                                        public Boolean call(ResponseBody responseBody) {
+                                            PictureAirLog.v(TAG, "get data finished");
+                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                            InputStream is = null;
+                                            byte[] buff = new byte[1024];
+                                            int res = 0;
+                                            try {
+                                                is = responseBody.byteStream();
+                                                while ((res = is.read(buff)) != -1) {
+                                                    baos.write(buff, 0, res);
+                                                }
+                                                byte[] bytes = baos.toByteArray();
+                                                byte[] data = AppUtil.getRealByte(bytes);
+                                                if (data == null) {
+                                                    data = bytes;
+                                                }
+                                                try {
+                                                    AESKeyHelper.encrypt(data, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                                                } catch (Exception e) {
+                                                    // TODO Auto-generated catch block
+                                                    e.printStackTrace();
+                                                }
+                                                is.close();
+                                                baos.close();
+                                                oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                                if (oriClearBmp == null) {
+                                                    return false;
+                                                } else {
+                                                    return true;
+                                                }
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
+                                                if (is != null) {
+                                                    try {
+                                                        is.close();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                                if (baos != null) {
+                                                    try {
+                                                        baos.close();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                                return false;
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(((RxActivity)mContext).<Boolean>bindToLifecycle())
+                .subscribe(new RxSubscribe<Boolean>() {
+                    @Override
+                    public void _onNext(Boolean aBoolean) {
+                        if (aBoolean) {//获取图片数据成功
+                            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+                            maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1);
+                            oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+                            //添加模糊
+                            showBlurView();
+
+                        } else {
+                            _onError(401);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     /**

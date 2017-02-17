@@ -77,24 +77,7 @@
         <!-- <item name="android:background">@drawable/nav_page</item> -->
         <item name="android:background">@color/transparent</item>
     </style>
-    
-    
-    <style name="weekName">
-        <item name="android:layout_width">0.0dip</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:layout_weight">1.0</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">#ff000000</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-    
-    <style name="PullToRefreshText">
-    <item name="android:textColor">@color/pp_dark_blue</item>
-    <item name="android:textSize">15sp</item>
-    <item name="android:textStyle">normal</item>
-  </style>
-    
+
     <style name="CustomDialog" parent="@android:style/Theme.Dialog">
 		<item name="android:windowFrame">@null</item>
     	<item name="android:windowIsFloating">true</item>

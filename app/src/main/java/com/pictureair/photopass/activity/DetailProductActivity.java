@@ -2,8 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -35,9 +35,10 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 商品明细类，此页面可以加入购物车
@@ -64,51 +65,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 
     //申明变量
     private int recordcount = 0; //记录数据库中有几条记录
-
-
-    private final Handler detailProductHandler = new DetailProductHandler(this);
-
-
-    private static class DetailProductHandler extends Handler {
-        private final WeakReference<DetailProductActivity> mActivity;
-
-        public DetailProductHandler(DetailProductActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    /**
-     * 处理Message
-     *
-     * @param msg
-     */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case API1.ADD_TO_CART_SUCCESS:
-                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
-                buyImg = new ImageView(DetailProductActivity.this);// buyImg是动画的图片
-                buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                setAnim(buyImg);
-                break;
-
-            case API1.ADD_TO_CART_FAILED:
-                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            default:
-                break;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,7 +223,29 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
      */
     private void addtocart() {
         //编辑传入照片的信息
-        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, null, detailProductHandler);
+        API2.addToCart(goodsInfo.getGoodsKey(), 1, false, null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        int currentCartCount = SPUtils.getInt(DetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(DetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+                        buyImg = new ImageView(DetailProductActivity.this);// buyImg是动画的图片
+                        buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
+                        setAnim(buyImg);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     private void setAnim(final View v) {
@@ -384,6 +362,5 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        detailProductHandler.removeCallbacksAndMessages(null);
     }
 }

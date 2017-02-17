@@ -960,6 +960,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void getGoods() {
         if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
             newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            dismissPWProgressDialog();
             return;
         }
         //从缓层中获取数据

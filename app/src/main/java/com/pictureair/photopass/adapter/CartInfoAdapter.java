@@ -19,20 +19,21 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.ListViewImageView;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.components.RxActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * 购物车页面的ExpandableListView的适配器
@@ -326,50 +327,48 @@ public class CartInfoAdapter extends BaseAdapter {
          */
         public void modifyCart(final boolean addOrminus, final int count, final CartItemInfo cartItemInfo, final Handler handler) {
             PictureAirLog.v(TAG, "modifyCart");
-            Map<String,Object> params = new HashMap<>();
-            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-            if (cartItemInfo.getGoodsKey() != null) {
-                params.put(Common.GOODS_KEY, cartItemInfo.getGoodsKey());
-            }
-            params.put(Common.QTY, count);
-            String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartItemInfo.getCartId();
-            HttpUtil1.asyncPut(url, params, new HttpCallback() {
-                @Override
-                public void onSuccess(JSONObject jsonObject) {
-                    super.onSuccess(jsonObject);
-                    PictureAirLog.v(TAG, "modifyCart onSuccess");
-                    ishandle = false;
-                    holderView.cartGoodCountTextView.setText(String.valueOf(count));
-                    holderView.cartGoodProductQuentityTextView.setText("x" + String.valueOf(count));
-                    for (int i = 0; i < arraylist.size(); i++) {
-                        CartPhotosInfo map = arraylist.get(i);
-                        map.setCartPhotoCount(String.valueOf(count));
-                        arraylist.set(i, map);
-                    }
-                    cartItemInfo.setEmbedPhotos(arraylist);
-                    cartItemInfo.setQty(count);
-                    Message message = handler.obtainMessage();
-                    if (addOrminus) {
-                        message.what = ADDCOUNT;
-                    } else {
-                        message.what = MINUSCOUNT;
-                    }
-                    if (cartItemInfo.getIsSelect()) {
-                        message.arg1 = 1;
-                    } else {
-                        message.arg1 = 0;
-                    }
-                    message.arg2 = position;
-                    message.obj = cartItemInfo.getUnitPrice();
-                    handler.sendMessage(message);
-                }
+            API2.modifyCart(cartItemInfo.getCartId(), cartItemInfo.getGoodsKey(), count, null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(((RxActivity)context).<JSONObject>bindToLifecycle())
+                    .subscribe(new RxSubscribe<JSONObject>() {
+                        @Override
+                        public void _onNext(JSONObject jsonObject) {
+                            PictureAirLog.v(TAG, "modifyCart onSuccess");
+                            ishandle = false;
+                            holderView.cartGoodCountTextView.setText(String.valueOf(count));
+                            holderView.cartGoodProductQuentityTextView.setText("x" + String.valueOf(count));
+                            for (int i = 0; i < arraylist.size(); i++) {
+                                arraylist.get(i).setCartPhotoCount(String.valueOf(count));
+                            }
+                            cartItemInfo.setEmbedPhotos(arraylist);
+                            cartItemInfo.setQty(count);
+                            Message message = handler.obtainMessage();
+                            if (addOrminus) {
+                                message.what = ADDCOUNT;
+                            } else {
+                                message.what = MINUSCOUNT;
+                            }
+                            if (cartItemInfo.getIsSelect()) {
+                                message.arg1 = 1;
+                            } else {
+                                message.arg1 = 0;
+                            }
+                            message.arg2 = position;
+                            message.obj = cartItemInfo.getUnitPrice();
+                            handler.sendMessage(message);
+                        }
 
-                @Override
-                public void onFailure(int status) {
-                    super.onFailure(status);
-                    ishandle = false;
-                }
-            });
+                        @Override
+                        public void _onError(int status) {
+                            ishandle = false;
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+                    });
+
         }
 
     }

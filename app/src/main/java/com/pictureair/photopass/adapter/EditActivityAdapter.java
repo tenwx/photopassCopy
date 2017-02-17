@@ -22,25 +22,28 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
+import com.trello.rxlifecycle.components.RxActivity;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
 
 
 public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapter.EditHolder> implements PWDialog.OnPWDialogClickListener {
@@ -96,6 +99,18 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
                     EditHolder holder = (EditHolder) msg.obj;
                     holder.progressBar.setProgress(msg.arg1);
                     holder.fileSizeTextView.setText(msg.arg1 + "%");
+
+                    if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理
+                        holder.progressBar.setVisibility(View.GONE);
+                        holder.maskImageView.setVisibility(View.GONE);
+                        holder.fileSizeTextView.setVisibility(View.GONE);
+                        frameInfos.get(position).setIsDownload(1);
+                        firstFileFailOrExist = false;
+                        secondFileFailOrExist = false;
+                        firstFileProgress = 0;
+                        secondFileProgress = 0;
+                        PictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).getFrameName(), 1);
+                    }
                     break;
 
                 default:
@@ -345,7 +360,7 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
             downloadNameString = "frame_portrait_" + AppUtil.getReallyFileName(url,0);
         }
 
-        File file = new File(mContext.getFilesDir(), "frames");
+        final File file = new File(mContext.getFilesDir(), "frames");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -360,108 +375,9 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
             }
             return;
         }
+        final String fileName = downloadNameString;
 
-//        HttpUtil1.asyncGet(Common.PHOTO_URL + url, new HttpCallback() {
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                BufferedOutputStream stream = null;
-//                try {
-//                    FileOutputStream fsStream = new FileOutputStream(downloadFile.toString());
-//                    stream = new BufferedOutputStream(fsStream);
-//                    stream.write(binaryData);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    try {
-//                        if (stream != null) {
-//                            stream.flush();
-//                            stream.close();
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                downloadFile.delete();
-//                if (firstTime) {
-//                    firstFileFailOrExist = true;
-//                } else {
-//                    secondFileFailOrExist = true;
-//                }
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//                if (firstTime) {
-//                    firstFileProgress = bytesWritten * 50 / totalSize;
-//                } else {
-//                    secondFileProgress = bytesWritten * 50 / totalSize;
-//                }
-////				System.out.println("progress:"+ firstFileProgress + "-" + secondFileProgress);
-//                Message message = downloadHandler.obtainMessage();
-//                message.what = UPDATE_PROGRESS;
-//                message.obj = holderView;
-//                if (firstFileFailOrExist || secondFileFailOrExist) {//有文件存在，或者下载失败，需要在进度上加50
-//                    message.arg1 = (int) (50 + bytesWritten * 50 / totalSize);
-//                } else {//都可以正常下载，下载进度取两者平均值
-//                    message.arg1 = (int) (firstFileProgress + secondFileProgress);
-//                }
-//                downloadHandler.sendMessage(message);
-//                if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理
-//                    holderView.progressBar.setVisibility(View.GONE);
-//                    holderView.maskImageView.setVisibility(View.GONE);
-//                    holderView.fileSizeTextView.setVisibility(View.GONE);
-//                    frameInfos.get(position).isDownload = 1;
-//                    firstFileFailOrExist = false;
-//                    secondFileFailOrExist = false;
-//                    firstFileProgress = 0;
-//                    secondFileProgress = 0;
-//                    pictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).frameName, 1);
-//                }
-//            }
-//        });
-
-        // two
-        HttpUtil1.asyncDownloadBinaryData(Common.PHOTO_URL + url,new HttpCallback(){
-            @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                BufferedOutputStream stream = null;
-                try {
-                    FileOutputStream fsStream = new FileOutputStream(downloadFile.toString());
-                    stream = new BufferedOutputStream(fsStream);
-                    stream.write(binaryData);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (stream != null) {
-                            stream.flush();
-                            stream.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                downloadFile.delete();
-                if (firstTime) {
-                    firstFileFailOrExist = true;
-                } else {
-                    secondFileFailOrExist = true;
-                }
-            }
-
+        API2.downloadHeadFile(Common.PHOTO_URL + url, new com.pictureair.photopass.http.rxhttp.HttpCallback() {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
@@ -470,7 +386,6 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
                 } else {
                     secondFileProgress = bytesWritten * 50 / totalSize;
                 }
-//				System.out.println("progress:"+ firstFileProgress + "-" + secondFileProgress);
                 Message message = downloadHandler.obtainMessage();
                 message.what = UPDATE_PROGRESS;
                 message.obj = holder;
@@ -480,19 +395,40 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
                     message.arg1 = (int) (firstFileProgress + secondFileProgress);
                 }
                 downloadHandler.sendMessage(message);
-                if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理
-                    holder.progressBar.setVisibility(View.GONE);
-                    holder.maskImageView.setVisibility(View.GONE);
-                    holder.fileSizeTextView.setVisibility(View.GONE);
-                    frameInfos.get(position).setIsDownload(1);
-                    firstFileFailOrExist = false;
-                    secondFileFailOrExist = false;
-                    firstFileProgress = 0;
-                    secondFileProgress = 0;
-                    PictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).getFrameName(), 1);
-                }
             }
-        });
+        })
+                .map(new Func1<ResponseBody, String>() {
+                    @Override
+                    public String call(ResponseBody responseBody) {
+                        try {
+                            return AppUtil.writeFile(responseBody, file.toString(), fileName);
+                        } catch (Exception e) {
+                            throw Exceptions.propagate(e);
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(((RxActivity)mContext).<String>bindToLifecycle())
+                .subscribe(new RxSubscribe<String>() {
+                    @Override
+                    public void _onNext(String s) {
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        downloadFile.delete();
+                        if (firstTime) {
+                            firstFileFailOrExist = true;
+                        } else {
+                            secondFileFailOrExist = true;
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     private class FrameListTarget extends SimpleTarget<Bitmap> {
