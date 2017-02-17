@@ -510,10 +510,8 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private void onScanFinish(String file) {
         SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
         // 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
-//                Intent intent = new Intent();
-//                intent.putExtra("photoUrl", file);
-//                pwEditView.getEditPhotView().setResult(11, intent);
-//                PictureAirLog.out("set result--------->");
+                pwEditView.getEditPhotView().setResult(11);
+                PictureAirLog.out("set result--------->");
         pwEditView.finishActivity();
     }
 

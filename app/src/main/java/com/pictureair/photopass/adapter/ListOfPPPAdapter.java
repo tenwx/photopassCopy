@@ -110,7 +110,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp3_img = (ImageView)convertView.findViewById(R.id.ppp_imageView3);
 //			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
 			holder.tv_cardStatus = (TextView) convertView.findViewById(R.id.tv_ppp_state);
-//			holder.rl_ppp_status = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_status);
+			holder.rl_ppp_status = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_status);
 			holder.ppp_cardHeader = (RelativeLayout) convertView.findViewById(R.id.ppp_card_head);
 			holder.tvExpired = (TextView)convertView.findViewById(R.id.tv_expired);
 			holder.ppp_imageView = (ImageView) convertView.findViewById(R.id.ppp_imageView);
@@ -234,10 +234,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		holder.ppp_imageView.setLayoutParams(params2);
 
-//		ViewGroup.LayoutParams params3 = holder.rl_ppp_status.getLayoutParams();
-//		params3.width = params2.height * 125 / 372;//右上角三角状态图标大小148，150
-//		params3.height = params2.height * 125 / 372;
-//		holder.rl_ppp_status.setLayoutParams(params3);
+		ViewGroup.LayoutParams params3 = holder.rl_ppp_status.getLayoutParams();
+		params3.width = params2.height * 125 / 372;//右上角三角状态图标大小148，150
+		params3.height = params2.height * 125 / 372;
+		holder.rl_ppp_status.setLayoutParams(params3);
 
 		ViewGroup.LayoutParams params1 = holder.pppCardCenterCover.getLayoutParams();
 		params1.width = params.width;
@@ -273,7 +273,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		RelativeLayout ppp_detail_pp3;
 		LinearLayout ll_ppp_with_pp;
 		RelativeLayout ppp_face;//卡正面
-//		RelativeLayout rl_ppp_status;//卡的状态
+		RelativeLayout rl_ppp_status;//卡的状态
 		TextView tv_pp_num1;//卡反面对应的每一条数据的信息
 		TextView tv_pp_num2;
 		TextView tv_pp_num3;

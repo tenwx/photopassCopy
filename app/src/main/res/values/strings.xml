@@ -52,7 +52,7 @@
     <string name="send_emal">发送验证邮件</string>
     <string name="back_login_page">返回登录页面</string>
     <string name="email_is_empty">电子邮箱不能为空</string>
-    <string name="email_sent">验证邮件已发送</string>
+    <string name="email_sent">邮件已发送，请前往邮箱验证</string>
     <string name="reset_pwd_ok">确认</string>
     <!-- forget pwd end -->
 
@@ -276,6 +276,7 @@
     <string name="hdr">HDR</string>
     <string name="whitening">美白</string>
     <string name="vintage">怀旧</string>
+    <string name="sea_photo_in_camera">编辑好的照片可以在您的手机相册里查看哦</string>
     <!-- edit end -->
 
     <!-- detail product start -->

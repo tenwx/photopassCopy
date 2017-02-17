@@ -54,8 +54,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private String languageType;
     private PWToast myToast;
     private Context context;
-    private RelativeLayout titleLayout;
-    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout, parent, ll_put_identify_centen;
+    private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout;
     private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain;
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
     private CustomButtonFont btn_next, sure;
@@ -69,8 +68,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private ImageView agreeIv;
     private boolean isAgree = false;
     private PWDialog pictureWorksDialog;
-    private TextView title,forgetTitle;
-    private View line;
+    private TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +87,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private void initView() {
         whatActivity = getIntent().getExtras().getString("activity");
         registerTool.setWhatActivity(whatActivity);
-        line = findViewById(R.id.regist_line);
         regist_layout = (LinearLayout) findViewById(R.id.regist_content_layout);
         forget_layout = (LinearLayout) findViewById(R.id.forget_ll);
-        forgetTitle = (TextView) findViewById(R.id.topTitle);
-        titleLayout = (RelativeLayout) findViewById(R.id.regist_title_layout1);
-        parent = (LinearLayout) findViewById(R.id.register_parent);
         if (signActivity.equals(whatActivity)) {
             initRegisterView();
         } else  if (forgetActivity.equals(whatActivity)) {
@@ -154,7 +148,6 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         tv_explain = (CustomTextView) findViewById(R.id.tv_explain);
         ll_pwd_centen = (LinearLayout) findViewById(R.id.ll_pwd_centen);
         ll_mobile_centen = (LinearLayout) findViewById(R.id.ll_mobile_centen);
-        ll_put_identify_centen = (LinearLayout) findViewById(R.id.ll_put_identify_centen);
         title = (TextView) findViewById(R.id.regist_title);
 
         tv_otherRegistered.setOnClickListener(this);
@@ -185,11 +178,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private void intiForgetView() {
         regist_layout.setVisibility(View.GONE);
         forget_layout.setVisibility(View.VISIBLE);
-        forgetTitle.setVisibility(View.VISIBLE);
-        parent.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-        titleLayout.setBackgroundColor(getResources().getColor(R.color.white));
-        line.setVisibility(View.VISIBLE);
-        setTopLeftValueAndShow(R.drawable.back_blue, true);
+        setTopLeftValueAndShow(R.drawable.back_white, true);
         rlCountry = (LinearLayout) findViewById(R.id.rl_forget_country);
         tvCountry = (CustomTextView) findViewById(R.id.tv_forget_country);
         tvCountryNum = (CustomTextView) findViewById(R.id.tv_forget_country_num);
@@ -303,7 +292,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         rlCountry.setVisibility(View.GONE);
         ll_mobile_centen.setVisibility(View.GONE);
         ll_pwd_centen.setVisibility(View.VISIBLE);
-        sure.setText(R.string.reset_pwd_ok);
+        sure.setText(R.string.login);
         sure.setEnabled(false);
         pwd.setHint(R.string.smssdk_pwd_forget);
         pwd_again.setHint(R.string.smssdk_pwd2);
