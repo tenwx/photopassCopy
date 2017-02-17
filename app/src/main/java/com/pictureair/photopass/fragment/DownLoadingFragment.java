@@ -202,7 +202,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case BIND_INIT:
+            case BIND_INIT://bindService成功
                 if (downloadService != null) {
                     downloadList = downloadService.getDownloadList();
                     downloadService.setAdapterhandler(adapterHandler);

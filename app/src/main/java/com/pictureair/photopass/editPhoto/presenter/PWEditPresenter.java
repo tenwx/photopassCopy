@@ -97,7 +97,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""));
     }
 
-
+    /**获取边框饰品信息*/
     private void getLastContent(String pLastUpdateTime) {
         API2.getLastContent(SPUtils.getString(MyApplication.getInstance(),Common.SHARED_PREFERENCE_APP,Common.GET_LAST_CONTENT_TIME,""))
                 .compose(pwEditView.getEditPhotView().<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
@@ -846,10 +846,10 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                     });
                     break;
 
-                case PhotoCommon.INIT_DATA_FINISHED:
+                case PhotoCommon.INIT_DATA_FINISHED://用于关系progress
                     pwEditView.dialogDismiss();
                     break;
-                case PhotoCommon.START_ASYNC:
+                case PhotoCommon.START_ASYNC://执行过滤
                     ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
                     excuteFilterTask.execute(mMainBitmap);
                     break;

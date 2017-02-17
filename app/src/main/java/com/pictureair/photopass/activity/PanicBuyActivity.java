@@ -108,7 +108,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     private void dealHandler(Message msg) {
         switch (msg.what) {
 
-            case COUNT_DOWN_TIME_FINISH:
+            case COUNT_DOWN_TIME_FINISH://倒计时结束，则判断当前状态，进入下一个状态
                 if (mStartDeal == DEALING) {
                     Date currentDate = getCurrentDate();
                     if (endDate != null && currentDate != null && endDate.getTime() >= currentDate.getTime() - goodsInfo.getDealing().getTimeOffset()) {
@@ -251,16 +251,17 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
                 PictureAirLog.d(TAG, "formatEndDate " + endDate.toString());
 
                 Date currentData = getCurrentDate();
+                //-2，-3表示抢购即将开始
                 if (goodsInfo.getDealing().getState() == -2 || goodsInfo.getDealing().getState() == -3) {
                     if (startDate.getTime()  > currentData.getTime() - goodsInfo.getDealing().getTimeOffset()) {
                         mStartDeal = DEAL_NOT_START;
-                    }else if (currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
+                    }else if (currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {//用于时间误差的处理
                         mStartDeal = DEALING;
                     }
-                } else if (goodsInfo.getDealing().getState() == 1) {
+                } else if (goodsInfo.getDealing().getState() == 1) {//1表示抢购进行中
                     if ( currentData.getTime() - goodsInfo.getDealing().getTimeOffset() >= startDate.getTime() && currentData.getTime() - goodsInfo.getDealing().getTimeOffset() <= endDate.getTime()) {
                         mStartDeal = DEALING;
-                    } else {
+                    } else {//用于时间误差的处理
                         mStartDeal = NO_DEALS;
                     }
                 }
@@ -397,7 +398,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
             startActivity(intent);
             finish();
         }
-        if (mStartDeal == NO_DEALS) {
+        if (mStartDeal == NO_DEALS) {//没有活动时，退出页面在首页更新抢购的状态，防止刚退出页面，活动就开始了，但是首页却没有刷新
             EventBus.getDefault().postSticky(new StoryLoadCompletedEvent(false, true));
         }
     }

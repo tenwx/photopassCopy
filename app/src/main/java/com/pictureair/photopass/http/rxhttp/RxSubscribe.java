@@ -7,6 +7,9 @@ import rx.Subscriber;
 
 /**
  * Created by pengwu on 16/11/23.
+ *
+ * ServerException 是后台返回的错误状态，比如密码错误之类的
+ * HttpException 是系统级的错误
  */
 
 public abstract class RxSubscribe<T> extends Subscriber<T> {

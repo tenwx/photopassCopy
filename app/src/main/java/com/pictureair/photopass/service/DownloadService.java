@@ -63,7 +63,8 @@ import rx.functions.Func1;
 /**
  * 下载网络图片服务类
  * 下载网络视频服务类
- *  7.0适配 Notification 显示不正确
+ *  文件断点下载，下载过程中文件名没有后缀名，下载完成后才会添加后缀名
+ *  图片文件的命名如果过长会使用MD5修改，视频文件直接使用MD5命名
  */
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
@@ -72,6 +73,9 @@ public class DownloadService extends Service {
     private ConcurrentHashMap<String,Subscription> subMap = new ConcurrentHashMap<>();
     private AtomicInteger downed_num = new AtomicInteger(0);//实际下载照片数
     private AtomicInteger failed_num = new AtomicInteger(0);//下载失败的照片数
+    /**
+     * 请求下载的数据，数据库中不存在，放在此列表中，后续加入数据库
+     * */
     private CopyOnWriteArrayList<DownloadFileStatus> tempList = new CopyOnWriteArrayList<>();
     private boolean mFinish = false;
     private boolean mIsErrorsAdd = false;
@@ -94,6 +98,9 @@ public class DownloadService extends Service {
     private boolean hasPhotos = false;
     private String lastUrl = new String();
     private String userId;
+    /**
+     * 数据库中存在但是没有本地图片则存放在此列表中
+     * */
     private CopyOnWriteArrayList<DownloadFileStatus> deleteList = new CopyOnWriteArrayList<>();
     private int prepareDownloadCount;
     private AtomicInteger processCount = new AtomicInteger(0);
@@ -152,7 +159,7 @@ public class DownloadService extends Service {
             int reconnect = b.getInt("reconnect",-1);
             logout = b.getBoolean("logout",false);
             if (logout) {
-                //如果在下载，先取消下载项，然后组织handler的传递，来关闭下载
+                //如果在下载，先取消下载项，然后阻止handler的传递，来关闭下载
                 unSubScribeAll();
                 stopSelf();
                 return;
@@ -205,11 +212,12 @@ public class DownloadService extends Service {
                             for (int j = 0; j < infos.size(); j++) {
 
                                 PhotoDownLoadInfo info = infos.get(j);
+                                //请求下载的图片如果在数据库中存在，则判断本地文件中是否有照片（照片的可能因为名字过长而使用MD5转换），如果本地照片存在则跳过，不存在则加到下载队列
                                 if (info.getPhotoId().equalsIgnoreCase(fileStatus.getPhotoId())) {
 
                                     if ("true".equalsIgnoreCase(info.getStatus())) {
                                         String fileName = "";
-                                        if (TextUtils.isEmpty(info.getFailedTime())) {//过长的文件名的处理
+                                        if (TextUtils.isEmpty(info.getFailedTime())) {//判断数据库中文件是否存在，文件名可能过长从而用MD5转换并保存在FailedTime中
                                             fileName = filedir + "/" + AppUtil.getReallyFileName(fileStatus.getUrl(), fileStatus.isVideo());
                                         } else {
                                             fileName = info.getFailedTime();
@@ -217,7 +225,7 @@ public class DownloadService extends Service {
                                         PictureAirLog.out("filename=" + fileName);
 
                                         File file = new File(fileName);
-                                        if (!file.exists()) {
+                                        if (!file.exists()) {//下载的图片存在数据中但是本地却没有照片的情况下加入到deleteList中，后续将数据库对应数据清除
                                             addToDownloadList(fileStatus);
                                             deleteList.add(fileStatus);
                                             processCount.incrementAndGet();
@@ -474,7 +482,7 @@ public class DownloadService extends Service {
                     for (int i = 0; i < downloadList.size(); i++) {
                         DownloadFileStatus status = downloadList.get(i);
                         if (status.status == DownloadFileStatus.DOWNLOAD_STATE_WAITING) {
-                            if (taskList.size() < 3) {
+                            if (taskList.size() < 3) {//同时下载总数不超过3个
                                 status.status = DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING;
                                 status.setPosition(i);
                                 PictureAirLog.out("ADD_DOWNLOAD photoid and position " + status.getPhotoId() +" "+status.getPosition());
@@ -624,8 +632,14 @@ public class DownloadService extends Service {
         return file;
     }
 
+    /**
+     * 用于判断文件是否存在，文件名在下载过程中（没有下载完成），图片没有后缀名，下载成功后才添加后缀名
+     * 文件如果存在直接发送DOWNLOADFINISH，在DOWNLOADFINISH中保存到数据库
+     * */
     private boolean fileExists(DownloadFileStatus fileStatus) {
+        //有后缀名的文件
         String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(),fileStatus.isVideo());
+        //没有后缀名的文件
         String fileNameWithoutSuffix = AppUtil.getReallyFileNameWithoutSuffix(fileStatus.getUrl(), fileStatus.isVideo());
         File file = new File(filedir + "/" + fileName);
         File fileWithoutSuffix = new File(filedir + "/" + fileNameWithoutSuffix);
@@ -813,6 +827,7 @@ public class DownloadService extends Service {
 
             @Override
             public DownloadFileStatus call(ResponseBody responseBody) {
+                //缓存文件到本地
                 try {
                     writeCache(responseBody, getSaveFileWithoutSuffix(fileStatus), fileStatus);
                     responseBody.close();
@@ -835,9 +850,11 @@ public class DownloadService extends Service {
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_FAILED;
                 Bundle bundle = new Bundle();
+                //下载状态为404表示后台没有对应文件会显示"图片上传中"
+                //416的错误表示断点超出范围，当文件下载完成却意外退出时需要重新下载，此时断点续传会报错，需要特殊处理
                 if (status != 404 && status != 416) {
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                } else if (status == 416){//416断点超出范围，当文件下载完成却意外退出时需要重新下载，此时断点续传会报错，需要特殊处理
+                } else if (status == 416){
                     if (fileStatus.getCurrentSize() == fileStatus.getTotalSize()) {
                         downloadSuccess(fileStatus);
                         return;
@@ -863,9 +880,12 @@ public class DownloadService extends Service {
         });
         subMap.put(fileStatus.getNewUrl(), subscription);
     }
-    
+
+    /**
+     * 下载成功后重命名
+     * */
     private void downloadSuccess(DownloadFileStatus fileStatus) {
-        if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
+        if (TextUtils.isEmpty(fileStatus.getFailedTime())) {//区分文件名是否被MD5过
             renameFile(getSaveFileWithoutSuffix(fileStatus), getSaveFile(fileStatus));
         } else {
             File fileNew = getSaveFile(fileStatus);
@@ -886,6 +906,9 @@ public class DownloadService extends Service {
         handler.sendMessage(msg);
     }
 
+    /**
+     * 下载完成后给文件名添加后缀
+     * */
     private void renameFile(File fileOld, File fileNew) {
         if (fileOld == null || fileNew == null) return;
         boolean res = fileOld.renameTo(fileNew);
@@ -920,6 +943,9 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     * 取消下载
+     * */
     public void unSubScribeAll() {
         if (!isDownloading) return;
 
@@ -1061,6 +1087,9 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     * 判断是否存在下载失败的条目
+     * */
     public boolean downloadListContainsFailur(){
         if (downloadList != null && downloadList.size() >0){
             for (int i = 0;i<downloadList.size(); i++){
@@ -1073,6 +1102,7 @@ public class DownloadService extends Service {
         return false;
     }
 
+    /**把下载失败的项，更改成待选中状态*/
     public void updateDownloadList(){
         if (downloadList!= null && downloadList.size() >0) {
             for (int i = 0; i < downloadList.size(); i++) {
@@ -1089,6 +1119,9 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     * 设置是条目是否被选中
+     * */
     public void setDownloadListSelectOrNot(int select){
         if (downloadList!= null && downloadList.size() >0) {
             for (int i = 0; i < downloadList.size(); i++) {
@@ -1103,6 +1136,9 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     * 翻转选中为失败状态
+     * */
     public void reverseDownloadList(){
         if (downloadList!= null && downloadList.size() >0) {
             for (int i = 0; i < downloadList.size(); i++) {
@@ -1119,6 +1155,7 @@ public class DownloadService extends Service {
         }
     }
 
+    /**删除选中项*/
     public void deleteSelecItems(){
         if (fixedThreadPool != null && !fixedThreadPool.isShutdown()) {
             fixedThreadPool.execute(new Runnable() {
@@ -1144,6 +1181,10 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     *
+     * 在下载初始化的时候，把以前下载等待的数据更新为下载失败
+     * */
     class ChangeLoadToFailTask implements Runnable{
         @Override
         public void run() {
@@ -1175,6 +1216,9 @@ public class DownloadService extends Service {
         }
     }
 
+    /**
+     * 显示notification，加载下载失败的数据
+     * */
     class PrepareDownloadTask implements Runnable{
         @Override
         public void run() {

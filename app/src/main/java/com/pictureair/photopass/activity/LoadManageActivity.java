@@ -85,7 +85,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     @Override
     public void onPageSelected(int position) {
         currentIndex = position;
-        if (currentIndex == 0){
+        if (currentIndex == 0){//viewpager滑动后退出编辑状态
             if (loadSuccessFragmentChanged){
                 closeLoadSuccessFragmentSelect();
             }
