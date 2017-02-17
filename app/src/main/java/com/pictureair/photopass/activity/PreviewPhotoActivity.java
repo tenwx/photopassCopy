@@ -39,6 +39,7 @@ import com.pictureair.photopass.controller.GetLastestVideoInfoBiz;
 import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
 import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo;
@@ -147,6 +148,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int VIDEO_STILL_MAKING_DIALOG = 1008;
     private static final int BUY_BLUR_PHOTO_SHEET_DIALOG = 1009;
     private static final int EDIT_PHOTO_SHEET_DIALOG = 1010;
+    private static final int SAVE_PHOTO_TIP_DIALOG = 1011;
 
     private PWDialog pictureWorksDialog;
 
@@ -1381,6 +1383,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == 11) {
+                //保存完图片的处理
+                PictureAirLog.v(TAG, "save success");
+                //1.获取新图片的数据，生成一个新的对象
+                pictureWorksDialog.setPWDialogId(SAVE_PHOTO_TIP_DIALOG)
+                        .setPWDialogMessage(R.string.sea_photo_in_camera)
+                        .setPWDialogNegativeButton(null)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .pwDilogShow();
+            }
         }
     }
 }
