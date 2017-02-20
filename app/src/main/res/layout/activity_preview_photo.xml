@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/preview_relativelayout"
-    android:layout_width="match_parent"
     style="@style/ImmersiveMode"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
@@ -10,13 +10,13 @@
         android:id="@+id/preview_titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true"
-         >
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/button1_shop_rt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/preview_line"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_dp_15"
@@ -24,25 +24,25 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/preview_line"/>
+            android:src="@drawable/back_blue" />
 
         <TextView
             android:id="@+id/preview_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center"
-            android:layout_toLeftOf="@+id/preview_love"
+            android:layout_toLeftOf="@+id/preview_more"
             android:layout_toRightOf="@id/button1_shop_rt"
+            android:gravity="center"
             android:singleLine="true"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <ImageButton
-            android:id="@+id/preview_love"
+            android:id="@+id/preview_more"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_above="@+id/preview_line"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
@@ -51,17 +51,14 @@
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:visibility="invisible"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/preview_line"/>
+            android:src="@drawable/back_blue" />
 
         <View
             android:id="@id/preview_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
             android:layout_alignParentBottom="true"
-            />
+            android:background="@color/pp_gray" />
 
     </RelativeLayout>
 
@@ -69,8 +66,8 @@
         android:id="@+id/fra_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pp_light_gray_background"
-        android:layout_below="@id/preview_titlebar" >
+        android:layout_below="@id/preview_titlebar"
+        android:background="@color/pp_light_gray_background">
 
         <com.pictureair.photopass.GalleryWidget.GalleryViewPager
             android:id="@+id/viewer"
@@ -91,8 +88,8 @@
         android:id="@+id/preivew_no_souvenir_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pp_light_gray_background"
         android:layout_below="@id/preview_titlebar"
+        android:background="@color/pp_light_gray_background"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -105,27 +102,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/preview_show_no_souvenir"
-                android:adjustViewBounds="true"
-                android:src="@drawable/souvenir_nophoto"
                 android:layout_centerHorizontal="true"
-                />
+                android:adjustViewBounds="true"
+                android:src="@drawable/souvenir_nophoto" />
+
             <TextView
                 android:id="@id/preview_show_no_souvenir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/pp_dp_16"
                 android:layout_alignParentBottom="true"
-                android:textColor="@color/gray4"
-                android:textSize="@dimen/text_size_16"
-                android:text="@string/souvenir_not_exist"
                 android:gravity="center"
-                />
+                android:padding="@dimen/pp_dp_16"
+                android:text="@string/souvenir_not_exist"
+                android:textColor="@color/gray4"
+                android:textSize="@dimen/text_size_16" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 

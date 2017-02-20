@@ -1,59 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/pp_light_gray_background"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/pp_dp_16"
-    android:paddingRight="@dimen/pp_dp_16"
-    android:paddingTop="@dimen/pp_dp_16">
+    android:layout_height="@dimen/pp_bottom_bar_height"
+    android:background="@color/gray_light4"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/pp_dp_5"
+    android:paddingTop="@dimen/pp_dp_5">
 
     <TextView
         android:id="@+id/preview_edit"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_16"
-        android:background="@drawable/button_blue_shape_and_selector"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="@dimen/pp_dp_10"
         android:text="@string/edit"
-        android:textColor="@drawable/textview_selector_gray_white"
-        android:textSize="@dimen/text_size_16" />
-
-    <TextView
-        android:id="@+id/preview_share"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_16"
-        android:background="@drawable/button_blue_shape_and_selector"
-        android:gravity="center"
-        android:padding="@dimen/pp_dp_10"
-        android:text="@string/share"
-        android:textColor="@drawable/textview_selector_gray_white"
-        android:textSize="@dimen/text_size_16" />
+        android:textColor="@drawable/textview_selector_onclick"
+        android:textSize="@dimen/text_size_14" />
 
     <TextView
         android:id="@+id/preview_download"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_16"
-        android:background="@drawable/button_blue_shape_and_selector"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="@dimen/pp_dp_10"
         android:text="@string/down"
-        android:textColor="@drawable/textview_selector_gray_white"
-        android:textSize="@dimen/text_size_16" />
+        android:textColor="@drawable/textview_selector_onclick"
+        android:textSize="@dimen/text_size_14" />
+
+    <TextView
+        android:id="@+id/preview_share"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/share"
+        android:textColor="@drawable/textview_selector_onclick"
+        android:textSize="@dimen/text_size_14" />
 
     <TextView
         android:id="@+id/preview_makegift"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_16"
-        android:background="@drawable/button_blue_shape_and_selector"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="@dimen/pp_dp_10"
         android:text="@string/makegift"
-        android:textColor="@drawable/textview_selector_gray_white"
-        android:textSize="@dimen/text_size_16" />
+        android:textColor="@drawable/textview_selector_onclick"
+        android:textSize="@dimen/text_size_14" />
 </LinearLayout>
 

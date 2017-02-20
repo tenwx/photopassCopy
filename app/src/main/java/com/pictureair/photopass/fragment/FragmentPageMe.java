@@ -172,7 +172,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             case R.id.me_coupon:
                 i.setClass(MyApplication.getInstance(), CouponActivity.class);
                 i.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
-                i.setClass(MyApplication.getInstance(), CouponActivity.class);
                 startActivity(i);
                 break;
 

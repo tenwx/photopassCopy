@@ -38,6 +38,7 @@ import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -144,11 +145,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         }
     }
 
-    @Override
-    public void decodeOCRSuccess(Bundle bundle) {
-    }
-
-
     private static class MipCaptureHandler extends Handler{
         private final WeakReference<MipCaptureActivity> mActivity;
 
@@ -204,6 +200,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_COUPON_TO_USER_NOT_RETURN_SUCCESS) {//扫码coupon并且成功绑定到用户
                         //进入coupon页面
                         Intent intent2 = new Intent(MipCaptureActivity.this, CouponActivity.class);
+                        intent2.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
                         startActivity(intent2);
                     }
                     finish();

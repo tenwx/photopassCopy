@@ -106,10 +106,6 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
                 CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
                 break;
 
-            case R.id.decode_ocr_succeeded:
-                //跳转页面。
-                onDealCodeListener.decodeOCRSuccess(message.getData());
-                break;
         }
     }
 

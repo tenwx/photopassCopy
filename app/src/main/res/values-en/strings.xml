@@ -244,6 +244,7 @@
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
+    <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
     <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
     <!-- blur end -->
 

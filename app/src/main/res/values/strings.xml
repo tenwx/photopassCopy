@@ -244,6 +244,7 @@
     <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
     <string name="buythisphoto">我要购买单张数码照片</string>
     <string name="cancel1">取消</string>
+    <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <!-- blur end -->
 

@@ -156,7 +156,13 @@ public class PictureAirDbManager {
             for (PhotoInfo photoInfo : selectPhotoItemInfos) {
                 // 获取图片路径
                 map = new HashMap<>();
-                map.put("url", Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512());
+                if (photoInfo.getIsPaid() == 1) {
+                    map.put("url", Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512());
+
+                } else {
+                    map.put("url", photoInfo.getPhotoThumbnail_128());
+
+                }
                 map.put("isVideo", photoInfo.getIsVideo() + "");
                 map.put("isEnImage", photoInfo.getIsEnImage()+"");
                 urlList.add(map);

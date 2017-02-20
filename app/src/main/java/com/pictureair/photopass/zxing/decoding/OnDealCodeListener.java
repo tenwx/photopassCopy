@@ -1,7 +1,5 @@
 package com.pictureair.photopass.zxing.decoding;
 
-import android.os.Bundle;
-
 import com.google.zxing.Result;
 
 /**
@@ -9,5 +7,4 @@ import com.google.zxing.Result;
  */
 public interface OnDealCodeListener {
     void decodeSuccess(Result result);
-    void decodeOCRSuccess(Bundle bundle);
 }

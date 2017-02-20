@@ -20,8 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,7 +39,6 @@ import com.pictureair.photopass.controller.GetLastestVideoInfoBiz;
 import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
 import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo;
@@ -92,6 +91,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private GalleryViewPager mViewPager;
     private UrlPagerAdapter pagerAdapter;
     private ImageView returnImageView;
+    private ImageButton moreImgBtn;
 
     private PWToast newToast;
     private SharePop sharePop;
@@ -119,13 +119,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 模糊图购买对话框控件
      */
-    private static final int BUY_PHOTO = 201;
-    private static final int BUY_PPP = 202;
-    private static final int BUY_PHOTO_USE_CURRENT_PPP = 203;
-    private int selectedGoods;
-    private ImageView buyPhotoIV, buyPPPIV, upgradePPIV, closeDialogIV;
-    private TextView buyPhotoPriceTV, buyPhotoIntroTV, buyPPPPriceTV, buyPPPIntroTV;
-    private Button confirmToBuyBtn;
+    private TextView buyPhotoPriceTV, buyPhotoIntroTV, buyPPPPriceTV, buyPPPIntroTV, buyPhotoNameTV, buyPPPNameTV;
     private RelativeLayout buyPhotoRL, buyPPPRL, usePPPRL;
 
     /**
@@ -152,6 +146,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private PWDialog pictureWorksDialog;
 
+    private List<GoodsInfo> allGoodsList = new ArrayList<>();
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
     private String cartId = null;
@@ -340,11 +335,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         sharePop = new SharePop(this);
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
-
+        moreImgBtn = (ImageButton) findViewById(R.id.preview_more);
         locationTextView = (TextView) findViewById(R.id.preview_location);
-
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.fra_layout);
-
         titleBar = (RelativeLayout) findViewById(R.id.preview_titlebar);
         noSouvenirLayout = (LinearLayout) findViewById(R.id.preivew_no_souvenir_layout);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
@@ -352,6 +345,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         myApplication = (MyApplication) getApplication();
 
         returnImageView.setOnClickListener(this);
+        moreImgBtn.setOnClickListener(this);
 
         Configuration cf = getResources().getConfiguration();
         int ori = cf.orientation;
@@ -571,6 +565,19 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     /**
+     * 准备开始弹出对话框
+     * @param type
+     */
+    private void prepareShowSheetDialog(int type){
+        if (type == BUY_BLUR_PHOTO_SHEET_DIALOG && allGoodsList.size() == 0) {//需要获取shop数据, 需要重新获取商品数据
+            showPWProgressDialog();
+            getGoods(type);
+        } else {
+            showSheetDialog(type);
+        }
+    }
+
+    /**
      * 显示对话框
      * @param type
      */
@@ -581,32 +588,22 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (buyPhotoRootView == null) {
                     buyPhotoRootView = LayoutInflater.from(this).inflate(R.layout.dialog_preview_buy_blur, null);
                     buyPhotoRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_ll);
+                    buyPhotoNameTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_tv);
+                    buyPhotoIntroTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
+                    buyPhotoPriceTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
                     buyPPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_ll);
+                    buyPPPNameTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_tv);
+                    buyPPPIntroTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
+                    buyPPPPriceTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
                     usePPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_photo_ll);
                     buyPhotoRL.setOnClickListener(this);
                     buyPPPRL.setOnClickListener(this);
                     usePPPRL.setOnClickListener(this);
-//                    closeDialogIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_close);
-//                    buyPhotoIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_photo_select_iv);
-//                    buyPhotoPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_price_tv);
-//                    buyPhotoIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_photo_intro_tv);
-//                    buyPhotoIntroTV.setVisibility(View.GONE);
-//                    buyPPPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_select_iv);
-//                    buyPPPPriceTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
-//                    buyPPPIntroTV = (TextView) view.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
-//                    buyPPPIntroTV.setVisibility(View.GONE);
-//                    upgradePPIV = (ImageView) view.findViewById(R.id.preview_blur_dialog_upgrade_photo_select_iv);
-//                    confirmToBuyBtn = (Button) view.findViewById(R.id.preview_blur_dialog_buy_btn);
-//
-//                    closeDialogIV.setOnClickListener(this);
-//                    buyPhotoIV.setOnClickListener(this);
-//                    buyPPPIV.setOnClickListener(this);
-//                    upgradePPIV.setOnClickListener(this);
-//                    confirmToBuyBtn.setOnClickListener(this);
                 } else {//需要把view的父控件的子view全部清除，此处为什么是FrameLayout，是从源码得知
                     ((FrameLayout) buyPhotoRootView.getParent()).removeAllViews();
                 }
                 sheetDialog.setContentView(buyPhotoRootView);
+                initSheetDialog();
 
             } else if (type == EDIT_PHOTO_SHEET_DIALOG) {//编辑清晰图的弹框
                 if (editRootView == null) {
@@ -659,6 +656,28 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     /**
+     * 初始化数据
+     */
+    private void initSheetDialog() {
+        for (GoodsInfo good: allGoodsList) {
+            if (good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+                pppGoodsInfo = good;
+                buyPPPNameTV.setText(good.getNameAlias());
+                PictureAirLog.d("----> " + good.getPrice());
+                buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+                buyPPPIntroTV.setText(good.getDescription());
+
+            } else if (good.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//数码照片
+                buyPhotoNameTV.setText(good.getNameAlias());
+                PictureAirLog.d("----> " + good.getPrice());
+                buyPhotoPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+                buyPhotoIntroTV.setText(good.getDescription());
+
+            }
+        }
+    }
+
+    /**
      * 更新底部索引工具
      */
     private void updateIndexTools() {
@@ -697,6 +716,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
+            case R.id.preview_more:
+                prepareShowSheetDialog(EDIT_PHOTO_SHEET_DIALOG);
+                break;
+
             case R.id.button1_shop_rt:
                 finish();
                 break;
@@ -729,7 +752,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 .pwDilogShow();
                     }
                 } else {
-                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
+                    prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
                 break;
 
@@ -751,7 +774,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     sharePop.setShareInfo(photolist.get(mViewPager.getCurrentItem()), false, previewPhotoHandler);
                     sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
-                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
+                    prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
                 break;
 
@@ -774,7 +797,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else {
-                    showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
+                    prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
 
                 break;
@@ -843,7 +866,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 showPWProgressDialog();
                 //获取商品
-                getGoods();
+                buyPPP();
                 break;
 
             case R.id.preview_blur_dialog_upgrade_photo_ll:
@@ -965,69 +988,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 购买ppp
      */
-    private void getGoods() {
-        if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-            newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            dismissPWProgressDialog();
-            return;
+    private void buyPPP() {
+        photoUrls = new String[pppGoodsInfo.getPictures().size()];
+        for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+            photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
         }
-        //从缓层中获取数据
-        Observable.just(ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS))
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<JSONObject>>() {
-                    @Override
-                    public Observable<JSONObject> call(String s) {
-                        if (!TextUtils.isEmpty(s)) {
-                            PictureAirLog.d("goods is not null");
-                            return Observable.just(JSONObject.parseObject(s));
-                        } else {
-                            PictureAirLog.d("goods is null");
-                            //从网络获取商品,先检查网络
-                            return API2.getGoods()
-                                    .map(new Func1<JSONObject, JSONObject>() {
-                                        @Override
-                                        public JSONObject call(JSONObject jsonObject) {
-                                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
-                                            return jsonObject;
-                                        }
-                                    });
-                        }
-                    }
-                })
-                //解析json
-                .map(new Func1<JSONObject, GoodsInfo>() {
-                    @Override
-                    public GoodsInfo call(JSONObject jsonObject) {
-                        PictureAirLog.d("parse goods json");
-                        List<GoodsInfo> allGoodsList1 = new ArrayList<>();
-                        GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                        if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                            allGoodsList1.addAll(goodsInfoJson.getGoods());
-                        }
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList1.size());
-                        //获取PP+
-                        for (GoodsInfo goodsInfo : allGoodsList1) {
-                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                                pppGoodsInfo = goodsInfo;
-                                break;
-                            }
-                        }
-                        photoUrls = new String[pppGoodsInfo.getPictures().size()];
-                        for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
-                            photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
-                        }
-                        return pppGoodsInfo;
-                    }
-                })
-                //加入购物车
-                .flatMap(new Func1<GoodsInfo, Observable<JSONObject>>() {
-                    @Override
-                    public Observable<JSONObject> call(GoodsInfo goodsInfo) {
-                        PictureAirLog.d("start add to goods key:" + goodsInfo.getGoodsKey());
-                        //调用addToCart API1
-                        return API2.addToCart(goodsInfo.getGoodsKey(), 1, true, null);
-                    }
-                })
+
+        //加入购物车
+        API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<JSONObject>bindToLifecycle())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -1075,6 +1043,73 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                 });
 
+    }
+
+    /**
+     * 获取商品
+     */
+    private void getGoods(final int type) {
+        if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+            newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            dismissPWProgressDialog();
+            return;
+        }
+        //从缓层中获取数据
+        Observable.just(ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS))
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String s) {
+                        if (!TextUtils.isEmpty(s)) {
+                            PictureAirLog.d("goods is not null  " + s);
+                            return Observable.just(JSONObject.parseObject(s));
+                        } else {
+                            PictureAirLog.d("goods is null");
+                            //从网络获取商品,先检查网络
+                            return API2.getGoods()
+                                    .map(new Func1<JSONObject, JSONObject>() {
+                                        @Override
+                                        public JSONObject call(JSONObject jsonObject) {
+                                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
+                                            return jsonObject;
+                                        }
+                                    });
+                        }
+                    }
+                })
+                //解析json
+                .map(new Func1<JSONObject, GoodsInfoJson>() {
+                    @Override
+                    public GoodsInfoJson call(JSONObject jsonObject) {
+                        PictureAirLog.d("parse goods json");
+                        return JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<GoodsInfoJson>bindToLifecycle())
+                .subscribe(new RxSubscribe<GoodsInfoJson>() {
+                    @Override
+                    public void _onNext(GoodsInfoJson goodsInfoJson) {
+                        allGoodsList.clear();
+                        if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                            allGoodsList.addAll(goodsInfoJson.getGoods());
+                        }
+                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                        dismissPWProgressDialog();
+                        showSheetDialog(type);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), status), Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     @Override
@@ -1344,14 +1379,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public void buyClick(int position) {
         PictureAirLog.d("buy---> " + position);
-        showSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
+        prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
     }
 
     @Override
     public void longClick(int position) {
         PictureAirLog.d("long click--->");
         if (!sheetDialog.isShowing()) {
-            showSheetDialog(EDIT_PHOTO_SHEET_DIALOG);
+            prepareShowSheetDialog(EDIT_PHOTO_SHEET_DIALOG);
         }
     }
 
