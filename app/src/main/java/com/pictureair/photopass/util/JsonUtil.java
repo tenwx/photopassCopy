@@ -238,7 +238,7 @@ public class JsonUtil {
         if (jsonObject.containsKey("locationP")) {
             JSONArray locations = jsonObject.getJSONArray("locationP");
             for (int i = 0; i < locations.size(); i++) {
-                list.addAll(parseLocationPhotoJson(locations.getJSONObject(i), i, locationList, language));
+                list.add(parseLocationPhotoJson(locations.getJSONObject(i), i, locationList, language));
             }
         }
         return list;
@@ -251,7 +251,7 @@ public class JsonUtil {
     public static ArrayList<DailyPPCardInfo> getDailyPPCardInfoList(ArrayList<JsonInfo> jsonInfos, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
         ArrayList<DailyPPCardInfo> list = new ArrayList<>();
         for (int i = 0; i < jsonInfos.size(); i++) {
-            list.addAll(parseLocationPhotoJson(JSONObject.parseObject(jsonInfos.get(i).getJsonString()), i, locationList, language));
+            list.add(parseLocationPhotoJson(JSONObject.parseObject(jsonInfos.get(i).getJsonString()), i, locationList, language));
         }
         return list;
     }
@@ -264,38 +264,39 @@ public class JsonUtil {
      * @param language
      * @return
      */
-    private static ArrayList<DailyPPCardInfo> parseLocationPhotoJson(JSONObject location, int index, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
-        ArrayList<DailyPPCardInfo> list = new ArrayList<>();
-        DailyPPCardInfo dailyPPCardInfo;
+    private static DailyPPCardInfo parseLocationPhotoJson(JSONObject location, int index, ArrayList<DiscoverLocationItemInfo> locationList, String language) {
+        DailyPPCardInfo dailyPPCardInfo = new DailyPPCardInfo();
         String ppCode = null;
         String shootDate = null;
         int isActivated = 0;
         int photoCount = 0;
         String shootOn = null;
-        PhotoInfo oldestPhotoInfo = null;
         if (location.containsKey("PPCode")) {
             ppCode = location.getString("PPCode");
+            dailyPPCardInfo.setPpCode(ppCode);
         }
 
         if (location.containsKey("shootOnDate")) {
             shootDate = location.getString("shootOnDate");
+            dailyPPCardInfo.setShootDate(shootDate);
         }
 
         if (location.containsKey("ifActive")) {
             isActivated = location.getIntValue("ifActive");
+            dailyPPCardInfo.setActivated(isActivated);
         }
 
         if (location.containsKey("shootOn")) {
             shootOn = location.getString("shootOn");
+            dailyPPCardInfo.setShootOn(shootOn);
         }
 
         if (location.containsKey("pCount")) {
             photoCount = location.getIntValue("pCount");
+            dailyPPCardInfo.setPhotoCount(photoCount);
         }
 
-        if (location.containsKey("ppOldestPhoto")) {
-            oldestPhotoInfo = getLocationPhoto(location.getJSONObject("ppOldestPhoto"));
-        }
+        dailyPPCardInfo.setSectionId(index);
 
         if (location.containsKey("loc")) {
             JSONArray photos = location.getJSONArray("loc");
@@ -304,7 +305,7 @@ public class JsonUtil {
                 if (j >= 2) {//只取第一和第二个点
                     break;
                 }
-                dailyPPCardInfo = new DailyPPCardInfo();
+
                 JSONObject photo = photos.getJSONObject(j);
                 if (photo.containsKey("photoInfos")) {
                     photoInfo = getLocationPhoto(photo.getJSONObject("photoInfos"));
@@ -327,30 +328,17 @@ public class JsonUtil {
                         }
                     }
 
-                    dailyPPCardInfo.setPpCode(ppCode);
-                    dailyPPCardInfo.setShootDate(shootDate);
-                    dailyPPCardInfo.setActivated(isActivated);
-                    dailyPPCardInfo.setShootOn(shootOn);
-                    dailyPPCardInfo.setPhotoCount(photoCount);
-                    dailyPPCardInfo.setAlbumCoverPhoto(oldestPhotoInfo);
-                    dailyPPCardInfo.setLocationPhoto(photoInfo);
-                    dailyPPCardInfo.setSectionId(index);
                     if (j == 0) {//第一个，为header数据
-                        list.add(dailyPPCardInfo);
+                        dailyPPCardInfo.setLeftPhoto(photoInfo);
+
+                    } else {
+                        dailyPPCardInfo.setRightPhoto(photoInfo);
 
                     }
-                    list.add(dailyPPCardInfo);
                 }
             }
-
-            if (list.size() % 2 == 0) {//如果是奇数个地点（因为包括了一个header），需要补一个位置
-                dailyPPCardInfo = new DailyPPCardInfo();
-                dailyPPCardInfo.setPpCode("occupy");
-                dailyPPCardInfo.setSectionId(index);
-                list.add(dailyPPCardInfo);
-            }
         }
-        return list;
+        return dailyPPCardInfo;
     }
 
     /**

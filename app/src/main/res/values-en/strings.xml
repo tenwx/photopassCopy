@@ -128,8 +128,8 @@
     <string name="story_card">卡号：%1$s</string>
     <string name="story_first_photo_in_disney">我在上海迪士尼的第一张照片</string>
     <string name="story_with_disney">我和上海迪士尼在一起</string>
-    <string name="story_blur_expire_time">未付款照片有效期30天</string>
-    <string name="story_expire_time">高清照片1年内有效</string>
+    <string name="story_blur_expire_time">(未付款照片有效期30天)</string>
+    <string name="story_expire_time">(付款照片有效期365天)</string>
     <string name="story_want_to_buy">我想买</string>
     <!-- story end -->
 

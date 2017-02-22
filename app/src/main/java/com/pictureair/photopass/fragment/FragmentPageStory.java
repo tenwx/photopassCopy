@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -67,7 +66,6 @@ import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.StoryRecycleDividerItemDecoration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -628,11 +626,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             swipeRefreshLayout.setEnabled(true);
 
             if (dailyPPCardRecycleAdapter == null) {
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                 dailyPPCardRecycleAdapter = new DailyPPCardRecycleAdapter(context, dailyPPCardInfoArrayList);
                 dailyPPCardRecycleAdapter.setOnItemClickListener(this);
-                dailyPPCardRV.addItemDecoration(new StoryRecycleDividerItemDecoration(ScreenUtil.dip2px(context, 2)));
-                dailyPPCardRV.setLayoutManager(gridLayoutManager);
+                dailyPPCardRV.setLayoutManager(linearLayoutManager);
                 dailyPPCardRV.setAdapter(dailyPPCardRecycleAdapter);
             } else {
                 dailyPPCardRecycleAdapter.notifyDataSetChanged();

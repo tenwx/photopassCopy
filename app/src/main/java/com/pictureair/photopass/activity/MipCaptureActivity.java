@@ -363,7 +363,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
             tvScanPPPCode.setBackgroundColor(ContextCompat.getColor(this, R.color.pp_light_gray_background));
             tvScanQRCode.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-            navigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.pp_light_gray_background));
+            navigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
         }
 
     }

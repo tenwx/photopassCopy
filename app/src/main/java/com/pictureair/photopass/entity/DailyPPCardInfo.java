@@ -11,8 +11,8 @@ public class DailyPPCardInfo {
     private String shootOn;//年月日时分秒
     private int activated;
     private int photoCount;
-    private PhotoInfo albumCoverPhoto;//最旧的一个对象，作为封面
-    private PhotoInfo locationPhoto;//作为每个地点的显示图片
+    private PhotoInfo leftPhoto;//左边地点显示图片
+    private PhotoInfo rightPhoto;//右边地点显示图片
 
     public DailyPPCardInfo() {
     }
@@ -57,27 +57,27 @@ public class DailyPPCardInfo {
         this.activated = activated;
     }
 
-    public PhotoInfo getAlbumCoverPhoto() {
-        return albumCoverPhoto;
-    }
-
-    public void setAlbumCoverPhoto(PhotoInfo albumCoverPhoto) {
-        this.albumCoverPhoto = albumCoverPhoto;
-    }
-
-    public PhotoInfo getLocationPhoto() {
-        return locationPhoto;
-    }
-
-    public void setLocationPhoto(PhotoInfo locationPhoto) {
-        this.locationPhoto = locationPhoto;
-    }
-
     public int getPhotoCount() {
         return photoCount;
     }
 
     public void setPhotoCount(int photoCount) {
         this.photoCount = photoCount;
+    }
+
+    public PhotoInfo getLeftPhoto() {
+        return leftPhoto;
+    }
+
+    public void setLeftPhoto(PhotoInfo leftPhoto) {
+        this.leftPhoto = leftPhoto;
+    }
+
+    public PhotoInfo getRightPhoto() {
+        return rightPhoto;
+    }
+
+    public void setRightPhoto(PhotoInfo rightPhoto) {
+        this.rightPhoto = rightPhoto;
     }
 }

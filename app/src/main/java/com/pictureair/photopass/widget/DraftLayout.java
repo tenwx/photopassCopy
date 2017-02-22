@@ -24,7 +24,8 @@ public class DraftLayout extends RelativeLayout{
     public DraftLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         screenWidth = ScreenUtil.getScreenWidth(context);
-        screenHeight = ScreenUtil.getScreenHeight(context) - ScreenUtil.getStatusBarHeight(context) - ScreenUtil.dip2px(context, 65);
+        //因为是沉浸式状态栏，因此高度不需要减去状态栏的高度
+        screenHeight = ScreenUtil.getScreenHeight(context) - ScreenUtil.dip2px(context, 65);
     }
 
     @Override

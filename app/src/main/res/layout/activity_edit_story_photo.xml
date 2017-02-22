@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/editStoryPhotoRelativeLayout"
+    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background"
-    style="@style/ImmersiveMode">
+    android:background="@color/pp_light_gray_background">
 
     <RelativeLayout
         android:id="@+id/layout1"
@@ -102,37 +102,30 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_14" />
 
-            <TextView
-                android:id="@+id/edit_album_card_no_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_dp_5"
-                android:layout_marginTop="@dimen/pp_dp_5"
-                android:text="card"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
+            <View
+                android:id="@+id/space_v"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_centerVertical="true" />
 
             <TextView
                 android:id="@+id/edit_album_time_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_dp_5"
-                android:layout_marginTop="@dimen/pp_dp_5"
-                android:layout_toRightOf="@+id/edit_album_card_no_tv"
+                android:layout_above="@+id/space_v"
+                android:layout_marginLeft="@dimen/pp_dp_10"
                 android:text="time"
                 android:textColor="@color/pp_gray"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
-                android:id="@+id/edit_album_intro_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/edit_album_card_no_tv"
-                android:layout_marginLeft="@dimen/pp_dp_5"
-                android:layout_toLeftOf="@+id/edit_album_buy_tv"
-                android:gravity="center_vertical"
-                android:text="@string/edit_story_ppp_intro"
-                android:textColor="@color/pp_dark_blue"
+                android:id="@+id/edit_album_card_no_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space_v"
+                android:layout_marginLeft="@dimen/pp_dp_10"
+                android:text="card"
+                android:textColor="@color/pp_gray"
                 android:textSize="@dimen/text_size_14" />
 
         </RelativeLayout>
@@ -304,6 +297,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout1"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>
