@@ -42,10 +42,13 @@ public final class ScanView extends View {
 
     private BitmapDrawable bitmapDrawable;
 
+    private Rect lineRect;
+
     public ScanView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
         bitmapDrawable = (BitmapDrawable) (ContextCompat.getDrawable(getContext(), R.drawable.qrcode_scan_line_ocr));
+        lineRect = new Rect();
     }
 
     @Override
@@ -66,7 +69,7 @@ public final class ScanView extends View {
             slideRight = frame.right;
         }
 
-        Rect lineRect = new Rect();
+        lineRect.setEmpty();
         lineRect.left = slideRight;
         lineRect.right = slideRight + 18;// 18 是线的宽度。
         lineRect.top = frame.top;

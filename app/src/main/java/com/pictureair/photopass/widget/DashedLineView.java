@@ -15,25 +15,30 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 public class DashedLineView extends View {      
     private int dashColor = 0;
-    public DashedLineView(Context context, AttributeSet attrs) {      
-        super(context, attrs);                
+    private Paint paint;
+    private PathEffect effects;
+    private Path path;
+    public DashedLineView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DashLine, 0, 0);
         dashColor = a.getResourceId(R.styleable.DashLine_dashColor, R.color.gray_light3);
         a.recycle();
-    }      
-      
-    @Override      
-    protected void onDraw(Canvas canvas) {      
-        // TODO Auto-generated method stub      
-        super.onDraw(canvas);              
-        Paint paint = new Paint();   
-        paint.setStyle(Paint.Style.STROKE);      
-        paint.setColor(getResources().getColor(dashColor));      
-        Path path = new Path();   
-        path.moveTo(0, 1);      
-        path.lineTo(ScreenUtil.getScreenWidth(getContext()),1);            
-        PathEffect effects = new DashPathEffect(new float[]{5,6,5,6},1);      
-        paint.setPathEffect(effects);      
+        paint = new Paint();
+        effects = new DashPathEffect(new float[]{5,6,5,6},1);
+        path = new Path();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // TODO Auto-generated method stub
+        super.onDraw(canvas);
+        paint.reset();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(getResources().getColor(dashColor));
+        path.reset();
+        path.moveTo(0, 1);
+        path.lineTo(ScreenUtil.getScreenWidth(getContext()),1);
+        paint.setPathEffect(effects);
         canvas.drawPath(path, paint);      
     }   
 }  

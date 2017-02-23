@@ -49,7 +49,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         Holder holder = null;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.photo_load_success_item,null);
+            convertView = inflater.inflate(R.layout.photo_load_success_item,parent, false);
             holder = new Holder();
             holder.img = (ImageView)convertView.findViewById(R.id.load_success_img);
             holder.videoMask = (ImageView)convertView.findViewById(R.id.load_success_video);

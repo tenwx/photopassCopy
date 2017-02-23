@@ -5,11 +5,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <LinearLayout
             android:id="@+id/transport_linearlayout"
             android:layout_width="match_parent"
@@ -445,5 +440,4 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

@@ -623,7 +623,7 @@ public class PWEditUtil implements IPWEditModel{
                         }
                     }
                 }
-            };
+            }
         }.start();
     }
 

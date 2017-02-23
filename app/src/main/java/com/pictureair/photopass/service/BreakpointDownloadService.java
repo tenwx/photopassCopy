@@ -46,10 +46,9 @@ public class BreakpointDownloadService extends Service {
         return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
 
-    Handler mHandler = new Handler() {
+    Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_INIT:
                     FileInfo fileInfo = (FileInfo) msg.obj;
@@ -62,9 +61,9 @@ public class BreakpointDownloadService extends Service {
                     stopSelf();//下载服务停止
                     break;
             }
-
+            return false;
         }
-    };
+    });
 
     /**
      * 初始化线程，不做下载，只获取文件的长度用

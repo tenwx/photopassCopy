@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:singleLine="true"
+            android:maxLines="1"
             android:text="@string/cart"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
@@ -118,7 +118,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_dp_2"
-                android:fontFamily=""
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_16" />
         </LinearLayout>
@@ -184,7 +183,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/pp_dp_2"
-            android:fontFamily=""
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 

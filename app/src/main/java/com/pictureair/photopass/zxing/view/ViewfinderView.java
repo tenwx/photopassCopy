@@ -80,6 +80,8 @@ public final class ViewfinderView extends View {
 
     private boolean isFirst;
 
+    private Rect lineRect;
+
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -91,6 +93,8 @@ public final class ViewfinderView extends View {
         resultPointColor = ContextCompat.getColor(context, R.color.color3);
         possibleResultPoints = new ArrayList<>(5);
         lastPossibleResultPoints = null;
+
+        lineRect = new Rect();
     }
 
     @Override
@@ -137,7 +141,7 @@ public final class ViewfinderView extends View {
             slideTop = frame.top;
         }
         //canvas.drawRect(frame.left + MIDDLE_LINE_PADDING, slideTop - MIDDLE_LINE_WIDTH/2, frame.right - MIDDLE_LINE_PADDING,slideTop + MIDDLE_LINE_WIDTH/2, paint);
-        Rect lineRect = new Rect();
+        lineRect.setEmpty();
         lineRect.left = frame.left;
         lineRect.right = frame.right;
         lineRect.top = slideTop;

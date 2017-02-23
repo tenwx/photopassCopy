@@ -435,7 +435,7 @@ public class JsonUtil {
         SharedPreferences.Editor ae = asp.edit();
         ae.putString(Common.USERINFO_ACCOUNT, account);
         ae.putString(Common.USERINFO_PASSWORD,  AESKeyHelper.encryptString(password, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
-        ae.commit();
+        ae.apply();
 
         String headUrl;
         if (obj.containsKey("avatarUrl")) {
@@ -452,7 +452,7 @@ public class JsonUtil {
         if (obj.containsKey("customerIds")) {
             e.putInt(Common.PP_COUNT, obj.getJSONArray("customerIds").size());
         }
-        e.commit();
+        e.apply();
     }
 
     /**

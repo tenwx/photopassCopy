@@ -1,9 +1,9 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,19 +15,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,16 +34,13 @@ public class ListOfPPAdapter extends BaseAdapter {
     private ArrayList<PPinfo> arrayList;
     private Context mContext;
     private ViewHolder holder;
-    private RelativeLayout.LayoutParams params;
     private PWToast myToast;
     private Handler mHandler;
     private OnItemChildClickListener childClickListener;
     private int useNumber = 0;//已经使用的个数
     private int choice = 0;//选中的个数
-    private HashMap<Integer, Boolean> map;//统计被勾选的子项
+    private SparseBooleanArray map;//统计被勾选的子项
     private PPPinfo pppInfo;
-
-    private String userPP;
 
     public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, Handler mHandler, PPPinfo pppInfo) {
         this.arrayList = list;
@@ -55,10 +49,8 @@ public class ListOfPPAdapter extends BaseAdapter {
         myToast = new PWToast(mContext);
 
         this.pppInfo = pppInfo;
-        map = new HashMap<>();
+        map = new SparseBooleanArray();
         useNumber = pppInfo.bindInfo.size();
-
-        userPP = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
     }
 
     @Override
@@ -82,7 +74,7 @@ public class ListOfPPAdapter extends BaseAdapter {
         holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.my_pp_list, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.my_pp_list, parent, false);
             holder.ppCode = (TextView) convertView.findViewById(R.id.pp_code);
             holder.deleteMyPP = (ImageView) convertView.findViewById(R.id.delete_my_pp);
             holder.image1 = (ImageView) convertView.findViewById(R.id.pp_img1);
@@ -198,8 +190,6 @@ public class ListOfPPAdapter extends BaseAdapter {
                                     break;
                                 } else {
                                     ++choice;
-                                    for (int j = 0; j < arrayList.size(); j++) {
-                                    }
                                     ppInfo.setIsSelected(1);
                                     ++useNumber;
                                     map.put(position, ppInfo.getIsSelected() == 1);
@@ -218,7 +208,7 @@ public class ListOfPPAdapter extends BaseAdapter {
                                 }
                                 ppInfo.setIsSelected(0);
                                 --useNumber;
-                                map.remove(position);
+                                map.delete(position);
                             }
                             notifyDataSetChanged();
                             msg.arg1 = useNumber;
@@ -234,11 +224,11 @@ public class ListOfPPAdapter extends BaseAdapter {
         }
     }
 
-    public HashMap<Integer, Boolean> getMap() {
+    public SparseBooleanArray getMap() {
         return map;
     }
 
-    public void setMap(HashMap<Integer, Boolean> map) {
+    public void setMap(SparseBooleanArray map) {
         this.map = map;
     }
 

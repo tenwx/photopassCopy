@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**pp+数据的适配器*/
 public class ListOfPPPAdapter extends BaseAdapter {
@@ -36,7 +36,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private String pppCode = null;
 	private boolean isUseHavedPPP;
 	private OnItemChildClickListener childClickListener;
-	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
+	private SparseBooleanArray map;//统计被勾选的子项 只能选一张PP+.
 	private int onclickPosition;
 	private Handler handler;
 	private PWToast myToast;
@@ -50,7 +50,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		myToast = new PWToast(mContext);
 		initFaceOrNot();
 		if (isUseHavedPPP){
-			map = new HashMap<Integer, Boolean>();
+			map = new SparseBooleanArray();
 		}
 	}
 	public void initFaceOrNot() {
@@ -102,7 +102,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		//初始化view
 		if (null == convertView) {
 			holder = new ViewHolder();
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.my_ppp_list, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.my_ppp_list, parent, false);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.pppNumber = (TextView) convertView.findViewById(R.id.ppp_number);
 			holder.pp1_img = (ImageView)convertView.findViewById(R.id.ppp_imageView1);
@@ -430,10 +430,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			if (isUseHavedPPP) {
 				//判断 选择框的选中 和 非选中状态。
 				if (map.size() == 1) {
-					if (map.get(position) != null) {
-						if (map.get(position)) {
+					if (map.get(position, false)) {
 							holder.img_no_check.setImageResource(R.drawable.sele);
-						}
 					}else{
 						holder.img_no_check.setImageResource(R.drawable.nosele);
 					}
@@ -467,7 +465,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 							onclickPosition = position; //通过MyPPP获取它
 							map.put(position,true);
 						}else if (map.size() == 1){ // 超出范围
-							if (map.containsKey(position)){
+							if (map.get(position, false)){
 								map.clear();
 //							    map.put(position,true);
 							}else {
@@ -496,11 +494,12 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		}
 	}
 
-	public HashMap<Integer, Boolean> getMap() {
+	public SparseBooleanArray getMap() {
+		PictureAirLog.d("map size--> " + map.size());
 		return map;
 	}
 
-	public void setMap(HashMap<Integer, Boolean> map) {
+	public void setMap(SparseBooleanArray map) {
 		this.map = map;
 	}
 

@@ -1,7 +1,6 @@
 package com.pictureair.photopass.editPhoto.presenter;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -38,7 +37,6 @@ import com.pictureair.photopass.util.SPUtils;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -70,9 +68,172 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
     private LocationUtil locationUtil;
     private ArrayList<DiscoverLocationItemInfo> locationItemInfos;
     private Filter filter;
-    private MyHandler mHandler;
     //对象
     private PhotoInfo photoInfo;
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case PhotoCommon.OnclickFramePosition: //点击边框Item的回调
+                    curEditType = PhotoCommon.EditFrame;
+                    if (msg.arg1 == lastEditionPosition){
+                        PictureAirLog.out("same with last edition");
+                        break;
+                    }else{
+                        PictureAirLog.out("not same with last edition");
+                        lastEditionPosition = msg.arg1;
+                    }
+                    curFramePosition = msg.arg1;
+
+                    if (curFramePosition == 0){
+                        cancelFrameEdition();
+                    }else{
+                        // 判断 如果图片是 4:3 就不要去裁减。
+                        if ((float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 4 / 3
+                                || (float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 3 / 4) {
+
+                        } else {
+                            mMainBitmap = EditPhotoUtil.cropBitmap(mMainBitmap, 4, 3);
+                            pwEditView.showBitmap(mMainBitmap);
+                        }
+                    }
+                    if (curFramePosition != 0) {
+                        pwEditView.showTempSave();
+                    } else {
+                        pwEditView.hideTempSave();
+                    }
+                    pwEditView.dialogShow();
+                    loadFrame(curFramePosition);
+                    break;
+
+                case PhotoCommon.OnclickStickerPosition:
+                    curEditType = PhotoCommon.EditSticker;
+                    int stickerPosition = msg.arg1;
+                    pwEditView.showTempSave();
+                    String stickerUrl = "";
+                    if (pwEditUtil.getStikerInfos().get(stickerPosition).getOnLine() == 1){
+                        stickerUrl = Common.PHOTO_URL + pwEditUtil.getStikerInfos().get(stickerPosition).getOriginalPathPortrait();
+                    }else{
+                        stickerUrl = pwEditUtil.getStikerInfos().get(stickerPosition).getOriginalPathPortrait();
+                    }
+                    GlideUtil.load(pwEditView.getEditPhotView(), stickerUrl, new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+                            pwEditView.getStickView().addBitImage(bitmap);
+                        }
+                    });
+                    break;
+
+                case PhotoCommon.OnclickFilterPosition:
+                    curEditType = PhotoCommon.EditFilter;
+                    final int filterPosition = msg.arg1;
+                    if (filterPosition == 0){
+                        pwEditView.hideTempSave();
+                    }else{
+                        pwEditView.showTempSave();
+                    }
+                    if (lastEditionPosition == filterPosition){
+                        PictureAirLog.out("same with last edition");
+                        break;
+                    }else{
+                        PictureAirLog.out("not same with last edition");
+                        lastEditionPosition = filterPosition;
+                    }
+                    filter = pwEditUtil.getSelectFilter(filterPosition);
+                    pwEditView.dialogShow();
+                    //点击第一个取index指定的那张图,点击其余的加载原图
+                    if (filterPosition == 0) {
+                        if (index == -1) {
+                            index = pwEditUtil.getPhotoEditorList().size() - 1;
+                        }
+                        if (index == 0) {
+                            File file = pwEditUtil.getFile(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
+                            if (file.exists()) {
+                                loadImageOnLocal(file.toString(), true);
+                            } else {
+                                GlideUtil.load(pwEditView.getEditPhotView(), pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                                        if (mMainBitmap != null) {
+                                            pwEditView.showBitmap(mMainBitmap);
+                                        }
+                                        pwEditView.dialogDismiss();
+                                    }
+
+                                    @Override
+                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                        pwEditView.dialogDismiss();
+                                        pwEditView.ToastShow(R.string.load_photo_error);
+                                    }
+                                });
+                            }
+                        } else {
+                            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
+                        }
+
+                    } else {
+                        if (isOnLine){
+                            File file = pwEditUtil.getFile(photoPath);
+                            if (file.exists()){
+                                loadImageOnLocal(file.toString(), false);
+                            }else {
+                                GlideUtil.load(pwEditView.getEditPhotView(), pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                                        mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
+                                    }
+
+                                    @Override
+                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                        pwEditView.dialogDismiss();
+                                        pwEditView.ToastShow(R.string.load_photo_error);
+                                    }
+                                });
+                            }
+                        }else{
+                            loadImageOnLocal(photoPath, false);
+                        }
+                    }
+
+                    break;
+
+                case PhotoCommon.DOWNLOAD_ONLINE:
+                    GlideUtil.load(pwEditView.getEditPhotView(), photoPath, isEncrypted, new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                            mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                            if (mMainBitmap != null){
+                                pwEditView.showBitmap(mMainBitmap);
+                                pwEditView.dialogDismiss();
+                            }else{
+                                //加载图片出错，换张图片试试
+                                pwEditView.ToastShow(R.string.load_photo_error);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            pwEditView.dialogDismiss();
+                            pwEditView.ToastShow(R.string.load_photo_error);
+                        }
+                    });
+                    break;
+
+                case PhotoCommon.INIT_DATA_FINISHED://用于关系progress
+                    pwEditView.dialogDismiss();
+                    break;
+                case PhotoCommon.START_ASYNC://执行过滤
+                    ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
+                    excuteFilterTask.execute(mMainBitmap);
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    });
 
 
     public void onCreate(IPWEditView pwEditViewInterface){
@@ -85,7 +246,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         pwEditUtil.loadStickerList();
         imageWidth = 900;
         imageHeight = 1200;
-        mHandler = new MyHandler(pwEditView.getEditPhotView());
         locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
         locationUtil = new LocationUtil(pwEditView.getEditPhotView());
         photoInfo = pwEditView.getEditPhotView().getIntent().getParcelableExtra("photo");
@@ -173,7 +333,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
                         System.gc();
                     }
 
-                    mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);;
+                    mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                     if (isInitload) {
                         if (mMainBitmap != null) {
                             pwEditView.showBitmap(mMainBitmap);
@@ -682,180 +842,6 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         } else {
             pwEditView.enableBackBtnClick();
             pwEditView.showReallySave();
-        }
-    }
-
-
-    public class MyHandler extends Handler {
-        WeakReference<Activity> mAactivity;
-
-        MyHandler(Activity activity) {
-            mAactivity = new WeakReference<>(activity);
-        }
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mAactivity == null) {
-                return;
-            }
-            switch (msg.what) {
-                case PhotoCommon.OnclickFramePosition: //点击边框Item的回调
-                    curEditType = PhotoCommon.EditFrame;
-                    if (msg.arg1 == lastEditionPosition){
-                        PictureAirLog.out("same with last edition");
-                        break;
-                    }else{
-                        PictureAirLog.out("not same with last edition");
-                        lastEditionPosition = msg.arg1;
-                    }
-                    curFramePosition = msg.arg1;
-
-                    if (curFramePosition == 0){
-                        cancelFrameEdition();
-                    }else{
-                        // 判断 如果图片是 4:3 就不要去裁减。
-                        if ((float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 4 / 3
-                                || (float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 3 / 4) {
-
-                        } else {
-                            mMainBitmap = EditPhotoUtil.cropBitmap(mMainBitmap, 4, 3);
-                            pwEditView.showBitmap(mMainBitmap);
-                        }
-                    }
-                    if (curFramePosition != 0) {
-                        pwEditView.showTempSave();
-                    } else {
-                        pwEditView.hideTempSave();
-                    }
-                    pwEditView.dialogShow();
-                    loadFrame(curFramePosition);
-                    break;
-
-                case PhotoCommon.OnclickStickerPosition:
-                    curEditType = PhotoCommon.EditSticker;
-                    int stickerPosition = msg.arg1;
-                    pwEditView.showTempSave();
-                    String stickerUrl = "";
-                    if (pwEditUtil.getStikerInfos().get(stickerPosition).getOnLine() == 1){
-                        stickerUrl = Common.PHOTO_URL + pwEditUtil.getStikerInfos().get(stickerPosition).getOriginalPathPortrait();
-                    }else{
-                        stickerUrl = pwEditUtil.getStikerInfos().get(stickerPosition).getOriginalPathPortrait();
-                    }
-                    GlideUtil.load(pwEditView.getEditPhotView(), stickerUrl, new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-                            pwEditView.getStickView().addBitImage(bitmap);
-                        }
-                    });
-                    break;
-
-                case PhotoCommon.OnclickFilterPosition:
-                    curEditType = PhotoCommon.EditFilter;
-                    final int filterPosition = msg.arg1;
-                    if (filterPosition == 0){
-                        pwEditView.hideTempSave();
-                    }else{
-                        pwEditView.showTempSave();
-                    }
-                    if (lastEditionPosition == filterPosition){
-                        PictureAirLog.out("same with last edition");
-                        return;
-                    }else{
-                        PictureAirLog.out("not same with last edition");
-                        lastEditionPosition = filterPosition;
-                    }
-                    filter = pwEditUtil.getSelectFilter(filterPosition);
-                    pwEditView.dialogShow();
-                    //点击第一个取index指定的那张图,点击其余的加载原图
-                    if (filterPosition == 0) {
-                        if (index == -1) {
-                            index = pwEditUtil.getPhotoEditorList().size() - 1;
-                        }
-                        if (index == 0) {
-                            File file = pwEditUtil.getFile(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
-                            if (file.exists()) {
-                                loadImageOnLocal(file.toString(), true);
-                            } else {
-                                GlideUtil.load(pwEditView.getEditPhotView(), pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                                        if (mMainBitmap != null) {
-                                            pwEditView.showBitmap(mMainBitmap);
-                                        }
-                                        pwEditView.dialogDismiss();
-                                    }
-
-                                    @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        pwEditView.dialogDismiss();
-                                        pwEditView.ToastShow(R.string.load_photo_error);
-                                    }
-                                });
-                            }
-                        } else {
-                            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath(), true);
-                        }
-
-                    } else {
-                        if (isOnLine){
-                            File file = pwEditUtil.getFile(photoPath);
-                            if (file.exists()){
-                                loadImageOnLocal(file.toString(), false);
-                            }else {
-                                GlideUtil.load(pwEditView.getEditPhotView(), pwEditUtil.getPhotoEditorList().get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                                        mHandler.sendEmptyMessage(PhotoCommon.START_ASYNC);
-                                    }
-
-                                    @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        pwEditView.dialogDismiss();
-                                        pwEditView.ToastShow(R.string.load_photo_error);
-                                    }
-                                });
-                            }
-                        }else{
-                            loadImageOnLocal(photoPath, false);
-                        }
-                    }
-
-                    break;
-
-                case PhotoCommon.DOWNLOAD_ONLINE:
-                    GlideUtil.load(pwEditView.getEditPhotView(), photoPath, isEncrypted, new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                            mMainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                            if (mMainBitmap != null){
-                                pwEditView.showBitmap(mMainBitmap);
-                                pwEditView.dialogDismiss();
-                            }else{
-                                //加载图片出错，换张图片试试
-                                pwEditView.ToastShow(R.string.load_photo_error);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            pwEditView.dialogDismiss();
-                            pwEditView.ToastShow(R.string.load_photo_error);
-                        }
-                    });
-                    break;
-
-                case PhotoCommon.INIT_DATA_FINISHED://用于关系progress
-                    pwEditView.dialogDismiss();
-                    break;
-                case PhotoCommon.START_ASYNC://执行过滤
-                    ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
-                    excuteFilterTask.execute(mMainBitmap);
-                    break;
-                default:
-                    break;
-            }
         }
     }
 

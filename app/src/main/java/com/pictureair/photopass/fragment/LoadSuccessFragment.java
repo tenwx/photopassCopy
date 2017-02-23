@@ -234,7 +234,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_loadsuccess,null);
+        View view = inflater.inflate(R.layout.fragment_loadsuccess, container, false);
         lv_success = (ListView) view.findViewById(R.id.lv_load_success);
         rl_load_success = (ScrollView) view.findViewById(R.id.rl_load_success);
         ll_load_success = (RelativeLayout) view.findViewById(R.id.ll_load_success);

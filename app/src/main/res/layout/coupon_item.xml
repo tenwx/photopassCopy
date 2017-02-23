@@ -28,7 +28,6 @@
         android:id="@+id/rl_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rl_left"
         android:background="@drawable/coupon_2"
         android:padding="@dimen/pp_dp_16">
 

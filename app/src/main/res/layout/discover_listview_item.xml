@@ -9,7 +9,6 @@
         android:id="@+id/place_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:paddingBottom="@dimen/pp_dp_20"
         android:paddingLeft="@dimen/pp_dp_16"
         android:paddingTop="@dimen/pp_dp_20"
@@ -105,7 +104,7 @@
                 android:layout_marginTop="@dimen/pp_dp_5"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="100.00m"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_12" />

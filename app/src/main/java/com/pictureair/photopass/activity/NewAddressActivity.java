@@ -319,14 +319,14 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
                 createDialog(1);
                 break;
             case R.id.newaddress_city_btn:
-                if (isCity == true) {
+                if (isCity) {
                     createDialog(2);
                 } else {
                     new PWToast(this).setTextAndShow(R.string.invoice_tips_province, Common.TOAST_SHORT_TIME);
                 }
                 break;
             case R.id.newaddress_country_btn:
-                if (isCounty == true) {
+                if (isCounty) {
                     createDialog(3);
                 } else {
                     new PWToast(this).setTextAndShow(R.string.invoice_tips_province_or_city, Common.TOAST_SHORT_TIME);

@@ -62,7 +62,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:id="@+id/regist_content_layout"
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
 
                         <com.pictureair.photopass.widget.CustomTextView
                             android:id="@+id/tv_country"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginRight="@dimen/pp_dp_10"
                             android:layout_weight="1"
@@ -291,7 +291,7 @@
                             android:textColor="@color/white"
                             android:textColorHint="@color/white"
                             android:inputType="number"
-                            android:singleLine="true"
+                            android:maxLines="1"
                             android:layout_marginLeft="@dimen/pp_dp_10"
                             android:background="@drawable/textedit_white"
                             android:layout_gravity="center"
@@ -422,7 +422,7 @@
 
                         <com.pictureair.photopass.widget.CustomTextView
                             android:id="@+id/tv_forget_country"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:layout_marginRight="@dimen/pp_dp_10"
@@ -593,7 +593,7 @@
                             android:maxLength="20"
                             android:imeOptions="actionGo"
                             android:inputType="number"
-                            android:singleLine="true"
+                            android:maxLines="1"
                             android:textSize="@dimen/text_size_16"
                             android:paddingLeft="@dimen/pp_dp_15"
                             android:paddingRight="@dimen/pp_dp_15"

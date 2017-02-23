@@ -54,7 +54,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         Holder holder = null;
         if (convertView == null) {
             holder = new Holder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.photo_loading_item,null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.photo_loading_item,parent, false);
             holder.rl = (RelativeLayout) convertView.findViewById(R.id.rl_photo_loading);
             holder.img = (ImageView) convertView.findViewById(R.id.loading_img);
             holder.videoMask = (ImageView) convertView.findViewById(R.id.loading_video);

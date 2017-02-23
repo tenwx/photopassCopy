@@ -196,8 +196,9 @@ public class WheelScroller {
     }
     
     // animation handler
-    private Handler animationHandler = new Handler() {
-        public void handleMessage(Message msg) {
+    private Handler animationHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             scroller.computeScrollOffset();
             int currY = scroller.getCurrY();
             int delta = lastScrollY - currY;
@@ -205,9 +206,9 @@ public class WheelScroller {
             if (delta != 0) {
                 listener.onScroll(delta);
             }
-            
+
             // scrolling is not finished when it comes to final Y
-            // so, finish it manually 
+            // so, finish it manually
             if (Math.abs(currY - scroller.getFinalY()) < MIN_DELTA_FOR_SCROLLING) {
 //                currY = scroller.getFinalY();
                 scroller.forceFinished(true);
@@ -219,8 +220,9 @@ public class WheelScroller {
             } else {
                 finishScrolling();
             }
+            return false;
         }
-    };
+    });
     
     /**
      * Justifies wheel

@@ -92,8 +92,9 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
         }
     }
 
-    private Handler downloadHandler = new Handler() {
-        public void handleMessage(Message msg) {
+    private Handler downloadHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_PROGRESS:
                     EditHolder holder = (EditHolder) msg.obj;
@@ -116,9 +117,9 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
                 default:
                     break;
             }
+            return false;
         }
-
-    };
+    });
 
     public EditActivityAdapter(Context context, String photoPath, List<String> stickerPathList, int editType, ArrayList<FrameOrStikerInfo> frameInfos, int width, int height, boolean local,Handler handler) {
         this.mContext = context;

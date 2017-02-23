@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    style="@style/ImmersiveMode"
     android:orientation="vertical">
 
     <include
         android:id="@+id/head"
         layout="@layout/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_alignParentTop="true"></include>
+        android:layout_height="52dp"/>
 
 
     <FrameLayout
@@ -25,10 +24,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:paddingRight="@dimen/pp_dp_8"
             android:background="@color/white"
             android:divider="@null"
             android:listSelector="@color/transparent"
+            android:paddingRight="@dimen/pp_dp_8"
             android:scrollbars="none" />
 
         <TextView

@@ -320,7 +320,7 @@ public class AppUtil {
     public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
         //旋转图片 动作
         Matrix matrix = new Matrix();
-        ;
+
         matrix.postRotate(angle);
         PictureAirLog.out("angle2=" + angle);
         // 创建新的图片
@@ -664,7 +664,7 @@ public class AppUtil {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (matrix.get(x, y)) {
-                    if (isFirstBlackPoint == false) {
+                    if (!isFirstBlackPoint) {
                         isFirstBlackPoint = true;
                         startX = x;
                         startY = y;
@@ -805,7 +805,7 @@ public class AppUtil {
      * @param pwd2 第二次输入的密码
      * @return
      */
-    public static final int checkPwd(String pwd1, String pwd2) {
+    public static int checkPwd(String pwd1, String pwd2) {
         if (pwd1.isEmpty()) {// 密码为空
             return PWD_EMPTY;
         } else if (!pwd1.isEmpty() && pwd1.trim().isEmpty()) {// 密码全部为空格

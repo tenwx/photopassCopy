@@ -435,7 +435,7 @@
                         android:layout_marginLeft="5dp"
                         android:textColor="@color/pp_gray"
                         android:gravity="right"
-                        android:singleLine="true"
+                        android:maxLines="1"
                         android:textSize="@dimen/text_size_14" />
                 </RelativeLayout>
 

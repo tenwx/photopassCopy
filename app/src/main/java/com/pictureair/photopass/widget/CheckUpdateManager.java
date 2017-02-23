@@ -77,8 +77,9 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
         }
     };
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_PB:
                     pwProgressBarDialog.setProgress(((long[])msg.obj)[0], ((long[])msg.obj)[1]);
@@ -118,10 +119,9 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
                 default:
                     break;
             }
+            return false;
         }
-
-        ;
-    };
+    });
 
     /**
      * 处理更新数据，检查是否需要更新

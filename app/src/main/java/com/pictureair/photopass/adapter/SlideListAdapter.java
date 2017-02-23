@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.util.AppUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,7 +68,7 @@ public class SlideListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.slide_list_item ,null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.slide_list_item ,parent, false);
             holder = new Holder();
             holder.tv_count = (TextView) convertView.findViewById(R.id.slide_list_item_count);
             holder.tv_date = (TextView) convertView.findViewById(R.id.slide_list_item_date);

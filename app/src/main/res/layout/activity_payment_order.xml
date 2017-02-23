@@ -25,28 +25,19 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_dp_60"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/pp_dp_16"
+                android:drawableLeft="@drawable/paymentmethods"
+                android:drawablePadding="@dimen/pp_dp_16"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
                 android:paddingBottom="@dimen/pp_dp_16"
-                android:paddingTop="@dimen/pp_dp_16">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/paymentmethods" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_dp_16"
-                    android:text="@string/payment_ways"
-                    android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_18"/>
-            </LinearLayout>
+                android:paddingTop="@dimen/pp_dp_16"
+                android:text="@string/payment_ways"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_18" />
 
             <View
                 android:layout_width="match_parent"
@@ -99,28 +90,19 @@
                 android:layout_height="@dimen/pp_dp_5"
                 android:background="@color/pp_light_gray_background" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_dp_60"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/pp_dp_16"
+                android:drawableLeft="@drawable/other_paymentmethods"
+                android:drawablePadding="@dimen/pp_dp_16"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
                 android:paddingBottom="@dimen/pp_dp_16"
-                android:paddingTop="@dimen/pp_dp_16">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/other_paymentmethods" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_dp_16"
-                    android:text="@string/other_payment_ways"
-                    android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_18" />
-            </LinearLayout>
+                android:paddingTop="@dimen/pp_dp_16"
+                android:text="@string/other_payment_ways"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_18" />
 
             <View
                 android:layout_width="match_parent"

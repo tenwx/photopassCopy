@@ -150,7 +150,6 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_px_1"
-        android:layout_below="@+id/cartPhotoGridLayout"
         android:layout_marginTop="@dimen/pp_dp_16"
         android:background="@color/pp_light_gray_normal" />
 

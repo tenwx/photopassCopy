@@ -34,7 +34,7 @@
             android:layout_toLeftOf="@+id/preview_more"
             android:layout_toRightOf="@id/button1_shop_rt"
             android:gravity="center"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 

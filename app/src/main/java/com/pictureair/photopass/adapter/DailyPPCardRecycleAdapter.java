@@ -42,12 +42,13 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (dailyPPCardInfoArrayList.size() == 0 || position >= getItemCount()) {
             return;
         }
 
         if (viewHolder instanceof RecyclerItemViewHolder) {
+            final int pos = viewHolder.getAdapterPosition();
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
             recyclerViewHolder.ppCodeTV.setText(String.format(context.getString(R.string.story_card), dailyPPCardInfoArrayList.get(position).getPpCode()));
             recyclerViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate());
@@ -55,7 +56,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.itemClick(position);
+                    mOnItemClickListener.itemClick(pos);
 
                 }
             });
@@ -63,7 +64,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             recyclerViewHolder.buyTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.buyClick(position);
+                    mOnItemClickListener.buyClick(pos);
 
                 }
             });
@@ -71,7 +72,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             recyclerViewHolder.downloadTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.downloadClick(position);
+                    mOnItemClickListener.downloadClick(pos);
                 }
             });
 

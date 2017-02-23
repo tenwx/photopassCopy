@@ -192,7 +192,7 @@ public class WXPayUtil {
                         break;
                     case XmlPullParser.START_TAG:
 
-                        if ("xml".equals(nodeName) == false) {
+                        if (!"xml".equals(nodeName)) {
                             xml.put(nodeName, parser.nextText());
                         }
                         break;

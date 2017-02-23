@@ -191,7 +191,7 @@
             android:padding="@dimen/pp_dp_10"
             android:text="@string/confirm"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/pp_dp_16" />
+            android:textSize="@dimen/text_size_16" />
 
         <Button
             android:id="@+id/button_addtocart"
@@ -203,7 +203,7 @@
             android:padding="@dimen/pp_dp_10"
             android:text="@string/add_to_cart"
             android:textColor="@color/pp_blue"
-            android:textSize="@dimen/pp_dp_16" />
+            android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 
 </RelativeLayout>

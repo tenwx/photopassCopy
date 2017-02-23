@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -110,7 +111,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private RelativeLayout noPhotoTipRL;
     private RelativeLayout noPhotoViewRL;
     private ImageView noPhotoViewRLCloseIV;
-    private RelativeLayout storyNoPpToScanLinearLayout;
+    private ScrollView storyNoPpToScanLinearLayout;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PPPPop pppPop;
@@ -215,13 +216,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PictureAirLog.out("story flow ---> on create----->story");
         context = getActivity();
-        View view = inflater.inflate(R.layout.fragment_story, null);
+        View view = inflater.inflate(R.layout.fragment_story, container, false);
         setImmersiveMode(view);
         //获取控件
         scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
         scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
         menuLayout = (RelativeLayout) view.findViewById(R.id.story_drawer_rl);
-        storyNoPpToScanLinearLayout = (RelativeLayout) view.findViewById(R.id.story_no_pp_to_scan);
+        storyNoPpToScanLinearLayout = (ScrollView) view.findViewById(R.id.story_no_pp_to_scan);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
         noPhotoTipRL = (RelativeLayout) view.findViewById(R.id.story_no_photo_rl);
         noPhotoViewRL = (RelativeLayout) view.findViewById(R.id.no_photo_view_relativelayout);
@@ -953,7 +954,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
                             while (iterator.hasNext()) {
                                 PPinfo pPinfo = iterator.next();
-                                if (pPinfo.getPpCode().equals(pPinfo.getPpCode())) {
+                                if (pPinfo.getPpCode().equals(info.getPpCode())) {
                                     iterator.remove();
                                 }
                             }

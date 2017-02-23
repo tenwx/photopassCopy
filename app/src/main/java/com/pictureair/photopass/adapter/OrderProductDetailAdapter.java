@@ -56,7 +56,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
         gridlayoutList = new ArrayList<ImageView>();
         if (convertView == null) {
             hView = new OrderHolderView();
-            convertView = inflater.inflate(R.layout.order_product_detail_item, null);
+            convertView = inflater.inflate(R.layout.order_product_detail_item, parent, false);
             hView.goodsImageView = (ImageView) convertView.findViewById(R.id.order_imageView_pd);
             hView.goodsName = (TextView) convertView.findViewById(R.id.order_textView_name);
             hView.goodsName.setTextColor(context.getResources().getColor(R.color.pp_dark_blue));

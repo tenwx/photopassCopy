@@ -119,7 +119,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         // TODO Auto-generated method stub
         if (convertView == null) {
             groupHolderView = new GroupHolderView();
-            convertView = mInflater.inflate(R.layout.order_item, null);
+            convertView = mInflater.inflate(R.layout.order_item, parent, false);
             //找控件
             groupHolderView.orderStatesTextView = (TextView) convertView.findViewById(R.id.order_states);
             groupHolderView.orderTimeTextView = (TextView) convertView.findViewById(R.id.order_time);
@@ -209,7 +209,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         gridlayoutList = new ArrayList<ImageView>();
         if (convertView == null) {
             hView = new ChildHolderView();
-            convertView = mInflater.inflate(R.layout.order_product_detail_item, null);
+            convertView = mInflater.inflate(R.layout.order_product_detail_item, parent, false);
             hView.goodsImageView = (ImageView) convertView.findViewById(R.id.order_imageView_pd);
             hView.goodsName = (TextView) convertView.findViewById(R.id.order_textView_name);
             hView.goodsName.setTypeface(MyApplication.getInstance().getFontBold());

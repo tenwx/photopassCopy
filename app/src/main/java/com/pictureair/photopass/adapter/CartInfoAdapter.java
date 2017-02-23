@@ -49,7 +49,6 @@ public class CartInfoAdapter extends BaseAdapter {
     private Handler handler;
     private String currency;
     private String userId;
-    private ArrayList<ArrayList<ImageView>> gridLayoutLists;
     private PWToast myToast;
 
     public static final int MINUSCOUNT = 0;// 减少数量
@@ -67,7 +66,6 @@ public class CartInfoAdapter extends BaseAdapter {
         this.currency = currency;
         this.userId = userId;
         layoutInflater = LayoutInflater.from(context);
-        gridLayoutLists = new ArrayList<>();
         myToast = new PWToast(context);
     }
 
@@ -101,7 +99,7 @@ public class CartInfoAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = layoutInflater.inflate(R.layout.cart_listview_item, null);
+            convertView = layoutInflater.inflate(R.layout.cart_listview_item, parent, false);
             viewHolder.selectedImageView = (ImageView) convertView.findViewById(R.id.cartSelectImageView);
             viewHolder.cartGoodImageView = (ImageView) convertView.findViewById(R.id.cartProductImageView);
             viewHolder.cartGoodNameTextView = (TextView) convertView.findViewById(R.id.cartProductName);
@@ -172,7 +170,6 @@ public class CartInfoAdapter extends BaseAdapter {
                 }
             }
         }
-        gridLayoutLists.add(gridlayoutList);
         viewHolder.cartGoodCountTextView.setText(goodArrayList.get(position).getQty() + "");
         viewHolder.cartCurrencyTextView.setText(currency);
         viewHolder.cartGoodProductQuentityTextView.setText("x" + goodArrayList.get(position).getQty() + "");

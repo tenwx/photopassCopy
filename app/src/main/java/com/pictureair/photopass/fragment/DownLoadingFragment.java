@@ -331,7 +331,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_downloading,null);
+        View view = inflater.inflate(R.layout.fragment_downloading, container, false);
         lv_loading = (ListView) view.findViewById(R.id.lv_downloading);
         rl_loading = (ScrollView) view.findViewById(R.id.rl_downloading);
         button = (Button) view.findViewById(R.id.downloading_btn_toload);

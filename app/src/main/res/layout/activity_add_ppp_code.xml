@@ -42,7 +42,7 @@
             android:hint="@string/input_code"
             android:layout_marginLeft="@dimen/pp_dp_5"
             android:layout_marginRight="@dimen/pp_dp_5"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/pp_gray"
             android:textColorHint="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />

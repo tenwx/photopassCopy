@@ -76,7 +76,7 @@
                     android:layout_marginLeft="@dimen/pp_dp_2"
                     android:focusable="false"
                     android:gravity="left"
-                    android:singleLine="true"
+                    android:maxLines="1"
                     android:text="15.00"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_14" />
@@ -85,7 +85,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ll"
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/pp_dp_10">
 

@@ -1,7 +1,5 @@
 package com.pictureair.photopass.widget.country;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +9,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+
+import java.util.List;
 
 
 /**
@@ -47,7 +47,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
 		final SortModel mContent = list.get(position);
 		if (view == null) {
 			viewHolder = new ViewHolder();
-			view = LayoutInflater.from(mContext).inflate(R.layout.select_country_item, null);
+			view = LayoutInflater.from(mContext).inflate(R.layout.select_country_item, arg2, false);
 			viewHolder.tvTitle = (TextView) view.findViewById(R.id.title);
 			viewHolder.tvLetter = (TextView) view.findViewById(R.id.catalog);
 			view.setTag(viewHolder);

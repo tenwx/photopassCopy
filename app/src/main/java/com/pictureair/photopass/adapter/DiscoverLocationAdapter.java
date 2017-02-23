@@ -171,7 +171,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LocationItem viewHolder;
         if (null == convertView) {
-            convertView = layoutInflater.inflate(R.layout.discover_listview_item, null);
+            convertView = layoutInflater.inflate(R.layout.discover_listview_item, parent, false);
             viewHolder = new LocationItem();
             viewHolder.locationNameTextView = (TextView) convertView.findViewById(R.id.place_name);//地点名称
             viewHolder.locationPhotoImageView = (ImageView) convertView.findViewById(R.id.discover_location_photo);//地点默认背景图片

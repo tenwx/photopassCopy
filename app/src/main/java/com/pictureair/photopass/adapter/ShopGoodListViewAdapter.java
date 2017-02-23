@@ -69,7 +69,7 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = layoutInflater.inflate(R.layout.good_listview_item, null);
+            convertView = layoutInflater.inflate(R.layout.good_listview_item, parent, false);
             viewHolder.goodNameAlias = (TextView) convertView.findViewById(R.id.good_name);
             viewHolder.goodPrice = (TextView) convertView.findViewById(R.id.good_price);
             viewHolder.goodCurrency = (TextView) convertView.findViewById(R.id.good_currency);

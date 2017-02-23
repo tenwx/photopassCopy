@@ -199,7 +199,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/pp_dp_2"
                 android:maxWidth="@dimen/pp_dp_150"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
@@ -234,7 +234,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/pp_dp_2"
                 android:maxWidth="@dimen/pp_dp_150"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textColor="@color/pp_light_gray_press"
                 android:textSize="@dimen/text_size_14" />
         </RelativeLayout>

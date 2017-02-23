@@ -58,7 +58,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = layoutInflater.inflate(R.layout.submitorder_listview_item, null);
+            convertView = layoutInflater.inflate(R.layout.submitorder_listview_item, parent, false);
             viewHolder.goodImageView = (ImageView) convertView.findViewById(R.id.imageView_pd);
             viewHolder.goodNameTextView = (TextView) convertView.findViewById(R.id.textView_name);
             viewHolder.currencyTextView = (TextView) convertView.findViewById(R.id.textView_currency);

@@ -130,21 +130,17 @@
                 android:background="@color/pp_light_gray_background"
                 android:visibility="gone"/>
 
-            <RelativeLayout
-                android:id="@+id/story_no_pp_to_scan"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
                 <ScrollView
+                android:id="@+id/story_no_pp_to_scan"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
+                    android:layout_height="match_parent"
                     android:fillViewport="true"
+                    android:visibility="gone"
                     android:scrollbars="none">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <com.pictureair.photopass.widget.BannerView
@@ -221,7 +217,6 @@
                         </RelativeLayout>
                     </RelativeLayout>
                 </ScrollView>
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/no_photo_view_relativelayout"

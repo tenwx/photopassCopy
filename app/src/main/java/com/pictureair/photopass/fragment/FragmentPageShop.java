@@ -124,7 +124,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
-        View view = inflater.inflate(R.layout.fragment_shop, null);
+        View view = inflater.inflate(R.layout.fragment_shop, container, false);
         newToast = new PWToast(MyApplication.getInstance());
         setImmersiveMode(view);
         //找控件

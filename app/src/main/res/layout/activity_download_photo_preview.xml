@@ -33,7 +33,7 @@
             android:gravity="center"
             android:layout_toLeftOf="@+id/download_preview_share"
             android:layout_toRightOf="@id/download_preview_back"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"/>
         <ImageButton

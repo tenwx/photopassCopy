@@ -53,11 +53,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
-        View view = inflater.inflate(R.layout.fragment_me, null);
+        View view = inflater.inflate(R.layout.fragment_me, container, false);
         scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
-        View headView = LayoutInflater.from(activity).inflate(R.layout.profile_head_view, null, false);
-        View zoomView = LayoutInflater.from(activity).inflate(R.layout.profile_zoom_view, null, false);
-        View contentView = LayoutInflater.from(activity).inflate(R.layout.profile_content_view, null, false);
+        View headView = LayoutInflater.from(activity).inflate(R.layout.profile_head_view, container, false);
+        View zoomView = LayoutInflater.from(activity).inflate(R.layout.profile_zoom_view, container, false);
+        View contentView = LayoutInflater.from(activity).inflate(R.layout.profile_content_view, container, false);
         scrollView.setHeaderView(headView);
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);

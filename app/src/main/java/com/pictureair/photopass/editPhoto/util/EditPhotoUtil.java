@@ -175,7 +175,7 @@ public class EditPhotoUtil {
     }
 
     private static void DeleteFile(File file) {
-        if (file.exists() == false) {
+        if (!file.exists()) {
             return;
         } else {
             if (file.isFile()) {

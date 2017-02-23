@@ -313,6 +313,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     private class TabView extends CustomTextView {
         private int mIndex;
+        private Paint paint;
 
         public TabView(Context context) {
             super(context, null, R.attr.vpiTabPageIndicatorStyle);
@@ -336,6 +337,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         private void init() {
             setTextSize(12);
             setTextColor(getResources().getColor(R.color.pp_gray));
+            paint = new Paint();
         }
 
         public int getIndex() {
@@ -344,14 +346,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
         @Override
         protected void onDraw(Canvas canvas) {
-            if (!getText().toString().equals(getResources().getString(R.string.story_tab_favorite))) {
-                Paint paint = new Paint();
+            paint.reset();
 //                this.setLayerType(View.LAYER_TYPE_SOFTWARE, paint);//需要硬件加速
-                paint.setColor(getResources().getColor(R.color.pp_gray));
-                canvas.drawLine(canvas.getWidth() - 1, 30, canvas.getWidth() - 1, canvas.getHeight() - 30, paint);
-                canvas.save();
-
-            }
+            paint.setColor(getResources().getColor(R.color.pp_gray));
+            canvas.drawLine(canvas.getWidth() - 1, 30, canvas.getWidth() - 1, canvas.getHeight() - 30, paint);
+            canvas.save();
             super.onDraw(canvas);
         }
     }

@@ -12,14 +12,10 @@
             android:id="@+id/load_success_tips"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:paddingLeft="@dimen/pp_dp_8"
                 android:paddingRight="@dimen/pp_dp_8"
-                >
+            android:orientation="vertical"
+            android:layout_alignParentTop="true">
                 <TextView
                     android:id="@+id/load_success_tv"
                     android:layout_width="match_parent"
@@ -32,7 +28,6 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     />
-            </RelativeLayout>
         </LinearLayout>
         <View
             android:id="@+id/dash_line"
@@ -97,7 +92,7 @@
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             android:paddingTop="80dp"
             android:background="@color/pp_light_gray_background"

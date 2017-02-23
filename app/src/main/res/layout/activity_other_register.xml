@@ -210,7 +210,7 @@
                         android:textColorHint="@color/white"
                         android:textSize="@dimen/text_size_16"
                         android:layout_marginLeft="@dimen/pp_dp_10"
-                        android:singleLine="true"/>
+                        android:maxLines="1"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -289,7 +289,7 @@
             android:background="@drawable/textedit"
             android:gravity="center"
             android:paddingBottom="@dimen/pp_dp_5"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
@@ -383,7 +383,7 @@
             android:gravity="center"
             android:hint="YYYY"
             android:paddingBottom="@dimen/pp_dp_5"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 

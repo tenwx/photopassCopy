@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,12 +20,12 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.BindPPInfo;
+import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
@@ -38,7 +39,6 @@ import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -216,7 +216,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 this.finish();
                 break;
             case R.id.ok://确认绑定按钮
-                HashMap<Integer, Boolean> map = listPPAdapter.getMap();
+                SparseBooleanArray map = listPPAdapter.getMap();
                 if (map.size() == 0) {
                     myToast.setTextAndShow(R.string.select_your_pp, Common.TOAST_SHORT_TIME);
                     return;
@@ -229,7 +229,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 String selectedString = "";
                 for (int j = 0; j < showPPCodeList.size(); j++) {
                     JSONObject jsonObject = new JSONObject();
-                    if (null != map.get(j) && map.get(j)) {
+                    if (map.get(j, false)) {
                         try {
                             PhotoInfo photoInfo = new PhotoInfo();
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());
@@ -247,6 +247,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                         pps.add(jsonObject);
                     }
                 }
+                PictureAirLog.d("pps--> " + pps.toJSONString());
                 if (fromPPP) {
                     pictureWorksDialog.setPWDialogId(BIND_TIP_DIALOG)
                             .setPWDialogMessage(String.format(getString(R.string.select_pp_right_date), selectedString))

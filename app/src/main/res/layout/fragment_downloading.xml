@@ -76,7 +76,7 @@
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="80dp"
             android:background="@color/pp_light_gray_background"
 

@@ -94,7 +94,6 @@
                     android:id="@+id/newaddress_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/pp_dp_8"
                     android:background="@null"

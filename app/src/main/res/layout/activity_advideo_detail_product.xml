@@ -36,7 +36,7 @@
             android:layout_toLeftOf="@+id/button_bag"
             android:layout_toRightOf="@+id/rt"
             android:gravity="center"
-            android:singleLine="true"
+            android:maxLines="1"
             android:text="@string/animated_photo_title"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
@@ -103,7 +103,6 @@
         android:id="@+id/animated_photo_bottom_btns_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/content"
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:gravity="center"

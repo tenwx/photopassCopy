@@ -137,7 +137,7 @@
             android:padding="@dimen/pp_dp_10"
             android:text="@string/buy_ppp_text"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/pp_dp_16" />
+            android:textSize="@dimen/text_size_16" />
 
         <Button
             android:id="@+id/button_scan_ppp"
@@ -149,7 +149,7 @@
             android:padding="@dimen/pp_dp_10"
             android:text="@string/scan_ppp_text"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/pp_dp_16" />
+            android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 
     <com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout

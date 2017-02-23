@@ -54,7 +54,7 @@ public class AddressAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_address_list_layout, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_address_list_layout, parent, false);
             viewHolder.addressTv = (TextView) convertView.findViewById(R.id.address_tv);
             viewHolder.addressIv = (ImageView) convertView.findViewById(R.id.address_iv);
             convertView.setTag(viewHolder);
