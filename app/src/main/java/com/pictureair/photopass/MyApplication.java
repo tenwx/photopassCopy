@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.FontResource;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -88,6 +89,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LeakCanary.install(this);
+
         if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
             FontResource.getInstance().initFout(this);
