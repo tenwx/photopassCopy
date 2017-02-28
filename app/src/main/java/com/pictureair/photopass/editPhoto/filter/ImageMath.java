@@ -283,7 +283,6 @@ public class ImageMath {
 	 * Bilinear interpolation of ARGB values.
 	 * @param x the X interpolation parameter 0..1
 	 * @param y the y interpolation parameter 0..1
-	 * @param rgb array of four ARGB values in the order NW, NE, SW, SE
 	 * @return the interpolated value
 	 */
 	public static int bilinearInterpolate(float x, float y, int nw, int ne, int sw, int se) {
@@ -329,7 +328,6 @@ public class ImageMath {
 
 	/**
 	 * Return the NTSC gray level of an RGB value.
-	 * @param rgb1 the input pixel
 	 * @return the gray level (0-255)
 	 */
 	public static int brightnessNTSC(int rgb) {
@@ -414,7 +412,7 @@ public class ImageMath {
 				break;
 		if (span > numKnots-3)
 			span = numKnots-3;
-		float t = (float)(x-xknots[span]) / (xknots[span+1]-xknots[span]);
+		float t = (x-xknots[span]) / (xknots[span+1]-xknots[span]);
 		span--;
 		if (span < 0) {
 			span = 0;
@@ -560,7 +558,7 @@ public class ImageMath {
 		for (j = 0; j < length; j++) {
 			while (out[i+1] < j)
 				i++;
-			in[j] = i + (float) (j - out[i]) / (out[i + 1] - out[i]);
+			in[j] = i + (j - out[i]) / (out[i + 1] - out[i]);
 //			in[j] = ImageMath.clamp( in[j], 0, length-1 );
 		}
 		in[length] = length;

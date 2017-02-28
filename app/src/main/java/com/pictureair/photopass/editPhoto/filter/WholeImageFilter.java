@@ -41,14 +41,12 @@ public abstract class WholeImageFilter {
 	}
 
     public int[] filter( int[] src, int w, int h ) {
-        int width = w;
-        int height =h;        
-		originalSpace = new Rect(0, 0, width, height);
-		transformedSpace = new Rect(0, 0, width, height);
+		originalSpace = new Rect(0, 0, w, h);
+		transformedSpace = new Rect(0, 0, w, h);
 		transformSpace(transformedSpace);
 
 		int[] inPixels = src;
-		inPixels = filterPixels( width, height, inPixels, transformedSpace );
+		inPixels = filterPixels(w, h, inPixels, transformedSpace );
 
         return inPixels;
     }

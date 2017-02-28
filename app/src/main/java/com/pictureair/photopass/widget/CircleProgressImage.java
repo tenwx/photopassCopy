@@ -151,8 +151,7 @@ public class CircleProgressImage extends ImageView {
          *0-100
          * 0-360
          */
-        int changeProgress = (int) (progress * 3.6);
-        this.progress = changeProgress;
+        this.progress = (int) (progress * 3.6);
         isNewMask = true;
         postInvalidate();
 

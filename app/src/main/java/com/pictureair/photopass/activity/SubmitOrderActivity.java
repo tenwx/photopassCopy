@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -342,7 +343,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         discountSubtractTv = (TextView) view.findViewById(R.id.discount_subtract_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
-        View transportLine = (View) view.findViewById(R.id.pickup_line);
+        View transportLine = view.findViewById(R.id.pickup_line);
 
         btn_agreement = (ImageView) view.findViewById(R.id.iv_agreement);
         btn_agreement.setOnClickListener(new OnClickListener() {
@@ -391,7 +392,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 transportLine.setVisibility(View.VISIBLE);
                 addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
                     @Override
-                    public void doOnClickAddressListener(int position) {
+                    public void addressClick(int position) {
                         refreshAddress(position);
                     }
                 });
@@ -486,12 +487,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         //选择地址
         if (addressList != null && addressList.size() > 0) {
             //单选
-            boolean isSelect = addressList.get(position).getIsSelect();
-            if (isSelect) {
-                isSelect = false;
-            } else {
-                isSelect = true;
-            }
+            boolean isSelect = !addressList.get(position).getIsSelect();
             for (Address address : addressList) {
                 if (address == addressList.get(position)) {
                     address.setIsSelect(isSelect);
@@ -931,7 +927,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setColor(getResources().getColor(R.color.pp_red));
+            ds.setColor(ContextCompat.getColor(SubmitOrderActivity.this, R.color.pp_red));
         }
     }
 }

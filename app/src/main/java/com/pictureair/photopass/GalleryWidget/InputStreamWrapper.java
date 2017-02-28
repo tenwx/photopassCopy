@@ -32,9 +32,9 @@ public class InputStreamWrapper extends BufferedInputStream
 		mProgressListener = listener;
 	}
 	
-	public static interface InputStreamProgressListener 
+	public interface InputStreamProgressListener
 	{
-		public void onProgress(float progressValue, long bytesLoaded, long bytesTotal);		
+		void onProgress(float progressValue, long bytesLoaded, long bytesTotal);
 	}
 
 	

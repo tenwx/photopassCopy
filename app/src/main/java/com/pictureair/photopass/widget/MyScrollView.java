@@ -18,7 +18,7 @@ public class MyScrollView extends ScrollView
 	public MyScrollView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		mGestureDetector = new GestureDetector(new YScrollDetector());
+		mGestureDetector = new GestureDetector(context, new YScrollDetector());
 		setFadingEdgeLength(0);
 	}
 
@@ -35,11 +35,7 @@ public class MyScrollView extends ScrollView
 		public boolean onScroll(MotionEvent e1, MotionEvent e2,
 				float distanceX, float distanceY)
 		{
-			if (Math.abs(distanceY) > Math.abs(distanceX)+10)
-			{
-				return true;
-			}
-			return false;
+			return Math.abs(distanceY) > Math.abs(distanceX) + 10;
 		}
 	}
 }

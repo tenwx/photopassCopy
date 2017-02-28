@@ -3,6 +3,7 @@ package com.pictureair.photopass.widget;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +65,7 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 
 		setWidth(LayoutParams.WRAP_CONTENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
-		setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
+		setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent)));
 		setFocusable(true);
 		setOutsideTouchable(true);
 	}

@@ -1,13 +1,13 @@
 package com.pictureair.photopass.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.pictureair.photopass.widget.CompositeImageProductView;
+
+import java.util.List;
 
 public class CompositeImageProductAdapter extends PagerAdapter {
 	private List<CompositeImageProductView> list;
@@ -28,13 +28,13 @@ public class CompositeImageProductAdapter extends PagerAdapter {
 		return arg0 == arg1;
 	}
 
-	public View instantiateItem(View arg0, final int arg1) {
-		((ViewPager) arg0).addView(list.get(arg1));
+	public View instantiateItem(ViewGroup arg0, int arg1) {
+		arg0.addView(list.get(arg1));
 		return list.get(arg1);
 	}
 
 	@Override
-	public void destroyItem(View arg0, int arg1, Object arg2) {
-		((ViewPager) arg0).removeView((View) arg2);
+	public void destroyItem(ViewGroup arg0, int arg1, Object arg2) {
+		arg0.removeView((View) arg2);
 	}
 }

@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -83,9 +84,8 @@ public class EditPhotoUtil {
             PictureAirLog.out("size=" + "_" + widthRatio + "_" + heightRatio);
         }
 
-        Bitmap b = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
                 bitmap.getHeight(), m, true);
-        return b;
     }
 
 
@@ -175,9 +175,7 @@ public class EditPhotoUtil {
     }
 
     private static void DeleteFile(File file) {
-        if (!file.exists()) {
-            return;
-        } else {
+        if (file.exists()) {
             if (file.isFile()) {
                 file.delete();
                 return;
@@ -200,7 +198,7 @@ public class EditPhotoUtil {
     public static Bitmap textAsBitmap(String text, Typeface typeface, int color, float textSize, int width, Context context) {
 //		textSize = ScreenUtil.getScreenWidth(context)/(text.length());
         TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG); //抗锯齿
-        textPaint.setColor(context.getResources().getColor(color));
+        textPaint.setColor(ContextCompat.getColor(context, color));
         textPaint.setTextSize(textSize);
         textPaint.setTypeface(typeface);
         textPaint.setAntiAlias(true);  // 抗锯齿
@@ -283,9 +281,8 @@ public class EditPhotoUtil {
     public static Bitmap rotateImage(Bitmap bit, int degrees) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
-        Bitmap tempBitmap = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(),
+        return Bitmap.createBitmap(bit, 0, 0, bit.getWidth(),
                 bit.getHeight(), matrix, true);
-        return tempBitmap;
     }
 
 
@@ -331,9 +328,7 @@ public class EditPhotoUtil {
                 retX = 0;
             }
         }
-        Bitmap bmp = Bitmap.createBitmap(bitmap, retX, retY, nw, nh, null,
-                false);
-        return bmp;
+        return Bitmap.createBitmap(bitmap, retX, retY, nw, nh, null, false);
     }
 
 

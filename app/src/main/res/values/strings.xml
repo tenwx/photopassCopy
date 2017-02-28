@@ -623,7 +623,7 @@
     <string name="smssdk_write_mobile_phone">手机号码</string>
     <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
     <string name="smssdk_write_identify_code2">填写验证码</string>
-    <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
+    <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%d&lt;/font>秒</Data></string>
     <string name="is_loading">正在加载中，请稍后&#8230;</string>
     <string name="smssdk_pw_is_inconsistency">密码输入不一致</string>
     <!--SMSSDK end-->

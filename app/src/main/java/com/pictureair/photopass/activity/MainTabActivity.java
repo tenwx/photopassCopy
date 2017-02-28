@@ -239,7 +239,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         mDrawerLayout.findViewById(R.id.slide_head).setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
                 if (adapter != null) {
@@ -458,7 +458,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     public List<PPinfo> call(JSONObject jsonObject) {
                         PictureAirDbManager.removePhotosFromUserByPPCode(deletePosition, (ArrayList<PPinfo>) ppList);
                         if (deletedPPList == null) {
-                            deletedPPList = new ArrayList<PPinfo>();
+                            deletedPPList = new ArrayList<>();
                         }
                         deletedPPList.add(ppList.get(deletePosition));
                         ppList.remove(deletePosition);

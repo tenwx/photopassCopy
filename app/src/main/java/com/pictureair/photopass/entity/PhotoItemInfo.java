@@ -18,7 +18,7 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 	public String shootTime;// 拍摄时间 年月日
 	public String shootOn;//拍摄时间 年月日时分秒
 	public String place;// 拍摄地点
-	public List<PhotoInfo> list = new ArrayList<PhotoInfo>();//图片列表
+	public List<PhotoInfo> list = new ArrayList<>();//图片列表
 	public String placeUrl;// 地点图片url
 	public int islove;// 地点是否收藏,0：未收藏；1：收藏
 	public double latitude;
@@ -54,7 +54,7 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 		place = source.readString();
 		length = source.readInt();
 		if (length > 0) {
-			list = new ArrayList<PhotoInfo>();
+			list = new ArrayList<>();
 			Parcelable[] pars = source.readParcelableArray(PhotoInfo.class.getClassLoader());
 			list = Arrays.asList(Arrays.asList(pars).toArray(new PhotoInfo[pars.length]));
 		}

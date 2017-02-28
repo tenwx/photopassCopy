@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     }
                     ArrayList<PhotoInfo> photos = new ArrayList<>();
                     PhotoInfo info = new PhotoInfo();
-                    info.setId(1l);
+                    info.setId(1L);
                     info.setIsVideo(reconnecFile.isVideo());
                     info.setPhotoOriginalURL(reconnecFile.getUrl());
                     info.setPhotoId(reconnecFile.getPhotoId());
@@ -464,12 +465,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private void selecAllButtonStatusChange(boolean all) {
         Drawable top;
         if (all){
-            top = getResources().getDrawable(R.drawable.edit_album_disall_button);
+            top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_disall_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null, top, null, null);
             tv_selectAll.setText(R.string.edit_story_disall);
             selectAll = true;
         }else{
-            top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_all_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
             tv_selectAll.setText(R.string.edit_story_all);
             selectAll=false;
@@ -546,20 +547,16 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             downloadService.reverseDownloadList();
             selectPhotos.clear();
             enableReconnectDeleteButton();
-            Drawable top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            Drawable top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_all_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
             tv_selectAll.setText(R.string.edit_story_all);
             selectAll=false;
             ll_popup.startAnimation(animationOut);
-            return;
         }
     }
 
     public boolean getIsDownloading(){
-        if (downloadService != null && downloadService.isDownloading()){
-            return true;
-        }
-        return false;
+        return downloadService != null && downloadService.isDownloading();
     }
 
     public void stopDownloadService() {

@@ -70,13 +70,11 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener, Clos
 
     private static boolean shouldBeep(Context activity) {
         boolean shouldPlayBeep = true;
-        if (shouldPlayBeep) {
             // See if sound settings overrides this
             AudioManager audioService = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
             if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
                 shouldPlayBeep = false;
             }
-        }
         return shouldPlayBeep;
     }
 

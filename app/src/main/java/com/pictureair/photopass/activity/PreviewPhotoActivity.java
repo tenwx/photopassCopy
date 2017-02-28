@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -111,7 +112,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
-    private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
+    private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private int currentPosition;//记录当前预览照片的索引值
 
     private String tabName;
@@ -194,7 +195,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 //初始化底部索引按钮
                 updateIndexTools();
 
-                mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+                mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
 
                     @Override
                     public void onPageSelected(int arg0) {
@@ -1218,7 +1219,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void setFullScreenMode(boolean fullScreenMode) {
         titleBar.setVisibility(fullScreenMode ? View.GONE : View.VISIBLE);
         if (mViewPager != null) {
-            mViewPager.setBackgroundColor(fullScreenMode ? Color.BLACK : getResources().getColor(R.color.pp_light_gray_background));
+            mViewPager.setBackgroundColor(fullScreenMode ? Color.BLACK : ContextCompat.getColor(this, R.color.pp_light_gray_background));
             //默认初始化5个view，所以需要修改这5个view
             for (int i = currentPosition - 2; i < currentPosition + 3; i++) {
                 if (i < 0) {
@@ -1241,14 +1242,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
-            photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            photoFraRelativeLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.pp_light_gray_background));
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
     //直接下载
     private void downloadPic() {
-        ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
+        ArrayList<PhotoInfo> list = new ArrayList<>();
         list.add(photolist.get(mViewPager.getCurrentItem()));
         Intent intent = new Intent(PreviewPhotoActivity.this, DownloadService.class);
         Bundle bundle = new Bundle();

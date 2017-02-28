@@ -68,10 +68,10 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		currentItem = 0;
 		imgs[currentItem].setEnabled(false);
 		mViewPager = (ViewPager) findViewById(R.id.viewPager);
-		mViewPager.setOnPageChangeListener(this);
+		mViewPager.addOnPageChangeListener(this);
 		mViewPager.setOnTouchListener(this);
 		LayoutInflater inflater = LayoutInflater.from(WelcomeActivity.this);
-		list = new ArrayList<View>();
+		list = new ArrayList<>();
 		currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
 		initpage(inflater);
 

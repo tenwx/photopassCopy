@@ -533,11 +533,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     }
 
     private void checkStoragePermissionAndCopyData() {
-        if (AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            mNoStoragePermission = true;
-        }else{
-            mNoStoragePermission = false;
-        }
+        mNoStoragePermission = AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void requestCameraPermissionAndInit() {

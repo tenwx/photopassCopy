@@ -21,8 +21,6 @@ import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
-import java.lang.ref.WeakReference;
-
 import rx.android.schedulers.AndroidSchedulers;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {

@@ -214,7 +214,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
                 });
     }
 
-    private void timeCountDown(long time) {
+    private void timeCountDown(int time) {
         registerOrForgetView.countDown(time);
     }
 
@@ -223,13 +223,13 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
         public RegisterCountDownTimer(long millisInFuture, long countDownInterval, RegisterTool registerTool) {
             super(millisInFuture, countDownInterval);
-            registerToolWeakRef = new WeakReference<RegisterTool>(registerTool);
+            registerToolWeakRef = new WeakReference<>(registerTool);
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
             int sec = 1000;
-            long ss = millisUntilFinished / sec;
+            int ss = (int)millisUntilFinished / sec;
             if (registerToolWeakRef.get() != null) {
                 registerToolWeakRef.get().timeCountDown(ss);
                 PictureAirLog.d("registerTool count down", ss + "s");

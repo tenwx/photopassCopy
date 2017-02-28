@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 
 
 /**
@@ -324,7 +322,7 @@ public class PullToZoomScrollViewEx extends PullToZoomBase<ScrollView> {
     }
 
     protected interface OnScrollViewChangedListener {
-        public void onInternalScrollChanged(int left, int top, int oldLeft, int oldTop);
+        void onInternalScrollChanged(int left, int top, int oldLeft, int oldTop);
     }
 
 

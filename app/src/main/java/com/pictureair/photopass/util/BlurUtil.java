@@ -100,8 +100,7 @@ public class BlurUtil {
 			image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
 		}
 		ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中
-		Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片
-		return bitmap;
+		return BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片
 	}
 
 	/** 按比例大小压缩图片 */

@@ -19,6 +19,7 @@ package com.pictureair.photopass.widget.viewpagerindicator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -71,9 +72,9 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (null != tabViews && tabViews.size() > 0) {
             for (int i = 0; i < tabViews.size(); i++) {
                 if (tabViews.get(index) == tabViews.get(i)) {
-                    tabViews.get(i).setTextColor(getResources().getColor(R.color.pp_blue));
+                    tabViews.get(i).setTextColor(ContextCompat.getColor(getContext(), R.color.pp_blue));
                 } else {
-                    tabViews.get(i).setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                    tabViews.get(i).setTextColor(ContextCompat.getColor(getContext(), R.color.pp_dark_blue));
                 }
             }
         }
@@ -226,14 +227,14 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             return;
         }
         if (mViewPager != null) {
-            mViewPager.setOnPageChangeListener(null);
+            mViewPager.addOnPageChangeListener(null);
         }
         final PagerAdapter adapter = view.getAdapter();
         if (adapter == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
         mViewPager = view;
-        view.setOnPageChangeListener(this);
+        view.addOnPageChangeListener(this);
         notifyDataSetChanged();
     }
 
@@ -336,7 +337,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
         private void init() {
             setTextSize(12);
-            setTextColor(getResources().getColor(R.color.pp_gray));
+            setTextColor(ContextCompat.getColor(getContext(), R.color.pp_gray));
             paint = new Paint();
         }
 
@@ -348,7 +349,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         protected void onDraw(Canvas canvas) {
             paint.reset();
 //                this.setLayerType(View.LAYER_TYPE_SOFTWARE, paint);//需要硬件加速
-            paint.setColor(getResources().getColor(R.color.pp_gray));
+            paint.setColor(ContextCompat.getColor(getContext(), R.color.pp_gray));
             canvas.drawLine(canvas.getWidth() - 1, 30, canvas.getWidth() - 1, canvas.getHeight() - 30, paint);
             canvas.save();
             super.onDraw(canvas);

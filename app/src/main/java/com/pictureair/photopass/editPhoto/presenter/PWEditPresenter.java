@@ -246,7 +246,7 @@ public class PWEditPresenter implements PWEditViewListener, LocationUtil.OnLocat
         pwEditUtil.loadStickerList();
         imageWidth = 900;
         imageHeight = 1200;
-        locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
+        locationItemInfos = new ArrayList<>();
         locationUtil = new LocationUtil(pwEditView.getEditPhotView());
         photoInfo = pwEditView.getEditPhotView().getIntent().getParcelableExtra("photo");
         photoPath = pwEditView.getEditPhotView().getIntent().getStringExtra("photoPath");

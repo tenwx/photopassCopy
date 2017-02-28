@@ -269,19 +269,19 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
 
                 if (type == XmlPullParser.START_TAG) {
                     if ("root".equals(typeName)) {
-                        provinceList = new ArrayList<ProvinceModel>();
+                        provinceList = new ArrayList<>();
                     } else if ("province".equals(typeName)) {
                         province = parser.getAttributeValue(0);// 获取标签里第一个属性,例如<city
                         // name="北京市"
                         // index="1">中的name属性
                         provinceModel = new ProvinceModel();
                         provinceModel.setProvince(province);
-                        cityList = new ArrayList<CityModel>();
+                        cityList = new ArrayList<>();
                     } else if ("city".equals(typeName)) {
                         city = parser.getAttributeValue(0);
                         cityModel = new CityModel();
                         cityModel.setCity(city);
-                        countyList = new ArrayList<CountyModel>();
+                        countyList = new ArrayList<>();
                     } else if ("area".equals(typeName)) {
                         county = parser.getAttributeValue(0);
                         countyModel = new CountyModel();
@@ -509,7 +509,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             TextView tv = new TextView(NewAddressActivity.this);
             tv.setPadding(20, 20, 20, 20);
             tv.setTextSize(16);
-            tv.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+            tv.setTextColor(ContextCompat.getColor(NewAddressActivity.this, R.color.pp_dark_blue));
             tv.setBackgroundResource(R.drawable.button_address_selector);
             tv.setText(adapter_list.get(position).getProvince());
             return tv;
@@ -544,7 +544,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             TextView tv = new TextView(NewAddressActivity.this);
             tv.setPadding(20, 20, 20, 20);
             tv.setTextSize(16);
-            tv.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+            tv.setTextColor(ContextCompat.getColor(NewAddressActivity.this, R.color.pp_dark_blue));
             tv.setBackgroundResource(R.drawable.button_address_selector);
             tv.setText(adapter_list.get(position).getCity());
             return tv;
@@ -578,7 +578,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             TextView tv = new TextView(NewAddressActivity.this);
             tv.setPadding(20, 20, 20, 20);
             tv.setTextSize(16);
-            tv.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+            tv.setTextColor(ContextCompat.getColor(NewAddressActivity.this, R.color.pp_dark_blue));
             tv.setBackgroundResource(R.drawable.button_address_selector);
             tv.setText(adapter_list.get(position).getCounty());
             return tv;

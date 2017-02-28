@@ -115,10 +115,10 @@
     </declare-styleable>
 
     <declare-styleable name="CircleProgressImageView">
-        <attr name="borderColor" format="color"></attr>
-        <attr name="border_Width" format="dimension"></attr>
-        <attr name="textColor" format="color"></attr>
-        <attr name="textSize" format="dimension"></attr>
-        <attr name="progress" format="integer"></attr>
+        <attr name="borderColor" format="color"/>
+        <attr name="border_Width" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="progress" format="integer"/>
     </declare-styleable>
 </resources>

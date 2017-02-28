@@ -50,6 +50,7 @@ public class PWMigrationHelper {
                 insertTableStringBuilder.append(" AS SELECT * FROM ").append(tableName).append(";");
                 db.execSQL(insertTableStringBuilder.toString());
             } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -133,6 +134,7 @@ public class PWMigrationHelper {
                 dropTableStringBuilder.append("DROP TABLE ").append(tempTableName);
                 db.execSQL(dropTableStringBuilder.toString());
             } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }

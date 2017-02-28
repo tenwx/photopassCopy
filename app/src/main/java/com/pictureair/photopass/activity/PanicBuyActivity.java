@@ -90,7 +90,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         private final WeakReference<PanicBuyActivity> mActivity;
 
         public PanicBuyHandler(PanicBuyActivity activity) {
-            mActivity = new WeakReference<PanicBuyActivity>(activity);
+            mActivity = new WeakReference<>(activity);
         }
 
         @Override
@@ -341,7 +341,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
 //        tv_title.setText(goodsInfo.getDealing().getTitle());
         tv_detail_title.setText(goodsInfo.getNameAlias());
 //        tv_detail1.setText(goodsInfo.getDescription()+"\n");
-        String detail = new String("");
+        String detail = "";
         if (goodsInfo.getCopywriter() != null) {
             String[] spilt =  goodsInfo.getCopywriter().split("\n");
             if (spilt.length > 1) {
@@ -353,7 +353,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private String appendEnter(String[] spilt) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < spilt.length; i++) {
             if (i < spilt.length -1) {
                 buffer.append(spilt[i]).append("\n").append("\n");
@@ -366,8 +366,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private Date getCurrentDate() {
-        Date currentData = new Date(System.currentTimeMillis());
-        return currentData;
+        return new Date(System.currentTimeMillis());
     }
 
     @Override
@@ -445,7 +444,7 @@ public class PanicBuyActivity extends BaseActivity implements View.OnClickListen
         private WeakReference<PanicBuyActivity> mActivity;
         public MyCountDownTimer(long millisInFuture, long countDownInterval, PanicBuyActivity activity) {
             super(millisInFuture, countDownInterval);
-            mActivity = new WeakReference<PanicBuyActivity>(activity);
+            mActivity = new WeakReference<>(activity);
         }
 
         @Override

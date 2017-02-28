@@ -35,7 +35,7 @@ public class StickerView extends View {
 	private float leftTopX, leftTopY, rightBottomX, rightBottomY;
 	private OnStickItemDeleteListener listener;
 
-	private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();// 存贮每层贴图数据
+	private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<>();// 存贮每层贴图数据
 
 	public StickerView(Context context) {
 		super(context);
@@ -219,7 +219,7 @@ public class StickerView extends View {
 	}
 
 	public interface OnStickItemDeleteListener {
-		public void onStickItemDelete();
+		void onStickItemDelete();
 	}
 
 }// end class

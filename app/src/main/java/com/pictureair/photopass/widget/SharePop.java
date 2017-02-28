@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,7 +100,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         setContentView(defaultView);
         setWidth(LayoutParams.MATCH_PARENT);
         setHeight(LayoutParams.WRAP_CONTENT);
-        setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
+        setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent)));
         setAnimationStyle(R.style.from_bottom_anim);
         setFocusable(true);
         setOutsideTouchable(true);

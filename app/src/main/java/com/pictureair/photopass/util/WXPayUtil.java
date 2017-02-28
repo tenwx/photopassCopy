@@ -44,7 +44,7 @@ public class WXPayUtil {
         req.nonceStr = genNonceStr();
         req.timeStamp = String.valueOf(genTimeStamp());// 时间戳
 
-        List<NameValuePair> signParams = new LinkedList<NameValuePair>();
+        List<NameValuePair> signParams = new LinkedList<>();
         signParams.add(new BasicNameValuePair("appid", req.appId));
         signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
         signParams.add(new BasicNameValuePair("package", req.packageValue));
@@ -53,7 +53,7 @@ public class WXPayUtil {
         signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
 
         req.sign = genAppSign(signParams);
-        sb.append("sign\n" + req.sign + "\n\n");
+        sb.append("sign\n").append(req.sign).append("\n\n");
         PictureAirLog.d("orion", signParams.toString());
         return req;
     }
@@ -82,14 +82,12 @@ public class WXPayUtil {
 
     // 生成支付订单
     public String genProductArgs(String nameString, String orderId, String priceString) {
-        StringBuffer xml = new StringBuffer();
 
         try {
             String nonceStr = genNonceStr();
             PictureAirLog.out("name--->" + nameString);
             PictureAirLog.out("name  utf--->" + URLDecoder.decode(nameString, "UTF-8"));
-            xml.append("</xml>");
-            List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
+            List<NameValuePair> packageParams = new LinkedList<>();
             packageParams
                     .add(new BasicNameValuePair("appid", Constants.APP_ID));// 公众账号ID
             packageParams.add(new BasicNameValuePair("body", new String(nameString.getBytes("utf-8"), "utf-8")));// 商品描述
@@ -113,9 +111,7 @@ public class WXPayUtil {
             String sign = genPackageSign(packageParams);
             packageParams.add(new BasicNameValuePair("sign", sign));// 签名
 
-            String xmlstring = toXml(packageParams);
-
-            return xmlstring;
+            return toXml(packageParams);
 
         } catch (Exception e) {
             PictureAirLog.out("genProductArgs fail, ex = " + e.getMessage());
@@ -137,7 +133,7 @@ public class WXPayUtil {
         stringBuilder.append("key=");
         stringBuilder.append(Constants.API_KEY);
 
-        sb.append("sign str\n" + stringBuilder.toString() + "\n\n");
+        sb.append("sign str\n").append(stringBuilder.toString()).append("\n\n");
         String appSign = MD5.getMessageDigest(stringBuilder.toString().getBytes()).toUpperCase();
         PictureAirLog.d("orion", appSign);
         return appSign;
@@ -165,10 +161,10 @@ public class WXPayUtil {
         StringBuilder sb = new StringBuilder();
         sb.append("<xml>");
         for (int i = 0; i < params.size(); i++) {
-            sb.append("<" + params.get(i).getName() + ">");
+            sb.append("<").append(params.get(i).getName()).append(">");
 
             sb.append(params.get(i).getValue());
-            sb.append("</" + params.get(i).getName() + ">");
+            sb.append("</").append(params.get(i).getName()).append(">");
         }
         sb.append("</xml>");
 
@@ -179,7 +175,7 @@ public class WXPayUtil {
     public Map<String, String> decodeXml(String content) {
 
         try {
-            Map<String, String> xml = new HashMap<String, String>();
+            Map<String, String> xml = new HashMap<>();
             XmlPullParser parser = Xml.newPullParser();
             parser.setInput(new StringReader(content));
             int event = parser.getEventType();

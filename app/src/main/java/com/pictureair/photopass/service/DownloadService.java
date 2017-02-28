@@ -20,14 +20,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.HttpCallback;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.http.rxhttp.ServerException;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -67,8 +66,8 @@ import rx.functions.Func1;
  *  图片文件的命名如果过长会使用MD5修改，视频文件直接使用MD5命名
  */
 public class DownloadService extends Service {
-    private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
-    private CopyOnWriteArrayList<DownloadFileStatus> downloadList = new CopyOnWriteArrayList<DownloadFileStatus>();
+    private ArrayList<PhotoInfo> photos = new ArrayList<>();
+    private CopyOnWriteArrayList<DownloadFileStatus> downloadList = new CopyOnWriteArrayList<>();
     private ConcurrentHashMap<String,DownloadFileStatus> taskList = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String,Subscription> subMap = new ConcurrentHashMap<>();
     private AtomicInteger downed_num = new AtomicInteger(0);//实际下载照片数
@@ -96,7 +95,7 @@ public class DownloadService extends Service {
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
     private boolean hasPhotos = false;
-    private String lastUrl = new String();
+    private String lastUrl;
     private String userId;
     /**
      * 数据库中存在但是没有本地图片则存放在此列表中
@@ -162,10 +161,8 @@ public class DownloadService extends Service {
                 //如果在下载，先取消下载项，然后阻止handler的传递，来关闭下载
                 unSubScribeAll();
                 stopSelf();
-                return;
             }else if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 handler.sendEmptyMessage(NO_PERMISSION);
-                return;
             } else if (photos != null) {
                 //将新的数据放入到下载队列的末尾
                 if (reconnect > -1) {//需要重连的走这个流程
@@ -301,7 +298,7 @@ public class DownloadService extends Service {
         private WeakReference<DownloadService> serviceWeakRef;
 
         public DownloadHandler(DownloadService downloadService) {
-            this.serviceWeakRef = new WeakReference<DownloadService>(downloadService);
+            this.serviceWeakRef = new WeakReference<>(downloadService);
         }
 
         @Override
@@ -618,8 +615,7 @@ public class DownloadService extends Service {
     private File getSaveFile(DownloadFileStatus fileStatus){
         String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(),fileStatus.isVideo());
         PictureAirLog.out("filename=" + fileName);
-        File file = new File(filedir + "/" + fileName);
-        return file;
+        return new File(filedir + "/" + fileName);
     }
 
     /**
@@ -628,8 +624,7 @@ public class DownloadService extends Service {
     private File getSaveFileWithoutSuffix(DownloadFileStatus fileStatus) {
         String fileName = AppUtil.getReallyFileNameWithoutSuffix(fileStatus.getUrl(),fileStatus.isVideo());
         PictureAirLog.out("filename WithoutSuffix=" + fileName);
-        File file = new File(filedir + "/" + fileName);
-        return file;
+        return new File(filedir + "/" + fileName);
     }
 
     /**
@@ -1042,7 +1037,7 @@ public class DownloadService extends Service {
     public static class PhotoBind extends Binder{
         private WeakReference<DownloadService> serviceWeakRef;
         public PhotoBind(DownloadService downloadService) {
-            serviceWeakRef = new WeakReference<DownloadService>(downloadService);
+            serviceWeakRef = new WeakReference<>(downloadService);
         }
 
         public DownloadService getService(){
@@ -1054,7 +1049,7 @@ public class DownloadService extends Service {
     }
 
     public CopyOnWriteArrayList<DownloadFileStatus> getDownloadList(){
-        return  new CopyOnWriteArrayList<DownloadFileStatus>(downloadList);
+        return  new CopyOnWriteArrayList<>(downloadList);
     }
 
     public void setAdapterhandler(Handler handler){

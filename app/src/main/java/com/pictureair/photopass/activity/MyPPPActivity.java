@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -185,10 +186,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 ok.setText(formaStringPPP(listPPPAdapter.getMap().size(),1));
                 if (listPPPAdapter.getMap().size() >=1){
                     ok.setEnabled(true);
-                    ok.setTextColor(getResources().getColor(R.color.pp_blue));
+                    ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.pp_blue));
                 }else{
                     ok.setEnabled(false);
-                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
+                    ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.gray_light5));
                 }
                 break;
             case 3:
@@ -347,7 +348,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         ok.setText(formaStringPPP(0, 1));
         ok.setOnClickListener(this);
         ok.setEnabled(false);
-        ok.setTextColor(getResources().getColor(R.color.gray_light5));
+        ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.gray_light5));
         refreshLayout.setVisibility(View.VISIBLE);
         listPPPAdapter = new ListOfPPPAdapter(API2.PPPlist, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
         View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);

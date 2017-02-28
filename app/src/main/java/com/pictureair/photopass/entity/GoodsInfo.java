@@ -1,7 +1,6 @@
 package com.pictureair.photopass.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

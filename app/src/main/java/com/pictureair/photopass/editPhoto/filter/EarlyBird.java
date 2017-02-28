@@ -25,7 +25,6 @@ public class EarlyBird extends Filter{
     public Bitmap transform(Bitmap image, Resources resources) {
         width = image.getWidth();
         height = image.getHeight();
-        resources = resources;
         mColors = AndroidUtils.bitmapToIntArray(image);
 
         Bitmap softLayer = createSoftLayer();

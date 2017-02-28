@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -267,7 +267,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     }
 
     @Override
-    public void countDown(long time) {
+    public void countDown(int time) {
         if (time == 0) {
             countDownFinish = true;
             btn_next.setText(R.string.smssdk_send_verification_code);// 再次发送验证码
@@ -516,7 +516,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setColor(getResources().getColor(R.color.pp_red));
+            ds.setColor(ContextCompat.getColor(RegisterOrForgetActivity.this, R.color.pp_red));
         }
     }
 

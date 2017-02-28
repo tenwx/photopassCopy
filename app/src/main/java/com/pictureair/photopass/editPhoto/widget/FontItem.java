@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.pictureair.photopass.R;
@@ -57,7 +58,7 @@ public class FontItem {
 
 	public FontItem(Context context) {
 
-		helpBoxPaint.setColor(context.getResources().getColor(R.color.pp_blue));
+		helpBoxPaint.setColor(ContextCompat.getColor(context, R.color.pp_blue));
 		helpBoxPaint.setStyle(Style.STROKE);
 		helpBoxPaint.setAntiAlias(true);
 		helpBoxPaint.setStrokeWidth(4);
@@ -90,7 +91,7 @@ public class FontItem {
 		this.bitmap = addBit;
 		this.srcRect = new Rect(0, 0, addBit.getWidth(), addBit.getHeight());
 		int bitWidth = Math.min(addBit.getWidth(), parentView.getWidth() >> 1);
-		int bitHeight = (int) bitWidth * addBit.getHeight() / addBit.getWidth();
+		int bitHeight = bitWidth * addBit.getHeight() / addBit.getWidth();
 
 		orgWidth = bitWidth;
 		orgHeight = bitHeight;

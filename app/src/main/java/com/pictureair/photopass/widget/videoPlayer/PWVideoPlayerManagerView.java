@@ -346,7 +346,7 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
 
     private Subscription downloadHeadFile(String url, final String folderPath, final String fileName) {
 
-        Subscription subscription = API2.downloadHeadFile(url, new HttpCallback() {
+        return API2.downloadHeadFile(url, new HttpCallback() {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
@@ -380,8 +380,6 @@ public class PWVideoPlayerManagerView extends RelativeLayout implements MediaPla
                     public void onCompleted() {
                     }
                 });
-        return subscription;
-
     }
 
 

@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -173,7 +174,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
                 PictureAirLog.v(TAG, "----------------------->initing...3");
 
-                mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
                     @Override
                     public void onPageSelected(int arg0) {
@@ -246,7 +247,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             public void run() {
                 Bundle bundle = intent1.getExtras();
                 currentPosition = bundle.getInt("position", 0);
-                photolist = new ArrayList<PhotoInfo>();
+                photolist = new ArrayList<>();
 
                 String userId = SPUtils.getString(DownloadPhotoPreviewActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
                 List<PhotoDownLoadInfo> photos = PictureAirDbManager.getPhotosOrderByTime(userId,"true");
@@ -270,7 +271,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         }else{
                             photoInfo.setPhotoOriginalURL(downLoadInfo.getUrl());
                         }
-                        photoInfo.setId(1l);
+                        photoInfo.setId(1L);
                         photoInfo.setPhotoThumbnail_128(downLoadInfo.getPreviewUrl());
                         photoInfo.setPhotoThumbnail_512(downLoadInfo.getPhotoThumbnail_512());
                         photoInfo.setPhotoThumbnail_1024(downLoadInfo.getPhotoThumbnail_1024());
@@ -329,9 +330,9 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
         if (mViewPager != null) {
-            mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            mViewPager.setBackgroundColor(ContextCompat.getColor(this, R.color.pp_light_gray_background));
         }
-        photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+        photoFraRelativeLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.pp_light_gray_background));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 

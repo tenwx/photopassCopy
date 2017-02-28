@@ -113,7 +113,7 @@ public class JsonUtil {
         if (object.containsKey("originalInfo")) {
             JSONObject obj = (JSONObject) object.get("originalInfo");
             if (obj.containsKey("url")) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append(Common.PHOTO_URL).append(obj.getString("url"));
                 info.setPhotoOriginalURL(sb.toString().trim());
             } else {
@@ -128,7 +128,7 @@ public class JsonUtil {
             if (obj.containsKey("x128")) {
                 JSONObject x216 = (JSONObject) obj.get("x128");
                 if (x216.containsKey("url")) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append(Common.PHOTO_URL).append(x216.getString("url"));
                     info.setPhotoThumbnail_128(sb.toString().trim());
                 }
@@ -136,7 +136,7 @@ public class JsonUtil {
             if (obj.containsKey("x512")) {
                 JSONObject x512 = (JSONObject) obj.get("x512");
                 if (x512.containsKey("url")) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append(x512.getString("url"));
                     info.setPhotoThumbnail_512(sb.toString().trim());
                 }
@@ -144,7 +144,7 @@ public class JsonUtil {
             if (obj.containsKey("x1024")) {
                 JSONObject x1024 = (JSONObject) obj.get("x1024");
                 if (x1024.containsKey("url")) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append(Common.PHOTO_URL).append(x1024.getString("url"));
                     info.setPhotoThumbnail_1024(sb.toString().trim());
                 }
@@ -161,7 +161,7 @@ public class JsonUtil {
                     if (object.containsKey("adInfo")) {
                         JSONObject adObj = object.getJSONObject("adInfo");
                         if (adObj.containsKey("url")) {
-                            StringBuffer sb = new StringBuffer();
+                            StringBuilder sb = new StringBuilder();
                             sb.append(Common.PHOTO_URL).append(adObj.getString("url"));
                             info.setAdURL(sb.toString().trim());
                         }
@@ -959,7 +959,7 @@ public class JsonUtil {
                     ppPinfo.capacity = ppplist.getIntValue("capacity");
                     ppPinfo.days = ppplist.getIntValue("days");
                     ppPinfo.PPP_ID = ppplist.getString("_id");
-                    ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10).toString();
+                    ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10);
                     if (ppplist.containsKey("PPPType")) {
                         if (ppplist.getString("PPPType").equals("5")) {
                             ppPinfo.expericePPP = 1;
@@ -1025,7 +1025,7 @@ public class JsonUtil {
 //                    ppPinfo.capacity = ppplist.getIntValue("capacity");
 //                    ppPinfo.days = ppplist.getIntValue("days");
 //                    ppPinfo.PPP_ID = ppplist.getString("_id");
-                    ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10).toString();
+                    ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10);
                     ppPinfo.PPPCode = ppplist.getString("PPPCode");
                     ppPinfo.pppCardBg = ppplist.getString("cardBg");
                     ppPinfo.expiredOn = ppplist.getString("expiredOn");
@@ -1086,7 +1086,7 @@ public class JsonUtil {
     }
 
     public static ArrayList<HelpInfo> getHelpInfoList(JSONObject jsonObject) {
-        ArrayList<HelpInfo> helpInfos = new ArrayList<HelpInfo>();
+        ArrayList<HelpInfo> helpInfos = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("helpList");
         HelpInfo info = null;
         JSONObject obj = null;

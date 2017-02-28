@@ -1,6 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ public class OrderProductDetailAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private String currency;
     private Context context;
-    private ArrayList<ImageView> gridlayoutList;
 
     public OrderProductDetailAdapter(Context context, ArrayList<CartItemInfo> list, String currency) {
         this.list = list;
@@ -52,14 +52,13 @@ public class OrderProductDetailAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        OrderHolderView hView = null;
-        gridlayoutList = new ArrayList<ImageView>();
+        OrderHolderView hView;
         if (convertView == null) {
             hView = new OrderHolderView();
             convertView = inflater.inflate(R.layout.order_product_detail_item, parent, false);
             hView.goodsImageView = (ImageView) convertView.findViewById(R.id.order_imageView_pd);
             hView.goodsName = (TextView) convertView.findViewById(R.id.order_textView_name);
-            hView.goodsName.setTextColor(context.getResources().getColor(R.color.pp_dark_blue));
+            hView.goodsName.setTextColor(ContextCompat.getColor(context, R.color.pp_dark_blue));
             hView.goodsCount = (TextView) convertView.findViewById(R.id.order_editText_count);
             hView.currency = (TextView) convertView.findViewById(R.id.order_textview_currency2);
             hView.priceTextView = (TextView) convertView.findViewById(R.id.order_textView_pr);
@@ -98,7 +97,6 @@ public class OrderProductDetailAdapter extends BaseAdapter {
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);
                 imageView.setClickable(false);
-                gridlayoutList.add(imageView);
                 //imageview设置监听
                 hView.gridLayout.addView(imageView, params);
             }

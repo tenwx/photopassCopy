@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,7 +138,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         private final WeakReference<LoadSuccessFragment> mActivity;
 
         public PhotoLoadSuccessHandler(LoadSuccessFragment fragment){
-            mActivity = new WeakReference<LoadSuccessFragment>(fragment);
+            mActivity = new WeakReference<>(fragment);
         }
 
         @Override
@@ -335,12 +336,12 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private void selecAllButtonStatusChange(boolean all) {
         Drawable top;
         if (all){
-            top = getResources().getDrawable(R.drawable.edit_album_disall_button);
+            top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_disall_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null, top, null, null);
             tv_selectAll.setText(R.string.edit_story_disall);
             selectAll = true;
         }else{
-            top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_all_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
             tv_selectAll.setText(R.string.edit_story_all);
             selectAll=false;
@@ -411,7 +412,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
 
     private void loadPhotos(int what){
         try{
-            List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
+            List<PhotoDownLoadInfo> photos = new ArrayList<>();
             if (!TextUtils.isEmpty(userId)) {
                 photos = PictureAirDbManager.getPhotosOrderByTime(userId, "true");
             }
@@ -419,6 +420,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 photoLoadSuccessHandler.obtainMessage(what, photos).sendToTarget();
             }
         }catch (Exception e){
+            e.printStackTrace();
 
         }
     }
@@ -442,7 +444,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             adapter.setSelect(false);
             selectPhotos.clear();
             enableReconnectDeleteButton();
-            Drawable top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            Drawable top = ContextCompat.getDrawable(getContext(), R.drawable.edit_album_all_button);
             tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
             tv_selectAll.setText(R.string.edit_story_all);
             selectAll=false;

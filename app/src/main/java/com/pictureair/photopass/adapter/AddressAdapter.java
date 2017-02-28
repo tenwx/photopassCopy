@@ -74,7 +74,7 @@ public class AddressAdapter extends BaseAdapter {
         viewHolder.addressIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doOnClickAddressListener.doOnClickAddressListener(position);
+                doOnClickAddressListener.addressClick(position);
             }
         });
 
@@ -88,7 +88,7 @@ public class AddressAdapter extends BaseAdapter {
     }
 
     public interface doOnClickAddressListener {
-        void doOnClickAddressListener(int position);
+        void addressClick(int position);
     }
 
 }

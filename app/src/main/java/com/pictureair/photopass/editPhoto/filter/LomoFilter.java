@@ -59,9 +59,9 @@ public class LomoFilter extends Filter{
 					 v = ((max - distSq) << 8) / diff;
 					 v *= v;
 
-					 ri = (int) (newR * v) >> 16;
-					 gi = (int) (newG * v) >> 16;
-					 bi = (int) (newB * v) >> 16;
+					 ri = (newR * v) >> 16;
+					 gi = (newG * v) >> 16;
+					 bi = (newB * v) >> 16;
 
 					 newR = ri > 255 ? 255 : (ri < 0 ? 0 : ri);
 					 newG = gi > 255 ? 255 : (gi < 0 ? 0 : gi);

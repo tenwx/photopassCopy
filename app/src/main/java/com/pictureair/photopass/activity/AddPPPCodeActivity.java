@@ -70,7 +70,7 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
                 if (msg.obj != null) {
                     Bundle bundle = (Bundle) msg.obj;
                     if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {//需要当前页面提示用户扫描结果
-                        String result = bundle.getString("result");
+                        String result = bundle.getString("result", "");
                         if (result.equals("pppOK")) {//添加ppp成功
                             addPPPSuccess();
 

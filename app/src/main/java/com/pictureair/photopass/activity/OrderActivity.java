@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
@@ -68,14 +69,12 @@ public class OrderActivity extends BaseFragmentActivity {
     //group列表信息
     private ArrayList<OrderInfo> paymentOrderArrayList;
     private ArrayList<OrderInfo> deliveryOrderArrayList;
-    private ArrayList<OrderInfo> allOrderArrayList;
     private ArrayList<OrderInfo> downOrderArrayList;
 
     private OrderInfo orderInfo;
     //child列表信息
     private ArrayList<OrderProductInfo> paymentOrderChildArrayList;
     private ArrayList<OrderProductInfo> deliveryOrderChildArrayList;
-    private ArrayList<OrderProductInfo> allOrderChildArrayList;
     private ArrayList<OrderProductInfo> downOrderChildArrayList;
     private ArrayList<CartItemInfo> cartItemInfo;
 
@@ -204,9 +203,9 @@ public class OrderActivity extends BaseFragmentActivity {
         lead_bar = (LinearLayout) findViewById(R.id.lead_bar);
         cursor_layout = (LinearLayout) findViewById(R.id.cursor_layout);
 
-        paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-        deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-        allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+        paymentOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
+        deliveryOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_dark_blue));
+        allOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_dark_blue));
 
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
@@ -225,15 +224,13 @@ public class OrderActivity extends BaseFragmentActivity {
         //初始化expandablelistview需要的数据
         paymentOrderArrayList = new ArrayList<>();
         deliveryOrderArrayList = new ArrayList<>();
-        allOrderArrayList = new ArrayList<>();
         downOrderArrayList = new ArrayList<>();
         paymentOrderChildArrayList = new ArrayList<>();
         deliveryOrderChildArrayList = new ArrayList<>();
-        allOrderChildArrayList = new ArrayList<>();
         downOrderChildArrayList = new ArrayList<>();
         orderIds = new ArrayList<>();
 
-        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
         paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
@@ -269,8 +266,6 @@ public class OrderActivity extends BaseFragmentActivity {
                         paymentOrderChildArrayList.clear();
                         deliveryOrderArrayList.clear();
                         deliveryOrderChildArrayList.clear();
-                        allOrderArrayList.clear();
-                        allOrderChildArrayList.clear();
                         downOrderArrayList.clear();
                         downOrderChildArrayList.clear();
                         //解析数据
@@ -458,22 +453,22 @@ public class OrderActivity extends BaseFragmentActivity {
 
             switch (arg0) {
                 case 0:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
+                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
 
                     break;
 
                 case 1:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
+                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
                     break;
 
                 case 2:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
+                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
                     break;
 
                 default:

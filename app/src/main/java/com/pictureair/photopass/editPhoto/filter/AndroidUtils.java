@@ -16,10 +16,9 @@ public class AndroidUtils {
 	 * @return
 	 */
 	public static int dipTopx(float dip, Context context) {
-	    int num = (int) TypedValue.applyDimension(
+		return (int) TypedValue.applyDimension(
 		    TypedValue.COMPLEX_UNIT_DIP, dip,
 		    context.getResources().getDisplayMetrics());
-	    return num;
 	}
 	/**
 	 * px to dp
@@ -28,8 +27,7 @@ public class AndroidUtils {
 	 * @return
 	 */
 	public static float pxTodip(int px, Context context) {
-		float num = px / context.getResources().getDisplayMetrics().density;
-	    return num;
+		return px / context.getResources().getDisplayMetrics().density;
 	}
 	/**
 	 * Drawable을 Bitmap으로 바꾸어 준다.

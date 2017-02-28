@@ -22,10 +22,7 @@ public class LomoFi extends Filter{
 
         Bitmap desaturatedImage = desaturateImage(image);
 
-        Bitmap imageWithOverlay = combineWithOverlay(desaturatedImage, curves);
-
-        return imageWithOverlay;
-
+        return combineWithOverlay(desaturatedImage, curves);
     }
 
     private Bitmap changeCurves(Bitmap image) {

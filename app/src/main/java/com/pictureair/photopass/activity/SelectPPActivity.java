@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -59,7 +59,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private ListOfPPAdapter listPPAdapter;
     private ListView listPP;
     private RelativeLayout noPhotoPassView;
-    private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
     private PWToast myToast;
     private PWDialog pictureWorksDialog;
     private boolean fromPPP;
@@ -94,7 +93,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
                 if (showPPCodeList.size() == 0) {
                     ok.setEnabled(false);
-                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
+                    ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
                     PictureAirLog.out("has not pp code");
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
@@ -107,10 +106,10 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
                 if (msg.arg1 - dppp.bindInfo.size() == 0) {
                     ok.setEnabled(false);
-                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
+                    ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
                 } else {
                     ok.setEnabled(true);
-                    ok.setTextColor(getResources().getColor(R.color.pp_blue));
+                    ok.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 }
                 break;
 
@@ -145,7 +144,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         ok = (TextView) findViewById(R.id.ok);
         ok.setOnClickListener(this);
         ok.setEnabled(false);
-        ok.setTextColor(getResources().getColor(R.color.gray_light5));
+        ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
 
         if (fromPPP) {
             initFromPPP();
@@ -175,7 +174,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         final String[] finalPhotoCode = photoCode;
         new Thread() {
             public void run() {
-                ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>(); //创造一个List。
+                ArrayList<PPinfo> PPlist = new ArrayList<>(); //创造一个List。
                 if (finalPhotoCode != null) {
                     for (int i = 0; i< finalPhotoCode.length; i++){
                         PPinfo pPinfo = new PPinfo();
@@ -189,7 +188,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
                 dppp = new PPPinfo();
                 dppp.capacity = 1;
-                dppp.bindInfo = new ArrayList<BindPPInfo>();
+                dppp.bindInfo = new ArrayList<>();
 
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
@@ -225,7 +224,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     PictureAirLog.out("->" + map.get(i));
                 }
                 pps = new JSONArray();
-                tempPhotoLists = new ArrayList<>();
                 String selectedString = "";
                 for (int j = 0; j < showPPCodeList.size(); j++) {
                     JSONObject jsonObject = new JSONObject();
@@ -236,7 +234,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
                             photoInfo.setPhotoId(showPPCodeList.get(j).getPpCode());
                             photoInfo.setShootDate(showPPCodeList.get(j).getShootDate());
-                            tempPhotoLists.add(photoInfo);
                             if (fromPPP) {
                                 selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
                             }

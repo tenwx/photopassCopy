@@ -47,8 +47,7 @@ public class AppManager {
 	 * 获取栈顶Activity（堆栈中最后一个压入的）
 	 */
 	public Activity getTopActivity() {
-		Activity activity = mActivityStack.lastElement();
-		return activity;
+		return mActivityStack.lastElement();
 	}
 	
 	/**
@@ -92,7 +91,6 @@ public class AppManager {
 				activity.finish();
 			}
 //			PictureAirLog.out("finished-----" + activity.toString());
-			activity = null;
 		}
 	}
 
@@ -129,7 +127,7 @@ public class AppManager {
 	public static void killOtherActivity(Class<?> specialActivity){
 		Iterator<Activity> iterator = mActivityStack.iterator();
 		while (iterator.hasNext()) {
-			Activity activity = (Activity) iterator.next();
+			Activity activity = iterator.next();
 			if (!activity.getClass().equals(specialActivity)) {
 				activity.finish();
 				iterator.remove();
@@ -145,9 +143,10 @@ public class AppManager {
 			killAllActivity();
 			ActivityManager activityMgr = (ActivityManager) context
 					.getSystemService(Context.ACTIVITY_SERVICE);
-			activityMgr.restartPackage(context.getPackageName());
+			activityMgr.killBackgroundProcesses(context.getPackageName());
 			System.exit(0);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

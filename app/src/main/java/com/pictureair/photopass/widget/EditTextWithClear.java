@@ -3,6 +3,7 @@ package com.pictureair.photopass.widget;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -41,7 +42,7 @@ public class EditTextWithClear extends EditText implements OnFocusChangeListener
         if (mClearDrawable == null) {
             // throw new
             // NullPointerException("You can add drawableRight attribute in XML");
-            mClearDrawable = getResources().getDrawable(R.drawable.float_hide);
+            mClearDrawable = ContextCompat.getDrawable(context, R.drawable.float_hide);
         }
 
         //37是3.0版本之前的图片的宽高

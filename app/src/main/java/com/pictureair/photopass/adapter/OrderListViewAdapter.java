@@ -41,7 +41,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
     private String currency;
     private ArrayList<OrderInfo> grouplist;//group信息
     private List<OrderProductInfo> childlist;//child信息
-    private ArrayList<ImageView> gridlayoutList;
     private GroupHolderView groupHolderView;
     private ChildHolderView hView;
     private PWDialog pictureWorksDialog;
@@ -206,7 +205,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        gridlayoutList = new ArrayList<ImageView>();
         if (convertView == null) {
             hView = new ChildHolderView();
             convertView = mInflater.inflate(R.layout.order_product_detail_item, parent, false);
@@ -248,7 +246,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 imageView.setId(childPosition * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);
                 imageView.setClickable(false);
-                gridlayoutList.add(imageView);
                 //imageview设置监听
                 hView.gridLayout.addView(imageView, params);
             }

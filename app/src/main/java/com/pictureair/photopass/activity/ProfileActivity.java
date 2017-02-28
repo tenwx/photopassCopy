@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -141,22 +142,22 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         nickNameString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, "");
         if (!"".equals(nickNameString)) {
             tvNickName.setText(nickNameString);
-            tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+            tvNickName.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         }
 
         genderString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase();
         if (genderString.equals("male") || genderString.equals("男")) {
             tvGender.setText(R.string.male);
-            tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
+            tvGender.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         } else if (genderString.equals("female") || genderString.equals("女")){
             tvGender.setText(R.string.female);
-            tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
+            tvGender.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         }
 
         birthdayString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, "");
         if (!"".equals(birthdayString.trim())) {
             tvBirthday.setText(birthdayString);
-            tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
+            tvBirthday.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         }
 
         // 设置国家
@@ -170,7 +171,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
         if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "").equals("")) {// email
             accountTv.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, ""));
-            accountTv.setTextColor(getResources().getColor(R.color.pp_blue));
+            accountTv.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         }
     }
 
@@ -322,7 +323,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         switch (modifyType) {
             case API2.UPDATE_PROFILE_NAME:
                 tvNickName.setText(nickNameString);
-                tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+                tvNickName.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 break;
 
             case API2.UPDATE_PROFILE_GENDER:
@@ -331,13 +332,13 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 } else if (genderString.equals("female")) {
                     tvGender.setText(R.string.female);
                 }
-                tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
+                tvGender.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 break;
 
             case API2.UPDATE_PROFILE_BIRTHDAY:
                 PictureAirLog.out("birthday--->" + birthdayString);
                 tvBirthday.setText(birthdayString);
-                tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
+                tvBirthday.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
                 break;
 
             case API2.UPDATE_PROFILE_COUNTRY:

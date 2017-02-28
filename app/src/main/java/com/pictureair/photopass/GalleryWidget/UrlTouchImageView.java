@@ -445,11 +445,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                                                 is.close();
                                                 baos.close();
                                                 oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                                if (oriClearBmp == null) {
-                                                    return false;
-                                                } else {
-                                                    return true;
-                                                }
+                                                return oriClearBmp != null;
                                             } catch (Exception e1) {
                                                 e1.printStackTrace();
                                                 if (is != null) {

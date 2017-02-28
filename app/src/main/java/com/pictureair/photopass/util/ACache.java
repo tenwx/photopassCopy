@@ -82,7 +82,7 @@ public class ACache {
 
     private static final int MAX_SIZE = 1000 * 1000 * 50; // 50 mb
     private static final int MAX_COUNT = Integer.MAX_VALUE; // 不限制存放数据的数量
-    private static Map<String, ACache> mInstanceMap = new HashMap<String, ACache>();
+    private static Map<String, ACache> mInstanceMap = new HashMap<>();
     private ACacheManager mCache;
 
     public static ACache get(Context ctx) {
@@ -265,8 +265,7 @@ public class ACache {
     public JSONObject getAsJSONObject(String key) {
         String JSONString = getAsString(key);
         try {
-            JSONObject obj = new JSONObject(JSONString);
-            return obj;
+            return new JSONObject(JSONString);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -307,8 +306,7 @@ public class ACache {
     public JSONArray getAsJSONArray(String key) {
         String JSONString = getAsString(key);
         try {
-            JSONArray obj = new JSONArray(JSONString);
-            return obj;
+            return new JSONArray(JSONString);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -442,7 +440,7 @@ public class ACache {
      * @param saveTime 保存的时间，单位：秒
      */
     public void put(String key, Serializable value, int saveTime) {
-        ByteArrayOutputStream baos = null;
+        ByteArrayOutputStream baos;
         ObjectOutputStream oos = null;
         try {
             baos = new ByteArrayOutputStream();
@@ -461,6 +459,7 @@ public class ACache {
                 if (null != oos)
                     oos.close();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -479,8 +478,7 @@ public class ACache {
             try {
                 bais = new ByteArrayInputStream(data);
                 ois = new ObjectInputStream(bais);
-                Object reObject = ois.readObject();
-                return reObject;
+                return ois.readObject();
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -735,7 +733,7 @@ public class ACache {
             }
 
             long fileSize = calculateSize(mostLongUsedFile);
-            if (mostLongUsedFile.delete()) {
+            if (mostLongUsedFile != null && mostLongUsedFile.delete()) {
                 lastUsageDates.remove(mostLongUsedFile);
             }
             return fileSize;

@@ -137,8 +137,7 @@ public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapte
     @Override
     public EditHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.edit_item, parent, false);
-        EditHolder editHolder = new EditHolder(view);
-        return editHolder;
+        return new EditHolder(view);
     }
 
     @Override

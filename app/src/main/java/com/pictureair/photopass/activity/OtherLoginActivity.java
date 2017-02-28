@@ -58,9 +58,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 
 //	private ImageView back;
 
-    // 申明变量
-    private StringBuffer loginUrl = new StringBuffer();// 登录的url
-
     // 申明其他类
     private PWToast myToast;
 
@@ -84,7 +81,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         if (intent != null) {
             mIsMsgLogin = intent.getBooleanExtra("msgLogin", false);
         }
-        loginUrl.append(Common.BASE_URL_TEST).append(Common.LOGIN);// 链接地址
         myToast = new PWToast(OtherLoginActivity.this);// 获取toast
         signAndLoginUtil = new SignAndLoginUtil(this, this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
@@ -477,7 +473,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     }
 
     @Override
-    public void countDown(long time) {
+    public void countDown(int time) {
         if (time == 0) {
             countDownFinish = true;
             btn_next.setText(R.string.smssdk_send_verification_code);// 再次发送验证码

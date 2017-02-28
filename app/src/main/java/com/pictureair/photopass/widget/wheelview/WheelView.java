@@ -26,6 +26,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -75,9 +76,9 @@ public class WheelView extends View {
 	private int firstItem;
 	private WheelViewAdapter viewAdapter;
 	private WheelRecycle recycle = new WheelRecycle(this);
-	private List<OnWheelChangedListener> changingListeners = new LinkedList<OnWheelChangedListener>();
-	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();
-	private List<OnWheelClickedListener> clickingListeners = new LinkedList<OnWheelClickedListener>();
+	private List<OnWheelChangedListener> changingListeners = new LinkedList<>();
+	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<>();
+	private List<OnWheelClickedListener> clickingListeners = new LinkedList<>();
 	private TextView textView1,textView2,textView3;
 //	String label="";
 
@@ -446,7 +447,7 @@ public class WheelView extends View {
 	 */
 	public void setWheelForeground(int resource) {
 		wheelForeground = resource;
-		centerDrawable = getContext().getResources().getDrawable(wheelForeground);
+		centerDrawable = ContextCompat.getDrawable(getContext(), wheelForeground);
 	}
 
 	/**
@@ -473,7 +474,7 @@ public class WheelView extends View {
 	 */
 	private void initResourcesIfNecessary() {
 		if (centerDrawable == null) {
-			centerDrawable = getContext().getResources().getDrawable(wheelForeground);
+			centerDrawable = ContextCompat.getDrawable(getContext(), wheelForeground);
 		}
 
 		if (topShadow == null) {
@@ -649,16 +650,16 @@ public class WheelView extends View {
 	 */
 	private void drawCenterRect(Canvas canvas) {
 		int center = getHeight() / 2;
-		int offset = (int) (getItemHeight() / 2);
+		int offset = getItemHeight() / 2;
 		Paint paint = new Paint();
 		//--------------------------------------------------------------------------------此处修改颜色上横线
-		paint.setColor(getResources().getColor(R.color.gray3));
+		paint.setColor(ContextCompat.getColor(getContext(), R.color.gray3));
 		// 设置线宽
 		paint.setStrokeWidth((float) 2);
 		
 		//下横线
 		Paint paint2 = new Paint();
-		paint2.setColor(getResources().getColor(R.color.pp_blue));
+		paint2.setColor(ContextCompat.getColor(getContext(), R.color.pp_blue));
 		// 设置线宽
 		paint2.setStrokeWidth((float) 2);
 		
@@ -772,7 +773,6 @@ public class WheelView extends View {
 
 	/**
 	 * Scroll the wheel
-	 * @param itemsToSkip items to scroll
 	 * @param time scrolling duration
 	 */
 	public void scroll(int itemsToScroll, int time) {

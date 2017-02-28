@@ -1,19 +1,19 @@
 package com.pictureair.photopass.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.pictureair.photopass.util.PictureAirLog;
-
 /**
  * Created by bass on 16/4/22.
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class CustomWebView extends WebView {
     private MyWebviewImp myWebviewImp;//webview的接口
 
@@ -119,7 +119,7 @@ public class CustomWebView extends WebView {
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (null != myWebviewImp) {
                     myWebviewImp.webViewFailedToLoad();
                 }

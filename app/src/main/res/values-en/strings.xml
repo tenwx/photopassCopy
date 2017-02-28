@@ -623,7 +623,7 @@
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
     <string name="smssdk_write_right_mobile_phone">Incorrect Mobile Number</string>
     <string name="smssdk_write_identify_code2">Code</string>
-    <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
+    <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%d&lt;/font> s</Data></string>
     <string name="is_loading">Loading&#8230;</string>
     <string name="smssdk_pw_is_inconsistency">Password does not match</string>
     <!--SMSSDK end-->

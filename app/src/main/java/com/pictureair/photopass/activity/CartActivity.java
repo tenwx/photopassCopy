@@ -432,7 +432,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             case R.id.cartSelectAllImageView:
                 totalPrice = 0;
                 for (int i = 0; i < cartInfoList.size(); i++) {
-                    cartInfoList.get(i).setIsSelect((disSelectedCount == 0) ? false : true);
+                    cartInfoList.get(i).setIsSelect(disSelectedCount != 0);
                     totalPrice += cartInfoList.get(i).getPrice();
                 }
                 cartAdapter.notifyDataSetChanged();

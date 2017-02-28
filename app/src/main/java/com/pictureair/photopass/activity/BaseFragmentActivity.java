@@ -99,10 +99,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
             return false;
         }
         NetworkInfo networkinfo = manager.getActiveNetworkInfo();
-        if (networkinfo == null || !networkinfo.isAvailable()) {
-            return false;
-        }
-        return true;
+        return !(networkinfo == null || !networkinfo.isAvailable());
     }
 
     /**
@@ -218,7 +215,7 @@ public class BaseFragmentActivity extends RxAppCompatActivity {
      * @return
      */
     protected boolean isPWProgressDialogShowing() {
-        return (null == pwProgressDialog) ? false : pwProgressDialog.isPWProgressDialogShowing();
+        return null != pwProgressDialog && pwProgressDialog.isPWProgressDialogShowing();
     }
 
     /**

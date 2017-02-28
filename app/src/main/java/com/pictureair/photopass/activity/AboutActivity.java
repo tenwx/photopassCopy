@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -82,7 +83,7 @@ public class AboutActivity extends BaseActivity {
     }
 
     private class MyURLSpan extends ClickableSpan {
-        private String mUrl;
+        final String mUrl;
         MyURLSpan(String url) {
             mUrl = url;
         }
@@ -97,7 +98,7 @@ public class AboutActivity extends BaseActivity {
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setColor(getResources().getColor(R.color.pp_red));
+            ds.setColor(ContextCompat.getColor(AboutActivity.this, R.color.pp_red));
         }
     }
 

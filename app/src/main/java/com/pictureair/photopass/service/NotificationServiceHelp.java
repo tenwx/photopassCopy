@@ -101,11 +101,7 @@ public class NotificationServiceHelp {
      */
     public boolean isRequireDisconnect(Intent intent) {
         if (intent != null && intent.getStringExtra("status") != null) {// 要求断开的情况
-            if ("disconnect".equals(intent.getStringExtra("status"))) {
-                return true;
-            } else {
-                return false;
-            }
+            return "disconnect".equals(intent.getStringExtra("status"));
         } else {// 要求链接的情况
             return false;
         }
@@ -203,7 +199,7 @@ public class NotificationServiceHelp {
 //                            PictureAirLog.d("  ====  arg2", " :" + arg2.toString());
 //                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
                             try {
-                                socketUtil.socketOn(event.toString(), (JSONObject) arg2[0], true);
+                                socketUtil.socketOn(event, (JSONObject) arg2[0], true);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

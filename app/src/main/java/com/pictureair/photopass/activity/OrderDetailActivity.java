@@ -13,7 +13,6 @@ import com.pictureair.photopass.adapter.OrderProductDetailAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.NoScrollListView;
 
 import java.util.ArrayList;

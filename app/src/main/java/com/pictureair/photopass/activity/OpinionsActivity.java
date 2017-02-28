@@ -47,7 +47,7 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
 
         if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "").equals("")) {// email
             String acount = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "");
-            Map<String, String> info = new HashMap<String, String>();
+            Map<String, String> info = new HashMap<>();
             info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, MyApplication.getTokenId());
             if (acount.contains("@")) {
                 info.put(UdeskConst.UdeskUserInfo.EMAIL, acount);

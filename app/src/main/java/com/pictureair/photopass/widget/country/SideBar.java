@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,14 +70,14 @@ public class SideBar extends View {
 		int singleHeight = height / b.length;// 获取每一个字母的高度
 
 		for (int i = 0; i < b.length; i++) {
-			paint.setColor(getResources().getColor(R.color.pp_dark_blue));
+			paint.setColor(ContextCompat.getColor(context, R.color.pp_dark_blue));
 			// paint.setColor(Color.WHITE);
 //			paint.setTypeface(Typeface.DEFAULT_BOLD);
 			paint.setAntiAlias(true);
 			paint.setTextSize(ScreenUtil.dip2px(context, 16));
 			// 选中的状
 			if (i == choose) {
-				paint.setColor(getResources().getColor(R.color.pp_blue));
+				paint.setColor(ContextCompat.getColor(context, R.color.pp_blue));
 				paint.setFakeBoldText(true);
 			}
 			// x坐标等于中间-字符串宽度的一半.
@@ -145,7 +146,7 @@ public class SideBar extends View {
 	 * 
 	 */
 	public interface OnTouchingLetterChangedListener {
-		public void onTouchingLetterChanged(String s);
+		void onTouchingLetterChanged(String s);
 	}
 
 }

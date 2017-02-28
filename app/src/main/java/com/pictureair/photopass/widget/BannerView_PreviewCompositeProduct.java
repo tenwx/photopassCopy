@@ -31,7 +31,7 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
     private static final String TAG = "";
     private ViewPager adViewPager;
     private ViewGroup group;
-    private List<CompositeImageProductView> bannerViewList = new ArrayList<CompositeImageProductView>();
+    private List<CompositeImageProductView> bannerViewList = new ArrayList<>();
     private CompositeImageProductView compositeImageProductView;
     private ImageView imageView;
     private CompositeImageProductAdapter adapter;
@@ -70,7 +70,7 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
                               int goodWidth, int goodHeight, int marginLeft, int marginTop, int photoWidth, int photoHeight, float degree, int maskBottom, int maskTop, String goodName) {
         int count = list.size();
         adapter = new CompositeImageProductAdapter(getContext(), bannerViewList);
-        String photopathString = null;
+        String photopathString;
         for (int i = 0; i < count; i++) {//加载图片
             //需要判断是否已经上传过了，如果图片上传过了，直接拿网络上的照片
             if (list.get(i).getIsUploaded() == 1) {//说明是已经上传了得照片，直接取网络图片
@@ -128,7 +128,7 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
 
         //添加适配器
         adViewPager.setAdapter(adapter);
-        adViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+        adViewPager.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int arg0) {
                 // TODO Auto-generated method stub

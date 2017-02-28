@@ -68,8 +68,6 @@ public class CouponTool {
                 return;
             }
             queryCouponOrderPage(cartItemIds);
-        } else {
-            return;
         }
     }
 

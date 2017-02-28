@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.widget.CircleProgressImage;
@@ -26,12 +25,10 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
 
     private Context mContext;
     private CopyOnWriteArrayList<DownloadFileStatus> photos;
-    private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
 
     public PhotoDownloadingAdapter(Context context,CopyOnWriteArrayList<DownloadFileStatus> photos){
         this.mContext = context;
         this.photos = photos;
-        selectPhotos = new CopyOnWriteArrayList<>();
     }
 
     @Override
@@ -164,6 +161,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                         break;
                 }
             }catch (Exception e){
+                e.printStackTrace();
 
             }
         }

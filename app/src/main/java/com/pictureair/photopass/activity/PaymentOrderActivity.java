@@ -18,10 +18,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.greendao.PictureAirDbManager;
 import com.pictureair.photopass.http.rxhttp.RxSubscribe;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
@@ -219,6 +219,14 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 } else {
                     paymentOrderHandler.sendEmptyMessageDelayed(ASYNC_PAY_SUCCESS, 500);
                 }
+                break;
+
+            case PayUtils.SHOW_DIALOG:
+                showPWProgressDialog();
+                break;
+
+            case PayUtils.DISMISS_DIALOG:
+                dismissPWProgressDialog();
                 break;
 
             default:
@@ -546,10 +554,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                             paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                         } else {
                             //获得TN号成功 -- 解析数据
-                            PictureAirLog.v(TAG, "msg.obj: " + jsonObject);
-                            JSONObject result = (JSONObject) jsonObject;
-                            PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS:  result： " + result);
-                            tNCode = result.getString("tn");//
+                            PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS:  result： " + jsonObject);
+                            tNCode = jsonObject.getString("tn");//
                             UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, tNCode, mMode);
                             PictureAirLog.v(TAG, "tNCode: " + tNCode);
                         }
@@ -703,39 +709,12 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
         if (requestCode == 10) {
             //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
-            String str = data.getExtras().getString("pay_result");
+            String str = data.getExtras().getString("pay_result", "fail");
             PictureAirLog.e(TAG, "str" + str);
             if (str.equalsIgnoreCase("success")) {
                 // 支付成功后，extra中如果存在result_data，取出校验
                 // result_data结构见c）result_data参数说明
                 paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-//                if (data.hasExtra("result_data")) {
-//                    String result = data.getExtras().getString("result_data");
-//                    PictureAirLog.e(TAG, "result" + result);
-//                    JSONObject resultJson = JSONObject.parseObject(result);
-//                    PictureAirLog.e(TAG, "resultJson" + resultJson);
-//                    String sign = resultJson.getString("sign");
-//                    PictureAirLog.e(TAG, "sign" + sign);
-//                    String dataOrg = resultJson.getString("data");
-////                    // 验签证书同后台验签证书
-////                    // 此处的verify，商户需送去商户后台做验签
-////                    boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
-////
-//////                    PictureAirLog.e(TAG,"========" + ret);
-////
-////                    if (ret) {
-////                        // 验证通过后，显示支付结果
-////                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-////                    } else {
-////                        // 验证不通过后的处理
-////                        // 建议通过商户后台查询支付结果
-////                        paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-////                    }
-//                } else {
-//                    // 未收到签名信息
-//                    // 建议通过商户后台查询支付结果
-//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-//                }
             } else if (str.equalsIgnoreCase("fail")) {
                 paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
             } else if (str.equalsIgnoreCase("cancel")) {

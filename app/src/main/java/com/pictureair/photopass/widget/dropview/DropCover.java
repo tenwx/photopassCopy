@@ -172,9 +172,8 @@ public class DropCover extends View implements Callback{
 		}
     	triangle.deltaX = x - mBaseX;
         triangle.deltaY = -1 * (y - mBaseY); // y轴方向相反，所以需要取反
-        double distance = Math.sqrt(triangle.deltaX * triangle.deltaX + triangle.deltaY * triangle.deltaY);
-        triangle.hypotenuse = distance;
-        
+        triangle.hypotenuse = Math.sqrt(triangle.deltaX * triangle.deltaX + triangle.deltaY * triangle.deltaY);
+
         mTargetX = x;
         mTargetY = y - mStatusBarHeight;
         postInvalidate();

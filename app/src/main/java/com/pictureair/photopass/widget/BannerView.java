@@ -56,7 +56,7 @@ public class BannerView extends LinearLayout {
         adapter = new BannerViewAdapter(getContext(), bannerViewList);
         //添加适配器
         adViewPager.setAdapter(adapter);
-        adViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        adViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int arg0) {
                 // TODO Auto-generated method stub

@@ -120,7 +120,7 @@ public class PictureAirDbManager {
      * @return
      */
     public static ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(Context c, ArrayList<PPinfo> ppCodeList, int type) {
-        ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
+        ArrayList<PPinfo> showPPCodeList = new ArrayList<>();
         //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
         if (type == 1) {
             for (int j = 0; j < ppCodeList.size(); j++) {
@@ -456,7 +456,6 @@ public class PictureAirDbManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
         }
     }
 
@@ -526,7 +525,7 @@ public class PictureAirDbManager {
          * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
          */
         resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
-                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", deleteTime);
         PictureAirLog.d("size--> " + resultArrayList.size());
         if (resultArrayList.size() > 0) {
             photoInfoDao.deleteInTx(resultArrayList);
@@ -561,7 +560,7 @@ public class PictureAirDbManager {
          * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
          */
         resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
-                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", deleteTime);
         PictureAirLog.d("size--> " + resultArrayList.size());
         if (resultArrayList.size() > 0) {
             photoInfoDao.deleteInTx(resultArrayList);
@@ -598,7 +597,7 @@ public class PictureAirDbManager {
          * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
          */
         resultArrayList = (ArrayList<PhotoInfo>) photoInfoDao
-                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", new String[]{deleteTime});
+                .queryRaw("WHERE T.'IS_PAID' = 0 AND T.'STR_SHOOT_ON' < datetime(?)", deleteTime);
         if (resultArrayList.size() > 0) {
             photoInfoDao.deleteInTx(resultArrayList);
         }

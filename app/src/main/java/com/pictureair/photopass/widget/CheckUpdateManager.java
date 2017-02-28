@@ -298,6 +298,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
             number1 = Integer.valueOf(numberStr[1]);
             number2 = Integer.valueOf(numberStr[2]);
         } catch (Exception e) {
+            e.printStackTrace();
 
         }
         number[0] = number0;
@@ -408,6 +409,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
                 context.unregisterReceiver(receiver);
                 isRegisterReceiver = false;
             }catch (Exception e){
+                e.printStackTrace();
             }
         }
     }

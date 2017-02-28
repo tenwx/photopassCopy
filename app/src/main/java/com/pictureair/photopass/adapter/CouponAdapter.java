@@ -1,6 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,11 +134,11 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      * @param holder
      */
     private void setMyTextViewColor(MyViewHolder holder){
-        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.pp_light_gray_normal));
+        holder.tvName.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvNumber.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvDescribe.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvValiditPeriod.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.pp_light_gray_normal));
     }
 
     /**
@@ -145,11 +146,11 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      * @param holder
      */
     private void setMyTextViewColor2(MyViewHolder holder){
-        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
-        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.pp_gray));
-        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvName.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvNumber.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvDescribe.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+        holder.tvValiditPeriod.setTextColor(ContextCompat.getColor(mContext, R.color.pp_gray));
+        holder.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.white));
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

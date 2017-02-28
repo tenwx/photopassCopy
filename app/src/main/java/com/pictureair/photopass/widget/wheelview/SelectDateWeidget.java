@@ -68,9 +68,7 @@ public class SelectDateWeidget extends PopupWindow implements OnClickListener{
 		getDateYMD();
 		Calendar c = Calendar.getInstance();
 		int norYear = c.get(Calendar.YEAR);
-		conentView = (View) ((LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-				R.layout.wheel_date_picker, null);
+		conentView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.wheel_date_picker, null);
 
 		setContentView(conentView);
 		setWidth(ScreenUtil.getScreenWidth(context));

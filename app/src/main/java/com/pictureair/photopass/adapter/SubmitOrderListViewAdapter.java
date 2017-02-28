@@ -26,7 +26,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
     private ArrayList<CartItemInfo> arrayList;
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<ImageView> imageViews;
     private List<CartPhotosInfo> gridviewlist;
     private String currency;
     private static final String TAG = "SubmitOrderListViewAdapter";
@@ -73,7 +72,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         if (gridviewlist == null) {
             gridviewlist = new ArrayList<>();
         }
-        imageViews = new ArrayList<>();
 
         //初始化数据
         if (Common.ppp.equals(arrayList.get(position).getProductName()) || Common.SINGLE_PPP.equals(arrayList.get(position).getProductName())) {//ppp产品 或 拼单
@@ -105,7 +103,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                     GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(gridviewlist.get(i).getIsEncrypted()), imageView);
                 }
                 imageView.setScaleType(ScaleType.CENTER_CROP);
-                imageViews.add(imageView);
                 //imageview设置监听 订单确认界面无法选图片 和修改数量
                 viewHolder.goodPhotosGridLayout.addView(imageView, params);
                 viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);

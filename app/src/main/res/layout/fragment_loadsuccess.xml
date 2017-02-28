@@ -1,85 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background">
+    android:background="@color/pp_light_gray_background"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/ll_load_success"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
+
         <LinearLayout
             android:id="@+id/load_success_tips"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-                android:paddingLeft="@dimen/pp_dp_8"
-                android:paddingRight="@dimen/pp_dp_8"
+            android:layout_alignParentTop="true"
             android:orientation="vertical"
-            android:layout_alignParentTop="true">
-                <TextView
-                    android:id="@+id/load_success_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="@string/photo_download_tips2"
-                    android:gravity="left|center_vertical"
-                    android:textColor="@color/pp_gray"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    />
+            android:paddingLeft="@dimen/pp_dp_8"
+            android:paddingRight="@dimen/pp_dp_8">
+
+            <TextView
+                android:id="@+id/load_success_tv"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="left|center_vertical"
+                android:lineSpacingExtra="4dp"
+                android:text="@string/photo_download_tips2"
+                android:textColor="@color/pp_gray"
+                android:textSize="12sp" />
         </LinearLayout>
+
         <View
             android:id="@+id/dash_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_2"
-            android:background="@drawable/dash_line"
-            android:layerType="software"
             android:layout_below="@id/load_success_tips"
-            />
+            android:background="@drawable/dash_line"
+            android:layerType="software" />
+
         <LinearLayout
             android:id="@+id/poplayout_load_success"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
-            android:padding="@dimen/pp_dp_10"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:padding="@dimen/pp_dp_10"
             android:visibility="gone">
+
             <TextView
                 android:id="@+id/tv_load_success_select_all"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
                 android:drawableTop="@drawable/edit_album_all_button"
                 android:gravity="center_horizontal|bottom"
-                android:drawablePadding="@dimen/pp_dp_5"
                 android:text="@string/edit_story_all"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
+
             <TextView
                 android:id="@+id/tv_load_success_delete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
                 android:drawableTop="@drawable/edit_album_delete_button"
                 android:gravity="center_horizontal|bottom"
-                android:drawablePadding="@dimen/pp_dp_5"
                 android:text="@string/delete"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
         </LinearLayout>
+
         <ListView
             android:id="@+id/lv_load_success"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/gray_light3"
-            android:dividerHeight="@dimen/pp_px_1"
+            android:layout_above="@id/poplayout_load_success"
             android:layout_below="@id/dash_line"
-            android:layout_above="@id/poplayout_load_success"/>
+            android:divider="@color/gray_light3"
+            android:dividerHeight="@dimen/pp_px_1" />
     </RelativeLayout>
 
     <ScrollView
@@ -88,48 +91,46 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:scrollbars="none"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:paddingTop="80dp"
             android:background="@color/pp_light_gray_background"
-            >
+            android:paddingTop="80dp"
+            android:visibility="visible">
+
             <ImageView
                 android:id="@+id/load_success_show_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/download_manager_download"
                 android:layout_centerHorizontal="true"
-                />
+                android:scaleType="fitXY"
+                android:src="@drawable/download_manager_download" />
 
             <TextView
                 android:id="@+id/load_success_show_text2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/load_success_show_img"
-                android:textSize="@dimen/text_size_14"
-                android:textColor="@color/gray2"
-                android:text="@string/photo_download_success_tips"
-                android:gravity="center"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="80dp"
-                />
+                android:gravity="center"
+                android:text="@string/photo_download_success_tips"
+                android:textColor="@color/gray2"
+                android:textSize="@dimen/text_size_14" />
+
             <Button
                 android:id="@+id/load_success_btn_toload"
                 android:layout_width="180dp"
                 android:layout_height="40dp"
-                android:text="@string/photo_download_to_load"
                 android:layout_below="@id/load_success_show_text2"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
-                android:textColor="@color/gray2"
-                android:gravity="center"
                 android:background="@drawable/button_translate_with_gray_line"
-                />
+                android:gravity="center"
+                android:text="@string/photo_download_to_load"
+                android:textColor="@color/gray2" />
         </RelativeLayout>
     </ScrollView>
 

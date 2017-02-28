@@ -7,10 +7,8 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.alipay.sdk.app.PayTask;
-import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.alipay.PayResult;
-import com.pictureair.photopass.widget.PWProgressDialog;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -28,6 +26,8 @@ import java.util.Map;
  */
 public class PayUtils {
     private static final String TAG = "PayUtils";
+    public static final int SHOW_DIALOG = 111;
+    public static final int DISMISS_DIALOG = 222;
     private Activity activity;
     private Handler handler;
     private String orderId;
@@ -116,6 +116,7 @@ public class PayUtils {
      * 微信支付
      */
     public void wxPay() {
+        handler.sendEmptyMessage(SHOW_DIALOG);
         GetPrepayIdTask getPrepayId = new GetPrepayIdTask();
         getPrepayId.execute();
     }
@@ -142,26 +143,19 @@ public class PayUtils {
 
 
     private class GetPrepayIdTask extends AsyncTask<Void, Void, Map<String, String>> {
-        private PWProgressDialog pwProgressDialog;
         StringBuffer sb = new StringBuffer();
         Map<String, String> resultunifiedorder;
         WXPayUtil wxPayUtil = new WXPayUtil(seed);
 
         @Override
         protected void onPreExecute() {
-            pwProgressDialog = new PWProgressDialog(activity)
-                    .setPWProgressDialogMessage(R.string.is_loading)
-                    .pwProgressDialogCreate();
-            pwProgressDialog.pwProgressDialogShow();
         }
 
         @Override
         protected void onPostExecute(Map<String, String> result) {
             // 生成预付单的结果
-            if (null != pwProgressDialog) {
-                pwProgressDialog.pwProgressDialogDismiss();
-            }
-            sb.append("prepay_id\n" + result.get("prepay_id") + "\n\n");
+            handler.sendEmptyMessage(DISMISS_DIALOG);
+            sb.append("prepay_id\n").append(result.get("prepay_id")).append("\n\n");
 
             resultunifiedorder = result;
             PictureAirLog.d("===============", result.toString());
@@ -196,9 +190,7 @@ public class PayUtils {
                 content = new String(buf);
             }
             PictureAirLog.d("orion", content);
-            Map<String, String> xml = wxPayUtil.decodeXml(content);
-
-            return xml;
+            return wxPayUtil.decodeXml(content);
         }
 
     }

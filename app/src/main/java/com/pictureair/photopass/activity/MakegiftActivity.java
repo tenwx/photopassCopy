@@ -188,7 +188,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             cartcountTextView.setVisibility(View.VISIBLE);
             cartcountTextView.setText(recordcount + "");
         }
-        photoList = new ArrayList<PhotoInfo>();
+        photoList = new ArrayList<>();
         photoListAfterUpload = new ArrayList<>();
         PhotoInfo itemInfo = getIntent().getParcelableExtra("selectPhoto");
         photoList.add(itemInfo);

@@ -133,14 +133,14 @@ public class DealCodeUtil {
 					public void _onNext(JSONObject jsonObject) {
 						PictureAirLog.out("check code success--->" + jsonObject.toString());
 						String result = jsonObject.getString("codeType");
-						if (result == null || "invalid".equals(result.toString())) {
+						if (result == null || "invalid".equals(result)) {
 							checkCodeAvailableFailed();
 							return;
-						} else if ("photoPass".equals(result.toString())) {
+						} else if ("photoPass".equals(result)) {
 							codeType = "pp";
-						} else if ("photoPassPlus".equals(result.toString())) {
+						} else if ("photoPassPlus".equals(result)) {
 							codeType = "ppp";
-						} else if ("coupon".equals(result.toString())) {
+						} else if ("coupon".equals(result)) {
 							codeType = "coupon";
 						}
 
@@ -162,7 +162,6 @@ public class DealCodeUtil {
 									id = R.string.incorrect_coupon;
 									myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
 									handler.sendEmptyMessage(DEAL_CODE_FAILED);
-									return;
 								}
 							} else {//卡类型一致
 								getInfo(code, codeType);

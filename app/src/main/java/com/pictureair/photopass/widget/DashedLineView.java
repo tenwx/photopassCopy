@@ -7,6 +7,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -34,7 +35,7 @@ public class DashedLineView extends View {
         super.onDraw(canvas);
         paint.reset();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(getResources().getColor(dashColor));
+        paint.setColor(ContextCompat.getColor(getContext(), dashColor));
         path.reset();
         path.moveTo(0, 1);
         path.lineTo(ScreenUtil.getScreenWidth(getContext()),1);

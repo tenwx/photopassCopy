@@ -1,10 +1,10 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -410,7 +410,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setColor(getResources().getColor(R.color.pp_red));
+            ds.setColor(ContextCompat.getColor(OtherRegisterActivity.this, R.color.pp_red));
         }
     }
 

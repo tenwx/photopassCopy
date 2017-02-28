@@ -28,7 +28,7 @@ import java.util.List;
 public class BannerView_Detail extends LinearLayout {
     private ViewPager adViewPager;
     private ViewGroup group;
-    private List<ImageView> bannerViewList = new ArrayList<ImageView>();
+    private List<ImageView> bannerViewList = new ArrayList<>();
     private BannerViewAdapter adapter;
     private ImageView imageView;
     private LinearLayout viewpagerGroup;
@@ -92,7 +92,7 @@ public class BannerView_Detail extends LinearLayout {
         }
         //添加适配器
         adViewPager.setAdapter(adapter);
-        adViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+        adViewPager.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int arg0) {
                 // TODO Auto-generated method stub

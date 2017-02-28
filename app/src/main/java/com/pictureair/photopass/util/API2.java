@@ -367,7 +367,7 @@ public class API2 {
      * @param lastUpdateTime 上次更新时间
      */
     public static Observable<JSONObject> getLastContent(String lastUpdateTime) {
-        StringBuffer sBuffer = new StringBuffer();
+        StringBuilder sBuffer = new StringBuilder();
         sBuffer.append(Common.BASE_URL_TEST);
         sBuffer.append(Common.GET_LASTEST_CONTENT);
 
@@ -435,13 +435,13 @@ public class API2 {
         return get(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, null);
     }
 
+    public static ArrayList<PPPinfo> PPPlist = new ArrayList<>();
+
     /**
      * 获取账号下所有ppp
      *
      * @param tokenId tokenId
      */
-    public static ArrayList<PPPinfo> PPPlist = new ArrayList<>();
-
     public static Observable<JSONObject> getPPPSByUserId(String tokenId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
@@ -848,8 +848,7 @@ public class API2 {
      * 获取最新的版本信息
      */
     public static Observable<JSONObject> checkUpdate(Context context) {
-        final Context c = context;
-        String verson = c.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
+        String verson = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -913,7 +912,7 @@ public class API2 {
      * 推送 End
      **************************************/
 
-    public static ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>();
+    public static ArrayList<PPinfo> PPlist = new ArrayList<>();
 
     /**
      * 根据PP+选择PP界面。  曾经根据日期选择，现在不需要日期。
@@ -1211,7 +1210,7 @@ public class API2 {
      */
     private static Observable<JSONObject> get(String requestUrl, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.get(requestUrl, new ProgressListener() {
+        return request.get(requestUrl, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1225,8 +1224,6 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
     }
 
     /**
@@ -1238,7 +1235,7 @@ public class API2 {
      */
     private static Observable<JSONObject> post(String url, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.post(url, new ProgressListener() {
+        return request.post(url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1252,8 +1249,6 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
     }
 
     /**
@@ -1266,7 +1261,7 @@ public class API2 {
      */
     private static Observable<JSONObject> get(String requestUrl, Map<String, Object> params, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.get(requestUrl, params, new ProgressListener() {
+        return request.get(requestUrl, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1280,8 +1275,6 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
     }
 
     /**
@@ -1294,7 +1287,7 @@ public class API2 {
      */
     private static Observable<JSONObject> post(String url, Map<String, Object> params, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.post(url, params, new ProgressListener() {
+        return request.post(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1308,7 +1301,6 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-        return observable;
     }
 
     /**
@@ -1321,7 +1313,7 @@ public class API2 {
      */
     private static Observable<JSONObject> delete(String url, Map<String, Object> params, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.delete(url, params, new ProgressListener() {
+        return request.delete(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1335,8 +1327,6 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
     }
 
     /**
@@ -1349,7 +1339,7 @@ public class API2 {
      */
     private static Observable<JSONObject> put(String url, Map<String, Object> params, final HttpCallback progressCallback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.put(url, params, new ProgressListener() {
+        return request.put(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
@@ -1363,14 +1353,12 @@ public class API2 {
                     }
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
-
-        return observable;
     }
 
     /**断点续传*/
     private static Observable<ResponseBody> downloadContinue(long length, String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<ResponseBody> observable = request.download("bytes=" + length + "-", url, new ProgressListener() {
+        return request.download("bytes=" + length + "-", url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (callback != null) callback.onProgress(bytesRead, contentLength);
@@ -1383,13 +1371,12 @@ public class API2 {
                         if (callback != null) callback.doOnSubscribe();
                     }
                 });
-        return observable;
     }
 
     /**普通下载*/
     private static Observable<ResponseBody> download(String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<ResponseBody> observable = request.download(url, new ProgressListener() {
+        return request.download(url, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (callback != null) callback.onProgress(bytesRead, contentLength);
@@ -1402,12 +1389,11 @@ public class API2 {
                         if (callback != null) callback.doOnSubscribe();
                     }
                 });
-        return observable;
     }
 
     private static Observable<ResponseBody> download(String url, Map<String, Object> params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<ResponseBody> observable = request.download(url, params, new ProgressListener() {
+        return request.download(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (callback != null) callback.onProgress(bytesRead, contentLength);
@@ -1420,12 +1406,11 @@ public class API2 {
                         if (callback != null) callback.doOnSubscribe();
                     }
                 });
-        return observable;
     }
 
     private static Observable<JSONObject> upload(String url, final Map<String, RequestBody> params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
-        Observable<JSONObject> observable = request.upload(url, params, new ProgressListener() {
+        return request.upload(url, params, new ProgressListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
                 if (callback != null) callback.onProgress(bytesRead, contentLength);
@@ -1440,6 +1425,5 @@ public class API2 {
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
 
-        return observable;
     }
 }

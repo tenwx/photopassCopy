@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -153,7 +152,7 @@ public class Util {
 	    }      
 	      
 		@Override
-		public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+		public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
 			return sslContext.getSocketFactory().createSocket(socket, host,	port, autoClose);
 		}
 
@@ -342,7 +341,7 @@ public class Util {
 		if (src == null || src.length == 0) {
 			return null;
 		}
-		final List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<>();
 		for (int i = 0; i < src.length; i++) {
 			result.add(src[i]);
 		}

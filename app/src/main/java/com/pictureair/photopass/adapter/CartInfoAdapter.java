@@ -43,7 +43,6 @@ import rx.android.schedulers.AndroidSchedulers;
 public class CartInfoAdapter extends BaseAdapter {
     private List<CartPhotosInfo> gridviewlist;
     private LayoutInflater layoutInflater;
-    private ArrayList<ImageView> gridlayoutList;
     private ArrayList<CartItemInfo> goodArrayList;
     private Context context;
     private Handler handler;
@@ -125,7 +124,6 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.selectedImageView.setImageResource(R.drawable.cart_not_select);
         }
         gridviewlist = goodArrayList.get(position).getEmbedPhotos();
-        gridlayoutList = new ArrayList<>();
         String pictureUrl;
         String[] pictureUrlArray = goodArrayList.get(position).getPictures();
         if (pictureUrlArray != null && pictureUrlArray.length > 0) {
@@ -151,7 +149,6 @@ public class CartInfoAdapter extends BaseAdapter {
                 imageView.setLayoutParams(params);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
-                gridlayoutList.add(imageView);
                 //imageview设置监听
                 imageView.setOnClickListener(new PhotoOnClickListener());
                 viewHolder.cartGoodPhotosGridLayout.addView(imageView, params);

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -336,10 +337,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         if (photoURLlist.size() == photocount ||
                 (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL) && photoURLlist.size() > 0)) {//1.选择的数量和需要的数量一致，2.数码商品
             okButton.setEnabled(true);
-            okButton.setTextColor(getResources().getColor(R.color.pp_blue));
+            okButton.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
         } else {
             okButton.setEnabled(false);
-            okButton.setTextColor(getResources().getColor(R.color.gray_light5));
+            okButton.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
         }
     }
 

@@ -172,7 +172,7 @@ public class AppUtil {
      *  检查电话号码是否符合规则,true为符合正确格式，false为不符合手机格式
      */
     public static boolean checkPhoneNumber(String phoneStr) {
-        boolean tem = true;
+        boolean tem;
 //      Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
         Pattern p = Pattern.compile("^1(3|5|7|8)\\d{9}");
         Matcher matcher = p.matcher(phoneStr);
@@ -187,8 +187,7 @@ public class AppUtil {
      */
     public static String findLatestPic() {
         File file = new File(Common.PHOTO_SAVE_PATH);
-        File[] files = null;
-        files = file.listFiles();
+        File[] files = file.listFiles();
         long max = 0;
         String path = "";
         if (files == null || files.length <= 0) {
@@ -324,9 +323,8 @@ public class AppUtil {
         matrix.postRotate(angle);
         PictureAirLog.out("angle2=" + angle);
         // 创建新的图片
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+        return Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizedBitmap;
     }
 
     /**
@@ -338,7 +336,7 @@ public class AppUtil {
      */
     public static Bitmap Create2DCode(String str) throws WriterException {
         PictureAirLog.out("start create a new QRcode bitmap" + str);
-        Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
+        Hashtable<EncodeHintType, String> hints = new Hashtable<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         //图像数据转换，使用了矩阵转换
         BitMatrix matrix = new QRCodeWriter().encode(str, BarcodeFormat.QR_CODE, 400, 400, hints);
@@ -401,7 +399,7 @@ public class AppUtil {
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        return inetAddress.getHostAddress().toString();
+                        return inetAddress.getHostAddress();
                     }
                 }
             }
@@ -417,7 +415,7 @@ public class AppUtil {
      * @return
      */
     public static String GetNetIp() {
-        URL infoUrl = null;
+        URL infoUrl;
         InputStream inStream = null;
         String ipLine = "";
         HttpURLConnection httpConnection = null;
@@ -434,9 +432,9 @@ public class AppUtil {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(inStream, "utf-8"));
                 StringBuilder strber = new StringBuilder();
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null)
-                    strber.append(line + "\n");
+                    strber.append(line).append("\n");
                 // PictureAirLog.out("net ip before mathcer is "+ strber);
                 //                Pattern pattern = Pattern
                 //                        .compile("((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))");
@@ -487,7 +485,7 @@ public class AppUtil {
     public static String dateToSmartDate(String compareDate, Context context) throws ParseException {
         String date = compareDate.substring(0, 10);
         String time = compareDate.substring(11, 19);
-        String result = null;
+        String result;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //将需要比较的日期转成calendar
         Calendar d1 = new GregorianCalendar();
@@ -537,7 +535,7 @@ public class AppUtil {
      * @return
      */
     public static String getSmartDistance(double distance, NumberFormat distanceFormat) {
-        String result = null;
+        String result;
         if (distance < 1000) {//小于1km，直接取整显示
             result = (int) distance + "m";
         } else if (distance < 100000) {//小于100km，保留1位小数，取km为单位
@@ -569,10 +567,7 @@ public class AppUtil {
     public static boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
-        if (!isNum.matches()) {
-            return false;
-        }
-        return true;
+        return isNum.matches();
     }
 
     /**
@@ -601,13 +596,8 @@ public class AppUtil {
             int top = leftTop[1];
             int bottom = top + v.getHeight();
             int right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击的是输入框区域，保留点击EditText的事件
-                return false;
-            } else {
-                return true;
-            }
+            return !(event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom);
         }
         return false;
     }
@@ -628,7 +618,7 @@ public class AppUtil {
         SimpleDateFormat format;
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         Date result_date;
-        long result_time = 0;
+        long result_time;
 
         try {
             format.setTimeZone(TimeZone.getTimeZone("GMT00:00"));//设置0时区
@@ -648,7 +638,7 @@ public class AppUtil {
     private static final int PADDING_SIZE_MIN = 5; // 最小留白长度, 单位: px
 
     public static Bitmap createQRCode(String str, int widthAndHeight) throws WriterException {
-        Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
+        Hashtable<EncodeHintType, String> hints = new Hashtable<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         BitMatrix matrix = new MultiFormatWriter().encode(str,
                 BarcodeFormat.QR_CODE, widthAndHeight, widthAndHeight, hints);
@@ -688,9 +678,7 @@ public class AppUtil {
         int w1 = width - x1 * 2;
         int h1 = height - y1 * 2;
 
-        Bitmap bitmapQR = Bitmap.createBitmap(bitmap, x1, y1, w1, h1);
-
-        return bitmapQR;
+        return Bitmap.createBitmap(bitmap, x1, y1, w1, h1);
     }
 
     /**
@@ -701,8 +689,8 @@ public class AppUtil {
      * @return
      */
     public static int getDay(int year, int month) {
-        int day = 30;
-        boolean flag = false;
+        int day;
+        boolean flag;
         switch (year % 4) {
             case 0:
                 flag = true;
@@ -753,7 +741,7 @@ public class AppUtil {
      * @param context
      */
     public static ArrayList<String> getDeviceInfos(Context context) {
-        ArrayList<String> deviceInfo = new ArrayList<String>();
+        ArrayList<String> deviceInfo = new ArrayList<>();
         try {
             PackageManager manager = context.getPackageManager();
             PackageInfo info = manager.getPackageInfo(context.getPackageName(),
@@ -783,7 +771,7 @@ public class AppUtil {
 
         byte[] byteArray = messageDigest.digest();
 
-        StringBuffer md5StrBuff = new StringBuffer();
+        StringBuilder md5StrBuff = new StringBuilder();
 
         for (int i = 0; i < byteArray.length; i++) {
             if (Integer.toHexString(0xFF & byteArray[i]).length() == 1)
@@ -829,7 +817,7 @@ public class AppUtil {
      * @return
      */
     public static ArrayList<PhotoInfo> startSortForPinnedListView(ArrayList<PhotoItemInfo> list, boolean isForStickyHeader) {
-        ArrayList<PhotoInfo> tempInfos = new ArrayList<PhotoInfo>();
+        ArrayList<PhotoInfo> tempInfos = new ArrayList<>();
         PhotoInfo temp, temp2;
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).list.size(); j++) {
@@ -1255,7 +1243,6 @@ public class AppUtil {
         //		Map<String, String> countryMap = new HashMap<String, String>();
         /** 读取国家简码 */
         codeStrings = context.getResources().getStringArray(R.array.smssdk_country);
-        if (null != codeStrings) {
 
             for (int i = 0; i < codeStrings.length; i++) {
                 String bb[] = codeStrings[i].split(",");
@@ -1267,7 +1254,6 @@ public class AppUtil {
                     break;
                 }
             }
-        }
         //		country = countryMap.get(countryCode.trim());
         return country;
     }
@@ -1570,7 +1556,7 @@ public class AppUtil {
 //                if (isOther) {
 //                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString() + info.locationId;
 //                } else {
-                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
+                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds;
 //                }
                 photoItemInfo.shootTime = info.getShootDate();
                 if (language.equals(Common.SIMPLE_CHINESE)) {
@@ -1651,7 +1637,7 @@ public class AppUtil {
      * @param ctx
      */
     public static Map<String, String> collectDeviceInfo(Context ctx) {
-        Map<String, String> infos = new HashMap<String, String>();
+        Map<String, String> infos = new HashMap<>();
         try {
             PackageManager pm = ctx.getPackageManager();
             PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
@@ -1685,10 +1671,8 @@ public class AppUtil {
     public static boolean checkPermission(Context context, String permission) {
         if (Build.VERSION.SDK_INT < 23) {
             return true;
-        }else if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }else{
-            return true;
+        } else {
+            return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
         }
     }
 
@@ -1830,14 +1814,12 @@ public class AppUtil {
 
     public static String getFormatCurrentTime(){
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String loadTime = df.format(new Date());
-        return loadTime;
+        return df.format(new Date());
     }
 
     public static String formatData(double data){
         DecimalFormat decimalFormat=new DecimalFormat("0.00");
-        String str = decimalFormat.format(data);
-        return str;
+        return decimalFormat.format(data);
     }
 
     /**
@@ -2127,7 +2109,7 @@ public class AppUtil {
     public static String writeFile(ResponseBody responseBody, String folderPath, String fileName) throws Exception{
 
         byte[] buff = new byte[1024];
-        int res = 0;
+        int res;
         FileOutputStream fos = null;
         InputStream is = null;
         try {

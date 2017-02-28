@@ -18,7 +18,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 	public String PPPCode;   // 对应 pppId.
 	public int capacity;//总共pp的数量       //对应amount
 	public int days;
-	public List<BindPPInfo> bindInfo = new ArrayList<BindPPInfo>();   // bindInfo 的size 对应usedNumber
+	public List<BindPPInfo> bindInfo = new ArrayList<>();   // bindInfo 的size 对应usedNumber
 	public String ownOn;    //对应  time
 	
 	public String pp1,pp2,pp3;//ppp对应三个pp的号码
@@ -55,7 +55,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		
 		length = source.readInt();
 		if (length > 0) {
-			bindInfo = new ArrayList<BindPPInfo>();
+			bindInfo = new ArrayList<>();
 			Parcelable[] pars = source.readParcelableArray(PhotoInfo.class.getClassLoader());
 			bindInfo = Arrays.asList(Arrays.asList(pars).toArray(new BindPPInfo[pars.length]));
 		}

@@ -387,11 +387,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         finish();
     }
 
-    private boolean addPermission(List<String> permissionList, String permission) {
+    private void addPermission(List<String> permissionList, String permission) {
         if (!AppUtil.checkPermission(getApplicationContext(), permission)) {
             permissionList.add(permission);
         }
-        return true;
     }
 
     @Override

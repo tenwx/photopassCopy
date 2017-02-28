@@ -71,11 +71,11 @@ public class PWEditUtil implements IPWEditModel{
     private ArrayList<FrameOrStikerInfo> frameFromDBInfos;//来自数据库的数据
     private ArrayList<FrameOrStikerInfo> stickerFromDBInfos;//来自数据库的数据
     public PWEditUtil() {
-        photoEditorList = new ArrayList<PhotoEditorInfo>();
-        tempEditPhotoInfoArrayList = new ArrayList<PhotoEditorInfo>();
-        frameInfos = new ArrayList<FrameOrStikerInfo>();
-        filterPathList = new ArrayList<String>();
-        stikerInfos = new ArrayList<FrameOrStikerInfo>();
+        photoEditorList = new ArrayList<>();
+        tempEditPhotoInfoArrayList = new ArrayList<>();
+        frameInfos = new ArrayList<>();
+        filterPathList = new ArrayList<>();
+        stikerInfos = new ArrayList<>();
     }
 
     /**
@@ -85,8 +85,7 @@ public class PWEditUtil implements IPWEditModel{
     @Override
     public File getFile(String photoPath){
         photoPath = AppUtil.getReallyFileName(photoPath,0);
-        File file = new File(Common.PHOTO_DOWNLOAD_PATH + photoPath);
-        return file;
+        return new File(Common.PHOTO_DOWNLOAD_PATH + photoPath);
     }
 
 
@@ -101,9 +100,7 @@ public class PWEditUtil implements IPWEditModel{
     public  Bitmap getRotateBitmap(Bitmap bit, int rotateAngle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(rotateAngle);
-        Bitmap tempBitmap = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(),
-                bit.getHeight(), matrix, true);
-        return tempBitmap;
+        return Bitmap.createBitmap(bit, 0, 0, bit.getWidth(), bit.getHeight(), matrix, true);
     }
 
     /**
@@ -363,8 +360,7 @@ public class PWEditUtil implements IPWEditModel{
         //图片上边距 ＝ （imageview的高 － 图片显示在imageview上的高）／ 2
         int leftTopY = (mainImageHeight - displayBitmapHeight) / 2;
         int rightBottomY = leftTopY + displayBitmapHeight;
-        Rect rec = new Rect(leftTopX,leftTopY,rightBottomX,rightBottomY);
-        return rec;
+        return new Rect(leftTopX,leftTopY,rightBottomX,rightBottomY);
     }
 
     /**
@@ -376,7 +372,7 @@ public class PWEditUtil implements IPWEditModel{
      */
     @Override
     public Bitmap getStickerComposeBitmap(LinkedHashMap<Integer, StickerItem> addItems, Matrix touchMatrix, Bitmap bitmap){
-        stikerInfoList = new ArrayList<StikerInfo>();
+        stikerInfoList = new ArrayList<>();
 
         Bitmap resultBit = Bitmap.createBitmap(bitmap).copy(
                 Bitmap.Config.ARGB_8888, true);

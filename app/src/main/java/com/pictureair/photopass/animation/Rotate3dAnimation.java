@@ -2,7 +2,6 @@ package com.pictureair.photopass.animation;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
