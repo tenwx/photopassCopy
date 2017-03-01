@@ -9,9 +9,6 @@ import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-
-import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +37,7 @@ public class UdeskUtil {
 
 	}
 
-	public final static String getFileProviderName(Context context){
+	public static String getFileProviderName(Context context){
 		return context.getPackageName()+".udeskfileprovider";
 	}
 
@@ -75,16 +72,12 @@ public class UdeskUtil {
 			}
 		}
 
-		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + mediaName);
-		return mediaFile;
+		return new File(mediaStorageDir.getPath() + File.separator + mediaName);
 	}
 
 	public static boolean isExitFile(String path) {
 		File file = new File(path);
-		if (file.exists()) {
-			return true;
-		}
-		return false;
+		return file.exists();
 	}
 
 
@@ -101,11 +94,7 @@ public class UdeskUtil {
 		}
 		String filepath = mediaStorageDir.getPath() + File.separator + fileName;
 		File file = new File(filepath);
-		if (!file.exists()) {
-			return false;
-		} else {
-			return true;
-		}
+		return file.exists();
 	}
 
 
@@ -235,17 +224,18 @@ public class UdeskUtil {
 	}
 
 	public static  void initCrashReport(Context context){
-		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-		strategy.setAppVersion(UdeskCoreConst.sdkversion);
-		CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
+		//因为CrashReport中有个内存没法释放，并且没法去改对应代码，因此将奔溃报告注释
+//		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+//		strategy.setAppVersion(UdeskCoreConst.sdkversion);
+//		CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
 	}
 
 	public static void closeCrashReport(){
-		try{
-			CrashReport.closeCrashReport();
-		}catch (Exception e){
-
-		}
+//		try{
+//			CrashReport.closeCrashReport();
+//		}catch (Exception e){
+//
+//		}
 
 	}
 
@@ -316,10 +306,7 @@ public class UdeskUtil {
 	public static boolean isZh(Context context) {
 		Locale locale = context.getResources().getConfiguration().locale;
 		String language = locale.getLanguage();
-		if (language.endsWith("zh"))
-			return true;
-		else
-			return false;
+		return language.endsWith("zh");
 	}
 
 

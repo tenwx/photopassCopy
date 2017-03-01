@@ -2,7 +2,6 @@ package cn.udesk;
 
 import android.content.Context;
 import android.content.Intent;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -92,7 +91,7 @@ public class UdeskSDKManager {
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_SdkToken, UdeskConfig.sdkToken);
 		if(info == null){
-			info = new HashMap<String,String>();
+			info = new HashMap<>();
 		}
 		UdeskConfig.userinfo = info;
 		UdeskConfig.userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, UdeskConfig.sdkToken);

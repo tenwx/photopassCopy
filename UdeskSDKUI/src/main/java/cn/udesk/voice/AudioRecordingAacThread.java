@@ -28,7 +28,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 			recorder.setAudioSamplingRate(8000);
 		}catch (Exception e){
-
+			e.printStackTrace();
 		}
 
 	}
@@ -205,8 +205,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 			return 0;
 		}
 		File file = new File(fileNamePath);
-		long length = file.length();
-		return length;
+		return file.length();
 	}
 	
 	public void finishRecord(){

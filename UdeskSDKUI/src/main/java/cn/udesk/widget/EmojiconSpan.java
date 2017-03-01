@@ -1,12 +1,13 @@
 package cn.udesk.widget;
 
-import java.lang.ref.WeakReference;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.style.DynamicDrawableSpan;
+
+import java.lang.ref.WeakReference;
 
 public class EmojiconSpan extends DynamicDrawableSpan {
 
@@ -56,7 +57,7 @@ public class EmojiconSpan extends DynamicDrawableSpan {
 	public Drawable getDrawable() {
 		if (mDrawable == null) {
 			try {
-				mDrawable = mContext.getResources().getDrawable(mResourceId);
+				mDrawable = ContextCompat.getDrawable(mContext, mResourceId);
 				mHeight = mSize;
 				mWidth = mHeight * mDrawable.getIntrinsicWidth()
 						/ mDrawable.getIntrinsicHeight();
@@ -89,7 +90,7 @@ public class EmojiconSpan extends DynamicDrawableSpan {
 
 	private Drawable getCachedDrawable() {
 		if (mDrawableRef == null || mDrawableRef.get() == null) {
-			mDrawableRef = new WeakReference<Drawable>(getDrawable());
+			mDrawableRef = new WeakReference<>(getDrawable());
 		}
 		return mDrawableRef.get();
 	}

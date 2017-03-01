@@ -2,18 +2,10 @@ package cn.udesk.messagemanager;
 
 import android.text.TextUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.UdeskUtil;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
 import rx.Observable;

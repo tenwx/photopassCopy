@@ -66,6 +66,7 @@ import cn.udesk.voice.RecordPlayCallback;
 import cn.udesk.voice.RecordStateCallback;
 import cn.udesk.voice.RecordTouchListener;
 import cn.udesk.widget.HorVoiceView;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UDPullGetMoreListView;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
@@ -204,11 +205,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
     }
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             if (UdeskChatActivity.this.isFinishing()) {
-                return;
+                return false;
             }
             switch (msg.what) {
                 case MessageWhat.loadHistoryDBMsg:
@@ -244,7 +245,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     mAgentInfo = (AgentInfo) msg.obj;
                     setNoAgentStatus(mAgentInfo.getMessage());
                     agentFlag = UdeskConst.AgentFlag.WaitAgent;
-                    this.postDelayed(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
 
                         @Override
                         public void run() {
@@ -310,11 +311,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     String jid = (String) msg.obj;
                     if (onlineflag == UdeskCoreConst.ONLINEFLAG) {
                         if (isbolcked.equals("true")) {
-                            return;
+                            break;
                         }
 
                         if (mAgentInfo == null || !jid.contains(mAgentInfo.getAgentJid())) {
-                            return;
+                            break;
                         }
                         if (!currentStatusIsOnline && isNeedStartExpandabLyout) {
                             expandableLayout.startAnimation(true);
@@ -404,8 +405,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     break;
 
             }
+            return false;
         }
-    };
+    });
 
     private void toBolckedView() {
         try {
@@ -529,11 +531,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             setListView();
             initDatabase();
             mPresenter.createIMCustomerInfo();
-            if (UdeskUtils.isNetworkConnected(this)) {
-                isNeedRelogin = false;
-            } else {
-                isNeedRelogin = true;
-            }
+            isNeedRelogin = !UdeskUtils.isNetworkConnected(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
@@ -1144,7 +1142,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     @Override
     public List<String> getEmotionStringList() {
-        List<String> emotionList = new ArrayList<String>();
+        List<String> emotionList = new ArrayList<>();
         int emojiSum = mEmojiAdapter.getCount();
         for (int i = 0; i < emojiSum; i++) {
             if (mEmojiAdapter.getItem(i) != null) {
@@ -1448,6 +1446,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
 
         UdeskUtil.closeCrashReport();
+        UdeskDBManager.getInstance().release();
+        KeyBoardUtil.fixFocusedViewLeak(this);
         super.onDestroy();
 
     }
@@ -1545,7 +1545,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             if (!isShowNotSendMsg()) {
                 UdeskUtils.hideSoftKeyboard(UdeskChatActivity.this, mInputEditView);
-                return;
             }
         }
 

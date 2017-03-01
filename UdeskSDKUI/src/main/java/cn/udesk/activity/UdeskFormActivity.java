@@ -17,6 +17,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskTitleBar;
 
 public class UdeskFormActivity extends Activity {
@@ -105,6 +106,9 @@ public class UdeskFormActivity extends Activity {
 		}
 	}
 
-
-
+	@Override
+	protected void onDestroy() {
+		KeyBoardUtil.fixFocusedViewLeak(this);
+		super.onDestroy();
+	}
 }

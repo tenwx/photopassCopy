@@ -14,11 +14,13 @@
         <activity
             android:name="cn.udesk.activity.UdeskHelperActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme2" >
         </activity>
         <activity
             android:name="cn.udesk.activity.UdeskHelperArticleActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme" />
         <activity
             android:name="cn.udesk.activity.UdeskRobotActivity"

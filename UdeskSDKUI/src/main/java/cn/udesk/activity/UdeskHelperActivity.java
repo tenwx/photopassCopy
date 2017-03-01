@@ -26,6 +26,7 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDHelperAdapter;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskLoadingView;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
@@ -48,7 +49,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.udesk_activity_base);
+        setContentView(R.layout.udesk_activity_help);
         UdeskUtil.initCrashReport(this);
         initView();
     }
@@ -255,6 +256,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
 
     @Override
     protected void onDestroy() {
+        KeyBoardUtil.fixFocusedViewLeak(this);
         super.onDestroy();
         UdeskUtil.closeCrashReport();
     }

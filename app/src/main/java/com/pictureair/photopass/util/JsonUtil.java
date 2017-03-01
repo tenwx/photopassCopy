@@ -21,7 +21,6 @@ import com.pictureair.photopass.entity.DealingInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.HelpInfo;
 import com.pictureair.photopass.entity.JsonInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
@@ -1084,27 +1083,6 @@ public class JsonUtil {
         return ppPinfoArrayList;
 
     }
-
-    public static ArrayList<HelpInfo> getHelpInfoList(JSONObject jsonObject) {
-        ArrayList<HelpInfo> helpInfos = new ArrayList<>();
-        JSONArray array = jsonObject.getJSONArray("helpList");
-        HelpInfo info = null;
-        JSONObject obj = null;
-        for (int i = 0; i < array.size(); i++) {
-            info = new HelpInfo();
-            obj = (JSONObject) array.get(i);
-            info.setHelpId(obj.getString("_id"));
-            info.setHelpQuestionEN(obj.getString("ENQuestion"));
-            info.setHelpAnswerEN(obj.getString("ENAnswer"));
-            info.setHelpQuestionCN(obj.getString("CNQuestion"));
-            info.setHelpAnswerCN(obj.getString("CNAnswer"));
-            helpInfos.add(info);
-            obj = null;
-            info = null;
-        }
-        return helpInfos;
-    }
-
 
     /**
      * 解析选择PP数据。

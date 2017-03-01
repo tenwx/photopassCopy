@@ -21,6 +21,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskHttpFacade;
 
@@ -163,6 +164,7 @@ public class UdeskRobotActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		KeyBoardUtil.fixFocusedViewLeak(this);
 		super.onDestroy();
 	}
 }

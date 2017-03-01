@@ -17,6 +17,7 @@ import cn.udesk.UdeskConst;
 import cn.udesk.adapter.SurvyOptionAdapter;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
+import cn.udesk.widget.KeyBoardUtil;
 
 //满意度调查
 public class SurvyDialogActivity extends Activity implements OnItemClickListener, OnClickListener {
@@ -92,4 +93,9 @@ public class SurvyDialogActivity extends Activity implements OnItemClickListener
 
     }
 
+    @Override
+    protected void onDestroy() {
+        KeyBoardUtil.fixFocusedViewLeak(this);
+        super.onDestroy();
+    }
 }

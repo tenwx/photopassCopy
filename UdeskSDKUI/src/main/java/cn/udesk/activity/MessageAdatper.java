@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -44,7 +45,6 @@ import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.ChatImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import udesk.core.model.MessageInfo;
-import udesk.core.utils.UdeskUtils;
 
 public class MessageAdatper extends BaseAdapter {
     private static final int[] layoutRes = {
@@ -103,7 +103,7 @@ public class MessageAdatper extends BaseAdapter {
     private static final long SPACE_TIME = 3 * 60 * 1000;
 
     private Context mContext;
-    private List<MessageInfo> list = new ArrayList<MessageInfo>();
+    private List<MessageInfo> list = new ArrayList<>();
 
     public MessageAdatper(Context context) {
         mContext = context;
@@ -574,13 +574,13 @@ public class MessageAdatper extends BaseAdapter {
             if (message.isPlaying) {
                 resetAnimationAndStart();
             } else {
-                record_play.setImageDrawable(mContext.getResources().getDrawable(
+                record_play.setImageDrawable(ContextCompat.getDrawable(mContext,
                         isLeft ? R.drawable.udesk_im_record_left_default : R.drawable.udesk_im_record_right_default));
             }
         }
 
         private void resetAnimationAndStart() {
-            record_play.setImageDrawable(mContext.getResources().getDrawable(
+            record_play.setImageDrawable(ContextCompat.getDrawable(mContext,
                     isLeft ? R.drawable.udesk_im_record_play_left : R.drawable.udesk_im_record_play_right));
             Drawable playDrawable = record_play.getDrawable();
             if (playDrawable != null

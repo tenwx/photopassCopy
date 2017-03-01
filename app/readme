@@ -22,6 +22,8 @@ versionCode 11     versionName "3.0.0"
 16.4.4以上使用沉浸式状态栏
 17.下载图片支持断点下载
 18.首页可以扫码抵用券，但是抵用券页面依旧只能扫码抵用券
+19.网络请求框架全部替换成rxjava + retrofit + okhttp
+20.添加lint 和 leakcanary性能检测
 
 
 

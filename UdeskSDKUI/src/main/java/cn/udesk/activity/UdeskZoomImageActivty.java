@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import cn.udesk.R;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskZoomImageView;
 
 public class UdeskZoomImageActivty extends Activity implements
@@ -150,6 +151,7 @@ public class UdeskZoomImageActivty extends Activity implements
 				try {
 					out.getFD().sync();
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				out.close();
 			}
@@ -161,6 +163,7 @@ public class UdeskZoomImageActivty extends Activity implements
 
 	@Override
 	protected void onDestroy() {
+		KeyBoardUtil.fixFocusedViewLeak(this);
 		super.onDestroy();
 	}
 }

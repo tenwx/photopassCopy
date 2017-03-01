@@ -10,8 +10,6 @@ import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 
 import java.util.LinkedList;
@@ -32,7 +30,7 @@ public class HorVoiceView extends View {
 	private boolean isStart = false;
 
 	
-	LinkedList<Integer> list = new LinkedList<Integer>();
+	LinkedList<Integer> list = new LinkedList<>();
 	
 	public HorVoiceView(Context context) {
 		super(context);
@@ -119,10 +117,10 @@ public class HorVoiceView extends View {
 	private final int HandleTypeTimeOver = 0;
 	private final int HandleTypeShowTooShort = 1;
 	private UdeskTimeCallback mCallback;
-	Handler mTimeHandler = new Handler(){
+	Handler mTimeHandler = new Handler(new Handler.Callback() {
 		int time=60;
 		@Override
-		public void handleMessage(Message msg) {
+		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 				case HandleTypeTimeOver:
 					time--;
@@ -133,7 +131,7 @@ public class HorVoiceView extends View {
 							mCallback.onTimeOver();
 						}
 					}else{
-						this.sendEmptyMessageDelayed(HandleTypeTimeOver, 1000);//1秒更新一次
+						mTimeHandler.sendEmptyMessageDelayed(HandleTypeTimeOver, 1000);//1秒更新一次
 						text = videoTime < 10 ? "0:0"+ videoTime: "0:"+videoTime + "";
 						setText(text);
 					}
@@ -145,10 +143,9 @@ public class HorVoiceView extends View {
 				default:
 					break;
 			}
-
+			return false;
 		}
-
-	};
+	});
 
 }
 

@@ -21,7 +21,7 @@ import udesk.core.model.UDHelperItem;
 public class JsonUtils {
 
 	public static List<UDHelperItem> parseListArticlesResult(String result) {
-		List<UDHelperItem> mList = new ArrayList<UDHelperItem>();
+		List<UDHelperItem> mList = new ArrayList<>();
 		try {
 			JSONObject json = new JSONObject(result);
 			if (json.has("contents")) {
@@ -81,6 +81,7 @@ public class JsonUtils {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 
 		}
 		return item;
@@ -159,7 +160,7 @@ public class JsonUtils {
 			}
 			if (result.has("options")) {
 				
-				List<OptionsModel> options = new ArrayList<OptionsModel>();
+				List<OptionsModel> options = new ArrayList<>();
 				JSONArray optionsArray = result.optJSONArray("options");
 				if (optionsArray != null && optionsArray.length() > 0) {
 					for (int i = 0; i < optionsArray.length(); i++) {
@@ -190,7 +191,7 @@ public class JsonUtils {
 		try {
 			JSONObject json = new JSONObject(response);
 			if (json.has("result")) {
-				groupsModel = new ArrayList<AgentGroupNode>();
+				groupsModel = new ArrayList<>();
 				JSONArray optionsArray = json.optJSONArray("result");
 				if (optionsArray != null && optionsArray.length() > 0) {
 					for (int i = 0; i < optionsArray.length(); i++) {
@@ -246,6 +247,7 @@ public class JsonUtils {
 				}
 			}
 		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 
 		return  robotUrl;

@@ -28,8 +28,12 @@ public class UdeskDBManager {
 	}
 
 	public static synchronized UdeskDBManager getInstance() {
-		if (instance == null) {
-			instance = new UdeskDBManager();
+		if(instance == null) {
+			synchronized(UdeskDBManager.class) {
+				if(instance == null) {
+					instance = new UdeskDBManager();
+				}
+			}
 		}
 		return instance;
 	}
@@ -236,7 +240,7 @@ public class UdeskDBManager {
 				+ " order by Time limit " + UdeskConst.UDESK_HISTORY_COUNT
 				+ " offset " + offset;
 
-		List<MessageInfo> list = new ArrayList<MessageInfo>();
+		List<MessageInfo> list = new ArrayList<>();
 		SQLiteDatabase db = getSQLiteDatabase();
 		Cursor cursor = null;
 		if (db == null) {
@@ -391,7 +395,7 @@ public class UdeskDBManager {
 		    if (count < 1){
 			   return null;
 		    }
-		    listItems = new ArrayList<String>();
+		    listItems = new ArrayList<>();
     		while(cursor.moveToNext()){
     			listItems.add(cursor.getString(0));
     		}
@@ -424,7 +428,7 @@ public class UdeskDBManager {
 		    if (count < 1){
 			   return null;
 		    }
-		    listItems = new ArrayList<String>();
+		    listItems = new ArrayList<>();
     		while(cursor.moveToNext()){
     			listItems.add(cursor.getString(0));
     		}
@@ -491,6 +495,7 @@ public class UdeskDBManager {
 		{
 			getSQLiteDatabase().execSQL(sql, new Object[] { UdeskConst.ChatMsgReadFlag.read,msgId});
 		} catch (Exception e) {
+			e.printStackTrace();
 
 		}
 
@@ -504,6 +509,7 @@ public class UdeskDBManager {
 			getSQLiteDatabase().execSQL(sql, new Object[] { UdeskConst.ChatMsgReadFlag.read});
 		} catch (Exception e) {
 
+			e.printStackTrace();
 		}
 
 	}
@@ -518,7 +524,7 @@ public class UdeskDBManager {
 		        + " where  ReadFlag = ?"
 				+ " order by Time DESC limit 10 ";
 
-		List<MessageInfo> list = new ArrayList<MessageInfo>();
+		List<MessageInfo> list = new ArrayList<>();
 		SQLiteDatabase db = getSQLiteDatabase();
 		Cursor cursor = null;
 		if (db == null) {
@@ -588,6 +594,7 @@ public class UdeskDBManager {
 
 			return count;
 		} catch (Exception e) {
+			e.printStackTrace();
 
 		}
 

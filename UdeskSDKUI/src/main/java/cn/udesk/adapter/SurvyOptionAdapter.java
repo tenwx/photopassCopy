@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import cn.udesk.model.SurveyOptionsModel;
 public class SurvyOptionAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<OptionsModel> list = new ArrayList<OptionsModel>();
+    private List<OptionsModel> list = new ArrayList<>();
 
     public SurvyOptionAdapter(Context context , SurveyOptionsModel model) {
         mContext = context;
@@ -70,7 +69,7 @@ public class SurvyOptionAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHodler viewHodler = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_dlg_select_singlechoice, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_dlg_select_singlechoice, parent, false);
             viewHodler = new ViewHodler();
             viewHodler.content = (TextView) convertView.findViewById(R.id.text_context);
             viewHodler.mCheckBox = (CheckBox) convertView.findViewById(R.id.udesk_check_box);

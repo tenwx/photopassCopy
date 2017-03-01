@@ -476,6 +476,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				.map(new Func1<JSONObject, ArrayList<PhotoInfo>>() {
 					@Override
 					public ArrayList<PhotoInfo> call(JSONObject jsonObject) {
+						PictureAirLog.json("get data from net--> " + jsonObject.toJSONString());
+
 						//删除此卡此天所有数据
 						if (type == API2.GET_DEFAULT_PHOTOS) {
 							PictureAirDbManager.deleteAllInfoFromTable(ppCode, shootDate);
@@ -564,9 +566,16 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					public void onCompleted() {
 						if (type == API2.GET_DEFAULT_PHOTOS) {//获取全部数据成功，需要更新对应的数据
 							PictureAirDbManager.updateRefreshedPPFlag(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
-							//显示无网络页面
+							if (albumArrayList.size() == 0) {//没有照片，需要显示无图页面
+								editImageView.setEnabled(false);
+								refreshLayout.setEnabled(false);
+								noCountView.setVisibility(View.VISIBLE);
+								noCountTextView.setText(R.string.no_photo_in_airpass);
+							} else {
+								editImageView.setEnabled(true);
+								refreshLayout.setEnabled(true);
+							}
 							noNetWorkOrNoCountView.setVisibility(View.GONE);
-							editImageView.setEnabled(true);
 							dismissPWProgressDialog();
 						} else if (type == API2.GET_NEW_PHOTOS) {//刷新
 							if (refreshLayout.isRefreshing()) {

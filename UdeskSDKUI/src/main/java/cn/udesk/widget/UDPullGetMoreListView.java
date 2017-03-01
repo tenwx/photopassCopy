@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import cn.udesk.R;
@@ -29,7 +29,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
     private LayoutInflater inflater;
 
-    private LinearLayout llheader;
+    private RelativeLayout llheader;
 
     private TextView tvTips;
     private ProgressBar pbLoading;
@@ -61,7 +61,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
     private void init(Context context) {
         inflater = LayoutInflater.from(context);
-        llheader = (LinearLayout) inflater.inflate(R.layout.udesk_layout_get_more, null);
+        llheader = (RelativeLayout) inflater.inflate(R.layout.udesk_layout_get_more, null);
         pbLoading = (ProgressBar) llheader.findViewById(R.id.udesk_get_more_progress);
         tvTips = (TextView) llheader.findViewById(R.id.udesk_get_more_tips);
 
@@ -254,7 +254,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
 
     public interface OnRefreshListener {
-        public void onRefresh();
+        void onRefresh();
     }
 
 
@@ -281,7 +281,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
     private void measureView(View child) {
         ViewGroup.LayoutParams p = child.getLayoutParams();
         if (p == null) {
-            p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+            p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         int childWidthSpec = ViewGroup.getChildMeasureSpec(0, 0, p.width);

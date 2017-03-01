@@ -2,6 +2,7 @@ package cn.udesk.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -88,7 +89,7 @@ public class UDEmojiAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// 优化ListView
 		if (convertView == null) {
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_emoji_item, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_emoji_item, parent, false);
 		}
 
 		((ImageView) convertView)
@@ -112,10 +113,10 @@ public class UDEmojiAdapter extends BaseAdapter {
 						.substring(start, text.indexOf("]", start));
 				for (int j = 0; j < EMOJI_ARRAY.length; j++) {
 					if (EMOJI_ARRAY[j].equals(emojiNumber)) {
-						Drawable drawable = mContext.getResources().getDrawable(
+						Drawable drawable = ContextCompat.getDrawable(mContext,
 								EMOJI_RESOURCE_ID_ARRAY[j]);
 						if(emojiNumber.equals("028")){  //sdk 端最后一个表情替换成了删除，收到最后一个表情，做特殊处理
-							drawable = mContext.getResources().getDrawable(R.drawable.udesk_029);
+							drawable = ContextCompat.getDrawable(mContext, R.drawable.udesk_029);
 						}
 						if (drawable != null) {
 							drawable.setBounds(0, 0, emojiWidth, emojiWidth);

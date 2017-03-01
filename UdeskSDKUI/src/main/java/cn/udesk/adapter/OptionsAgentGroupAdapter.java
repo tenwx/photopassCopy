@@ -17,7 +17,7 @@ import cn.udesk.model.AgentGroupNode;
 public class OptionsAgentGroupAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<AgentGroupNode> list = new ArrayList<AgentGroupNode>();
+    private List<AgentGroupNode> list = new ArrayList<>();
 
     public OptionsAgentGroupAdapter(Context context) {
         mContext = context;
@@ -50,7 +50,7 @@ public class OptionsAgentGroupAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, parent, false);
         }
         ((TextView)convertView).setText(list.get(position).getItem_name());
         return convertView;

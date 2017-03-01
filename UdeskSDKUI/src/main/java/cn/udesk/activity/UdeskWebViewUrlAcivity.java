@@ -15,6 +15,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskTitleBar;
 
 
@@ -109,6 +110,7 @@ public class UdeskWebViewUrlAcivity extends Activity{
 
     @Override
     protected void onDestroy() {
+        KeyBoardUtil.fixFocusedViewLeak(this);
         super.onDestroy();
     }
 }

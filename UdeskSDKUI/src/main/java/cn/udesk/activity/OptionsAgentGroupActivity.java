@@ -23,6 +23,7 @@ import cn.udesk.adapter.OptionsAgentGroupAdapter;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.AgentGroupNode;
+import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskDialog;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
@@ -39,7 +40,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
     private ListView listView;
     private UdeskDialog dialog;
     private List<AgentGroupNode> groups;
-    private List<AgentGroupNode> adapterData = new ArrayList<AgentGroupNode>();
+    private List<AgentGroupNode> adapterData = new ArrayList<>();
     private OptionsAgentGroupAdapter adapter;
     private String rootId = "item_0";
     private AgentGroupNode backMode = null;
@@ -198,7 +199,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
             title.setVisibility(View.GONE);
         } else {
             String currentTempId = currentId;
-            List<AgentGroupNode> temps = new ArrayList<AgentGroupNode>();
+            List<AgentGroupNode> temps = new ArrayList<>();
             boolean isHasParent = true;
             while (isHasParent) {
                 AgentGroupNode model = filterModel(currentTempId);
@@ -246,6 +247,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
 
     @Override
     protected void onDestroy() {
+        KeyBoardUtil.fixFocusedViewLeak(this);
         super.onDestroy();
         UdeskUtil.closeCrashReport();
     }

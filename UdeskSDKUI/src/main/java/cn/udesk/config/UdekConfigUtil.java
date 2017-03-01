@@ -3,6 +3,7 @@ package cn.udesk.config;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ public class UdekConfigUtil {
         }
         if (context != null) {
             if (UdeskConfig.DEFAULT != codeResId) {
-                int color = context.getResources().getColor(codeResId);
+                int color = ContextCompat.getColor(context, codeResId);
                 if (textViews != null) {
                     for (TextView textView : textViews) {
                         if (textView != null){
@@ -44,7 +45,7 @@ public class UdekConfigUtil {
     public static void setUIbgDrawable( int codeResId , View view) {
         Context context = view.getContext();
         if (UdeskConfig.DEFAULT != codeResId) {
-            Drawable drawable=context.getResources().getDrawable(codeResId);
+            Drawable drawable = ContextCompat.getDrawable(context, codeResId);
             setBackground(view, drawable);
         }
 

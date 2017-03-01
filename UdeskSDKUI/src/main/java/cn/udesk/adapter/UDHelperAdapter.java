@@ -17,7 +17,7 @@ import udesk.core.model.UDHelperItem;
 public class UDHelperAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<UDHelperItem> list = new ArrayList<UDHelperItem>();
+    private List<UDHelperItem> list = new ArrayList<>();
 
     public UDHelperAdapter(Context context) {
         mContext = context;
@@ -50,7 +50,7 @@ public class UDHelperAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, parent, false);
         }
         ((TextView)convertView).setText(list.get(position).subject);
         return convertView;

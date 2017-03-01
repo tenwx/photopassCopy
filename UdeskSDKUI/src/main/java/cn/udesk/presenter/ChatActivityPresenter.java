@@ -12,7 +12,6 @@ import android.util.Log;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -29,12 +28,12 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.activity.UdeskChatActivity.MessageWhat;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.voice.AudioRecordState;
 import cn.udesk.voice.AudioRecordingAacThread;
 import cn.udesk.voice.VoiceRecord;
-import cn.udesk.messagemanager.UdeskMessageManager;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
@@ -136,8 +135,7 @@ public class ChatActivityPresenter {
 
                     @Override
                     public void onSuccess(String message) {
-                        String SurveyMsg = message;
-                        SurveyOptionsModel model = JsonUtils.parseSurveyOptions(SurveyMsg);
+                        SurveyOptionsModel model = JsonUtils.parseSurveyOptions(message);
                         if (mChatView.getHandler() != null) {
                             Message messge = mChatView.getHandler().obtainMessage(
                                     MessageWhat.surveyNotify);
@@ -167,7 +165,6 @@ public class ChatActivityPresenter {
 
                     @Override
                     public void onSuccess(String message) {
-                        String SurveyMsg = message;
 
                     }
 
@@ -229,7 +226,7 @@ public class ChatActivityPresenter {
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            ;
+
                         }
 
                         @Override
@@ -646,7 +643,7 @@ public class ChatActivityPresenter {
      */
     class MyUpCompletionImgHandler implements UpCompletionHandler {
 
-        private Map<String, MessageInfo> mToMsgMap = new HashMap<String, MessageInfo>();
+        private Map<String, MessageInfo> mToMsgMap = new HashMap<>();
 
         public MyUpCompletionImgHandler() {
 
@@ -814,7 +811,7 @@ public class ChatActivityPresenter {
      */
     class MyUpCompletionAudioHandler implements UpCompletionHandler {
 
-        private Map<String, MessageInfo> mToMsgMap = new HashMap<String, MessageInfo>();
+        private Map<String, MessageInfo> mToMsgMap = new HashMap<>();
 
         public MyUpCompletionAudioHandler() {
 
@@ -864,6 +861,7 @@ public class ChatActivityPresenter {
             }catch (Exception e){
                 e.printStackTrace();
             }catch (OutOfMemoryError error){
+                error.printStackTrace();
 
             }
 
@@ -886,7 +884,6 @@ public class ChatActivityPresenter {
         } else if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)) {
             upLoadVodieFile(message.getLocalPath(), message);
         }
-        return;
     }
 
     public void SelfretrySendMsg() {

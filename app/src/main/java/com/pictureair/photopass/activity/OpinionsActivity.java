@@ -109,6 +109,7 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        UdeskSDKManager.getInstance().releaseDB();
     }
 
     private void UIStyle1(){

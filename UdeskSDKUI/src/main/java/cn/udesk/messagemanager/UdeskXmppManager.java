@@ -304,7 +304,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     private void processMessage(Message message) {
         // 收到回执消息
         if (message.getExtension("received", "urn:xmpp:receipts") != null) {
-            DeliveryReceipt received = (DeliveryReceipt) message.getExtension("received", "urn:xmpp:receipts");
+            DeliveryReceipt received = message.getExtension("received", "urn:xmpp:receipts");
             if (received != null && !TextUtils.isEmpty(received.getId())) {
                 InvokeEventContainer.getInstance().event_OnMessageReceived.invoke(received.getId());
             }
@@ -317,7 +317,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         }
 
         if (message.getExtension("action", "udesk:action") != null) {
-            ActionMsgXmpp actionMsgXmpp = (ActionMsgXmpp) message.getExtension("action", "udesk:action");
+            ActionMsgXmpp actionMsgXmpp = message.getExtension("action", "udesk:action");
             if (actionMsgXmpp != null) {
                 InvokeEventContainer.getInstance().event_OnActionMsg.invoke(actionMsgXmpp.getActionText(), message.getFrom());
             }

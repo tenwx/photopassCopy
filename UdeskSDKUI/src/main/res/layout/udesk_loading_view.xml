@@ -3,28 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        layout="@layout/udesk_default_progressbar"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+    <TextView
+        android:id="@+id/udesk_loading_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="30dp" >
-
-        <include
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            layout="@layout/udesk_default_progressbar" />
-
-        <TextView
-            android:id="@+id/udesk_loading_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/udesk_helper_loadding"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff606060" />
-    </LinearLayout>
+        android:layout_marginTop="10dp"
+        android:text="@string/udesk_helper_loadding"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff606060" />
 
 </LinearLayout>
