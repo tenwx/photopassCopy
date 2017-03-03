@@ -7,8 +7,8 @@
 
     <LinearLayout
         android:id="@+id/udesk_back_linear"
-        android:layout_width="50dp"
-        android:layout_height="52dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/udesk_line"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="14dp"
             android:layout_marginRight="14dp"
             android:layout_marginTop="15dp"
             android:scaleType="centerInside"

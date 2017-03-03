@@ -1,120 +1,138 @@
 package cn.udesk.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.webkit.WebViewClient;
 
-import cn.udesk.JsonUtils;
 import cn.udesk.R;
-import cn.udesk.UdeskConst;
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.KeyBoardUtil;
 import cn.udesk.widget.UdeskTitleBar;
-import udesk.core.UdeskCallBack;
-import udesk.core.UdeskHttpFacade;
-import udesk.core.model.UDHelperArticleContentItem;
 
 public class UdeskHelperArticleActivity extends Activity {
 
-	   private UdeskTitleBar  mTitlebar;
-	   private View udeskLoading;
-	   private TextView udeskSubject;
-	   private WebView  udeskWebView;
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.udesk_articleactivity_view);
-			settingTitlebar();
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-				getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-			}
-			udeskLoading = findViewById(R.id.udesk_loading);
-			udeskSubject = (TextView) findViewById(R.id.udesk_subject);
-			udeskWebView = (WebView) findViewById(R.id.udesk_help_content_webview);
-			Intent intent = getIntent();
-			int id = intent.getIntExtra(UdeskConst.UDESKARTICLEID, -1);
-			if(id != -1){
-				getArticlesContentJsonApiById(id);
-			}
-			
-		}
+    private UdeskTitleBar mTitlebar;
+    private View udeskLoading;
+    private WebView udeskWebView;
 
-		/**
-		 * titlebar 的设置
-		 */
-		private void settingTitlebar(){
-			mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-			if(mTitlebar != null){
-				UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-//				UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextcenterResId,mTitlebar.getTitleTextView(),mTitlebar.getStateTextView());
-				UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
-				if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-					mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
-				}
-				mTitlebar.setLeftTextSequence(getString(R.string.udesk_navi_helper_title_main));
-				mTitlebar.setLeftLinearVis(View.VISIBLE);
-				mTitlebar.setLeftViewClick(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						finish();
-					}
-				});
-			}
-		}
-		
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.udesk_articleactivity_view);
+        settingTitlebar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        udeskLoading = findViewById(R.id.udesk_loading);
+        udeskWebView = (WebView) findViewById(R.id.udesk_help_content_webview);
+        String language = getIntent().getStringExtra("language");
+        getArticlesContentJsonApiById(language);
 
-	// 通过文章的ID，获取文章的具体内容
-		private void getArticlesContentJsonApiById(int id) {
-			udeskLoading.setVisibility(View.VISIBLE);
-			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
-					UdeskSDKManager.getInstance().getDomain(this),
-					UdeskSDKManager.getInstance().getSecretKey(this),
-					id, UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
-				
-				@Override
-				public void onSuccess(String message) {
-					udeskLoading.setVisibility(View.GONE);
-					try{
-						UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
-						udeskSubject.setText(item.subject);
-						String htmlData = item.content;
-						htmlData = htmlData.replaceAll("&amp;", "&");
-						htmlData = htmlData.replaceAll("quot;", "\"");
-						htmlData = htmlData.replaceAll("lt;", "<");
-						htmlData = htmlData.replaceAll("gt;", ">");
-						WebSettings webSettings= udeskWebView.getSettings();
-						webSettings.setJavaScriptEnabled(true);
-						webSettings.setBlockNetworkImage(false);
-						webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-						udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
-					}catch (Exception e){
-						e.printStackTrace();
-					}
-				}
-				
-				@Override
-				public void onFail(String message) {
-					udeskLoading.setVisibility(View.GONE);
-					Toast.makeText(UdeskHelperArticleActivity.this, message, Toast.LENGTH_SHORT).show();
-				}
-			});
+    }
 
-		}
+    /**
+     * titlebar 的设置
+     */
+    private void settingTitlebar() {
+        mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
+        if (mTitlebar != null) {
+            UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+            UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+            if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
+                mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
+            }
+            mTitlebar.setLeftTextSequence(getString(R.string.udesk_navi_helper_title_main));
+            mTitlebar.setLeftLinearVis(View.VISIBLE);
+            mTitlebar.setLeftViewClick(new OnClickListener() {
 
-	@Override
-	protected void onDestroy() {
-		KeyBoardUtil.fixFocusedViewLeak(this);
-		super.onDestroy();
-	}
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+    }
+
+    // 通过文章的ID，获取文章的具体内容
+    private void getArticlesContentJsonApiById(String language) {
+        udeskLoading.setVisibility(View.VISIBLE);
+
+        udeskWebView.setHorizontalScrollBarEnabled(false);
+        udeskWebView.setVerticalScrollBarEnabled(false);
+
+        WebSettings settings = udeskWebView.getSettings();
+
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+
+        settings.setJavaScriptEnabled(true);
+        settings.setSavePassword(false);
+
+        settings.setAllowFileAccess(true);// 设置可以访问网络
+        settings.setBuiltInZoomControls(false);// 设置不支持缩放
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); // 设置
+
+        settings.setSaveFormData(false);
+        // 开启 Application Caches 功能
+        settings.setAppCacheEnabled(true);
+        // 设置 Application Caches 缓存目录
+        // webSettings.setAppCachePath(cacheDirPath);
+        // 开启 DOM storage API 功能
+        settings.setDomStorageEnabled(true);
+        // 开启 database storage API 功能
+        settings.setDatabaseEnabled(true);
+        // 设置数据库缓存路径
+        // webSettings.setDatabasePath(cacheDirPath);
+        settings.setPluginState(WebSettings.PluginState.ON);
+
+        //不使用缓存
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        udeskWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return false;
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                udeskLoading.setVisibility(View.GONE);
+            }
+        });
+
+        udeskWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    // 网页加载完成
+                    udeskLoading.setVisibility(View.GONE);
+                } else {
+                    // 加载中
+                    udeskLoading.setVisibility(View.VISIBLE);
+                }
+            }
+
+        });
+//        System.out.println("load url ----> " + UdeskConfig.BaseUrl + language);
+        udeskWebView.loadUrl(UdeskConfig.BaseUrl + language);//en
+    }
+
+    @Override
+    protected void onDestroy() {
+        KeyBoardUtil.fixFocusedViewLeak(this);
+        super.onDestroy();
+    }
 }

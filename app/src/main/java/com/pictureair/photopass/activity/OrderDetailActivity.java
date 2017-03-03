@@ -110,7 +110,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             case -2://交易错误
             case 1://等待付款
-                orderstatus = getResources().getString(R.string.waitpay);
+                orderstatus = getResources().getString(R.string.order_unpaid);
                 deliveryButton.setVisibility(View.GONE);
                 deliveryButton.setText(R.string.pay);
                 deliveryButton.setClickable(true);
@@ -121,7 +121,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 3:
             case 4:
             case 5:
-                orderstatus = getResources().getString(R.string.order_paid);
+                if (orderInfo.productEntityType == 0) {
+                    //3为虚拟类商品无须快递
+                    orderstatus = getResources().getString(R.string.order_completed);
+                } else {
+                    orderstatus = getResources().getString(R.string.order_paid);
+                }
                 deliveryButton.setVisibility(View.GONE);
                 break;
             case 0://交易处理中

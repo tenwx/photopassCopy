@@ -65,7 +65,7 @@ public class OpinionsActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.opinions_questions:
-                UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this);
+                UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this, MyApplication.getInstance().getLanguageType());
                 break;
 
             case R.id.opinions_online:

@@ -17,6 +17,13 @@ public class UdeskConfig {
      * 用户唯一的标识
      */
     public static String sdkToken = null;
+
+    /**
+     * FAQ的链接
+     */
+    public static final String BaseUrl = "https://www.disneyphotopass.com.cn/help.html?lange=";//正式环境
+//    public static String BaseUrl = "http://192.168.8.3:3004/help.html?lange=";//测试环境
+
     /**
      * 用户的基本信息
      */

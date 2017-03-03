@@ -30,6 +30,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/glide-3.7.0.jar')
     compile files('libs/udesk-asmack-8-4.0.6.jar')
+    compile files('libs/udesk_sdk_3.3.2.jar')
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.2.1'
     compile 'de.hdodenhof:circleimageview:2.0.0'

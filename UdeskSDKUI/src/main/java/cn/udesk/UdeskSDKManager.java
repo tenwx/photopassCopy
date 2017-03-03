@@ -11,13 +11,13 @@ import java.util.Map;
 import cn.udesk.activity.OptionsAgentGroupActivity;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskFormActivity;
-import cn.udesk.activity.UdeskHelperActivity;
+import cn.udesk.activity.UdeskHelperArticleActivity;
 import cn.udesk.activity.UdeskRobotActivity;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskDialog;
-import cn.udesk.messagemanager.UdeskMessageManager;
 import rx.Subscriber;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
@@ -107,8 +107,9 @@ public class UdeskSDKManager {
 	}
 
 
-	public void toLanuchHelperAcitivty(Context context){
-		Intent intent = new Intent(context, UdeskHelperActivity.class);
+	public void toLanuchHelperAcitivty(Context context, String language){
+		Intent intent = new Intent(context, UdeskHelperArticleActivity.class);
+		intent.putExtra("language", language);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}

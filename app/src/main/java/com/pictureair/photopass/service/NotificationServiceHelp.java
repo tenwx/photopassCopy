@@ -211,7 +211,10 @@ public class NotificationServiceHelp {
                 } catch (MalformedURLException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
                 }
+
             }
         }.start();
     }

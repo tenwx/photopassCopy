@@ -2,7 +2,7 @@
 <resources>
 
     <!-- 整体界面中，顶部Title条的高度 -->
-    <dimen name="udesk_titlebar_height">48dp</dimen>
+    <dimen name="udesk_titlebar_height">52dp</dimen>
 
     <!-- 整体界面中，TitleBar两侧的内边距 -->
     <dimen name="udesk_titlebar_padding">2dp</dimen>

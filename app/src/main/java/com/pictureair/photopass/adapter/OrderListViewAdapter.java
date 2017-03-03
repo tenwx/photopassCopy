@@ -149,7 +149,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 groupHolderView.paymentButton.setVisibility(View.GONE);
                 groupHolderView.orderCancled.setVisibility(View.VISIBLE);
                 groupHolderView.deleteButton.setVisibility(View.VISIBLE);
-                groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
+                groupHolderView.orderStatesTextView.setText(R.string.order_cancled);
                 groupHolderView.deleteButton.setEnabled(true);
                 break;
 
