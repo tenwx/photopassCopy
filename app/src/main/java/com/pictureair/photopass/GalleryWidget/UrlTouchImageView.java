@@ -478,8 +478,14 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                             PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
                             maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1);
                             oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
-                            //添加模糊
-                            showBlurView();
+                            if (oriBlurBmp == null) {
+                                _onError(401);
+
+                            } else {
+                                //添加模糊
+                                showBlurView();
+
+                            }
 
                         } else {
                             _onError(401);

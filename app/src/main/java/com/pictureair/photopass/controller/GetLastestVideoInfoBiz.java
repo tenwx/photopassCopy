@@ -21,9 +21,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by bauer_bao on 16/9/18.
  */
-public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
+public class GetLastestVideoInfoBiz implements GetLastestVideoInfoContract.Model {
     private Context context;
-    private GetLastestVideoInfoListener listener;
+    private GetLastestVideoInfoContract.ModelListener listener;
     private PhotoInfo lastestVideoInfo;
 
     public static final int VIDEO_MAKING = 11;
@@ -45,7 +45,7 @@ public class GetLastestVideoInfoBiz implements IGetLastestVideoInfoBiz {
      */
     public static final int GET_RIGHT_VIDEO_INFO_FAILED = 11103;
 
-    public GetLastestVideoInfoBiz(Context context, GetLastestVideoInfoListener listener) {
+    public GetLastestVideoInfoBiz(Context context, GetLastestVideoInfoContract.ModelListener listener) {
         this.context = context;
         this.listener = listener;
     }

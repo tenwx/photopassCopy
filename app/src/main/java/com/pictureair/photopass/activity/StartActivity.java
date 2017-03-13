@@ -157,13 +157,13 @@ public class StartActivity extends BaseActivity implements Callback {
     }
 
 
-    class RemoveRepeatPhotoTask extends Thread{
+    class RemoveRepeatPhotoTask extends Thread {
         @Override
         public void run() {
             try {
                 List<String> users = PictureAirDbManager.getAllUsers();
-                if (users.size() >0) {
-                    for (int k = 0;k<users.size();k++) {
+                if (users.size() > 0) {
+                    for (int k = 0; k < users.size(); k++) {
                         String userId = users.get(k);
                         List<PhotoDownLoadInfo> list = PictureAirDbManager.getAllPhotos(userId);
                         Collections.sort(list, new PhotoDownLoadInfoSortUtil());
@@ -184,7 +184,7 @@ public class StartActivity extends BaseActivity implements Callback {
                         }
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, true);

@@ -17,7 +17,6 @@ import android.webkit.WebViewClient;
 public class CustomWebView extends WebView {
     private MyWebviewImp myWebviewImp;//webview的接口
 
-    private boolean isDefaultWeb = true;//默认使用webview打开网页，false为用第三方浏览器打开网页
     private boolean isSupportJavaScript = true;//是否支持javascript
     private boolean isShowHorizontalScrollBarEnabled = false;//水平滚动条隐藏
     private boolean isShowVerticalScrollBarEnabled = false;//竖直滚动条隐藏
@@ -37,13 +36,11 @@ public class CustomWebView extends WebView {
 
         WebSettings settings = this.getSettings();
 
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
-
         settings.setJavaScriptEnabled(isSupportJavaScript);
         settings.setSavePassword(false);
 
         settings.setAllowFileAccess(true);// 设置可以访问网络
+        settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(false);// 设置不支持缩放
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
@@ -82,18 +79,6 @@ public class CustomWebView extends WebView {
     }
 
     /**
-     * 设置是否用webview启动网页，默认true
-     * false为用第三方浏览器启动
-     *
-     * @param isDefaultWeb
-     * @return
-     */
-    public CustomWebView setDefaultWeb(boolean isDefaultWeb) {
-        this.isDefaultWeb = isDefaultWeb;
-        return this;
-    }
-
-    /**
      * 设置是否使用javascriot
      */
     public CustomWebView setSupportJavaScript(boolean isSupportJavaScript) {
@@ -112,11 +97,6 @@ public class CustomWebView extends WebView {
 
     private void setWebViewClient() {
         this.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return isDefaultWeb;
-            }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {

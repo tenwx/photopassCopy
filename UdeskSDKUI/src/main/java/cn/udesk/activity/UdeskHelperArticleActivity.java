@@ -73,7 +73,6 @@ public class UdeskHelperArticleActivity extends Activity {
         WebSettings settings = udeskWebView.getSettings();
 
         settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
 
         settings.setJavaScriptEnabled(true);
         settings.setSavePassword(false);
@@ -101,11 +100,6 @@ public class UdeskHelperArticleActivity extends Activity {
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         udeskWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return false;
-            }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {

@@ -24,6 +24,7 @@ versionCode 11     versionName "3.0.0"
 18.首页可以扫码抵用券，但是抵用券页面依旧只能扫码抵用券
 19.网络请求框架全部替换成rxjava + retrofit + okhttp
 20.添加lint 和 leakcanary性能检测
+21.兼容API25
 
 
 

@@ -4,13 +4,13 @@ apply plugin: 'android-apt'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 11
         versionName "3.0.0"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
@@ -131,7 +131,7 @@ dependencies {
     //json
     compile 'com.alibaba:fastjson:1.2.7'
     //material design
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:design:25.1.1'
     //fab
     compile 'com.getbase:floatingactionbutton:1.10.1'
     //听云

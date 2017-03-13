@@ -220,9 +220,9 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     myToast.setTextAndShow(R.string.select_your_pp, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                for (int i = 0; i < map.size(); i++) {
-                    PictureAirLog.out("->" + map.get(i));
-                }
+//                for (int i = 0; i < map.size(); i++) {
+//                    PictureAirLog.out("->" + map.get(i));
+//                }
                 pps = new JSONArray();
                 String selectedString = "";
                 for (int j = 0; j < showPPCodeList.size(); j++) {

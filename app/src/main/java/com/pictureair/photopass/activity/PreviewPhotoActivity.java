@@ -37,8 +37,8 @@ import com.pictureair.photopass.GalleryWidget.UrlTouchImageView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.controller.GetLastestVideoInfoBiz;
+import com.pictureair.photopass.controller.GetLastestVideoInfoContract;
 import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
-import com.pictureair.photopass.controller.IGetLastestVideoInfoView;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
@@ -84,7 +84,7 @@ import rx.schedulers.Schedulers;
  * @author bauer_bao
  */
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback,
-        PWDialog.OnPWDialogClickListener, PhotoEventListener, IGetLastestVideoInfoView {
+        PWDialog.OnPWDialogClickListener, PhotoEventListener, GetLastestVideoInfoContract.View {
     private SettingUtil settingUtil;
 
     private TextView locationTextView;

@@ -37,7 +37,9 @@ public class BlurUtil {
 		overlay = doBlur(overlay, (int) radius, true);
 		Matrix matrix = new Matrix();
 		matrix.postScale(bkg.getWidth() / (float) overlay.getWidth(), bkg.getHeight() / (float) overlay.getHeight());
-		overlay = Bitmap.createBitmap(overlay, 0, 0, overlay.getWidth(), overlay.getHeight(), matrix, true);
+		if (overlay != null) {
+			overlay = Bitmap.createBitmap(overlay, 0, 0, overlay.getWidth(), overlay.getHeight(), matrix, true);
+		}
 		return overlay;
 	}
 
