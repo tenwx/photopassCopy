@@ -131,6 +131,9 @@ public class BannerView extends LinearLayout {
      * 开始自动轮播
      */
     public void bannerStartPlay() {
+        if (bannerViewList.size() == 0) {
+            return;
+        }
         if (isPlaying) {
             return;
         } else {

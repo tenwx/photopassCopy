@@ -199,6 +199,7 @@
     <string name="mypage_ppp">Disney PhotoPass+</string>
     <string name="mypage_pp1">Disney\nPhotoPass</string>
     <string name="mypage_ppp1">Disney PhotoPass+</string>
+    <string name="mypage_daily_ppp1">迪士尼乐拍通一日通</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
@@ -242,9 +243,11 @@
     <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card within the day</string>
     <string name="up_ppp_money">Yes, I want to Buy PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
+    <string name="use_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
     <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
+    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
     <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
     <!-- blur end -->
 
@@ -660,6 +663,7 @@
     <string name="animated_photo_add_cart">Add PhotoPass+ to Cart</string>
     <string name="animated_photo_buy_ppp">I want to buy Disney PhotoPass+</string>
     <string name="animated_photo_upgrade_exist_ppp">Upgrade your purchased PhotoPass+</string>
+    <string name="animated_photo_upgrade_exist_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="animated_photo_introduce_text">Do you want to unlock the magic within your photos? Purchase PhotoPass+ to experience now!</string>
     <string name="animated_photo_loading">Loading%1$d%%</string>
     <!--animated photo end-->

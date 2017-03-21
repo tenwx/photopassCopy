@@ -5,11 +5,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/me_daily_ppp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/me_show_daily_ppp"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/pp_dp_16"
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_daily_ppp1"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <ImageView
+            android:layout_width="@dimen/pp_dp_30"
+            android:layout_height="@dimen/pp_dp_30"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_daily_ppp"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_ppp" />
+
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/white"
-        />
+        android:layout_height="@dimen/pp_px_1"
+        android:background="@color/line_color" />
 
     <RelativeLayout
         android:id="@+id/me_ppp"
@@ -21,26 +49,25 @@
             android:id="@+id/me_show_ppp"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="@string/mypage_ppp1"
-            android:textSize="@dimen/text_size_16"
-            android:gravity="center_vertical"
             android:layout_centerInParent="true"
-            android:textColor="@color/pp_light_blue"
-            android:paddingTop="@dimen/pp_dp_16"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_dp_16"
-            />
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_ppp1"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_30"
             android:layout_height="@dimen/pp_dp_30"
-            android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:src="@drawable/me_ppp"
-            android:layout_toLeftOf="@id/me_show_ppp"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_ppp"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_ppp" />
 
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_px_1"
@@ -56,24 +83,22 @@
             android:id="@+id/me_show_coupon"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_centerInParent="true"
-            android:text="@string/mypage_coupons"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@color/pp_light_blue"
-            android:paddingTop="@dimen/pp_dp_16"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_dp_16"
-            />
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_coupons"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_30"
             android:layout_height="@dimen/pp_dp_30"
-            android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:src="@drawable/me_coupon"
-            android:layout_toLeftOf="@id/me_show_coupon"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_coupon"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_coupon" />
 
     </RelativeLayout>
 
@@ -92,24 +117,22 @@
             android:id="@+id/me_show_order"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_centerInParent="true"
-            android:text="@string/mypage_myorder"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@color/pp_light_blue"
-            android:paddingTop="@dimen/pp_dp_16"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_dp_16"
-            />
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_myorder"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_30"
             android:layout_height="@dimen/pp_dp_30"
-            android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:src="@drawable/me_order"
-            android:layout_toLeftOf="@id/me_show_order"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_order"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_order" />
 
     </RelativeLayout>
 
@@ -128,24 +151,22 @@
             android:id="@+id/me_show_download"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_centerInParent="true"
-            android:text="@string/mypage_download"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@color/pp_light_blue"
-            android:paddingTop="@dimen/pp_dp_16"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_dp_16"
-            />
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_download"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_30"
             android:layout_height="@dimen/pp_dp_30"
-            android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:src="@drawable/me_download"
-            android:layout_toLeftOf="@id/me_show_download"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_download"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_download" />
 
     </RelativeLayout>
 
@@ -155,35 +176,99 @@
         android:background="@color/line_color" />
 
 
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/me_customer"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/white">-->
 
+    <!--<com.pictureair.photopass.widget.CustomTextView-->
+    <!--android:id="@+id/me_show_customer"-->
+    <!--android:layout_width="180dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:paddingBottom="@dimen/pp_dp_16"-->
+    <!--android:paddingTop="@dimen/pp_dp_16"-->
+    <!--android:text="@string/mypage_customer"-->
+    <!--android:textColor="@color/pp_light_blue"-->
+    <!--android:textSize="@dimen/text_size_16" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="@dimen/pp_dp_30"-->
+    <!--android:layout_height="@dimen/pp_dp_30"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginRight="@dimen/pp_dp_20"-->
+    <!--android:layout_toLeftOf="@id/me_show_customer"-->
+    <!--android:scaleType="centerInside"-->
+    <!--android:src="@drawable/me_service" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/pp_px_1"-->
+    <!--android:background="@color/line_color" />-->
     <RelativeLayout
-        android:id="@+id/me_customer"
+        android:id="@+id/me_connect_us"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
         <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/me_show_customer"
+            android:id="@+id/me_show_connect_us"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_centerInParent="true"
-            android:text="@string/mypage_customer"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@color/pp_light_blue"
-            android:paddingTop="@dimen/pp_dp_16"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_dp_16"
-            />
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_opinions"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_30"
             android:layout_height="@dimen/pp_dp_30"
-            android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:src="@drawable/me_service"
-            android:layout_toLeftOf="@id/me_show_customer"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_connect_us"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_service" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_px_1"
+        android:background="@color/line_color" />
+
+    <RelativeLayout
+        android:id="@+id/me_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/me_show_help"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/pp_dp_16"
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_help"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <ImageView
+            android:layout_width="@dimen/pp_dp_30"
+            android:layout_height="@dimen/pp_dp_30"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_help"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_service" />
 
     </RelativeLayout>
 

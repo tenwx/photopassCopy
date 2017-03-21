@@ -120,6 +120,17 @@
             android:textSize="@dimen/text_size_16" />
 
         <Button
+            android:id="@+id/animated_photo_upgrade_daily_ppp_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_dp_16"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_dp_10"
+            android:text="@string/animated_photo_upgrade_exist_daily_ppp"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_16" />
+
+        <Button
             android:id="@+id/animated_photo_upgrade_ppp_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -445,7 +445,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     }
 
     private void removePPFromUser() {
-        final String ppcode = ppList.get(deletePosition).getPpCode();
         API2.removePPFromUser(ppList.get(deletePosition).getPpCode(), new HttpCallback() {
             @Override
             public void doOnSubscribe() {

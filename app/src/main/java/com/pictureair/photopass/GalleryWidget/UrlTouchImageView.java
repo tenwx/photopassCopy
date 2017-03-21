@@ -402,7 +402,9 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                                 e.printStackTrace();
                             }
                             if (null != arg2) {
-                                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inSampleSize = 2;
+                                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
                             } else {//失败
                                 return Observable.just(false);
 
@@ -444,7 +446,9 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                                                 }
                                                 is.close();
                                                 baos.close();
-                                                oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                                options.inSampleSize = 2;
+                                                oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
                                                 return oriClearBmp != null;
                                             } catch (Exception e1) {
                                                 e1.printStackTrace();

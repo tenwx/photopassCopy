@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -56,11 +57,12 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private ImageView cartImageView;
     private ImageView adImageView;
     private TextView cartCountTextView;
-    private Button buyPPPBtn, upgradePPP, addPPPToCart;
+    private Button buyPPPBtn, upgradePPP, upgradeDailyPPP, addPPPToCart;
 
     private PWToast pwToast;
 
     private PhotoInfo videoInfo;
+    private String ppCode;
     private String tabName;
     private int currentPosition;//记录当前预览照片的索引值
 
@@ -91,6 +93,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         cartCountTextView = (TextView) findViewById(R.id.textview_cart_count);
         buyPPPBtn = (Button) findViewById(R.id.animated_photo_buy_ppp_btn);
         upgradePPP = (Button) findViewById(R.id.animated_photo_upgrade_ppp_btn);
+        upgradeDailyPPP = (Button) findViewById(R.id.animated_photo_upgrade_daily_ppp_btn);
         addPPPToCart = (Button) findViewById(R.id.animated_photo_add_cart_btn);
         adImageView = (ImageView) findViewById(R.id.animated_photo_iv);
 
@@ -99,6 +102,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         cartCountTextView.setOnClickListener(this);
         buyPPPBtn.setOnClickListener(this);
         upgradePPP.setOnClickListener(this);
+        upgradeDailyPPP.setOnClickListener(this);
         addPPPToCart.setOnClickListener(this);
     }
 
@@ -108,6 +112,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         Bundle bundle = getIntent().getBundleExtra("bundle");
         currentPosition = bundle.getInt("position", 0);
         tabName = bundle.getString("tab");
+        ppCode = bundle.getString("ppCode");
 
         if (MyApplication.getInstance().getLanguageType().equals(Common.ENGLISH)) {
             adImageView.setImageResource(R.drawable.animated_ad_en);
@@ -223,7 +228,17 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                     return;
                 }else{
                     showPWProgressDialog();
-                    getPPPsByShootDate(videoInfo.getShootDate());
+                    getPPPsByShootDate(videoInfo.getShootDate(), false);
+                }
+                break;
+
+            case R.id.animated_photo_upgrade_daily_ppp_btn://使用已存在的daily ppp升级
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
+                    pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    return;
+                }else{
+                    showPWProgressDialog();
+                    getPPPsByShootDate(videoInfo.getShootDate(), true);
                 }
                 break;
 
@@ -242,7 +257,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         }
     }
 
-    private void getPPPsByShootDate(String shootDate) {
+    private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
         API2.getPPPsByShootDate(shootDate)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -256,9 +271,16 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                             SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
                             SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
 
-                            Intent intent = new Intent(ADVideoDetailProductActivity.this, SelectPPActivity.class);
-                            intent.putExtra("photoPassCode", videoInfo.getPhotoPassCode());
-                            intent.putExtra("shootTime", videoInfo.getShootDate());
+                            JSONArray pps = new JSONArray();
+                            JSONObject ppJB = new JSONObject();
+                            ppJB.put("code", ppCode);
+                            ppJB.put("bindDate", videoInfo.getShootDate());
+                            pps.add(ppJB);
+
+                            Intent intent = new Intent(ADVideoDetailProductActivity.this, MyPPPActivity.class);
+                            intent.putExtra("ppsStr", pps.toString());
+                            intent.putExtra("isUseHavedPPP", true);
+                            intent.putExtra("dailyppp", isDaily);
                             startActivity(intent);
                         } else {
                             pwToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);

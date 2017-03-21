@@ -66,6 +66,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRefreshListener, PWDialog.OnPWDialogClickListener{
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
+    private boolean isDailyPPP = false;
     private ImageView ppp_guideView;
     private MyListView listPPP;
     private ImageView back;
@@ -309,6 +310,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         setContentView(R.layout.activity_my_ppp);
         initViewCommon();
         isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
+        isDailyPPP = getIntent().getBooleanExtra("dailyppp", false);
         if (isUseHavedPPP){
             ppsStr = getIntent().getStringExtra("ppsStr");
             initViewUseHavedPPP();
@@ -350,7 +352,25 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         ok.setEnabled(false);
         ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.gray_light5));
         refreshLayout.setVisibility(View.VISIBLE);
-        listPPPAdapter = new ListOfPPPAdapter(API2.PPPlist, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
+
+        list1 = new ArrayList<>();
+        for (int i = 0; i < API2.PPPlist.size(); i++) {
+            PPPinfo ppPinfo = API2.PPPlist.get(i);
+            if (isDailyPPP) {//一日通
+                if (ppPinfo.capacity != 1) {
+                    continue;
+
+                }
+
+            } else {//一卡通
+                if (ppPinfo.capacity == 1) {
+                    continue;
+                }
+
+            }
+            list1.add(ppPinfo);
+        }
+        listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
         View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
         listPPP.addHeaderView(view);
         listPPP.setAdapter(listPPPAdapter);
@@ -408,6 +428,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             for (int i = 0; i < API2.PPPlist.size(); i++) {
                 PictureAirLog.v(TAG, "load==========");
                 PPPinfo ppPinfo = API2.PPPlist.get(i);
+                if (isDailyPPP) {//一日通
+                    if (ppPinfo.capacity != 1) {
+                        continue;
+
+                    }
+
+                } else {//一卡通
+                    if (ppPinfo.capacity == 1) {
+                        continue;
+                    }
+
+                }
+
                 String bindddateString = ppPinfo.bindInfo.get(0).bindDate;
                 PictureAirLog.v(TAG, bindddateString);
                 bindddateString = bindddateString.replace("[", "").replace("]", "").replaceAll("\"", "").trim();
@@ -822,13 +855,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             listNormal.clear();
             listNoUse.clear();
             for (int i = 0; i < API2.PPPlist.size(); i++) {
-//						PPPinfo dayOfPPP = new PPPinfo();
                 PPPinfo ppPinfo = API2.PPPlist.get(i);
-//						dayOfPPP.time = ppPinfo.ownOn;
-//						dayOfPPP.pppId = ppPinfo.PPPCode;
-//						dayOfPPP.amount = ppPinfo.capacity;
+                if (isDailyPPP) {//一日通
+                    if (ppPinfo.capacity != 1) {
+                        continue;
+
+                    }
+
+                } else {//一卡通
+                    if (ppPinfo.capacity == 1) {
+                        continue;
+                    }
+
+                }
                 //判断是否有可用的ppp
-//						dayOfPPP.usedNumber = ppPinfo.bindInfo.size();
                 if (!hasOtherAvailablePPP) {
                     if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp
                         hasOtherAvailablePPP = true;

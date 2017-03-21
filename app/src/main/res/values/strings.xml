@@ -199,6 +199,7 @@
     <string name="mypage_ppp">迪士尼乐拍通一卡通</string>
     <string name="mypage_pp1">迪士尼\n乐拍通</string>
     <string name="mypage_ppp1">迪士尼乐拍通一卡通</string>
+    <string name="mypage_daily_ppp1">迪士尼乐拍通一日通</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
@@ -242,9 +243,11 @@
     <string name="blur_intro">迪士尼乐拍通一卡通可让您下载已关联在此乐拍通卡内同一天的所有高清照片</string>
     <string name="up_ppp_money">我要购买迪士尼乐拍通一卡通</string>
     <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
+    <string name="use_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="buythisphoto">我要购买单张数码照片</string>
     <string name="cancel1">取消</string>
     <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
+    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <!-- blur end -->
 
@@ -660,6 +663,7 @@
     <string name="animated_photo_add_cart">把迪士尼乐拍通一卡通加入购物车</string>
     <string name="animated_photo_buy_ppp">我要购买迪士尼乐拍通一卡通</string>
     <string name="animated_photo_upgrade_exist_ppp">使用已有的迪士尼乐拍通一卡通</string>
+    <string name="animated_photo_upgrade_exist_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="animated_photo_introduce_text">想要开启照片中的神奇魔法吗？现在就购买迪士尼乐拍通一卡通吧！</string>
     <string name="animated_photo_loading">正在加载%1$d%%</string>
     <!--animated photo end-->

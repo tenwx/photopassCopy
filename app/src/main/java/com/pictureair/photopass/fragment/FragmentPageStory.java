@@ -32,7 +32,6 @@ import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.activity.SubmitOrderActivity;
 import com.pictureair.photopass.adapter.DailyPPCardRecycleAdapter;
-import com.pictureair.photopass.adapter.NoPhotoRecycleAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DailyPPCardInfo;
@@ -108,9 +107,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ImageView scanIv;
     private RelativeLayout scanLayout;
     private RelativeLayout menuLayout;
-    private RelativeLayout noPhotoTipRL;
-    private RelativeLayout noPhotoViewRL;
-    private ImageView noPhotoViewRLCloseIV;
     private ScrollView storyNoPpToScanLinearLayout;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -121,8 +117,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private BannerView bannerView;
     private RelativeLayout gifRL, scanRL, draftLayout;
     private ImageView gifIV;
-    private RecyclerView noPhotoRV, dailyPPCardRV;
-    private NoPhotoRecycleAdapter noPhotoRecycleAdapter;
+    private RecyclerView dailyPPCardRV;
     private DailyPPCardRecycleAdapter dailyPPCardRecycleAdapter;
     private ImageView img_float_hide;
     private FloatingActionButton fab;
@@ -224,16 +219,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         menuLayout = (RelativeLayout) view.findViewById(R.id.story_drawer_rl);
         storyNoPpToScanLinearLayout = (ScrollView) view.findViewById(R.id.story_no_pp_to_scan);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
-        noPhotoTipRL = (RelativeLayout) view.findViewById(R.id.story_no_photo_rl);
-        noPhotoViewRL = (RelativeLayout) view.findViewById(R.id.no_photo_view_relativelayout);
-        noPhotoViewRLCloseIV = (ImageView) view.findViewById(R.id.story_no_photo_close_iv);
-        noPhotoRV = (RecyclerView) view.findViewById(R.id.story_no_photo_rv);
         dailyPPCardRV = (RecyclerView) view.findViewById(R.id.story_fragment_rv);
         specialDealLL = (LinearLayout) view.findViewById(R.id.special_deal_ll);
         specialDealDetailTV = (CustomTextView) view.findViewById(R.id.special_deal_detail_tv);
         specialDealOnTV = (CustomTextView) view.findViewById(R.id.special_deal_on);
         bannerView = (BannerView) view.findViewById(R.id.story_banner);
-        bannerView.setPhotos(JsonUtil.getBannerPhotosList(context, null));
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
@@ -251,6 +241,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         scanRL.setOnClickListener(this);
 
         draftLayout= (RelativeLayout) view.findViewById(R.id.draft_layout);
+        draftLayout.setVisibility(View.GONE);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         img_float_hide = (ImageView) view.findViewById(R.id.float_hide);
         fab.setOnClickListener(this);
@@ -270,7 +261,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         scanLayout.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
         specialDealLL.setOnClickListener(this);
-        noPhotoViewRLCloseIV.setOnClickListener(this);
         specialDealOnTV.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         //初始化数据
         GlideUtil.loadGifAsImage(context, GlideUtil.getDrawableUrl(context, R.drawable.story_pp_intro), gifIV);
@@ -616,12 +606,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private void showViewPager() {
         PictureAirLog.out("story flow ---> show view");
-        if (dailyPPCardInfoArrayList != null && dailyPPCardInfoArrayList.size() > 0) {//有图片
+        if (dailyPPCardInfoArrayList != null && dailyPPCardInfoArrayList.size() > 0) {//有卡
             PictureAirLog.out("viewpager---->has photos");
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-            //隐藏空图的情况
-            noPhotoViewRL.setVisibility(View.GONE);
             //显示有pp的情况
             dailyPPCardRV.setVisibility(View.VISIBLE);
             swipeRefreshLayout.setEnabled(true);
@@ -636,68 +624,49 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 dailyPPCardRecycleAdapter.notifyDataSetChanged();
             }
 
-            if (app.getPushPhotoCount() == 0){
+            if (app.getPushPhotoCount() == 0) {
                 PictureAirLog.out("need gone the badgeview");
                 PictureAirLog.out("photocount---->" + app.getPushPhotoCount());
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
-        } else {//没有图片
+        } else {//没有卡
             swipeRefreshLayout.setEnabled(false);
-            //判断是否应该显示左上角红点
-            if (pPinfoArrayList.size() > 0) {
-                //有扫描过
-                PictureAirLog.out("viewpager---->no photos");
-                storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 
-                //显示空图的情况
-                noPhotoViewRL.setVisibility(View.VISIBLE);
+            //没有扫描过
+            PictureAirLog.out("viewpager---->has not scan pp");
+            //获取banner数据
+            API2.getBannerPhotos(MyApplication.getTokenId())
+                    .map(new Func1<JSONObject, ArrayList<String>>() {
 
-                if (noPhotoRecycleAdapter == null) {
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-                    noPhotoRecycleAdapter = new NoPhotoRecycleAdapter(context, pPinfoArrayList);
-                    noPhotoRV.setLayoutManager(linearLayoutManager);
-                    noPhotoRV.setAdapter(noPhotoRecycleAdapter);
-                } else {
-                    noPhotoRecycleAdapter.notifyDataSetChanged();
-                }
+                        @Override
+                        public ArrayList<String> call(JSONObject jsonObject) {
+                            return JsonUtil.getBannerPhotosList(context, jsonObject);
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<ArrayList<String>>bindToLifecycle())
+                    .subscribe(new RxSubscribe<ArrayList<String>>() {
+                        @Override
+                        public void _onNext(ArrayList<String> strings) {
+                            bannerView.setPhotos(strings);
+                            bannerView.bannerStartPlay();
 
-            } else {
-                //没有扫描过
-                PictureAirLog.out("viewpager---->has not scan pp");
-                //获取banner数据
-                API2.getBannerPhotos(MyApplication.getTokenId())
-                        .map(new Func1<JSONObject, ArrayList<String>>() {
+                        }
 
-                            @Override
-                            public ArrayList<String> call(JSONObject jsonObject) {
-                                return JsonUtil.getBannerPhotosList(context, jsonObject);
-                            }
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .compose(this.<ArrayList<String>>bindToLifecycle())
-                        .subscribe(new RxSubscribe<ArrayList<String>>() {
-                            @Override
-                            public void _onNext(ArrayList<String> strings) {
-                                bannerView.setPhotos(strings);
+                        @Override
+                        public void _onError(int status) {
+                            bannerView.setPhotos(JsonUtil.getBannerPhotosList(context, null));
+                            bannerView.bannerStartPlay();
 
-                            }
+                        }
 
-                            @Override
-                            public void _onError(int status) {
-                                bannerView.bannerStartPlay();
+                        @Override
+                        public void onCompleted() {
 
-                            }
-
-                            @Override
-                            public void onCompleted() {
-                                bannerView.bannerStartPlay();
-
-                            }
-                        });
-                //显示没有pp的情况
-                storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
-                noPhotoViewRL.setVisibility(View.GONE);
-            }
+                        }
+                    });
+            //显示没有pp的情况
+            storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
         }
         PictureAirLog.out("story flow ---> show view done");
         showLeadView();
@@ -841,10 +810,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 draftLayout.setVisibility(View.GONE);
                 break;
 
-            case R.id.story_no_photo_close_iv:
-                noPhotoTipRL.setVisibility(View.GONE);
-                break;
-
             default:
                 break;
         }
@@ -922,7 +887,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
                 }
 
-            } else if (!noPhotoViewRL.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
+            } else if (!syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
                 syncingBoughtPhotos = true;
                 PictureAirLog.out("start sync------->");
                 fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 2000);
@@ -976,9 +941,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                         @Override
                         public void onCompleted() {
-                            if (noPhotoRecycleAdapter != null) {
-                                noPhotoRecycleAdapter.notifyDataSetChanged();
-                            }
                             if (dailyPPCardRecycleAdapter != null) {
                                 dailyPPCardRecycleAdapter.notifyDataSetChanged();
                             }

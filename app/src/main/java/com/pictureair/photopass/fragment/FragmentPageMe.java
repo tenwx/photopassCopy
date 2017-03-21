@@ -18,10 +18,10 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
-import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.OrderActivity;
 import com.pictureair.photopass.activity.ProfileActivity;
 import com.pictureair.photopass.activity.SettingActivity;
+import com.pictureair.photopass.activity.WebViewActivity;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.GlideUtil;
@@ -38,7 +38,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout orderTV,  pppTV, couponTV, customerTV, downloadTV;
+    private RelativeLayout orderTV,  pppTV, couponTV, customerTV, downloadTV, dailyPPPTV, connectUsTV, helpTV;
     private ImageView headPhoto, headSet;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String avatarUrl = "";//用户头像url
@@ -71,15 +71,21 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         orderTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_order);
         pppTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_ppp);
         couponTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_coupon);
-        customerTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_customer);
+//        customerTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_customer);
         downloadTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_download);
+        dailyPPPTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_daily_ppp);
+        connectUsTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_connect_us);
+        helpTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_help);
 
         orderTV.setOnClickListener(this);
         pppTV.setOnClickListener(this);
         couponTV.setOnClickListener(this);
         headSet.setOnClickListener(this);
-        customerTV.setOnClickListener(this);
+//        customerTV.setOnClickListener(this);
         downloadTV.setOnClickListener(this);
+        dailyPPPTV.setOnClickListener(this);
+        connectUsTV.setOnClickListener(this);
+        helpTV.setOnClickListener(this);
 
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(activity),
                 (int) (4.0F * (ScreenUtil.getScreenHeight(activity) / 16.0F)) + ScreenUtil.dip2px(activity, 35));
@@ -154,10 +160,18 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 startActivity(i);
                 break;
 
-//            case R.id.me_help:
-//                i.setClass(MyApplication.getInstance(), HelpActivity.class);
-//                startActivity(i);
-//                break;
+            case R.id.me_daily_ppp:
+                // 跳转到PPP页面
+                i.setClass(MyApplication.getInstance(), MyPPPActivity.class);
+                i.putExtra("dailyppp", true);
+                startActivity(i);
+                break;
+
+            case R.id.me_help:
+                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
+                i.putExtra("key",6);
+                startActivity(i);
+                break;
 
 //            case R.id.me_setting:
 //                i.setClass(MyApplication.getInstance(), SettingActivity.class);
@@ -175,22 +189,17 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 startActivity(i);
                 break;
 
-//            case R.id.me_opinions:
-//                //意见反馈弹出框
-//                PictureAirLog.v(TAG, "me_opinions");
-////                UmengUtil.startFeedbackActivity(context);
-//                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
-//                i.putExtra("key",3);
-//                startActivity(i);
-//
-//                break;
-
-            case R.id.me_customer:
-
-                i.setClass(MyApplication.getInstance(), OpinionsActivity.class);
+            case R.id.me_connect_us:
+                //意见反馈弹出框
+                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
+                i.putExtra("key",3);
                 startActivity(i);
-
                 break;
+
+//            case R.id.me_customer:
+//                i.setClass(MyApplication.getInstance(), OpinionsActivity.class);
+//                startActivity(i);
+//                break;
 
             case R.id.user_set:
                 i.setClass(MyApplication.getInstance(), SettingActivity.class);

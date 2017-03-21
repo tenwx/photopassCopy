@@ -303,6 +303,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						Bundle bundle = new Bundle();
 						bundle.putInt("position", position);
 						bundle.putString("tab", "editStory");
+						bundle.putString("ppCode", ppCode);
 						intent.putExtra("bundle", bundle);
 						startActivity(intent);
 					} else {

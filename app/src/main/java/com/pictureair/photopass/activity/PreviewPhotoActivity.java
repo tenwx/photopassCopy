@@ -115,13 +115,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private int currentPosition;//记录当前预览照片的索引值
 
-    private String tabName;
+    private String tabName, currentPPCode;
 
     /**
      * 模糊图购买对话框控件
      */
     private TextView buyPhotoPriceTV, buyPhotoIntroTV, buyPPPPriceTV, buyPPPIntroTV, buyPhotoNameTV, buyPPPNameTV;
-    private RelativeLayout buyPhotoRL, buyPPPRL, usePPPRL;
+    private RelativeLayout buyPhotoRL, buyPPPRL, usePPPRL, useDailyPPPRL;
 
     /**
      * 是否是横屏模式
@@ -478,11 +478,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 tabName = bundle.getString("tab");
                 PictureAirLog.out("tabName--->" + tabName);
                 if (tabName.equals("editStory")){//编辑PP照片页面
-                    String ppCode = bundle.getString("ppCode");
+                    currentPPCode = bundle.getString("ppCode");
                     String shootDate = bundle.getString("shootDate");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
-                            PictureAirDbManager.getPhotoInfosByPPCode(ppCode, shootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
+                            PictureAirDbManager.getPhotoInfosByPPCode(currentPPCode, shootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
 
                 } else {//获取列表图片， other，不需要根据photoid重新找到地点
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
@@ -597,9 +597,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     buyPPPIntroTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
                     buyPPPPriceTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
                     usePPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_photo_ll);
+                    useDailyPPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_daily_photo_ll);
                     buyPhotoRL.setOnClickListener(this);
                     buyPPPRL.setOnClickListener(this);
                     usePPPRL.setOnClickListener(this);
+                    useDailyPPPRL.setOnClickListener(this);
                 } else {//需要把view的父控件的子view全部清除，此处为什么是FrameLayout，是从源码得知
                     ((FrameLayout) buyPhotoRootView.getParent()).removeAllViews();
                 }
@@ -884,7 +886,25 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     return;
                 }else{
-                    getPPPsByShootDate(photoInfo.getShootDate());
+                    getPPPsByShootDate(photoInfo.getShootDate(), false);
+                }
+                break;
+
+            case R.id.preview_blur_dialog_upgrade_daily_photo_ll:
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
+                }
+                if (photoInfo == null) {
+                    return;
+                }
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
+                    return;
+                }else{
+                    getPPPsByShootDate(photoInfo.getShootDate(), true);
                 }
                 break;
 
@@ -948,7 +968,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 });
     }
 
-    private void getPPPsByShootDate(String shootDate) {
+    private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
         API2.getPPPsByShootDate(shootDate)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -965,9 +985,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 sheetDialog.dismiss();
                             }
 
-                            Intent intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
-                            intent.putExtra("photoPassCode",photoInfo.getPhotoPassCode());
-                            intent.putExtra("shootTime",photoInfo.getShootDate());
+                            JSONArray pps = new JSONArray();
+                            JSONObject ppJB = new JSONObject();
+                            ppJB.put("code", currentPPCode);
+                            ppJB.put("bindDate", photoInfo.getShootDate());
+                            pps.add(ppJB);
+
+                            Intent intent = new Intent(PreviewPhotoActivity.this, MyPPPActivity.class);
+                            intent.putExtra("ppsStr", pps.toString());
+                            intent.putExtra("isUseHavedPPP", true);
+                            intent.putExtra("dailyppp", isDaily);
                             startActivity(intent);
                         } else {
                             newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);

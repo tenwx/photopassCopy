@@ -745,7 +745,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     myApplication.setBuyPPPStatus(Common.FROM_PREVIEW_PPP_ACTIVITY_PAYED);
 
                 }
-                intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
+                intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);//只能购买一日通
+                intent.putExtra("dailyppp", true);
                 API2.PPPlist.clear();
 
             } else {

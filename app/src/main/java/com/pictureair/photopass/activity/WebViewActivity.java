@@ -103,6 +103,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         } else if (key == 5) {//使用条款
             webView.start(Common.TERMS_OF_USE + (MyApplication.getInstance().getLanguageType().equals("en") ? "english/" : "chinese-simplified/"));
             setTopTitleShow(R.string.terms_of_use); // 设置标题
+        } else if (key == 6) {//常见问题
+            webView.start(Common.HELP_FAQ + MyApplication.getInstance().getLanguageType());
+            setTopTitleShow(R.string.mypage_help); // 设置标题
         }
     }
 
