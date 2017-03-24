@@ -33,7 +33,6 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CustomButtonFont;
-import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
@@ -107,11 +106,11 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
         addAccountToView();
 
-        if (CustomFontManager.IS_CUSOTM_FONT) {
-            typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
-            btn_next.setTypeface(typeface);
-            sure.setTypeface(typeface);
-        }
+//        if (CustomFontManager.IS_CUSOTM_FONT) {
+//            typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
+//            btn_next.setTypeface(typeface);
+//            sure.setTypeface(typeface);
+//        }
     }
 
     private void addAccountToView() {

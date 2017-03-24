@@ -40,4 +40,13 @@ public class BasicResult<T> {
     public void setResult(T result) {
         this.result = result;
     }
+
+    @Override
+    public String toString() {
+        return "BasicResult{" +
+                "status=" + status +
+                ", msg='" + msg + '\'' +
+                ", result=" + result +
+                '}';
+    }
 }

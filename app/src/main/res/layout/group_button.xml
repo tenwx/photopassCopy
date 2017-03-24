@@ -14,7 +14,7 @@
         android:clickable="true"
         android:gravity="center"
         android:text="@string/button_cancel"
-        android:textColor="@color/pp_gray"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
 
     <View
@@ -32,7 +32,7 @@
         android:clickable="true"
         android:gravity="center"
         android:text="@string/button_ok"
-        android:textColor="@color/pp_blue"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_16" />
 
 </LinearLayout>

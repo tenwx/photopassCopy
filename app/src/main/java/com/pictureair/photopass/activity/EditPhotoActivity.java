@@ -321,26 +321,26 @@ public class EditPhotoActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void enableNextBtnClick() {
-        mNextStep.setImageResource(R.drawable.forward);
+        mNextStep.setImageResource(R.drawable.edit_rotate_next_enable);
         mNextStep.setClickable(true);
     }
 
     @Override
     public void disableNextBtnClick() {
-        mNextStep.setImageResource(R.drawable.forward1);
+        mNextStep.setImageResource(R.drawable.edit_rotate_next_disable);
         mNextStep.setClickable(false);
     }
 
 
     @Override
     public void enableBackBtnClick() {
-        mLastStep.setImageResource(R.drawable.cancel);
+        mLastStep.setImageResource(R.drawable.edit_rotate_last_enable);
         mLastStep.setClickable(true);
     }
 
     @Override
     public void disableBackBtnClick() {
-        mLastStep.setImageResource(R.drawable.cancel1);
+        mLastStep.setImageResource(R.drawable.edit_rotate_last_disable);
         mLastStep.setClickable(false);
     }
 

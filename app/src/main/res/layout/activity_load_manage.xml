@@ -31,11 +31,11 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingLeft="@dimen/pp_dp_10"
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/edit_big_cancle"
+            android:src="@drawable/edit_album_disall_enable"
             android:visibility="gone"
             android:layout_above="@+id/invoice_line"/>
 

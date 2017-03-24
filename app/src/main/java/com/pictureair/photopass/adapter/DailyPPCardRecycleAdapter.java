@@ -50,7 +50,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final int pos = viewHolder.getAdapterPosition();
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
-            recyclerViewHolder.ppCodeTV.setText(String.format(context.getString(R.string.story_card), dailyPPCardInfoArrayList.get(position).getPpCode()));
+            recyclerViewHolder.ppCodeTV.setText(dailyPPCardInfoArrayList.get(position).getPpCode());
             recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

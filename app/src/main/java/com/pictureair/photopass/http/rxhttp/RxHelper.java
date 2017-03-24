@@ -4,6 +4,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 
 import rx.Observable;
@@ -30,6 +31,7 @@ public class RxHelper {
                             if (response.getStatus() == 200){
                                 return createData(response.getResult());
                             } else {
+                                PictureAirLog.d("network error--> " + response.toString());
                                 switch (response.getStatus()) {
                                     case 6035://Current certification has expired, please login again
                                     case 6079://Current certification has expired, please login again

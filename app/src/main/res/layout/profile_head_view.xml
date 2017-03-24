@@ -54,12 +54,12 @@
         android:id="@+id/user_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/pp_dp_10"
         android:adjustViewBounds="true"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/pp_dp_20"
         android:src="@drawable/me_setting"
+        android:scaleType="centerInside"
         />
 
 </RelativeLayout>

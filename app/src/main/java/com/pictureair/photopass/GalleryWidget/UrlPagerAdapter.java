@@ -20,6 +20,7 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -57,13 +58,14 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
-        UrlTouchImageView iv = new UrlTouchImageView(mContext, mResources.get(position).getIsPaid(), position, cardMode);
+        PhotoInfo photoInfo = mResources.get(position);
+        UrlTouchImageView iv = new UrlTouchImageView(mContext, photoInfo.getIsPaid(), position, cardMode);
         iv.setDefaultType(defaultType);
-        if (mResources.get(position).getIsOnLine() == 1 && mResources.get(position).getIsPaid() == 1) {//网络图
+        if (photoInfo.getIsOnLine() == 1 && photoInfo.getIsPaid() == 1) {//网络图
             iv.setProgressImageViewVisible(true);
-            if (mResources.get(position).getIsVideo() == 0) {//照片
+            if (photoInfo.getIsVideo() == 0) {//照片
                 //1.获取需要显示文件的文件名
-                String fileString = AppUtil.getReallyFileName(mResources.get(position).getPhotoThumbnail_1024(), 0);
+                String fileString = AppUtil.getReallyFileName(photoInfo.getPhotoThumbnail_1024(), 0);
                 //2、判断文件是否存在sd卡中
                 File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
                 if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
@@ -72,36 +74,36 @@ public class UrlPagerAdapter extends BasePagerAdapter {
 
                 } else {
                     PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
-                    iv.setUrl(mResources.get(position).getPhotoThumbnail_1024(), AppUtil.isEncrypted(mResources.get(position).getIsEnImage()));
+                    iv.setUrl(photoInfo.getPhotoThumbnail_1024(), AppUtil.isEncrypted(photoInfo.getIsEnImage()));
                 }
             } else {//视频
                 PictureAirLog.out("show video info");
-                iv.setUrl(Common.PHOTO_URL + mResources.get(position).getPhotoThumbnail_512(), AppUtil.isEncrypted(mResources.get(position).getIsEnImage()));
+                iv.setUrl(Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512(), AppUtil.isEncrypted(photoInfo.getIsEnImage()));
                 iv.disableZoom();
                 iv.setVideoType(photoEventListener);
             }
 
-        } else if (mResources.get(position).getIsOnLine() == 0) {//本地图
-            if (mResources.get(position).getIsVideo() == 0) {//照片
-                PictureAirLog.out("url---->" + mResources.get(position).getPhotoOriginalURL());
+        } else if (photoInfo.getIsOnLine() == 0) {//本地图
+            if (photoInfo.getIsVideo() == 0) {//照片
+                PictureAirLog.out("url---->" + photoInfo.getPhotoOriginalURL());
                 PictureAirLog.v("instantiateItem", "local photo : " + position + position);
                 iv.setProgressImageViewVisible(true);
-                iv.setImagePath(mResources.get(position).getPhotoOriginalURL());
+                iv.setImagePath(photoInfo.getPhotoOriginalURL());
             }else{//视频
-                iv.setUrl(Common.PHOTO_URL + mResources.get(position).getPhotoThumbnail_512(), AppUtil.isEncrypted(mResources.get(position).getIsEnImage()));
+                iv.setUrl(Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512(), AppUtil.isEncrypted(photoInfo.getIsEnImage()));
                 iv.disableZoom();
                 iv.setVideoType(photoEventListener);
             }
 
         } else {//模糊图
-            iv.setBlurImageUrl(mResources.get(position).getPhotoThumbnail_1024(), mResources.get(position).getPhotoId());
+            iv.setBlurImageUrl(photoInfo.getPhotoThumbnail_1024(), photoInfo.getPhotoId());
             iv.setProgressImageViewVisible(true);
         }
         iv.setOnPhotoEventListener(photoEventListener);
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         iv.setId(position);
         if (cardMode) {
-            iv.setTimeText(AppUtil.getExpiredTime(mContext, mResources.get(position)));
+            iv.setTimeText(photoInfo.getShootDate() + String.format(mContext.getString(R.string.gallery_expire_time), photoInfo.getExipreDate()));
             iv.setFullScreenMode(fullScreenMode);
         }
         collection.addView(iv, 0);

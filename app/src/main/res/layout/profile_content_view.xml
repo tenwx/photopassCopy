@@ -30,7 +30,7 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_toLeftOf="@id/me_show_daily_ppp"
             android:scaleType="centerInside"
-            android:src="@drawable/me_ppp" />
+            android:src="@drawable/me_dailyppp" />
 
     </RelativeLayout>
 
@@ -209,39 +209,6 @@
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="@dimen/pp_px_1"-->
     <!--android:background="@color/line_color" />-->
-    <RelativeLayout
-        android:id="@+id/me_connect_us"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
-
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/me_show_connect_us"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/pp_dp_16"
-            android:paddingTop="@dimen/pp_dp_16"
-            android:text="@string/mypage_opinions"
-            android:textColor="@color/pp_light_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <ImageView
-            android:layout_width="@dimen/pp_dp_30"
-            android:layout_height="@dimen/pp_dp_30"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:layout_toLeftOf="@id/me_show_connect_us"
-            android:scaleType="centerInside"
-            android:src="@drawable/me_service" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_px_1"
-        android:background="@color/line_color" />
 
     <RelativeLayout
         android:id="@+id/me_help"
@@ -268,7 +235,41 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_toLeftOf="@id/me_show_help"
             android:scaleType="centerInside"
-            android:src="@drawable/me_service" />
+            android:src="@drawable/me_help" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_px_1"
+        android:background="@color/line_color" />
+
+    <RelativeLayout
+        android:id="@+id/me_connect_us"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/me_show_connect_us"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/pp_dp_16"
+            android:paddingTop="@dimen/pp_dp_16"
+            android:text="@string/mypage_opinions"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <ImageView
+            android:layout_width="@dimen/pp_dp_30"
+            android:layout_height="@dimen/pp_dp_30"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_toLeftOf="@id/me_show_connect_us"
+            android:scaleType="centerInside"
+            android:src="@drawable/me_connectus" />
 
     </RelativeLayout>
 

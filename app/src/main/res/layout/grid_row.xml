@@ -30,7 +30,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:scaleType="centerInside"
-        android:src="@drawable/sel1"
+        android:src="@drawable/sel3"
         android:visibility="invisible" />
 
 </RelativeLayout>

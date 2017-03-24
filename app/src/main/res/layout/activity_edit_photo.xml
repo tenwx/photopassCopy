@@ -67,7 +67,7 @@
                 android:background="@color/transparent"
                 android:padding="@dimen/pp_dp_15"
                 android:scaleType="centerInside"
-                android:src="@drawable/cancel1" />
+                android:src="@drawable/edit_rotate_last_disable" />
 
             <ImageButton
                 android:id="@+id/btn_next_step"
@@ -76,7 +76,7 @@
                 android:background="@color/transparent"
                 android:padding="@dimen/pp_dp_15"
                 android:scaleType="centerInside"
-                android:src="@drawable/forward1" />
+                android:src="@drawable/edit_rotate_next_disable" />
         </LinearLayout>
 
         <TextView

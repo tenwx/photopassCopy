@@ -247,9 +247,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
     /**显示引导层*/
     private void showGuideView(){
-        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
+        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, false);
         if (!isGuide) {//引导层没显示过，则保存状态
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, true);
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, true);
             //调整imageview大小
             View view = listPPP.getChildAt(0);
             if (view != null) {
@@ -683,7 +683,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
 
     private void showDialog(){
-        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.PPP_GUIDE, false);
+        boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, false);
         if (isGuide) {
             if (getIntent().getBooleanExtra("upgradePP", false) && hasUnUpgradedPP()) {//需要选择pp进行升级
                 pictureWorksDialog.setPWDialogId(SCAN_PPP_AND_UPDATE_TIP_DIALOG)

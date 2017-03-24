@@ -109,7 +109,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         login.setOnClickListener(this);
         forgot.setOnClickListener(this);
 
-        login.setTypeface(MyApplication.getInstance().getFontBold());
+//        login.setTypeface(MyApplication.getInstance().getFontBold());
 
         userName.setOnKeyListener(new OnKeyListener() {
 

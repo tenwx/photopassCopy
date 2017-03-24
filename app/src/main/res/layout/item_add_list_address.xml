@@ -48,7 +48,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/item_address_ib"
         android:layout_marginRight="@dimen/pp_dp_8"
-        android:background="@drawable/preview_edit_nor"
+        android:background="@drawable/preview_photo_edit_enable"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:padding="@dimen/pp_dp_8"

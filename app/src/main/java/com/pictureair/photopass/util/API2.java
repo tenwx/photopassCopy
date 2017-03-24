@@ -653,7 +653,7 @@ public class API2 {
     /**
      * 删除订单信息
      */
-    public static Observable<JSONObject> removeOrder(String orderId) {//, final OrderInfo groupInfo, final OrderProductInfo childInfo
+    public static Observable<JSONObject> removeOrder(String orderId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (orderId != null) {
@@ -662,6 +662,20 @@ public class API2 {
         PictureAirLog.v(TAG, "removeOrder params：" + params);
 
         return post(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, null);
+    }
+
+    /**
+     * 查询订单信息
+     */
+    public static Observable<JSONObject> checkOrder(String orderId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        if (orderId != null) {
+            params.put(Common.ORDER_CODE, orderId);
+        }
+        PictureAirLog.v(TAG, "checkOrder params：" + params);
+
+        return get(Common.BASE_URL_TEST + Common.CHECK_ORDER, params, null);
     }
 
     /**

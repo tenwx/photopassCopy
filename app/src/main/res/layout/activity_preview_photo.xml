@@ -47,11 +47,11 @@
             android:layout_centerVertical="true"
             android:background="@color/transparent"
             android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingLeft="@dimen/pp_dp_5"
+            android:paddingRight="@dimen/pp_dp_5"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_blue" />
+            android:src="@drawable/preview_photo_menu" />
 
         <View
             android:id="@id/preview_line"

@@ -36,6 +36,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	private String shareURL;//网络图片分享的URL
 	private String adURL;//广告链接
 	private String receivedOn;//每张图片到服务器的时间，用于刷新加载操作  2016-10-20T02:06:57.000Z
+	private String exipreDate;//文件过期时间
 	private int isPaid;//网络图片是否已经购买属性，1已付，0，未支付
 	private int isVideo;//1是视频，0是图片
 	private int isPreset; // 照片是否有模版，0，代表没有模板，1，代表有模版, 000000000000000000000000
@@ -119,6 +120,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeString(adURL);
 		dest.writeString(locationName);
 		dest.writeString(receivedOn);
+		dest.writeString(exipreDate);
 		dest.writeString(failedTime);
 		dest.writeInt(isPaid);
 		dest.writeInt(isVideo);
@@ -159,6 +161,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 				", fileSize=" + fileSize +
 				", videoWidth=" + videoWidth +
 				", videoHeight=" + videoHeight +
+				", exipreDate=" + exipreDate +
 				", locationName='" + locationName + '\'' +
 				", receivedOn='" + receivedOn + '\'' +
 				", failedTime='" + failedTime + '\'' +
@@ -403,6 +406,14 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 					this.videoHeight = videoHeight;
 	}
 
+	public String getExipreDate() {
+		return this.exipreDate;
+	}
+
+	public void setExipreDate(String exipreDate) {
+		this.exipreDate = exipreDate;
+	}
+
 	private PhotoInfo(Parcel source) {
 		id = source.readLong();
 		photoId = source.readString();
@@ -418,6 +429,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		adURL = source.readString();
 		locationName = source.readString();
 		receivedOn = source.readString();
+		exipreDate = source.readString();
 		failedTime = source.readString();
 		isPaid = source.readInt();
 		isVideo = source.readInt();
@@ -435,12 +447,13 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		currentLocationPhotoCount = source.readInt();
 	}
 
-	@Generated(hash = 994509055)
+	@Generated(hash = 133317568)
 	public PhotoInfo(Long id, String photoId, String photoPassCode, String shootDate,
 			String photoThumbnail_128, String photoThumbnail_512, String photoThumbnail_1024,
 			String photoOriginalURL, String locationId, String strShootOn, String shareURL,
-			String adURL, String receivedOn, int isPaid, int isVideo, int isPreset,
-			int isEnImage, int isOnLine, int fileSize, int videoWidth, int videoHeight) {
+			String adURL, String receivedOn, String exipreDate, int isPaid, int isVideo,
+			int isPreset, int isEnImage, int isOnLine, int fileSize, int videoWidth,
+			int videoHeight) {
 		this.id = id;
 		this.photoId = photoId;
 		this.photoPassCode = photoPassCode;
@@ -454,6 +467,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		this.shareURL = shareURL;
 		this.adURL = adURL;
 		this.receivedOn = receivedOn;
+		this.exipreDate = exipreDate;
 		this.isPaid = isPaid;
 		this.isVideo = isVideo;
 		this.isPreset = isPreset;

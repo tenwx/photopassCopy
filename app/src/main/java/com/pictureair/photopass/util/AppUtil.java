@@ -2008,29 +2008,22 @@ public class AppUtil {
     }
 
     /**
-     * 获取图片的有效日期
+     * 获取图片的有效日期(本地更改的，需要修改过期时间)
      * @param photoInfo
      * @return
      */
-    public static String getExpiredTime(Context context, PhotoInfo photoInfo) {
-        String result = photoInfo.getShootDate();
-        if (photoInfo.getIsPaid() == 0) {//未购买
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
-            try {
-                Date date = sdf.parse(photoInfo.getShootDate());
-                long time = date.getTime() + PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                date = new Date(time);
-                result = sdf.format(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-        } else {//已购买
-            int year = Integer.valueOf(photoInfo.getShootDate().substring(0, 4));
-            year++;
-            result = year + photoInfo.getShootDate().substring(4, 10);
+    public static String getNewExpiredTime(PhotoInfo photoInfo) {
+        String result = photoInfo.getExipreDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+        try {
+            Date date = sdf.parse(result);
+            long time = date.getTime() + PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+            date = new Date(time);
+            result = sdf.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        return photoInfo.getShootDate() + String.format(context.getString(R.string.gallery_expire_time), result);
+        return result;
     }
 
     /**

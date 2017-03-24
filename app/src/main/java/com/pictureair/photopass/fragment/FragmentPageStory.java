@@ -66,6 +66,7 @@ import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.widget.RecycleTopDividerItemDecoration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -618,6 +619,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                 dailyPPCardRecycleAdapter = new DailyPPCardRecycleAdapter(context, dailyPPCardInfoArrayList);
                 dailyPPCardRecycleAdapter.setOnItemClickListener(this);
+                dailyPPCardRV.addItemDecoration(new RecycleTopDividerItemDecoration(ScreenUtil.dip2px(context, 10)));
                 dailyPPCardRV.setLayoutManager(linearLayoutManager);
                 dailyPPCardRV.setAdapter(dailyPPCardRecycleAdapter);
             } else {
@@ -833,6 +835,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void itemClick(int position) {
         PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode());
+        if (dailyPPCardInfoArrayList.get(position).getPhotoCount() == 0) {//空卡，不可点击
+            return;
+        }
         //进入相册
         Intent i = new Intent(context, EditStoryAlbumActivity.class);
         i.putExtra("ppCode", dailyPPCardInfoArrayList.get(position).getPpCode());

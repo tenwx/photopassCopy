@@ -3,6 +3,7 @@ package com.pictureair.photopass.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -42,6 +43,11 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private PWToast myToast;
 	private boolean[] mInFace;
 	public static final int HEAD_CLICK = 555;
+	private static final int STATUS_UNUSED = 1;//1:未使用2:已使用3:已用完4:已过期
+	private static final int STATUS_USED = 2;
+	private static final int STATUS_ALLUSED = 3;
+	private static final int STATUS_EXPIRED = 4;
+
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
@@ -286,6 +292,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 
 	private void setView(ViewHolder holder, PPPinfo dpp, int position){
+		int status = 0;
 		//初始化时间
 		if (null==dpp.ownOn||"".equals(dpp.ownOn)) {
 			holder.time.setText("");
@@ -336,8 +343,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp3_img.setVisibility(View.INVISIBLE);
 			if (dpp.bindInfo.size() == 0) {//未使用
 				holder.tv_cardStatus.setText(R.string.no_activated);
+				status = STATUS_UNUSED;
 			} else {//已使用
 				holder.tv_cardStatus.setText(R.string.ppp_has_used);
+				status = STATUS_ALLUSED;
 			}
 		} else {//普通ppp
 //			holder.pppName.setText(R.string.mypage_ppp);
@@ -348,6 +357,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.ll_ppp_with_pp.setVisibility(View.INVISIBLE);
 			switch (dpp.bindInfo.size()) {
 				case 0://全新的
+					status = STATUS_UNUSED;
 					holder.tv_cardStatus.setText(R.string.no_activated);
 					holder.pp1_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
@@ -357,6 +367,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					break;
 
 				case 1://用过一张
+					status = STATUS_USED;
 					holder.tv_cardStatus.setText(R.string.activated);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
@@ -369,6 +380,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.tv_pp_date1.setText(replace(dpp.bindInfo.get(0).bindDate));
 					break;
 				case 2://用过两张
+					status = STATUS_USED;
 					holder.tv_cardStatus.setText(R.string.activated);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
@@ -384,6 +396,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					break;
 
 				case 3://全部用过
+					status = STATUS_ALLUSED;
 					holder.tv_cardStatus.setText(R.string.ppp_has_used);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
@@ -409,12 +422,14 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					if (dpp.bindInfo.size() == 1) {//已用完
 
 					} else {//过期
+						status = STATUS_EXPIRED;
 						holder.tv_cardStatus.setText(R.string.ppp_has_expired);
 					}
 				} else {//正常ppp卡
 					if (dpp.bindInfo.size() == 3) {//已用完
 
 					} else {//过期
+						status = STATUS_EXPIRED;
 						holder.tv_cardStatus.setText(R.string.ppp_has_expired);
 					}
 				}
@@ -439,9 +454,20 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.img_no_check.setImageResource(R.drawable.nosele);
 				}
 			}
+		}
+		switch (status) {
+			case STATUS_USED://已使用
+				holder.rl_ppp_status.setBackgroundResource(R.drawable.ppp_status_sele);
+				holder.tv_cardStatus.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+				break;
 
-
-
+			case STATUS_UNUSED://未使用
+			case STATUS_ALLUSED://已用完
+			case STATUS_EXPIRED://已过期
+			default:
+				holder.rl_ppp_status.setBackgroundResource(R.drawable.ppp_status_none);
+				holder.tv_cardStatus.setTextColor(ContextCompat.getColor(mContext, R.color.pp_dark_blue));
+				break;
 		}
 	}
 

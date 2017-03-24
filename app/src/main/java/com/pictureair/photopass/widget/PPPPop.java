@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -18,9 +17,8 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	private LayoutInflater inflater;
 	private Context context;
 	private View pppView;
-	private TextView llBuy, llAuto, llInput;
+	private TextView llAuto, llInput;
 	private Handler handler;
-	private ImageView line;
 	private int type;
 	public static final int POP_BUY = 9999;
 	public static final int POP_SCAN = 8888;
@@ -28,7 +26,6 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 
 	public static final int MENU_TYPE_STORY = 111;
 	public static final int MENU_TYPE_PP = 222;
-	public static final int MENU_TYPE_PPP = 333;
 
 	public PPPPop(Context context, Handler handler, int type) {
 		super(context);
@@ -42,26 +39,11 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		pppView = inflater.inflate(R.layout.ppppop, null);
 		setContentView(pppView);
-		llBuy = (TextView) pppView.findViewById(R.id.buyTextView);
 		llAuto = (TextView) pppView.findViewById(R.id.scanTextView);
 		llInput = (TextView) pppView.findViewById(R.id.input_tv);
-		line = (ImageView) pppView.findViewById(R.id.line);
 
-		llBuy.setOnClickListener(this);
 		llAuto.setOnClickListener(this);
 		llInput.setOnClickListener(this);
-
-		if (type == MENU_TYPE_STORY) {//story
-			line.setVisibility(View.GONE);
-			llBuy.setVisibility(View.GONE);
-
-		} else if (type == MENU_TYPE_PP) {//pp
-			llBuy.setVisibility(View.GONE);
-			line.setVisibility(View.GONE);
-
-		} else if (type == MENU_TYPE_PPP) {//ppp
-
-		}
 
 		setWidth(LayoutParams.WRAP_CONTENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
@@ -74,11 +56,6 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-			case R.id.buyTextView:
-				//handler 传到MyPPP页面
-				handler.sendEmptyMessage(POP_BUY);
-				break;
-
 			case R.id.scanTextView:
 				handler.sendEmptyMessage(POP_SCAN);
 				break;

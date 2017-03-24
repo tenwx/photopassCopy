@@ -81,7 +81,7 @@
 
     <!-- maintab start -->
     <string name="exit">Double tap to exit Disney PhotoPass</string>
-    <string name="tab_story">Photo</string>
+    <string name="tab_story">Story</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_camera">Camera</string>
     <string name="tab_shops">Shop</string>
@@ -389,6 +389,7 @@
     <string name="order_pending">Pending</string>
     <string name="order_delete_msg">Confirm to delete order?</string>
     <string name="order_cancled">Canceled</string>
+    <string name="order_error">此订单号已删除或已付款</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -541,6 +542,7 @@
     <string name="edit_story_reselect">Re-Select</string>
     <string name="edit_story_unpay_tips">Some photos selected are not purchased.\nOnly purchased photos will be downloaded.</string>
     <string name="edit_story_all_unpay_tips">The selected photos has not been purchased.</string>
+    <string name="edit_story_all_unpay_share_tips">The selected photos has not been purchased.</string>
     <string name="edit_story_addto_downloadlist">Downloading in progress.\nClick on Downloads to check on the status.</string>
     <string name="edit_story_photo_title">照片(%1$d)</string>
     <string name="edit_story_ppp_intro">仅需169元即可获得同一天任意一张乐园门票或者一张乐拍通卡里的所有数码照片！</string>

@@ -224,6 +224,10 @@ public class JsonUtil {
             info.setReceivedOn(object.getString("receivedOn"));
         }
 
+        if (object.containsKey("expireDate")) {
+            info.setExipreDate(object.getString("expireDate"));
+        }
+
         return info;
     }
 

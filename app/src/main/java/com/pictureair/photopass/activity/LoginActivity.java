@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.AppUtil;
@@ -193,9 +192,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         rl_country = (LinearLayout) findViewById(R.id.rl_country);// 国家
         tv_country = (TextView) findViewById(R.id.tv_country);
         tv_country_num = (TextView) findViewById(R.id.tv_country_num);
-
-        login.setTypeface(MyApplication.getInstance().getFontBold());
-        sign.setTypeface(MyApplication.getInstance().getFontBold());
 
         rl_country.setOnClickListener(this);
         login.setOnClickListener(this);

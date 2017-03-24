@@ -268,6 +268,7 @@ public class PictureAirDbManager {
         photoInfo.setVideoHeight(photo.getVideoHeight());
         photoInfo.setIsPreset(photo.getIsPreset());
         photoInfo.setIsEnImage(photo.getIsEnImage());
+        photoInfo.setExipreDate(photo.getExipreDate());
 
         photoInfoDao.update(photoInfo);
     }
@@ -290,6 +291,7 @@ public class PictureAirDbManager {
 
         } else {//同步操作
             photoInfo.setIsPaid(1);
+            photoInfo.setExipreDate(AppUtil.getNewExpiredTime(photoInfo));//更新过期时间
             photoInfoDao.update(photoInfo);
         }
     }
@@ -319,6 +321,7 @@ public class PictureAirDbManager {
             }
             for (PhotoInfo photo : photos) {
                 photo.setIsPaid(1);
+                photo.setExipreDate(AppUtil.getNewExpiredTime(photo));//更新过期时间
             }
             photoInfoDao.updateInTx(photos);
         }
@@ -409,6 +412,7 @@ public class PictureAirDbManager {
                     dbPhotoInfo.setVideoHeight(photo.getVideoHeight());
                     dbPhotoInfo.setIsPreset(photo.getIsPreset());
                     dbPhotoInfo.setIsEnImage(photo.getIsEnImage());
+                    dbPhotoInfo.setExipreDate(photo.getExipreDate());
 
                     photoInfoDao.update(dbPhotoInfo);
 

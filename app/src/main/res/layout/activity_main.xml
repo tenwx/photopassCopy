@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.v4.widget.DrawerLayout
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <RelativeLayout
         android:id="@+id/parent"
@@ -18,7 +15,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/main_divider" />
 
-        <ImageView
+        <View
             android:id="@+id/main_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_px_1"
@@ -183,62 +180,61 @@
 
         </RelativeLayout>
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/main_slide_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="start"
         android:background="@color/white"
-        >
+        android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/slide_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:background="@color/pp_light_gray_background">
+            android:background="@color/pp_light_gray_background"
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/main_slide_logo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/my_photopass"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/pp_dp_30"
-                />
+                android:layout_marginTop="@dimen/pp_dp_40"
+                android:src="@drawable/my_photopass" />
+
             <TextView
                 android:id="@+id/main_slide_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/pp_blue"
-                android:text="@string/story_myphotopass"
-                android:gravity="center"
                 android:layout_below="@id/main_slide_logo"
                 android:layout_marginTop="@dimen/pp_dp_10"
-                android:textSize="@dimen/text_size_16"
-                />
+                android:gravity="center"
+                android:text="@string/story_myphotopass"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+
             <Button
-                android:layout_marginTop="@dimen/pp_dp_10"
                 android:id="@+id/main_slide_unbound"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/main_slide_text"
                 android:layout_alignParentRight="true"
-                android:text="@string/story_unbound"
-                android:textSize="@dimen/text_size_12"
-                android:textColor="@color/pp_blue"
+                android:layout_below="@id/main_slide_text"
+                android:layout_marginTop="@dimen/pp_dp_10"
                 android:background="@null"
-                />
-
+                android:text="@string/story_unbound"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_12" />
 
         </RelativeLayout>
+
         <ListView
             android:id="@+id/slid_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/line_color"
             android:dividerHeight="1px"
-            android:scrollbars="none"
-            />
+            android:scrollbars="none" />
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -27,6 +28,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
@@ -298,34 +300,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
         @Override
         public void onClick(View v) {
-            Intent intent = null;
             if (isPay) {//支付
-                intent = new Intent(context, PaymentOrderActivity.class);
-
-                intent.putExtra("flag", "order");
-                intent.putExtra("deliveryInfo", grouplist.get(position));
-                //childlist
-                String orderName, orderIntroduce = null;
-                if (childlist.get(position).getCartItemInfos().size() == 1) {
-                    orderName = childlist.get(position).getCartItemInfos().get(0).getProductName();
-                    orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getProductName()
-                            + childlist.get(position).getCartItemInfos().get(0).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(0).getQty();
-                } else {
-                    orderName = context.getString(R.string.multi_goods);
-                    for (int i = 0; i < childlist.get(position).getCartItemInfos().size(); i++) {
-                        if (i == 0) {
-                            orderIntroduce = childlist.get(position).getCartItemInfos().get(i).getProductName()
-                                    + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
-                        } else {
-                            orderIntroduce += "," + childlist.get(position).getCartItemInfos().get(i).getProductName()
-                                    + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
-                        }
-                    }
-                }
-                PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
-                intent.putExtra("name", orderName);
-                intent.putExtra("introduce", orderIntroduce);
-                context.startActivity(intent);
+                checkOrder(grouplist.get(position).orderNumber, grouplist.get(position), childlist.get(position));
 
             } else {//删除
                 if (tab == 0) {//未付款
@@ -374,6 +350,78 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
                     }
                 });
+    }
+
+    private void checkOrder(final String orderCode, final OrderInfo orderInfo, final OrderProductInfo orderProductInfo) {
+        API2.checkOrder(orderCode)
+                .compose(((RxAppCompatActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.d("check order---> " + jsonObject.toString());
+                        if (jsonObject.containsKey("orderStatus")) {
+                            JSONArray result = jsonObject.getJSONArray("orderStatus");
+                            if (result.size() > 0) {
+                                JSONObject orderResultObj = result.getJSONObject(0);
+                                if (orderResultObj.containsKey("orderCode") && orderCode.equals(orderResultObj.getString("orderCode"))//返回的订单号和传入的订单号一致
+                                        && orderResultObj.containsKey("status") && orderResultObj.getIntValue("status") == 1) {//订单状态为待支付
+                                    startPay(orderInfo, orderProductInfo);//开始支付
+
+                                } else {//没有此订单
+                                    PWToast.getInstance(context).setTextAndShow(R.string.order_error);
+
+                                }
+
+                            } else {//没有此订单
+                                PWToast.getInstance(context).setTextAndShow(R.string.order_error);
+
+                            }
+                        } else {
+                            _onError(401);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PWToast.getInstance(context).setTextAndShow(R.string.http_error_code_401);
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+    }
+
+    private void startPay(OrderInfo orderInfo, OrderProductInfo orderProductInfo) {
+        Intent intent = new Intent(context, PaymentOrderActivity.class);
+
+        intent.putExtra("flag", "order");
+        intent.putExtra("deliveryInfo", orderInfo);
+        //childlist
+        String orderName, orderIntroduce = null;
+        if (orderProductInfo.getCartItemInfos().size() == 1) {
+            orderName = orderProductInfo.getCartItemInfos().get(0).getProductName();
+            orderIntroduce = orderProductInfo.getCartItemInfos().get(0).getProductName()
+                    + orderProductInfo.getCartItemInfos().get(0).getUnitPrice() + "*" + orderProductInfo.getCartItemInfos().get(0).getQty();
+        } else {
+            orderName = context.getString(R.string.multi_goods);
+            for (int i = 0; i < orderProductInfo.getCartItemInfos().size(); i++) {
+                if (i == 0) {
+                    orderIntroduce = orderProductInfo.getCartItemInfos().get(i).getProductName()
+                            + orderProductInfo.getCartItemInfos().get(i).getUnitPrice() + "*" + orderProductInfo.getCartItemInfos().get(i).getQty();
+                } else {
+                    orderIntroduce += "," + orderProductInfo.getCartItemInfos().get(i).getProductName()
+                            + orderProductInfo.getCartItemInfos().get(i).getUnitPrice() + "*" + orderProductInfo.getCartItemInfos().get(i).getQty();
+                }
+            }
+        }
+        PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
+        intent.putExtra("name", orderName);
+        intent.putExtra("introduce", orderIntroduce);
+        context.startActivity(intent);
     }
 
     public interface RemoveOrderItemListener {

@@ -7,37 +7,11 @@
     android:background="@drawable/pop_bg3"
     android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/buyTextView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/pp_dp_10"
-        android:layout_weight="1"
-        android:background="@color/transparent"
-        android:drawableLeft="@drawable/ppppop_buy_button"
-        android:drawablePadding="@dimen/pp_dp_5"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="@dimen/pp_dp_10"
-        android:paddingRight="@dimen/pp_dp_10"
-        android:text="@string/buy_good2"
-        android:textColor="@color/pp_light_blue"
-        android:textSize="@dimen/text_size_16" />
-
-    <ImageView
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_px_1"
-        android:layout_marginBottom="@dimen/pp_dp_10"
-        android:layout_marginLeft="@dimen/pp_dp_2"
-        android:layout_marginRight="@dimen/pp_dp_2"
-        android:layout_marginTop="@dimen/pp_dp_10"
-        android:background="@color/gray_light4" />
-
     <TextView
         android:id="@+id/scanTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/pp_dp_10"
         android:layout_weight="1"
         android:background="@color/transparent"
         android:drawableLeft="@drawable/ppppop_scan_button"

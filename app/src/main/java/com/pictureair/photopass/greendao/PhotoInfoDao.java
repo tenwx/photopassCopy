@@ -37,14 +37,15 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         public final static Property ShareURL = new Property(10, String.class, "shareURL", false, "SHARE_URL");
         public final static Property AdURL = new Property(11, String.class, "adURL", false, "AD_URL");
         public final static Property ReceivedOn = new Property(12, String.class, "receivedOn", false, "RECEIVED_ON");
-        public final static Property IsPaid = new Property(13, int.class, "isPaid", false, "IS_PAID");
-        public final static Property IsVideo = new Property(14, int.class, "isVideo", false, "IS_VIDEO");
-        public final static Property IsPreset = new Property(15, int.class, "isPreset", false, "IS_PRESET");
-        public final static Property IsEnImage = new Property(16, int.class, "isEnImage", false, "IS_EN_IMAGE");
-        public final static Property IsOnLine = new Property(17, int.class, "isOnLine", false, "IS_ON_LINE");
-        public final static Property FileSize = new Property(18, int.class, "fileSize", false, "FILE_SIZE");
-        public final static Property VideoWidth = new Property(19, int.class, "videoWidth", false, "VIDEO_WIDTH");
-        public final static Property VideoHeight = new Property(20, int.class, "videoHeight", false, "VIDEO_HEIGHT");
+        public final static Property ExipreDate = new Property(13, String.class, "exipreDate", false, "EXIPRE_DATE");
+        public final static Property IsPaid = new Property(14, int.class, "isPaid", false, "IS_PAID");
+        public final static Property IsVideo = new Property(15, int.class, "isVideo", false, "IS_VIDEO");
+        public final static Property IsPreset = new Property(16, int.class, "isPreset", false, "IS_PRESET");
+        public final static Property IsEnImage = new Property(17, int.class, "isEnImage", false, "IS_EN_IMAGE");
+        public final static Property IsOnLine = new Property(18, int.class, "isOnLine", false, "IS_ON_LINE");
+        public final static Property FileSize = new Property(19, int.class, "fileSize", false, "FILE_SIZE");
+        public final static Property VideoWidth = new Property(20, int.class, "videoWidth", false, "VIDEO_WIDTH");
+        public final static Property VideoHeight = new Property(21, int.class, "videoHeight", false, "VIDEO_HEIGHT");
     }
 
 
@@ -73,14 +74,15 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
                 "\"SHARE_URL\" TEXT," + // 10: shareURL
                 "\"AD_URL\" TEXT," + // 11: adURL
                 "\"RECEIVED_ON\" TEXT," + // 12: receivedOn
-                "\"IS_PAID\" INTEGER NOT NULL ," + // 13: isPaid
-                "\"IS_VIDEO\" INTEGER NOT NULL ," + // 14: isVideo
-                "\"IS_PRESET\" INTEGER NOT NULL ," + // 15: isPreset
-                "\"IS_EN_IMAGE\" INTEGER NOT NULL ," + // 16: isEnImage
-                "\"IS_ON_LINE\" INTEGER NOT NULL ," + // 17: isOnLine
-                "\"FILE_SIZE\" INTEGER NOT NULL ," + // 18: fileSize
-                "\"VIDEO_WIDTH\" INTEGER NOT NULL ," + // 19: videoWidth
-                "\"VIDEO_HEIGHT\" INTEGER NOT NULL );"); // 20: videoHeight
+                "\"EXIPRE_DATE\" TEXT," + // 13: exipreDate
+                "\"IS_PAID\" INTEGER NOT NULL ," + // 14: isPaid
+                "\"IS_VIDEO\" INTEGER NOT NULL ," + // 15: isVideo
+                "\"IS_PRESET\" INTEGER NOT NULL ," + // 16: isPreset
+                "\"IS_EN_IMAGE\" INTEGER NOT NULL ," + // 17: isEnImage
+                "\"IS_ON_LINE\" INTEGER NOT NULL ," + // 18: isOnLine
+                "\"FILE_SIZE\" INTEGER NOT NULL ," + // 19: fileSize
+                "\"VIDEO_WIDTH\" INTEGER NOT NULL ," + // 20: videoWidth
+                "\"VIDEO_HEIGHT\" INTEGER NOT NULL );"); // 21: videoHeight
     }
 
     /** Drops the underlying database table. */
@@ -157,14 +159,19 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         if (receivedOn != null) {
             stmt.bindString(13, receivedOn);
         }
-        stmt.bindLong(14, entity.getIsPaid());
-        stmt.bindLong(15, entity.getIsVideo());
-        stmt.bindLong(16, entity.getIsPreset());
-        stmt.bindLong(17, entity.getIsEnImage());
-        stmt.bindLong(18, entity.getIsOnLine());
-        stmt.bindLong(19, entity.getFileSize());
-        stmt.bindLong(20, entity.getVideoWidth());
-        stmt.bindLong(21, entity.getVideoHeight());
+ 
+        String exipreDate = entity.getExipreDate();
+        if (exipreDate != null) {
+            stmt.bindString(14, exipreDate);
+        }
+        stmt.bindLong(15, entity.getIsPaid());
+        stmt.bindLong(16, entity.getIsVideo());
+        stmt.bindLong(17, entity.getIsPreset());
+        stmt.bindLong(18, entity.getIsEnImage());
+        stmt.bindLong(19, entity.getIsOnLine());
+        stmt.bindLong(20, entity.getFileSize());
+        stmt.bindLong(21, entity.getVideoWidth());
+        stmt.bindLong(22, entity.getVideoHeight());
     }
 
     @Override
@@ -235,14 +242,19 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         if (receivedOn != null) {
             stmt.bindString(13, receivedOn);
         }
-        stmt.bindLong(14, entity.getIsPaid());
-        stmt.bindLong(15, entity.getIsVideo());
-        stmt.bindLong(16, entity.getIsPreset());
-        stmt.bindLong(17, entity.getIsEnImage());
-        stmt.bindLong(18, entity.getIsOnLine());
-        stmt.bindLong(19, entity.getFileSize());
-        stmt.bindLong(20, entity.getVideoWidth());
-        stmt.bindLong(21, entity.getVideoHeight());
+ 
+        String exipreDate = entity.getExipreDate();
+        if (exipreDate != null) {
+            stmt.bindString(14, exipreDate);
+        }
+        stmt.bindLong(15, entity.getIsPaid());
+        stmt.bindLong(16, entity.getIsVideo());
+        stmt.bindLong(17, entity.getIsPreset());
+        stmt.bindLong(18, entity.getIsEnImage());
+        stmt.bindLong(19, entity.getIsOnLine());
+        stmt.bindLong(20, entity.getFileSize());
+        stmt.bindLong(21, entity.getVideoWidth());
+        stmt.bindLong(22, entity.getVideoHeight());
     }
 
     @Override
@@ -266,14 +278,15 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // shareURL
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // adURL
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // receivedOn
-            cursor.getInt(offset + 13), // isPaid
-            cursor.getInt(offset + 14), // isVideo
-            cursor.getInt(offset + 15), // isPreset
-            cursor.getInt(offset + 16), // isEnImage
-            cursor.getInt(offset + 17), // isOnLine
-            cursor.getInt(offset + 18), // fileSize
-            cursor.getInt(offset + 19), // videoWidth
-            cursor.getInt(offset + 20) // videoHeight
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // exipreDate
+            cursor.getInt(offset + 14), // isPaid
+            cursor.getInt(offset + 15), // isVideo
+            cursor.getInt(offset + 16), // isPreset
+            cursor.getInt(offset + 17), // isEnImage
+            cursor.getInt(offset + 18), // isOnLine
+            cursor.getInt(offset + 19), // fileSize
+            cursor.getInt(offset + 20), // videoWidth
+            cursor.getInt(offset + 21) // videoHeight
         );
         return entity;
     }
@@ -293,14 +306,15 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         entity.setShareURL(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setAdURL(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setReceivedOn(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setIsPaid(cursor.getInt(offset + 13));
-        entity.setIsVideo(cursor.getInt(offset + 14));
-        entity.setIsPreset(cursor.getInt(offset + 15));
-        entity.setIsEnImage(cursor.getInt(offset + 16));
-        entity.setIsOnLine(cursor.getInt(offset + 17));
-        entity.setFileSize(cursor.getInt(offset + 18));
-        entity.setVideoWidth(cursor.getInt(offset + 19));
-        entity.setVideoHeight(cursor.getInt(offset + 20));
+        entity.setExipreDate(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setIsPaid(cursor.getInt(offset + 14));
+        entity.setIsVideo(cursor.getInt(offset + 15));
+        entity.setIsPreset(cursor.getInt(offset + 16));
+        entity.setIsEnImage(cursor.getInt(offset + 17));
+        entity.setIsOnLine(cursor.getInt(offset + 18));
+        entity.setFileSize(cursor.getInt(offset + 19));
+        entity.setVideoWidth(cursor.getInt(offset + 20));
+        entity.setVideoHeight(cursor.getInt(offset + 21));
      }
     
     @Override

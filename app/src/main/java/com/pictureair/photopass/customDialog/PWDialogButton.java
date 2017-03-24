@@ -85,10 +85,12 @@ public class PWDialogButton extends FrameLayout {
         if (positive == null) {
             btnPositive.setVisibility(View.GONE);
         } else {
-            if (negative == null) {
+            if (negative == null) {//一个按钮的对话框
                 view.setVisibility(View.GONE);
-            } else {
+                btnPositive.setBackgroundResource(R.drawable.bg_dialog_blue_bottom);
+            } else {//两个按钮
                 view.setVisibility(View.VISIBLE);
+                btnPositive.setBackgroundResource(R.drawable.bg_dialog_blue_bottom_right);
             }
             btnPositive.setVisibility(View.VISIBLE);
             btnPositive.setText(positive);

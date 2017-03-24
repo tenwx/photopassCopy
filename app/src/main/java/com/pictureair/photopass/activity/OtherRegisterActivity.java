@@ -24,7 +24,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -186,7 +185,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         rbWoman = (RadioButton) findViewById(R.id.rb_btn_woman);// 获取RadioButton控件;
         rg.setOnCheckedChangeListener(mChangeListener);// 单选框的改变事件
 
-        btn_submit_sign.setTypeface(MyApplication.getInstance().getFontBold());
+//        btn_submit_sign.setTypeface(MyApplication.getInstance().getFontBold());
 
 //        rbMan.setChecked(true);
         // 日期选择器

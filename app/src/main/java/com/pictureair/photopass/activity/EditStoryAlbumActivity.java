@@ -705,13 +705,27 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			case R.id.select_share:
 				PictureAirLog.d("share--->");
-				for (int i = 0; i < albumArrayList.size(); i++) {
-					if (albumArrayList.get(i).getIsSelected() == 1) {
-						sharePop.setShareInfo(albumArrayList.get(i), false, editStoryAlbumHandler);
+				PhotoInfo shareInfo = null;
+				for (PhotoInfo info : albumArrayList) {
+					if (info.getIsSelected() == 1) {
+						shareInfo = info;
 						break;
 					}
 				}
-				sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+
+				if (shareInfo == null) {
+					return;
+				}
+				if (shareInfo.getIsPaid() == 1) {
+					sharePop.setShareInfo(shareInfo, false, editStoryAlbumHandler);
+					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+				} else {//未购买的，不能分享，需要提示
+					pictureWorksDialog.setPWDialogId(HAS_ALL_UNPAY_PHOTOS_DIALOG)
+							.setPWDialogMessage(R.string.edit_story_all_unpay_share_tips)
+							.setPWDialogNegativeButton(null)
+							.setPWDialogPositiveButton(R.string.edit_story_reselect)
+							.pwDilogShow();
+				}
 				break;
 
 			case R.id.pp_photos_edit:
@@ -775,6 +789,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							Intent intent = new Intent(EditStoryAlbumActivity.this, MyPPPActivity.class);
 							intent.putExtra("ppsStr", pps.toString());
 							intent.putExtra("isUseHavedPPP", true);
+							if (API2.PPPlist.get(0).capacity == 1) {//一日通
+								intent.putExtra("dailyppp", true);
+							}
 							startActivity(intent);
 
 						} else {//无可用的ppp，需要购买ppp

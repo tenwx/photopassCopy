@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:background="@color/pp_red"
+                android:background="@color/pp_blue"
                 android:gravity="center"
                 android:paddingLeft="@dimen/pp_dp_20"
                 android:paddingRight="@dimen/pp_dp_20"
@@ -137,7 +137,8 @@
             android:background="@color/gray_light4"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="@dimen/pp_dp_10"
+            android:paddingTop="@dimen/pp_dp_4"
+            android:paddingBottom="@dimen/pp_dp_4"
             android:visibility="gone">
 
             <TextView

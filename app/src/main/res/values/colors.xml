@@ -15,9 +15,10 @@
     <!-- 淡蓝色，字体颜色 颜色效果间于 pp_gray和pp_dark_blue之间-->
     <color name="pp_light_blue">#8091a7</color>
     <!-- 浅灰，比如输入框的文字，较深的分割线-->
-    <color name="pp_gray">#bac1c6</color>
+    <color name="pp_gray">#80879d</color>
     <!-- 淡浅灰，比如背景颜色-->
     <color name="pp_light_gray_background">#f6f6f6</color>
+    <color name="pp_light_gray_background2">#e4e4e4</color>
     <!-- 淡浅灰，比如注册按钮-->
     <color name="pp_light_gray_normal">#e9eef1</color>
     <!-- 淡浅灰，比如注册按钮点击颜色-->

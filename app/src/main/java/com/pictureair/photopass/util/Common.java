@@ -54,11 +54,11 @@ public class Common {
     /**
      * 公用的链接
      */
-    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
     public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
-    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+    public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
     public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
-    public final static String HELP_FAQ = "http://192.168.8.3:3004/help.html?lange=";//FAQ
+    public final static String HELP_FAQ = "https://www.disneyphotopass.com.cn/help.html?lange=";//FAQ
 
     //接口
     /**
@@ -183,6 +183,7 @@ public class Common {
      * pay
      */
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
+    public static final String CHECK_ORDER = "/pay/getOrderStauts";//用户查询某个订单
 
     /**
      * version
@@ -201,6 +202,7 @@ public class Common {
     public static final String LANGUAGE = "language";
     public static final String WECHAT_PAY_STATUS = "wechat_pay_status";
     public static final String PPP_GUIDE = "ppp_guide";
+    public static final String DAILY_PPP_GUIDE = "daily_ppp_guide";
     public static final String STORY_LEAD_VIEW = "story_lead_view";//故事页对扫描按钮介绍的引导图
     public static final String STORY_EDIT_TIP_VIEW = "story_edit_tip_view";
 
