@@ -116,10 +116,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         rlGprsWifiDoenload = (RelativeLayout) findViewById(R.id.rl_gprs_wifi_download);
         rlWifiOnlyDownload = (RelativeLayout) findViewById(R.id.rl_wifi_only_download);
 //        rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
-        logout.setTypeface(MyApplication.getInstance().getFontBold());
-        tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
-        tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
-        ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
+//        logout.setTypeface(MyApplication.getInstance().getFontBold());
+//        tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
+//        tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
+//        ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
 //        ((TextView) findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);

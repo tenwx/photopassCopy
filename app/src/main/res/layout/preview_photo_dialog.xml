@@ -16,7 +16,7 @@
         android:drawableTop="@drawable/btn_preview_photo_edit"
         android:gravity="center"
         android:text="@string/edit"
-        android:textColor="@drawable/textview_selector_onclick"
+        android:textColor="@drawable/textview_selector_blue_red"
         android:textSize="@dimen/text_size_14" />
 
     <TextView
@@ -27,7 +27,7 @@
         android:drawableTop="@drawable/edit_album_download_button"
         android:gravity="center"
         android:text="@string/down"
-        android:textColor="@drawable/textview_selector_onclick"
+        android:textColor="@drawable/textview_selector_blue_red"
         android:textSize="@dimen/text_size_14" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:drawableTop="@drawable/edit_album_share_button"
         android:gravity="center"
         android:text="@string/share"
-        android:textColor="@drawable/textview_selector_onclick"
+        android:textColor="@drawable/textview_selector_blue_red"
         android:textSize="@dimen/text_size_14" />
 
     <TextView
@@ -49,7 +49,7 @@
         android:drawableTop="@drawable/btn_preview_photo_print"
         android:gravity="center"
         android:text="@string/makegift"
-        android:textColor="@drawable/textview_selector_onclick"
+        android:textColor="@drawable/textview_selector_blue_red"
         android:textSize="@dimen/text_size_14" />
 </LinearLayout>
 

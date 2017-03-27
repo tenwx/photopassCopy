@@ -12,6 +12,7 @@
     <string name="forget_pwd">Forgot Password?</string>
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
+    <string name="other_sign">邮箱注册</string>
     <string name="otherLogin">Email Account Login</string>
     <string name="msgLogin">Mobile Verification Code Login</string>
     <string name="pwd_no_all_space">Please omit any space</string>
@@ -138,13 +139,14 @@
     <string name="auto_scan">Scan</string>
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">Disney PhotoPass+</string>
-    <string name="scan_intro">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
+    <string name="scan_intro">请扫描您的迪士尼乐拍通卡或者迪士尼乐拍通一日通卡或者迪士尼乐拍通季卡上的二维码，更快获得您的游玩照片</string>
     <string name="re_scan">Retake</string>
     <string name="textview_center_hint">Please align the back of your Disney PhotoPass+ in this area</string>
     <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
     <string name="confirm_ppp_code_text_hint">Please check your PhotoPass+ password \n If the password is incorrect, please key in manually</string>
     <string name="scan_coupon_intro">Please scan your coupon QR code</string>
+    <string name="scan_coupon_intro2">请输入您的抵用券数字码</string>
     <!-- scan end -->
 
     <!-- manual input start -->
@@ -152,7 +154,8 @@
     <string name="active">Activate</string>
     <string name="active_ppp">Activate Disney\nPhotoPass+</string>
     <string name="ok">OK</string>
-    <string name="manul_input_intro">Please input the number on the back of your Disney PhotoPass+ card</string>
+    <string name="manul_input_intro">请输入您的迪士尼乐拍通卡或者迪士尼乐拍通一日通卡或者迪士尼乐拍通季卡背后的数字码</string>
+    <string name="manul_input_intro2">Please input the number on the back of your Disney PhotoPass+ card</string>
     <string name="nocontext">Input your code</string>
     <string name="input_code">Please input the number</string>
     <string name="wrong_length">Please check your card</string>
@@ -219,7 +222,7 @@
     <!-- preview photo start -->
     <string name="edit">Edit</string>
     <string name="makegift">Print</string>
-    <string name="touchtoclean">Please press and hold to preview your photo</string>
+    <string name="touchtoclean">长按滑动即可预览照片</string>
     <string name="know">I know</string>
     <string name="like_and_buy">Touch to preview your photo</string>
     <string name="reloadphoto">Please reload this photo</string>
@@ -246,8 +249,8 @@
     <string name="use_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
-    <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
-    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片。</string>
+    <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可下载同一天任意三张迪士尼乐拍通卡里的所有照片。</string>
+    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，即可下载同一天任意一张迪士尼乐拍通卡里的所有照片。</string>
     <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
     <!-- blur end -->
 

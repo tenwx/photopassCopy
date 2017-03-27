@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@color/pp_red"
+            android:background="@color/pp_blue"
             android:paddingBottom="@dimen/pp_dp_10"
             android:paddingLeft="@dimen/pp_dp_20"
             android:paddingRight="@dimen/pp_dp_20"
@@ -34,7 +34,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/pp_dp_20"
             android:text="@string/gallery_buy_blur_photo"
-            android:textColor="@color/pp_dark_blue"
+            android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
 
@@ -98,12 +98,10 @@
             android:id="@+id/gallery_item_blur_tip_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/pp_dp_32"
+            android:layout_centerInParent="true"
             android:text="@string/touchtoclean"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
 
     </RelativeLayout>

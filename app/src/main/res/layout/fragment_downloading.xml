@@ -14,9 +14,10 @@
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
-            android:padding="@dimen/pp_dp_10"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingBottom="@dimen/pp_dp_4"
+            android:paddingTop="@dimen/pp_dp_4"
             android:visibility="gone">
             <TextView
                 android:id="@+id/tv_downloading_select_all"

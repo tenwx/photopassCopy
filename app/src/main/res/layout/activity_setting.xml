@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/pp_dp_10"
+                android:layout_marginTop="@dimen/pp_dp_5"
                 android:background="@color/white">
 
                 <View
@@ -194,10 +194,10 @@
                 android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_blue_shape_and_selector"
+                android:background="@drawable/button_blue"
                 android:padding="@dimen/pp_dp_10"
                 android:text="@string/logout"
-                android:textColor="@drawable/textview_selector_blue_white"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16" />
         </LinearLayout>
 

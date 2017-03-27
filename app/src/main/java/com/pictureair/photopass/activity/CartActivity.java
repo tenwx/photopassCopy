@@ -278,12 +278,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         if (disSelectedCount == 0) {
             //全部选中
             cartSelectAllImageView.setImageResource(R.drawable.cart_select);
+            paymentButton.setBackgroundResource(R.color.pp_blue);
             if (isEdit) {
                 //编辑
-                paymentButton.setBackgroundResource(R.color.pp_red);
                 discountPriceLinearLayout.setVisibility(View.GONE);
-            } else {
-                paymentButton.setBackgroundResource(R.color.pp_blue);
             }
         } else if (cartItemInfoJson.getItems().size() == disSelectedCount) {
             //全部取消
@@ -292,11 +290,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         } else {
             //部分选中
             cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
+            paymentButton.setBackgroundResource(R.color.pp_blue);
             if (isEdit) {
                 discountPriceLinearLayout.setVisibility(View.GONE);
-                paymentButton.setBackgroundResource(R.color.pp_red);
-            } else {
-                paymentButton.setBackgroundResource(R.color.pp_blue);
             }
         }
         if (isEdit) {
@@ -421,7 +417,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     if (cartInfoList == null || cartInfoList.size() == 0 || disSelectedCount == cartItemInfoJson.getItems().size()) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
                     } else {
-                        paymentButton.setBackgroundResource(R.color.pp_red);
+                        paymentButton.setBackgroundResource(R.color.pp_blue);
                     }
                     paymentButton.setText(R.string.delete);
 //                    rtButton.setVisibility(View.INVISIBLE);
@@ -456,11 +452,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     //全部选中
                     cartSelectAllImageView.setImageResource(R.drawable.cart_select);
                     disSelectedCount = 0;
+                    paymentButton.setBackgroundResource(R.color.pp_blue);
                     if (isEdit) {
-                        paymentButton.setBackgroundResource(R.color.pp_red);
                         paymentButton.setText(R.string.delete);
                     } else {
-                        paymentButton.setBackgroundResource(R.color.pp_blue);
                         //非编辑状态不需要请求优惠信息
                         getDiscountPrice();
                     }
@@ -604,7 +599,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                             }
 
                             if (isEdit) {
-                                paymentButton.setBackgroundResource(R.color.pp_red);
+                                paymentButton.setBackgroundResource(R.color.pp_blue);
                             } else {
 
                                 if (disSelectedCount < cartItemInfoJson.getItems().size()) {

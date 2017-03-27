@@ -83,7 +83,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     private EditTextWithClear inputCodeEdit;
 
-    private TextView wordSpaceTextView;
+    private TextView wordSpaceTextView, inputTipsTV;
 
     private Button ok;
 
@@ -270,6 +270,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         tvScanQRcodeTips = (TextView) findViewById(R.id.tv_scan_qr_code_tips);
         tvScanQRCode = (TextView) findViewById(R.id.tv_scan_qr_code);
         tvScanPPPCode = (TextView) findViewById(R.id.tv_scan_ppp_code);
+        inputTipsTV = (TextView) findViewById(R.id.tv_manul_input_intro);
         tvScanQRCode.setOnClickListener(this);
         tvScanPPPCode.setOnClickListener(this);
 
@@ -325,6 +326,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))
                 && getIntent().getStringExtra("type").equals("coupon")) {//coupon
             tvScanQRcodeTips.setText(R.string.scan_coupon_intro);
+            inputTipsTV.setText(R.string.scan_coupon_intro2);
         }
 
         //设置顶部状态栏和底部虚拟按键的对应View的高度

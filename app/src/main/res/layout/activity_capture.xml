@@ -174,8 +174,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_input"
-            android:layout_marginTop="@dimen/pp_dp_20"
             android:padding="@dimen/pp_dp_20"
+            android:gravity="center"
             android:text="@string/manul_input_intro"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
@@ -191,10 +191,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/pp_dp_20"
-                android:background="@drawable/button_blue_shape_and_selector"
+                android:background="@drawable/button_blue"
                 android:padding="@dimen/pp_dp_10"
                 android:text="@string/ok"
-                android:textColor="@drawable/textview_selector_blue_white"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16" />
         </RelativeLayout>
 

@@ -218,7 +218,7 @@
             android:drawableTop="@drawable/edit_photo_frame_button"
             android:gravity="center"
             android:text="@string/frames"
-            android:textColor="@drawable/textview_selector_onclick"
+            android:textColor="@drawable/textview_selector_blue_red"
             android:textSize="@dimen/text_size_14" />
 
         <TextView
@@ -230,7 +230,7 @@
             android:drawableTop="@drawable/edit_photo_filter_button"
             android:gravity="center"
             android:text="@string/magicbrush"
-            android:textColor="@drawable/textview_selector_onclick"
+            android:textColor="@drawable/textview_selector_blue_red"
             android:textSize="@dimen/text_size_14" />
 
         <TextView
@@ -242,7 +242,7 @@
             android:drawableTop="@drawable/edit_photo_accessory_button"
             android:gravity="center"
             android:text="@string/decoration"
-            android:textColor="@drawable/textview_selector_onclick"
+            android:textColor="@drawable/textview_selector_blue_red"
             android:textSize="@dimen/text_size_14" />
 
         <TextView
@@ -254,7 +254,7 @@
             android:drawableTop="@drawable/edit_photo_text_button"
             android:gravity="center"
             android:text="@string/rotate"
-            android:textColor="@drawable/textview_selector_onclick"
+            android:textColor="@drawable/textview_selector_blue_red"
             android:textSize="@dimen/text_size_14" />
     </LinearLayout>
 
@@ -291,7 +291,7 @@
                 android:drawableTop="@drawable/edit_add_font_button"
                 android:gravity="center"
                 android:text="@string/rotate_left"
-                android:textColor="@drawable/textview_selector_onclick"
+                android:textColor="@drawable/textview_selector_blue_red"
                 android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
 
@@ -309,7 +309,7 @@
                 android:drawableTop="@drawable/edit_add_color_button"
                 android:gravity="center"
                 android:text="@string/rotate_right"
-                android:textColor="@drawable/textview_selector_onclick"
+                android:textColor="@drawable/textview_selector_blue_red"
                 android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
     </LinearLayout>

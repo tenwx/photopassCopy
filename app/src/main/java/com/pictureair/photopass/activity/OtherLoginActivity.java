@@ -106,6 +106,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         forgot = (TextView) findViewById(R.id.forgot);
         ll_email.setVisibility(View.VISIBLE);
         ll_message.setVisibility(View.GONE);
+        sign = (TextView) findViewById(R.id.other_login_sign);
+        sign.setVisibility(View.VISIBLE);
+        sign.setText(R.string.other_sign);
+        sign.setOnClickListener(this);
         login.setOnClickListener(this);
         forgot.setOnClickListener(this);
 
@@ -160,6 +164,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         ll_message.setVisibility(View.VISIBLE);
         sign = (TextView) findViewById(R.id.other_login_sign);
         sign.setVisibility(View.VISIBLE);
+        sign.setText(R.string.sign);
         rl_country.setOnClickListener(this);
         btn_next.setOnClickListener(this);
         sign.setOnClickListener(this);
@@ -296,8 +301,12 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 break;
 
             case R.id.other_login_sign:
-                startActivity(new Intent(OtherLoginActivity.this,
-                        RegisterOrForgetActivity.class).putExtra("activity","sign"));
+                if (mIsMsgLogin) {
+                    startActivity(new Intent(OtherLoginActivity.this,
+                            RegisterOrForgetActivity.class).putExtra("activity", "sign"));
+                } else {
+                    startActivity(new Intent(OtherLoginActivity.this, OtherRegisterActivity.class));
+                }
                 break;
 
             case R.id.other_btn_next:

@@ -43,7 +43,7 @@
             android:layout_toRightOf="@id/or_states"
             android:gravity="center"
             android:text="未付款"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_14" />
 
         <TextView

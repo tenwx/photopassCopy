@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@color/pp_red"
+            android:background="@color/pp_blue"
             android:padding="@dimen/pp_dp_16"
             android:text="@string/checkout"
             android:textColor="@color/white"
