@@ -98,7 +98,7 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">Please scan your Park Ticket/Disney PhotoPass card to start associating your photos.</string>
+    <string name="story_no_pp">Please scan your Disney PhotoPass card/One Day Pass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
@@ -122,8 +122,9 @@
     <string name="six_days_ago">6 days ago</string>
     <string name="video_location">My Disney Story</string>
     <string name="download_share_bought_photo">快用起来吧！</string>
-    <string name="story_buy_ppp">Buy Disney PhotoPass+ Now</string>
+    <string name="story_buy_ppp">Buy One Day PhotoPass Now</string>
     <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
+    <string name="story_scan_daily_ppp">激活您已购买的乐拍通一日通</string>
     <string name="story_no_photo_tip">您的乐拍通/迪士尼门票还没有绑定任何照片\n请快速找乐拍通摄影师免费拍照吧！</string>
     <string name="story_home">上海迪士尼乐拍通家园</string>
     <string name="story_card">卡号：%1$s</string>
@@ -132,6 +133,7 @@
     <string name="story_blur_expire_time">(未付款照片有效期30天)</string>
     <string name="story_expire_time">(付款照片有效期365天)</string>
     <string name="story_want_to_buy">我想买</string>
+    <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载同一天任意一张迪士尼乐拍通卡里的高清数码照片。</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -447,7 +449,7 @@
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="select_pp_right_date">You have chosen to activate this Disney Park Ticket/PhotoPass card:\n%1$s\nDisney PhotoPass+ allows you to activate 3 Park Tickets/PhotoPass cards in one single day, OR 1 Park Ticket/PhotoPass card on 3 consecutive days.\n\nPlease confirm to continue the activation of the above Park Ticket/PhotoPass card.</string>
-    <string name="pp_tip">Below are your Disney Park Tickets/PhotoPass cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
+    <string name="pp_tip">Below are your Disney PhotoPass cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
     <string name="pp_tip1">温馨提示：</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
@@ -459,6 +461,7 @@
     <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
     <string name="select_ppp_title">Select</string>
     <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass+.</string>
+    <string name="update_daily_ppp_msg">You are going to activate your photos in PhotoPass using this One Day Pass.</string>
     <string name="update_ppp_cancel">Cancel</string>
     <string name="update_ppp_ok">OK</string>
     <!-- select ppp end -->
@@ -671,6 +674,7 @@
     <string name="animated_photo_upgrade_exist_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
     <string name="animated_photo_introduce_text">Do you want to unlock the magic within your photos? Purchase PhotoPass+ to experience now!</string>
     <string name="animated_photo_loading">Loading%1$d%%</string>
+    <string name="animated_photo_buy_tip">立即购买乐拍通一日通拥有此魔法动画照片！</string>
     <!--animated photo end-->
 
     <!--special deal-->

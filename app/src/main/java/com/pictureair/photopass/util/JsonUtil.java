@@ -1305,27 +1305,6 @@ public class JsonUtil {
     }
 
     /**
-     * 获取banner照片
-     * @param jsonObject
-     * @return
-     */
-    public static ArrayList<String> getBannerPhotosList(Context context, JSONObject jsonObject) {
-        ArrayList<String> list = new ArrayList<>();
-        if (jsonObject != null && jsonObject.containsKey("PList")) {
-            PictureAirLog.json(jsonObject.toJSONString());
-            JSONArray pList = jsonObject.getJSONArray("PList");
-            for (int i = 0; i < pList.size(); i++) {
-                list.add(pList.getJSONObject(i).getString("url"));
-            }
-        }
-
-        if (list.size() == 0) {
-            list.add(GlideUtil.getDrawableUrl(context, R.drawable.story_banner_intro));
-        }
-        return list;
-    }
-
-    /**
      * 获取pp列表信息
      * @return
      */

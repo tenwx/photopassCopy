@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/animated_photo_backtground_ll"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
@@ -81,9 +80,9 @@
     <ImageView
         android:id="@+id/animated_photo_iv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:src="@drawable/animated_ad_zh"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/animated_photo_top_rl"
+        android:src="@drawable/animated_ad"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"/>
 
@@ -91,7 +90,9 @@
         android:id="@+id/animated_photo_product_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_below="@+id/animated_photo_iv"
+        android:layout_above="@+id/animated_photo_buy_btn"
+        android:gravity="center_vertical|top"
         android:paddingLeft="@dimen/pp_dp_16"
         android:paddingRight="@dimen/pp_dp_16"
         android:paddingBottom="@dimen/pp_dp_16"
@@ -99,58 +100,28 @@
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_14" />
 
-    <LinearLayout
-        android:id="@+id/animated_photo_bottom_btns_ll"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:layout_alignBottom="@+id/animated_photo_buy_btn"
+        android:layout_alignTop="@+id/animated_photo_buy_btn"
+        android:layout_toLeftOf="@+id/animated_photo_buy_btn"
+        android:textColor="@color/pp_gray"
+        android:paddingLeft="@dimen/pp_dp_10"
+        android:paddingRight="@dimen/pp_dp_10"
+        android:gravity="center_vertical"
+        android:text="@string/animated_photo_buy_tip"/>
+
+    <TextView
+        android:id="@+id/animated_photo_buy_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/pp_blue"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/pp_dp_16">
-
-        <Button
-            android:id="@+id/animated_photo_buy_ppp_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/animated_photo_buy_ppp"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-        <Button
-            android:id="@+id/animated_photo_upgrade_daily_ppp_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_dp_16"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/animated_photo_upgrade_exist_daily_ppp"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-        <Button
-            android:id="@+id/animated_photo_upgrade_ppp_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_dp_16"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/animated_photo_upgrade_exist_ppp"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-        <Button
-            android:id="@+id/animated_photo_add_cart_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_dp_16"
-            android:background="@drawable/button_sign_shape_and_selector"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/animated_photo_add_cart"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-    </LinearLayout>
-</LinearLayout>
+        android:padding="@dimen/pp_dp_20"
+        android:text="@string/buy_good"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14" />
+</RelativeLayout>

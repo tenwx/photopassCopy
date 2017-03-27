@@ -1,6 +1,7 @@
 package com.pictureair.photopass.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -26,12 +28,12 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.AddPPPCodeActivity;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
-import com.pictureair.photopass.activity.GifPlayActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.OpinionsActivity;
 import com.pictureair.photopass.activity.PanicBuyActivity;
 import com.pictureair.photopass.activity.SubmitOrderActivity;
 import com.pictureair.photopass.adapter.DailyPPCardRecycleAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DailyPPCardInfo;
@@ -54,14 +56,12 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.BannerView;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
@@ -86,7 +86,7 @@ import rx.schedulers.Schedulers;
  * 可以左右滑动切换不同的相册
  * 可以下拉刷新，获取更多的图片信息
  */
-public class FragmentPageStory extends BaseFragment implements OnClickListener, DailyPPCardRecycleAdapter.OnRecyclerViewItemClickListener {
+public class FragmentPageStory extends BaseFragment implements OnClickListener, DailyPPCardRecycleAdapter.OnRecyclerViewItemClickListener, PWDialog.OnPWDialogClickListener {
     //声明静态变量
     private static final int REFRESH_ALL_PHOTOS = 1006;
 
@@ -115,14 +115,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private CustomTextView specialDealOnTV;
     private CustomTextView specialDealDetailTV;
     private LinearLayout specialDealLL;
-    private BannerView bannerView;
-    private RelativeLayout gifRL, scanRL, draftLayout;
-    private ImageView gifIV;
+    private RelativeLayout draftLayout;
     private RecyclerView dailyPPCardRV;
     private DailyPPCardRecycleAdapter dailyPPCardRecycleAdapter;
     private ImageView img_float_hide;
     private FloatingActionButton fab;
     private PWToast myToast;
+    private PWDialog pwDialog;
+    private ImageView scanImgIV;
+    private TextView scanTV;
+    private CustomTextView buyPPPTV;
+    private CustomTextView useDailyPPPTV;
+    private CustomTextView usePPPTV;
 
     //申明变量
     private MyApplication app;
@@ -221,10 +225,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyNoPpToScanLinearLayout = (ScrollView) view.findViewById(R.id.story_no_pp_to_scan);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
         dailyPPCardRV = (RecyclerView) view.findViewById(R.id.story_fragment_rv);
+
+        scanImgIV = (ImageView) view.findViewById(R.id.story_no_pp_scan);
+        scanTV = (TextView) view.findViewById(R.id.story_scan);
+        buyPPPTV = (CustomTextView) view.findViewById(R.id.story_buy_ppp);
+        useDailyPPPTV = (CustomTextView) view.findViewById(R.id.story_activate_daily_ppp);
+        usePPPTV = (CustomTextView) view.findViewById(R.id.story_activate_ppp);
+        scanImgIV.setOnClickListener(this);
+        scanTV.setOnClickListener(this);
+        buyPPPTV.setOnClickListener(this);
+        useDailyPPPTV.setOnClickListener(this);
+        usePPPTV.setOnClickListener(this);
+
         specialDealLL = (LinearLayout) view.findViewById(R.id.special_deal_ll);
         specialDealDetailTV = (CustomTextView) view.findViewById(R.id.special_deal_detail_tv);
         specialDealOnTV = (CustomTextView) view.findViewById(R.id.special_deal_on);
-        bannerView = (BannerView) view.findViewById(R.id.story_banner);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
@@ -235,11 +250,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getRefreshData();
             }
         });
-        gifRL = (RelativeLayout) view.findViewById(R.id.story_gif_rl);
-        gifIV = (ImageView) view.findViewById(R.id.story_gif_iv);
-        scanRL = (RelativeLayout) view.findViewById(R.id.story_scan_rl);
-        gifRL.setOnClickListener(this);
-        scanRL.setOnClickListener(this);
 
         draftLayout= (RelativeLayout) view.findViewById(R.id.draft_layout);
         draftLayout.setVisibility(View.GONE);
@@ -264,7 +274,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         specialDealLL.setOnClickListener(this);
         specialDealOnTV.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         //初始化数据
-        GlideUtil.loadGifAsImage(context, GlideUtil.getDrawableUrl(context, R.drawable.story_pp_intro), gifIV);
         myToast = new PWToast(getActivity());
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
@@ -633,40 +642,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             }
         } else {//没有卡
             swipeRefreshLayout.setEnabled(false);
-
             //没有扫描过
             PictureAirLog.out("viewpager---->has not scan pp");
-            //获取banner数据
-            API2.getBannerPhotos(MyApplication.getTokenId())
-                    .map(new Func1<JSONObject, ArrayList<String>>() {
-
-                        @Override
-                        public ArrayList<String> call(JSONObject jsonObject) {
-                            return JsonUtil.getBannerPhotosList(context, jsonObject);
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .compose(this.<ArrayList<String>>bindToLifecycle())
-                    .subscribe(new RxSubscribe<ArrayList<String>>() {
-                        @Override
-                        public void _onNext(ArrayList<String> strings) {
-                            bannerView.setPhotos(strings);
-                            bannerView.bannerStartPlay();
-
-                        }
-
-                        @Override
-                        public void _onError(int status) {
-                            bannerView.setPhotos(JsonUtil.getBannerPhotosList(context, null));
-                            bannerView.bannerStartPlay();
-
-                        }
-
-                        @Override
-                        public void onCompleted() {
-
-                        }
-                    });
             //显示没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
         }
@@ -690,9 +667,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             return;
         }
         PictureAirLog.out(TAG + "truely onresume---->story");
-        if (bannerView != null) {
-            bannerView.bannerStartPlay();
-        }
 
         if (mIsAskStoragePermission) {
             mIsAskStoragePermission = false;
@@ -718,9 +692,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (hasHidden) {
             PictureAirLog.out("bu ke jian");
             return;
-        }
-        if (bannerView != null) {
-            bannerView.bannerStopPlay();
         }
     }
 
@@ -783,9 +754,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DRAGER_VIEW));
                 break;
 
-            case R.id.story_scan_rl:
+            case R.id.story_no_pp_scan:
+            case R.id.story_scan:
+            case R.id.story_activate_daily_ppp:
                 i = new Intent(context, MipCaptureActivity.class);
                 startActivity(i);
+                break;
+
+            case R.id.story_activate_ppp://添加ppp
+                i = new Intent(context, AddPPPCodeActivity.class);
+                i.putExtra("type", "ppp");//只扫描ppp
+                startActivity(i);
+                break;
+
+            case R.id.story_buy_ppp:
+                buyClick(0);
                 break;
 
             case R.id.special_deal_ll:
@@ -794,13 +777,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 i = new Intent(context, PanicBuyActivity.class);
                 i.putExtra("dealingInfo", dealingInfo);
                 startActivity(i);
-                break;
-
-            case R.id.story_gif_rl:
-                //进入gif播放页面
-                i = new Intent(context, GifPlayActivity.class);
-                startActivity(i);
-                context.overridePendingTransition(R.anim.activity_fadein, R.anim.activity_fadeout);
                 break;
 
             case R.id.fab:
@@ -826,10 +802,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public void buyClick(int position) {
-        showPWProgressDialog();
-        //获取商品（以后从缓存中取）
-        getGoods();
-
+        PictureAirLog.d("buy click---> " + position);
+        if (pwDialog == null) {
+            pwDialog = new PWDialog(context)
+                    .setOnPWDialogClickListener(this)
+                    .setPWDialogMessage(R.string.story_buy_dialog)
+                    .setPWDialogNegativeButton(R.string.update_ppp_cancel)
+                    .setPWDialogPositiveButton(R.string.update_ppp_ok)
+                    .pwDialogCreate();
+        }
+        pwDialog.pwDilogShow();
     }
 
     @Override
@@ -845,6 +827,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         i.putExtra("activated", dailyPPCardInfoArrayList.get(position).getActivated());
         i.putExtra("photoCount", dailyPPCardInfoArrayList.get(position).getPhotoCount());
         startActivity(i);
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                showPWProgressDialog();
+                //获取商品（以后从缓存中取）
+                getGoods();
+                break;
+        }
     }
 
     private void clickToRefresh() {

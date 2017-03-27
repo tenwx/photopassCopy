@@ -97,12 +97,14 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ppp_img_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="5"
                 android:src="@drawable/ppp_introduce1" />
 
             <TextView
+                android:id="@+id/ppp_intro_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_margin="20dp"

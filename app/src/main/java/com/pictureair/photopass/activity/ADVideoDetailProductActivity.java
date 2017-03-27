@@ -1,20 +1,18 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -36,7 +34,6 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
@@ -55,20 +52,19 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
     private ImageView backImageView;
     private ImageView cartImageView;
-    private ImageView adImageView;
-    private TextView cartCountTextView;
-    private Button buyPPPBtn, upgradePPP, upgradeDailyPPP, addPPPToCart;
+    private TextView cartCountTextView, buyTV;
+    private RelativeLayout buyPPPRL, usePPPRL, useDailyPPPRL, buyPhotoRL;
+    private TextView buyPPPNameTV, buyPPPIntroTV, buyPPPPriceTV;
 
     private PWToast pwToast;
+    private BottomSheetDialog sheetDialog;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private View buyPhotoRootView;
 
     private PhotoInfo videoInfo;
     private String ppCode;
     private String tabName;
     private int currentPosition;//记录当前预览照片的索引值
-
-    //加入购物车组件
-    private ViewGroup animMaskLayout;//动画层
-    private ImageView buyImg;// 这是在界面上跑的小图片
 
     private final static String TAG = ADVideoDetailProductActivity.class.getSimpleName();
 
@@ -76,7 +72,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private List<GoodsInfo> allGoodsList;//全部商品
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
-    private boolean isBuyNow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,19 +86,17 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         backImageView = (ImageView) findViewById(R.id.rt);
         cartImageView = (ImageView) findViewById(R.id.button_bag);
         cartCountTextView = (TextView) findViewById(R.id.textview_cart_count);
-        buyPPPBtn = (Button) findViewById(R.id.animated_photo_buy_ppp_btn);
-        upgradePPP = (Button) findViewById(R.id.animated_photo_upgrade_ppp_btn);
-        upgradeDailyPPP = (Button) findViewById(R.id.animated_photo_upgrade_daily_ppp_btn);
-        addPPPToCart = (Button) findViewById(R.id.animated_photo_add_cart_btn);
-        adImageView = (ImageView) findViewById(R.id.animated_photo_iv);
+        buyTV = (TextView) findViewById(R.id.animated_photo_buy_btn);
+
+        sheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//解决弹出对话框之后，状态栏的沉浸式效果消失了
+            sheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
         backImageView.setOnClickListener(this);
         cartImageView.setOnClickListener(this);
         cartCountTextView.setOnClickListener(this);
-        buyPPPBtn.setOnClickListener(this);
-        upgradePPP.setOnClickListener(this);
-        upgradeDailyPPP.setOnClickListener(this);
-        addPPPToCart.setOnClickListener(this);
+        buyTV.setOnClickListener(this);
     }
 
     private void initData() {
@@ -113,12 +106,6 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         currentPosition = bundle.getInt("position", 0);
         tabName = bundle.getString("tab");
         ppCode = bundle.getString("ppCode");
-
-        if (MyApplication.getInstance().getLanguageType().equals(Common.ENGLISH)) {
-            adImageView.setImageResource(R.drawable.animated_ad_en);
-        } else {
-            adImageView.setImageResource(R.drawable.animated_ad_zh);
-        }
 
         showPWProgressDialog(true);
         getGoods();
@@ -212,48 +199,109 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 startActivity(intent);
                 break;
 
-            case R.id.animated_photo_buy_ppp_btn://购买ppp
+            case R.id.preview_blur_dialog_buy_ppp_ll://购买ppp
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID || pppGoodsInfo == null) {
                     pwToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
+                if (sheetDialog.isShowing()) {
+                    sheetDialog.dismiss();
+                }
                 //购买按钮，需要将当前商品的类型和单价存储起来
-                isBuyNow = true;//立即购买
                 addtocart();
                 break;
 
-            case R.id.animated_photo_upgrade_ppp_btn://使用已存在的ppp升级
+            case R.id.preview_blur_dialog_upgrade_photo_ll://使用已存在的ppp升级
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    return;
                 }else{
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
                     showPWProgressDialog();
                     getPPPsByShootDate(videoInfo.getShootDate(), false);
                 }
                 break;
 
-            case R.id.animated_photo_upgrade_daily_ppp_btn://使用已存在的daily ppp升级
+            case R.id.preview_blur_dialog_upgrade_daily_photo_ll://使用已存在的daily ppp升级
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    return;
                 }else{
+                    if (sheetDialog.isShowing()) {
+                        sheetDialog.dismiss();
+                    }
                     showPWProgressDialog();
                     getPPPsByShootDate(videoInfo.getShootDate(), true);
                 }
                 break;
 
-            case R.id.animated_photo_add_cart_btn://把ppp加入购物车
-                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID || pppGoodsInfo == null) {
-                    pwToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-                //加入购物车，会有动画效果,如果没有登录，先提示登录
-                isBuyNow = false;
-                addtocart();
+            case R.id.animated_photo_buy_btn:
+                showSheetDialog();
                 break;
 
             default:
                 break;
+        }
+    }
+
+    /**
+     * 显示dialog
+     */
+    private void showSheetDialog() {
+        if (buyPhotoRootView == null) {
+            buyPhotoRootView = LayoutInflater.from(this).inflate(R.layout.dialog_preview_buy_blur, null);
+            buyPPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_ll);
+            buyPPPNameTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_tv);
+            buyPPPIntroTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_intro_tv);
+            buyPPPPriceTV = (TextView) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_ppp_price_tv);
+            usePPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_photo_ll);
+            useDailyPPPRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_upgrade_daily_photo_ll);
+            buyPhotoRL = (RelativeLayout) buyPhotoRootView.findViewById(R.id.preview_blur_dialog_buy_photo_ll);
+            buyPhotoRL.setVisibility(View.GONE);
+            buyPPPRL.setOnClickListener(this);
+            usePPPRL.setOnClickListener(this);
+            useDailyPPPRL.setOnClickListener(this);
+        } else {//需要把view的父控件的子view全部清除，此处为什么是FrameLayout，是从源码得知
+            ((FrameLayout) buyPhotoRootView.getParent()).removeAllViews();
+        }
+        sheetDialog.setContentView(buyPhotoRootView);
+        initSheetDialog();
+
+        if (bottomSheetBehavior == null) {
+            //解决弹出之后，如果用手势把对话框消失，则再次弹出的时候，只有阴影，对话框不会弹出的问题
+            View view1 = sheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet);
+            bottomSheetBehavior = BottomSheetBehavior.from(view1);
+            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        sheetDialog.dismiss();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
+        }
+        sheetDialog.show();
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initSheetDialog() {
+        for (GoodsInfo good: allGoodsList) {
+            if (good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+                pppGoodsInfo = good;
+                buyPPPNameTV.setText(good.getNameAlias());
+                PictureAirLog.d("----> " + good.getPrice());
+                buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+                buyPPPIntroTV.setText(good.getDescription());
+                break;
+            }
         }
     }
 
@@ -341,7 +389,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private void addtocart() {
         showPWProgressDialog();
         //调用addToCart API1
-        API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, isBuyNow, null)
+        API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<JSONObject>bindToLifecycle())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -352,34 +400,28 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
 
                         String cartId = jsonObject.getString("cartId");
                         dismissPWProgressDialog();
-                        if (isBuyNow) {
-                            MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.getPhotoPassCode(), videoInfo.getShootDate());
-                            MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
+                        MyApplication.getInstance().setIsBuyingPhotoInfo(null, null, videoInfo.getPhotoPassCode(), videoInfo.getShootDate());
+                        MyApplication.getInstance().setBuyPPPStatus(Common.FROM_AD_ACTIVITY);
 
-                            //生成订单
-                            Intent intent = new Intent(ADVideoDetailProductActivity.this, SubmitOrderActivity.class);
-                            ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                            CartItemInfo cartItemInfo = new CartItemInfo();
-                            cartItemInfo.setCartId(cartId);
-                            cartItemInfo.setProductName(pppGoodsInfo.getName());
-                            cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-                            cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-                            cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-                            cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-                            cartItemInfo.setQty(1);
-                            cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-                            cartItemInfo.setPictures(photoUrls);
-                            cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-                            cartItemInfo.setCartProductType(3);
+                        //生成订单
+                        Intent intent = new Intent(ADVideoDetailProductActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo = new CartItemInfo();
+                        cartItemInfo.setCartId(cartId);
+                        cartItemInfo.setProductName(pppGoodsInfo.getName());
+                        cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                        cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
 
-                            orderinfoArrayList.add(cartItemInfo);
-                            intent.putExtra("orderinfo", orderinfoArrayList);
-                            startActivity(intent);
-                        } else {
-                            buyImg = new ImageView(ADVideoDetailProductActivity.this);// buyImg是动画的图片
-                            buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                            setAnim(buyImg);
-                        }
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent.putExtra("orderinfo", orderinfoArrayList);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -395,116 +437,4 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 });
     }
 
-    /**
-     * 设置添加购物车动画
-     *
-     * @param v
-     */
-    private void setAnim(final View v) {
-        animMaskLayout = null;
-        animMaskLayout = createAnimLayout();
-        int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(this) / 2 - Common.CART_HEIGHT;
-        // 将组件添加到我们的动画层上
-        final View view = addViewToAnimLayout(animMaskLayout, v, start_location);
-        int[] end_location = new int[2];
-        cartCountTextView.getLocationInWindow(end_location);
-        // 计算位移
-        final int endX = end_location[0] - start_location[0];
-        final int endY = end_location[1] - start_location[1];
-
-        ScaleAnimation scaleAnimation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnimation.setInterpolator(new LinearInterpolator());//匀速
-        scaleAnimation.setRepeatCount(0);//不重复
-        scaleAnimation.setFillAfter(true);//停在最后动画
-        AnimationSet set = new AnimationSet(false);
-        set.setFillAfter(false);
-        set.addAnimation(scaleAnimation);
-        set.setDuration(500);//动画整个时间
-        view.startAnimation(set);//开始动画
-        set.setAnimationListener(new Animation.AnimationListener() {
-            // 动画的开始
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            // 动画的结束
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                //x轴的路径动画，匀速
-                TranslateAnimation translateAnimationX = new TranslateAnimation(0, endX, 0, 0);
-                translateAnimationX.setInterpolator(new LinearInterpolator());
-                translateAnimationX.setRepeatCount(0);// 动画重复执行的次数
-                //y轴的路径动画，加速
-                TranslateAnimation translateAnimationY = new TranslateAnimation(0, 0, 0, endY);
-                translateAnimationY.setInterpolator(new AccelerateInterpolator());
-                translateAnimationY.setRepeatCount(0);// 动画重复执行的次数
-                ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 0.1f, 1.0f, 0.1f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-                AnimationSet set2 = new AnimationSet(false);
-                //要先添加形状的，后添加位移的，不然动画效果不能达到要求
-                set2.addAnimation(scaleAnimation);
-                set2.addAnimation(translateAnimationY);
-                set2.addAnimation(translateAnimationX);
-
-                set2.setFillAfter(false);
-                set2.setStartOffset(200);//等待时间
-                set2.setDuration(800);// 动画的执行时间
-                view.startAnimation(set2);
-                set2.setAnimationListener(new Animation.AnimationListener() {
-
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        v.setVisibility(View.GONE);//控件消失
-                        int i = SPUtils.getInt(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
-                        if (i <= 0) {
-                            cartCountTextView.setVisibility(View.INVISIBLE);
-                        } else {
-                            cartCountTextView.setVisibility(View.VISIBLE);
-                            cartCountTextView.setText(i + "");
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private ViewGroup createAnimLayout() {
-        ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView();
-        LinearLayout animLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.gravity = Gravity.CENTER;
-
-        animLayout.setLayoutParams(lp);
-        animLayout.setBackgroundResource(android.R.color.transparent);
-        rootView.addView(animLayout);
-        return animLayout;
-    }
-
-    private View addViewToAnimLayout(ViewGroup vg, View view, int[] location) {
-        int x = location[0];
-        int y = location[1];
-        vg.addView(view);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = x;
-        lp.topMargin = y;
-        view.setLayoutParams(lp);
-        return view;
-    }
 }

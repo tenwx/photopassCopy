@@ -374,6 +374,7 @@ public class Common {
     /**
      * 商品名字
      */
+    public static final String GOOD_NAME_ONE_DAY_PPP = "PhotoPass+";
     public static final String GOOD_NAME_PPP = "PhotoPass+";
     public static final String GOOD_NAME_SINGLE_DIGITAL = "Digital Photo";
     public static final String GOOD_NAME_6R = "6\" X 8\" Photo";

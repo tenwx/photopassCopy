@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.GlideUtil;
 
 /**
  * gif播放页面
@@ -19,7 +18,7 @@ public class GifPlayActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         gifIV = new ImageView(this);
         setContentView(gifIV);
-        GlideUtil.loadGif(this, GlideUtil.getDrawableUrl(this, R.drawable.story_pp_intro), gifIV);
+//        GlideUtil.loadGif(this, GlideUtil.getDrawableUrl(this, R.drawable.story_pp_intro), gifIV);
         gifIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

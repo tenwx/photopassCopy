@@ -20,7 +20,7 @@
         android:paddingLeft="@dimen/pp_dp_10"
         android:paddingRight="@dimen/pp_dp_10"
         android:text="@string/auto"
-        android:textColor="@color/pp_light_blue"
+        android:textColor="@color/pp_gray"
         android:textSize="@dimen/text_size_16" />
 
     <ImageView
@@ -44,7 +44,7 @@
         android:paddingLeft="@dimen/pp_dp_10"
         android:paddingRight="@dimen/pp_dp_10"
         android:text="@string/active_ppp"
-        android:textColor="@color/pp_light_blue"
+        android:textColor="@color/pp_gray"
         android:textSize="@dimen/text_size_16" />
 
 </LinearLayout>

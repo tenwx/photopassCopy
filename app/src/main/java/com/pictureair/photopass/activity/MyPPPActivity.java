@@ -67,7 +67,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
     private boolean isDailyPPP = false;
-    private ImageView ppp_guideView;
+    private ImageView ppp_guideView, pppImgIv;
+    private TextView pppIntroTv;
     private MyListView listPPP;
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
@@ -334,6 +335,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         ll_guide_layout = (LinearLayout) findViewById(R.id.ppp_ll_guide);
         ppp_guideView = (ImageView) findViewById(R.id.ppp_img_guide_view);
+        pppImgIv = (ImageView) findViewById(R.id.ppp_img_iv);
+        pppIntroTv = (TextView) findViewById(R.id.ppp_intro_tv);
         nopppLayout.setVisibility(View.INVISIBLE);
         ll_button_area.setVisibility(View.GONE);
         refreshLayout.setVisibility(View.GONE);
@@ -540,7 +543,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
             case R.id.ok: // 确定选择之后
                 pictureWorksDialog.setPWDialogId(UPDATE_TIPS_DIALOG)
-                        .setPWDialogMessage(R.string.update_ppp_msg)
+                        .setPWDialogMessage(isDailyPPP ? R.string.update_daily_ppp_msg : R.string.update_ppp_msg)
                         .setPWDialogNegativeButton(R.string.update_ppp_cancel)
                         .setPWDialogPositiveButton(R.string.update_ppp_ok)
                         .setPWDialogContentCenter(true)
@@ -846,6 +849,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             refreshLayout.setVisibility(View.GONE);
             nopppLayout.setVisibility(View.VISIBLE);
             ll_button_area.setVisibility(View.VISIBLE);
+            if (isDailyPPP) {
+                pppImgIv.setImageResource(R.drawable.daily_ppp_introduce1);
+            } else {
+                pppImgIv.setImageResource(R.drawable.ppp_introduce1);
+
+            }
 
         } else {
             SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API2.PPPlist.size());
