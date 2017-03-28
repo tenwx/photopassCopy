@@ -53,7 +53,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
                 }
-                showPWProgressDialog();
+                showPWProgressDialog(true);
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 getData();
                 break;
@@ -174,7 +174,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     @Override
     public void loading() {
         webView.setVisibility(View.GONE);
-        showPWProgressDialog();
+        showPWProgressDialog(true);
     }
 
     @Override

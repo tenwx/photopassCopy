@@ -139,6 +139,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pppLine = (RelativeLayout) convertView.findViewById(R.id.card_bottom);
 			if (isUseHavedPPP) {
 				holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+				holder.ppp_empty_view = (ImageView) convertView.findViewById(R.id.ppp_empty_view);
 			}
 			adjustLayout(holder);
 			convertView.setTag(holder);
@@ -149,6 +150,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			childClickListener = new OnItemChildClickListener(position);
 			//显示单选框，隐藏状态
 			holder.img_no_check.setVisibility(View.VISIBLE);
+			holder.ppp_empty_view.setVisibility(View.VISIBLE);
 			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.ppp_item);
 			holder.img_no_check.setOnClickListener(childClickListener);
 			holder.itemLayout.setOnClickListener(childClickListener);
@@ -227,16 +229,22 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		holder.ppp_content.setLayoutParams(params);
 
 		ViewGroup.LayoutParams params2 = holder.ppp_imageView.getLayoutParams();
-		//588，372 ppp卡面图片的大小
-		params2.height = params.height - ScreenUtil.dip2px(mContext, 5);
-		params2.width = params2.height * 588 / 372;
+		if (isUseHavedPPP) {//588，372 ppp卡面图片的大小
+			params2.width = params.width - ScreenUtil.dip2px(mContext, 35);
+			params2.height = params2.width * 372 / 588;
 
-		if (isUseHavedPPP) {
-			RelativeLayout.LayoutParams checkParams = (RelativeLayout.LayoutParams) holder.img_no_check.getLayoutParams();
-			checkParams.leftMargin = (params.width - params2.width)/2 + ScreenUtil.dip2px(mContext, 10);
-			checkParams.topMargin = (params.height - params2.height)/2 + ScreenUtil.dip2px(mContext, 10);
-			holder.img_no_check.setLayoutParams(checkParams);
+		} else {
+			params2.height = params.height - ScreenUtil.dip2px(mContext, 5);
+			params2.width = params2.height * 588 / 372;
+
 		}
+
+//		if (isUseHavedPPP) {
+//			RelativeLayout.LayoutParams checkParams = (RelativeLayout.LayoutParams) holder.img_no_check.getLayoutParams();
+//			checkParams.leftMargin = (params.width - params2.width)/2 + ScreenUtil.dip2px(mContext, 10);
+//			checkParams.topMargin = (params.height - params2.height)/2 + ScreenUtil.dip2px(mContext, 10);
+//			holder.img_no_check.setLayoutParams(checkParams);
+//		}
 
 		holder.ppp_imageView.setLayoutParams(params2);
 
@@ -287,6 +295,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView tv_pp_date2;
 		TextView tv_pp_date3;
 		TextView tv_ppp_no_pp;//卡反面没有信息时的显示
+		ImageView ppp_empty_view;
 		RelativeLayout pppLine;
 	}
 

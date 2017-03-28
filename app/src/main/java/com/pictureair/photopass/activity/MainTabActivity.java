@@ -470,6 +470,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     @Override
                     public void _onNext(List<PPinfo> pPinfos) {
                         adapter.refreshSlideList(ppList);
+                        if (ppList.size() == 0) {
+                            btn_delete.setVisibility(View.INVISIBLE);
+                        } else {
+                            btn_delete.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
@@ -961,6 +966,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     slidList.setAdapter(adapter);
                 } else {
                     adapter.refreshSlideList(ppList);
+                }
+                if (ppList.size() == 0) {
+                    btn_delete.setVisibility(View.INVISIBLE);
+                } else {
+                    btn_delete.setVisibility(View.VISIBLE);
                 }
             }
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);

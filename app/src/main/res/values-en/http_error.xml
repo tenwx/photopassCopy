@@ -228,5 +228,5 @@
     <string name="http_error_code_5047">Network busy, please try later.</string>
     <string name="http_error_code_5048">Network busy, please try later.</string>
     <string name="http_error_code_5049">Network busy, please try later.</string>
-    <string name="http_error_code_5050">照片已过期！</string>
+    <string name="http_error_code_5050">Photo Expired!</string>
 </resources>

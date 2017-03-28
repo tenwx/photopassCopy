@@ -48,6 +48,7 @@ import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
 import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.PPDeleteEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
 import com.pictureair.photopass.greendao.PictureAirDbManager;
@@ -659,6 +660,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
     }
 
+    private void refreshPPlist() {
+        if (SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false)) {
+            PictureAirLog.out("need refresh");
+            app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
+            showPWProgressDialog();
+            //加卡，删卡，需要更新pplist信息，删图片，需要更新locationPhoto信息，因此此处全部处理
+            getPPList(false, true);
+            EventBus.getDefault().post(new RedPointControlEvent(false));
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -675,15 +688,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        if (SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false)) {
-            PictureAirLog.out("need refresh");
-            app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
-            showPWProgressDialog();
-            //加卡，删卡，需要更新pplist信息，删图片，需要更新locationPhoto信息，因此此处全部处理
-            getPPList(false, true);
-            EventBus.getDefault().post(new RedPointControlEvent(false));
-        }
+        refreshPPlist();
     }
 
     @Override
@@ -913,21 +918,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         public Object call(PPinfo info) {
                             PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.JSON_LOCATION_PHOTO_TYPE, "PPCode: \"" + info.getPpCode() + "\"");
                             PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, info.getPpCode());
-                            //有卡无图
-                            Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
-                            while (iterator.hasNext()) {
-                                PPinfo pPinfo = iterator.next();
-                                if (pPinfo.getPpCode().equals(info.getPpCode())) {
-                                    iterator.remove();
-                                }
-                            }
+//                            //有卡无图
+//                            Iterator<PPinfo> iterator = pPinfoArrayList.iterator();
+//                            while (iterator.hasNext()) {
+//                                PPinfo pPinfo = iterator.next();
+//                                if (pPinfo.getPpCode().equals(info.getPpCode())) {
+//                                    iterator.remove();
+//                                }
+//                            }
 
                             //有卡有图
                             Iterator<DailyPPCardInfo> iterator2 = dailyPPCardInfoArrayList.iterator();
                             while (iterator2.hasNext()) {
                                 DailyPPCardInfo dailyPPCardInfo = iterator2.next();
                                 if (dailyPPCardInfo.getPpCode().equals(info.getPpCode())) {
-                                    iterator.remove();
+                                    iterator2.remove();
                                 }
                             }
                             return null;
@@ -956,6 +961,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                         }
                     });
+        } else if (baseBusEvent instanceof ScanInfoEvent){
+            //为了解决从一日通页面添加pp卡 切换回来之后不刷新列表的问题
+            final ScanInfoEvent scanInfoEvent = (ScanInfoEvent) baseBusEvent;
+            refreshPPlist();
+            EventBus.getDefault().removeStickyEvent(scanInfoEvent);
         }
     }
 

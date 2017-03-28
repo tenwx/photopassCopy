@@ -36,6 +36,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API2;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
@@ -196,6 +197,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                         int currentPPCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0);
                         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, currentPPCount + 1);
+                        if (!TextUtils.isEmpty(getIntent().getStringExtra("from"))) {//从一日通过来
+                            AppManager.getInstance().killActivity(MyPPPActivity.class);
+                            MyApplication.getInstance().setMainTabIndex(0);
+                            //为了触发story页面刷新，因此需要eventbus
+                            EventBus.getDefault().post(new ScanInfoEvent(0, "", false, "", null));
+                        }
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_COUPON_TO_USER_NOT_RETURN_SUCCESS) {//扫码coupon并且成功绑定到用户
                         //进入coupon页面
@@ -294,7 +301,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 for (int i = 0; i < s.length(); i++) {
                     editString += " " + s.charAt(i);
                 }
-                PictureAirLog.out("editString---->" + editString);
+//                PictureAirLog.out("editString---->" + editString);
                 if (0 == inputCodeEdit.getText().toString().length()) {
                     if (wordSpaceTextView.isShown()) {
                         wordSpaceTextView.scrollTo(0, 0);//保证放大的textview正常显示

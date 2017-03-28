@@ -89,7 +89,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+        if (Common.DEBUG_MODE) {
+            LeakCanary.install(this);
+        }
 
         if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);

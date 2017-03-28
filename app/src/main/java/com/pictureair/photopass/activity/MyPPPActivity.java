@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
@@ -122,7 +121,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         @Override
         public void onGlobalLayout() {
             PictureAirLog.out("MyPPPActivity onGlobalLayout out");
-            if (listPPP.isShown() && listPPPAdapter.getArrayList()!= null && listPPPAdapter != null && listPPPAdapter.getArrayList().size() > 0) {
+            if (listPPP.isShown() && listPPPAdapter != null && listPPPAdapter.getArrayList()!= null && listPPPAdapter.getArrayList().size() > 0) {
                 PictureAirLog.out("MyPPPActivity onGlobalLayout in");
                 if (listPPP.getViewTreeObserver().isAlive()) {
                     listPPP.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -327,6 +326,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
 
+        mTitle = (TextView) findViewById(R.id.myppp);
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
         nopppLayout = (ScrollView) findViewById(R.id.nopppinfo);
@@ -345,7 +345,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     }
 
     private void initViewUseHavedPPP(){
-        mTitle = (TextView) findViewById(R.id.myppp);
+
         mTitle.setText(R.string.select_ppp_title);
         // 显示右上角 ok 按钮。隐藏 ＋ 号
         ok = (TextView) findViewById(R.id.ok);
@@ -374,8 +374,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             list1.add(ppPinfo);
         }
         listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
-        View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
-        listPPP.addHeaderView(view);
+//        View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
+//        listPPP.addHeaderView(view);
         listPPP.setAdapter(listPPPAdapter);
     }
 
@@ -407,6 +407,18 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             } else {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
             }
+        }
+        if (isDailyPPP) {//一日通
+            mTitle.setText(R.string.mypage_daily_ppp1);
+            pppIntroTv.setText(R.string.instruction_daily_ppp);
+            button_buy_ppp.setVisibility(View.VISIBLE);
+            button_scan_ppp.setText(R.string.scan_ppp_text);
+
+        } else {//一卡通
+            mTitle.setText(R.string.mypage_ppp);
+            pppIntroTv.setText(R.string.instruction);
+            button_buy_ppp.setVisibility(View.GONE);
+            button_scan_ppp.setText(R.string.use_ppp);
         }
     }
 
@@ -536,11 +548,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case R.id.button_scan_ppp:
-                Intent intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
-                intent.putExtra("type", "ppp");//只扫描ppp
-                intent.putExtra("mode", "ocr");//默认ocr扫描
+                Intent intent;
+                if (isDailyPPP) {
+                    intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                    intent.putExtra("from", "ppp");
+
+                } else {
+                    intent = new Intent(MyPPPActivity.this, AddPPPCodeActivity.class);
+                    intent.putExtra("type", "ppp");//只扫描ppp
+
+                }
                 startActivity(intent);
                 break;
+
             case R.id.ok: // 确定选择之后
                 pictureWorksDialog.setPWDialogId(UPDATE_TIPS_DIALOG)
                         .setPWDialogMessage(isDailyPPP ? R.string.update_daily_ppp_msg : R.string.update_ppp_msg)

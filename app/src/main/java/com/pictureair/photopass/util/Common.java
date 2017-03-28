@@ -18,6 +18,7 @@ public class Common {
     /**
      * 外网可访问的8.3测试服务器
      */
+    public static final boolean DEBUG_MODE = true;
     public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
     public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
     public static final String PHOTO_URL = "http://211.95.27.34:4000/";
@@ -27,6 +28,7 @@ public class Common {
     /**
      * 内网8.3测试服务器
      */
+//    public static final boolean DEBUG_MODE = true;
 //    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
 //    public static final String BASE_URL_SOCKET = "http://192.168.8.3:3006";
 //    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
@@ -36,6 +38,7 @@ public class Common {
     /**
      * 线上测试UAT服务器，上线前用这个服务器测试
      */
+//    public static final boolean DEBUG_MODE = true;
 //    public static final String BASE_URL_TEST = "http://211.144.223.225:3006";
 //    public static final String BASE_URL_SOCKET = "http://211.144.223.225:3006";
 //    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
@@ -45,6 +48,7 @@ public class Common {
     /**
      * 域名线上服务器
      */
+//    public static final boolean DEBUG_MODE = false;
 //    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
 //    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
 //    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
@@ -168,16 +172,6 @@ public class Common {
     public static final String APNS_DISCONNECT = "/socket/APNSDisconnect"; // 退出登陆时
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
     public static final String GET_SOCKET_DATA = "/socket/getSocketData"; // 返回用户未接收到的推送消息
-
-    /**
-     * help
-     */
-    public static final String ME_HELP = "/help/getHelpList";
-
-    /**
-     * video
-     */
-    public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
 
     /**
      * pay

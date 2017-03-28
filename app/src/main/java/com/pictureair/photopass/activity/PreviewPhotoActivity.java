@@ -206,6 +206,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     @Override
                     public void onPageScrolled(int arg0, float arg1, int arg2) {
+                        if (sheetDialog.isShowing()) {//开始滑动的时候，需要先隐藏掉，解决手指开始滑动的时候，同时另一只手点击此按钮，会造成偏差
+                            sheetDialog.dismiss();
+                        }
                     }
 
                     @Override
@@ -216,6 +219,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         if (arg0 == 0) {//结束滑动
                             updateIndexTools();//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
                             setUmengPhotoSlide();//统计滑动图片次数
+                        } else if (arg0 == 1) {
+                            if (moreImgBtn.isShown()) {//开始滑动的时候，需要先隐藏掉，解决手指开始滑动的时候，同时另一只手点击此按钮，会造成偏差
+                                moreImgBtn.setVisibility(View.INVISIBLE);
+
+                            }
                         }
                     }
                 });
@@ -347,6 +355,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         returnImageView.setOnClickListener(this);
         moreImgBtn.setOnClickListener(this);
+        moreImgBtn.setVisibility(View.INVISIBLE);
 
         Configuration cf = getResources().getConfiguration();
         int ori = cf.orientation;
@@ -692,6 +701,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             //更新title地点名称
             locationTextView.setText(photoInfo.getLocationName());
+            //设置菜单按钮
+            moreImgBtn.setVisibility((photoInfo.getIsPaid() == 1) ? View.VISIBLE : View.INVISIBLE);
 
             //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
             if (photoInfo.getIsPaid() == 0 && photoInfo.getIsOnLine() == 1) {//未购买的图片
@@ -706,6 +717,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             }
         } else {
             locationTextView.setText(R.string.souvenir_photo);
+            moreImgBtn.setVisibility(View.VISIBLE);
             dismissPWProgressDialog();
         }
 

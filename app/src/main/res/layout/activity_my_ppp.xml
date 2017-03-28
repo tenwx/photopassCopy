@@ -135,10 +135,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@drawable/button_blue_shape_and_selector"
+            android:background="@drawable/button_blue"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/buy_ppp_text"
-            android:textColor="@drawable/textview_selector_blue_white"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
 
         <Button
@@ -147,10 +147,10 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/pp_dp_16"
             android:layout_weight="1"
-            android:background="@drawable/button_blue_shape_and_selector"
+            android:background="@drawable/button_blue"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/scan_ppp_text"
-            android:textColor="@drawable/textview_selector_blue_white"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 
