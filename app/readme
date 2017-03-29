@@ -1,7 +1,7 @@
 更新日志   bauer
 
 
--------17/x/xx--------
+-------17/3/30--------
 versionCode 11     versionName "3.0.0"
 更新要点：
 公用更新点
@@ -24,6 +24,7 @@ versionCode 11     versionName "3.0.0"
 17.手机端购买的一日通会作为一日通处理，实体卡的一日通，在app扫描之后当做乐拍通处理（后台逻辑）
 18.旧版本升级需要强制重新登录
 19.扫描改版，去除ocr文字扫描库
+20.更新一日通管理页面购买一日通逻辑
 
 安卓优化更新点
 1.替换数据库框架GreenDao
@@ -38,13 +39,6 @@ versionCode 11     versionName "3.0.0"
 10.网络请求框架全部替换成rxjava + retrofit + okhttp
 11.添加lint 和 leakcanary性能检测
 12.兼容API25
-
-
-
-
-
-
-
 
 -------17/01/16--------
 versionCode 10     versionName "2.0.1"

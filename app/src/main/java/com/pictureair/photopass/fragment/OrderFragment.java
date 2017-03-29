@@ -104,7 +104,9 @@ public class OrderFragment extends Fragment implements OrderListViewAdapter.Remo
 
     @Override
     public void onAttach(Context context) {
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         if (getArguments() != null) {
             orderList = getArguments().getParcelableArrayList("orderList");
             Collections.sort(orderList, new OrderInfoDateSortUtil());
@@ -238,9 +240,6 @@ public class OrderFragment extends Fragment implements OrderListViewAdapter.Remo
     @Override
     public void onResume() {
         PictureAirLog.out(TAG + "orderFragment----------------->");
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
         super.onResume();
     }
 

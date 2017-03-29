@@ -10,8 +10,8 @@
         android:layout_height="20dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/pp_dp_10"
-        android:layout_marginRight="@dimen/pp_dp_10"
+        android:layout_marginLeft="@dimen/pp_dp_5"
+        android:layout_marginRight="@dimen/pp_dp_5"
         android:scaleType="centerInside"
         android:src="@drawable/slide_minus"
         android:visibility="invisible" />

@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/pp_dp_5"
             android:text="@string/use_ppp_daily_intro"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
     </RelativeLayout>
 
@@ -79,7 +79,7 @@
             android:layout_marginTop="@dimen/pp_dp_5"
             android:text="@string/use_ppp_intro"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
     </RelativeLayout>
 
@@ -119,7 +119,7 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_marginTop="@dimen/pp_dp_5"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
     </RelativeLayout>
 
@@ -159,6 +159,6 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_marginTop="@dimen/pp_dp_5"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 </LinearLayout>

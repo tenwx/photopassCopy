@@ -211,17 +211,31 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                 bottomBarRl.setVisibility(GONE);
 
             }
-            timeTextView.setVisibility(VISIBLE);
-            if (!TextUtils.isEmpty(adTextView.getText().toString())) {
-                adTextView.setVisibility(VISIBLE);
+            if (cardMode) {//卡片模式
+                //设置时间
+                timeTextView.setVisibility(VISIBLE);
+                if (!TextUtils.isEmpty(adTextView.getText().toString())) {
+                    adTextView.setVisibility(VISIBLE);
+                }
+                //设置卡片背景
+                cardRl.setBackgroundColor(Color.WHITE);
+
+                layoutParams.setMargins(margin, margin, margin, margin);
+                cardRl.setLayoutParams(layoutParams);
+
+                layoutParams2.setMargins(margin * 2, margin * 2, margin * 2, margin * 2);
+                photoContainerRl.setLayoutParams(layoutParams2);
+            } else {
+                //设置时间
+                timeTextView.setVisibility(GONE);
+                adTextView.setVisibility(GONE);
+
+                cardRl.setBackgroundColor(Color.TRANSPARENT);
+                layoutParams.setMargins(0, 0, 0, 0);
+                cardRl.setLayoutParams(layoutParams);
+                layoutParams2.setMargins(0, 0, 0, 0);
+                photoContainerRl.setLayoutParams(layoutParams2);
             }
-            cardRl.setBackgroundColor(Color.WHITE);
-
-            layoutParams.setMargins(margin, margin, margin, margin);
-            cardRl.setLayoutParams(layoutParams);
-
-            layoutParams2.setMargins(margin * 2, margin * 2, margin * 2, margin * 2);
-            photoContainerRl.setLayoutParams(layoutParams2);
 
         }
     }

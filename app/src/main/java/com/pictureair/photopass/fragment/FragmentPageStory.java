@@ -696,7 +696,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         super.onPause();
         if (hasHidden) {
             PictureAirLog.out("bu ke jian");
-            return;
         }
     }
 

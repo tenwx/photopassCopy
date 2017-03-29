@@ -24,6 +24,8 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.JsonInfo;
@@ -386,8 +388,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         menuLayout.setVisibility(View.VISIBLE);
         menuLayout.setOnClickListener(this);
-        button_buy_ppp.setTypeface(MyApplication.getInstance().getFontBold());
-        button_scan_ppp.setTypeface(MyApplication.getInstance().getFontBold());
         list1 = new ArrayList<>();
         //设置需要刷新PPPList
         MyApplication.getInstance().setNeedRefreshPPPList(true);
@@ -413,12 +413,14 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             pppIntroTv.setText(R.string.instruction_daily_ppp);
             button_buy_ppp.setVisibility(View.VISIBLE);
             button_scan_ppp.setText(R.string.scan_ppp_text);
+            button_scan_ppp.setBackgroundResource(R.drawable.button_gray_light);
+            button_scan_ppp.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
 
         } else {//一卡通
             mTitle.setText(R.string.mypage_ppp);
             pppIntroTv.setText(R.string.instruction);
             button_buy_ppp.setVisibility(View.GONE);
-            button_scan_ppp.setText(R.string.use_ppp);
+            button_scan_ppp.setText(R.string.story_scan_ppp);
         }
     }
 
@@ -812,7 +814,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         Intent intent = new Intent(MyPPPActivity.this, SelectPPActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("ppp", ppp);
-                        intent.putExtras(bundle);
+                        intent.putExtra("dailyppp", isDailyPPP);
+                        intent.putExtra("bundle", bundle);
                         startActivity(intent);
                     }
 
@@ -956,11 +959,54 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
             }
         }
-        dismissPWProgressDialog();
-        //跳转到PP+详情页面
-        Intent intent2 = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
-        intent2.putExtra("goods", pppGoodsInfo);
-        startActivity(intent2);
+        buyPPP();
+    }
+
+    private void buyPPP() {
+        //调用addToCart API1
+        API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<JSONObject>bindToLifecycle())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        int currentCartCount = SPUtils.getInt(MyPPPActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                        SPUtils.put(MyPPPActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
+
+                        String cartId = jsonObject.getString("cartId");
+                        dismissPWProgressDialog();
+                        //生成订单
+                        Intent intent = new Intent(MyPPPActivity.this, SubmitOrderActivity.class);
+                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo cartItemInfo = new CartItemInfo();
+                        cartItemInfo.setCartId(cartId);
+                        cartItemInfo.setProductName(pppGoodsInfo.getName());
+                        cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+                        cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+                        cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
+
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent.putExtra("orderinfo", orderinfoArrayList);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     private void dissmissDialogAndShowToast() {

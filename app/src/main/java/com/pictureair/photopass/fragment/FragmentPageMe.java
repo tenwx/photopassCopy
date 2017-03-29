@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -28,6 +27,7 @@ import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
 /**
@@ -38,7 +38,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout orderTV,  pppTV, couponTV, customerTV, downloadTV, dailyPPPTV, connectUsTV, helpTV;
+    private CustomTextView orderTV,  pppTV, couponTV, customerTV, downloadTV, dailyPPPTV, connectUsTV, helpTV;
     private ImageView headPhoto, headSet;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String avatarUrl = "";//用户头像url
@@ -62,20 +62,19 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
 
-
         headPhoto = (ImageView) scrollView.getHeaderView().findViewById(R.id.user_photo);
         name = (TextView) scrollView.getHeaderView().findViewById(R.id.user_name);
         headSet = (ImageView) scrollView.getHeaderView().findViewById(R.id.user_set);
         scrollView.getHeaderView().findViewById(R.id.user_head_layout).setOnClickListener(this);
 
-        orderTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_order);
-        pppTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_ppp);
-        couponTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_coupon);
+        orderTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_order);
+        pppTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_ppp);
+        couponTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_coupon);
 //        customerTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_customer);
-        downloadTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_download);
-        dailyPPPTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_daily_ppp);
-        connectUsTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_connect_us);
-        helpTV = (RelativeLayout) scrollView.getPullRootView().findViewById(R.id.me_help);
+        downloadTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_download);
+        dailyPPPTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_daily_ppp);
+        connectUsTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_connect_us);
+        helpTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_help);
 
         orderTV.setOnClickListener(this);
         pppTV.setOnClickListener(this);
@@ -143,7 +142,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //                startActivity(i);
 //                break;
 
-            case R.id.me_order:
+            case R.id.me_show_order:
                 // 跳转到我的订单页面
                 i.setClass(MyApplication.getInstance(), OrderActivity.class);
                 startActivity(i);
@@ -154,20 +153,20 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //                startActivity(i);
 //                break;
 
-            case R.id.me_ppp:
+            case R.id.me_show_ppp:
                 // 跳转到PPP页面
                 i.setClass(MyApplication.getInstance(), MyPPPActivity.class);
                 startActivity(i);
                 break;
 
-            case R.id.me_daily_ppp:
+            case R.id.me_show_daily_ppp:
                 // 跳转到PPP页面
                 i.setClass(MyApplication.getInstance(), MyPPPActivity.class);
                 i.putExtra("dailyppp", true);
                 startActivity(i);
                 break;
 
-            case R.id.me_help:
+            case R.id.me_show_help:
                 i.setClass(MyApplication.getInstance(), WebViewActivity.class);
                 i.putExtra("key",6);
                 startActivity(i);
@@ -178,18 +177,18 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //                startActivity(i);
 //                break;
 
-            case R.id.me_download:
+            case R.id.me_show_download:
                 i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
                 startActivity(i);
                 break;
 
-            case R.id.me_coupon:
+            case R.id.me_show_coupon:
                 i.setClass(MyApplication.getInstance(), CouponActivity.class);
                 i.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
                 startActivity(i);
                 break;
 
-            case R.id.me_connect_us:
+            case R.id.me_show_connect_us:
                 //意见反馈弹出框
                 i.setClass(MyApplication.getInstance(), WebViewActivity.class);
                 i.putExtra("key",3);

@@ -112,6 +112,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
                 android:textColor="@color/gray2"
+                android:textAllCaps="false"
                 android:gravity="center"
                 android:background="@drawable/button_translate_with_gray_line"
                 />

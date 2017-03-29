@@ -185,13 +185,13 @@ public class OrderActivity extends BaseFragmentActivity {
     //初始化
     private void initView() {
         PictureAirLog.out("initview");
+        showProgressDialog();
         //从网络获取数据
         mFragments = new ArrayList<>();
         getData();
         currency =  Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         //获取订单接口
         // 显示进度条。
-        showProgressDialog();
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         setTopTitleShow(R.string.my_order);
         setTopLeftValueAndShow(R.drawable.back_blue, true);

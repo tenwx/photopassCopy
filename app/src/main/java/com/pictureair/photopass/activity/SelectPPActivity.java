@@ -62,6 +62,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private PWToast myToast;
     private PWDialog pictureWorksDialog;
     private boolean fromPPP;
+    private boolean isDailyPPP;
 
     private static class MyPPHandler extends Handler{
         private final WeakReference<SelectPPActivity> mActivity;
@@ -136,8 +137,10 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         String photoPassCode = this.getIntent().getStringExtra("photoPassCode");
         final String shootTime = this.getIntent().getStringExtra("shootTime");
         fromPPP = false;
-        if (getIntent().getParcelableExtra("ppp") != null) {
-            dppp = getIntent().getParcelableExtra("ppp");
+        isDailyPPP = getIntent().getBooleanExtra("dailyppp", false);
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        if (bundle.getParcelable("ppp") != null) {
+            dppp = bundle.getParcelable("ppp");
             fromPPP = true;
         }
 
@@ -247,7 +250,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 PictureAirLog.d("pps--> " + pps.toJSONString());
                 if (fromPPP) {
                     pictureWorksDialog.setPWDialogId(BIND_TIP_DIALOG)
-                            .setPWDialogMessage(String.format(getString(R.string.select_pp_right_date), selectedString))
+                            .setPWDialogMessage(String.format(getString(isDailyPPP ? R.string.select_pp_right_date2 : R.string.select_pp_right_date), selectedString))
                             .setPWDialogNegativeButton(R.string.button_cancel)
                             .setPWDialogPositiveButton(R.string.button_ok)
                             .setPWDialogContentCenter(false)

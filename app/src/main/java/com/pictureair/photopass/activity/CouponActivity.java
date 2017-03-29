@@ -255,7 +255,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
 
     @Override
     public void noCoupon() {
-        if (whatPege.equals(couponTool.ACTIVITY_ORDER) && null != newAddCoupon) {
+        if (whatPege.equals(CouponTool.ACTIVITY_ORDER) && null != newAddCoupon) {
             couponAdapter.setPage(whatPege);//设置显示界面
             newAddCoupon.setApplyThisProduct(false);//不适用
             mAllData.clear();
@@ -289,9 +289,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
     @Override
     public void getWhatPege(String whatPege) {
         this.whatPege = whatPege;
-        if (whatPege.equals(couponTool.ACTIVITY_ME)) {//me页面
+        if (whatPege.equals(CouponTool.ACTIVITY_ME)) {//me页面
             setTopTitleShow(R.string.my_coupon);
-        } else if (whatPege.equals(couponTool.ACTIVITY_ORDER)) {//订单页面
+        } else if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//订单页面
             setTopTitleShow(R.string.select_cpupon);
         } else {
         }

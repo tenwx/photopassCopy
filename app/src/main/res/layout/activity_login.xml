@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/login_parent"
+    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/ImmersiveMode"
     android:background="@drawable/login_register_background"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height">
+
         <TextView
             android:id="@+id/sign"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@drawable/login_text_color"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="@string/sign"
-            android:gravity="center"
             android:layout_marginRight="@dimen/pp_dp_16"
             android:layout_marginTop="@dimen/pp_dp_10"
-            />
+            android:gravity="center"
+            android:text="@string/sign"
+            android:textColor="@drawable/login_text_color"
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <LinearLayout
@@ -30,14 +31,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:text="@string/user_login"
-            android:textSize="25sp"
             android:gravity="center"
-            />
+            android:text="@string/user_login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,8 +53,7 @@
             android:id="@+id/rl_country"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_30"
-            android:layout_marginTop="@dimen/pp_dp_20"
-            >
+            android:layout_marginTop="@dimen/pp_dp_20">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,36 +82,35 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_30"
             android:layout_marginTop="@dimen/pp_dp_40"
-            android:orientation="horizontal"
-            android:paddingRight="@dimen/pp_dp_5"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingBottom="@dimen/pp_dp_5"
-            >
+            android:paddingRight="@dimen/pp_dp_5">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/login_phone"
                 android:layout_marginLeft="@dimen/pp_dp_10"
                 android:adjustViewBounds="true"
-                />
+                android:src="@drawable/login_phone" />
 
             <TextView
                 android:id="@+id/tv_country_num"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/pp_dp_10"
                 android:gravity="center_vertical|right"
                 android:paddingRight="5dp"
                 android:text="+86"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16"
-                android:layout_marginLeft="@dimen/pp_dp_10"/>
+                android:textSize="@dimen/text_size_16" />
 
             <View
                 android:layout_width="@dimen/pp_px_1"
                 android:layout_height="@dimen/text_size_16"
-                android:background="@color/white"
+                android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"/>
+                android:background="@color/white" />
 
             <com.pictureair.photopass.widget.EditTextWithClear
 
@@ -138,25 +137,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_30"
-            android:orientation="horizontal"
-            android:paddingRight="@dimen/pp_dp_5"
             android:layout_marginTop="@dimen/pp_dp_30"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingBottom="@dimen/pp_dp_5"
-            >
+            android:paddingRight="@dimen/pp_dp_5">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/login_code"
                 android:layout_marginLeft="@dimen/pp_dp_10"
                 android:adjustViewBounds="true"
-                />
+                android:src="@drawable/login_code" />
 
             <com.pictureair.photopass.widget.EditTextWithClear
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/pp_dp_10"
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="@string/pwd"
@@ -165,8 +163,7 @@
                 android:maxLength="200"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
-                android:textSize="@dimen/text_size_16"
-                android:layout_marginLeft="@dimen/pp_dp_10"/>
+                android:textSize="@dimen/text_size_16" />
 
         </LinearLayout>
 
@@ -190,9 +187,9 @@
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_40"
+            android:layout_marginTop="@dimen/pp_dp_20"
             android:background="@drawable/button_white_shape_and_selector"
             android:padding="@dimen/pp_dp_10"
-            android:layout_marginTop="@dimen/pp_dp_20"
             android:text="@string/login"
             android:textColor="@drawable/textview_selector_white_other"
             android:textSize="@dimen/text_size_16" />
@@ -207,12 +204,12 @@
             android:id="@+id/msgLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/pp_dp_10"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/msgLogin"
             android:textColor="@drawable/login_text_color"
-            android:textSize="@dimen/text_size_14"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/otherLogin"
@@ -223,7 +220,7 @@
             android:padding="@dimen/pp_dp_10"
             android:text="@string/otherLogin"
             android:textColor="@drawable/login_text_color"
-            android:textSize="@dimen/text_size_14"/>
+            android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
 </LinearLayout>

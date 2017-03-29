@@ -39,6 +39,7 @@
         android:paddingRight="@dimen/pp_dp_30"
         android:paddingTop="@dimen/pp_dp_10"
         android:text=""
+        android:textAllCaps="false"
         android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
 

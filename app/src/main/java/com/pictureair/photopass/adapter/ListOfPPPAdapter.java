@@ -376,8 +376,13 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					break;
 
 				case 1://用过一张
-					status = STATUS_USED;
-					holder.tv_cardStatus.setText(R.string.activated);
+					if (dpp.capacity == 1) {//一日通
+						status = STATUS_ALLUSED;
+						holder.tv_cardStatus.setText(R.string.ppp_has_used);
+					} else {//一卡通
+						status = STATUS_USED;
+						holder.tv_cardStatus.setText(R.string.activated);
+					}
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);

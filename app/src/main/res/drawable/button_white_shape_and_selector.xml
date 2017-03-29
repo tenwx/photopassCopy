@@ -31,7 +31,7 @@
     </item>
     <item android:state_enabled="false">
         <shape>
-            <solid android:color="@color/pp_gray" />
+            <solid android:color="@color/pp_light_gray_press" />
 
             <corners android:radius="2dp" />
         </shape>

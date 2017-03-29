@@ -302,7 +302,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         RelativeLayout discountLayout = (RelativeLayout) view.findViewById(R.id.discount_content_layout);
         RelativeLayout invoiceLayout = (RelativeLayout) view.findViewById(R.id.invoice_content_layout);
 
-        couponCountRl.setOnClickListener(new OnClickListener() {
+        couponTitlelayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //进入优惠券选择界面

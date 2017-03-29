@@ -132,7 +132,7 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_blue, true);
 
-        setTopTitleShow(R.string.active);
+        setTopTitleShow(R.string.mypage_ppp);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);
     }
 

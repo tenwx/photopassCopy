@@ -115,7 +115,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private int currentPosition;//记录当前预览照片的索引值
 
-    private String tabName, currentPPCode;
+    private String tabName, currentPPCode, currentShootDate;
 
     /**
      * 模糊图购买对话框控件
@@ -488,10 +488,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("tabName--->" + tabName);
                 if (tabName.equals("editStory")){//编辑PP照片页面
                     currentPPCode = bundle.getString("ppCode");
-                    String shootDate = bundle.getString("shootDate");
+                    currentShootDate = bundle.getString("shootDate");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
-                            PictureAirDbManager.getPhotoInfosByPPCode(currentPPCode, shootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
+                            PictureAirDbManager.getPhotoInfosByPPCode(currentPPCode, currentShootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
 
                 } else {//获取列表图片， other，不需要根据photoid重新找到地点
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
@@ -779,15 +779,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.getIsPaid() == 1) {
-                    if (sheetDialog.isShowing()) {
-                        sheetDialog.dismiss();
-                    }
                     if (mViewPager.getCurrentItem() >= photolist.size()) {
                         return;
                     }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).getPhotoOriginalURL());
                     sharePop.setShareInfo(photolist.get(mViewPager.getCurrentItem()), false, previewPhotoHandler);
-                    sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    sharePop.showAtLocation(photoFraRelativeLayout, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 } else {
                     prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
                 }
@@ -948,7 +945,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                         PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                         //将当前购买的照片信息存放到application中
-                        myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).getPhotoId(), tabName, null, null);
+                        myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).getPhotoId(), tabName, currentPPCode, currentShootDate);
                         if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                         } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                         } else {

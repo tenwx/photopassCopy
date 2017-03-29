@@ -30,7 +30,7 @@
             android:id="@+id/card_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pp_dp_100"
+            android:layout_marginLeft="@dimen/pp_dp_40"
             android:layout_toRightOf="@+id/time"
             android:gravity="center_vertical|right"
             android:orientation="horizontal">

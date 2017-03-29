@@ -88,7 +88,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
             } else {
                 recyclerViewHolder.dateTV.setVisibility(View.VISIBLE);
-                recyclerViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate());
+                recyclerViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate().replace("-", "."));
 
                 recyclerViewHolder.expireTV.setVisibility(View.VISIBLE);
                 if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {//已升级PP
@@ -137,7 +137,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                 } else {
                     recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
-                    recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_placeholder), recyclerViewHolder.rightPhotoIV);
                     recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
 

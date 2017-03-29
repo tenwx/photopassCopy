@@ -767,6 +767,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     bundle.putInt("position", -1);
                     bundle.putString("tab", tab);
                     bundle.putString("photoId", photoId);
+                    bundle.putString("ppCode", myApplication.getIsBuyingPhotoPassCode());
+                    bundle.putString("shootDate", myApplication.getIsBuyingPhotoShootTime());
                     intent.putExtra("bundle", bundle);
 
                     // 清空标记

@@ -222,6 +222,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/main_slide_text"
                 android:layout_marginTop="@dimen/pp_dp_10"
+                android:textAllCaps="false"
                 android:background="@null"
                 android:text="@string/story_unbound"
                 android:textColor="@color/pp_blue"
@@ -234,6 +235,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/line_color"
+            android:listSelector="@color/transparent"
             android:dividerHeight="1px"
             android:scrollbars="none" />
     </LinearLayout>

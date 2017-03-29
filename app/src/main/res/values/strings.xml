@@ -41,18 +41,18 @@
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
     <string name="terms_of_use">使用条款</string>
-    <string name="terms_and_policy"><a href="5">使用条款</a>和\n<a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
+    <string name="terms_and_policy"><a href="5">使用条款</a>\n以及<a href="2">补充条款及细则</a>\n以及<a href="1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">选择国家/地区</string>
+    <string name="select_a_country">选择国家 / 地区</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->
     <string name="reset_pwd">重置密码</string>
     <string name="send_emal">发送验证邮件</string>
     <string name="back_login_page">返回登录页面</string>
-    <string name="email_is_empty">电子邮箱不能为空</string>
+    <string name="email_is_empty">请输入您的电子邮箱</string>
     <string name="email_sent">邮件已发送，请前往邮箱验证</string>
     <string name="reset_pwd_ok">确认</string>
     <!-- forget pwd end -->
@@ -98,7 +98,7 @@
     <string name="story_tab_favorite">收藏</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">请扫一扫您的迪士尼乐拍通卡/乐拍通一日通背后二维码，当有您的照片出现时即可在App内免费预览哦！</string>
+    <string name="story_no_pp">请扫描您的迪士尼乐拍通卡或者乐拍通一日通卡或者乐拍通季卡上的二维码，更快获得您的游玩照片！</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_photo_in_magiccam">收藏全部的已编辑图片</string>
@@ -123,11 +123,10 @@
     <string name="video_location">My Disney Story</string>
     <string name="story_buy_ppp">购买迪士尼乐拍通一日通</string>
     <string name="story_scan_ppp">激活您已购买的乐拍通一卡通</string>
-    <string name="story_scan_daily_ppp">激活您已购买的迪士尼乐拍通一日通</string>
-    <string name="story_no_photo_tip">您的迪士尼乐拍通卡或者乐拍通一日通卡还没有绑定任何照片\n请快速找乐拍通摄影师拍照吧！</string>
+    <string name="story_scan_daily_ppp">激活您已购买的乐拍通一日通</string>
     <string name="story_card">卡号：%1$s</string>
     <string name="story_blur_expire_time">（未付款照片有效期30天）</string>
-    <string name="story_expire_time">（付款照片有效期60天）</string>
+    <string name="story_expire_time">（已付款照片有效期60天）</string>
     <string name="story_want_to_buy">我想购买</string>
     <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载同一天任意一张迪士尼乐拍通卡里的所有数码照片。</string>
     <!-- story end -->
@@ -416,10 +415,10 @@
     <string name="activated">已使用</string>
     <string name="ppp_has_used">已用完</string>
     <string name="ppp_has_expired">已过期</string>
-    <string name="expired_on">有效期:</string>
+    <string name="expired_on">有效时间:</string>
     <string name="experiencephotopassplus">迪士尼乐拍通一卡通体验卡</string>
     <string name="buy_ppp_text">购买迪士尼乐拍通一日通</string>
-    <string name="scan_ppp_text">扫描已有的迪士尼乐拍通一日通</string>
+    <string name="scan_ppp_text">激活您已购买的乐拍通一日通</string>
     <string name="ppp_deail_no_card">您还未激活任何迪士尼乐拍通卡号</string>
     <string name="ppp_load_all">没有更多数据</string>
     <string name="pull_to_refresh">上拉刷新显示更多</string>
@@ -445,6 +444,7 @@
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
     <string name="select_pp_right_date">您选择激活以下迪士尼乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通能让您激活同一天三张乐拍通卡，或者连续三天的同一张乐拍通卡。\n\n是否确认继续选择激活此乐拍通卡？</string>
+    <string name="select_pp_right_date2">您选择激活以下迪士尼乐拍通卡号：\n%1$s\n迪士尼乐拍通一日通能让您激活同一天一张乐拍通卡。\n\n是否确认继续选择激活此乐拍通卡？</string>
     <string name="pp_tip">以下是您未激活的迪士尼乐拍通卡。在激活前，请注意卡的日期。</string>
     <string name="select_pp">%1$s在%2$s的照片\n</string>
     <string name="outofrange">超出范围</string>
@@ -528,7 +528,7 @@
     <string name="confirm_sync_yes">确认</string>
     <string name="confirm_sync_no">取消</string>
     <!-- 删除pp的提示-->
-    <string name="delete_pp">一旦删除，即该账户不会显示此迪士尼乐拍通的照片！</string>
+    <string name="delete_pp">一旦删除，即该账户不会显示此卡的照片</string>
     <string name="delete_pp_cancel">取消</string>
     <string name="delete_pp_ok">删除</string>
     <!-- tips end -->
@@ -623,7 +623,7 @@
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
     <string name="smssdk_ok">好</string>
-    <string name="smssdk_make_sure_mobile_detail">我们将发送验证码短信到这个号码:\n%1$s</string>
+    <string name="smssdk_make_sure_mobile_detail">我们将发送验证码短信到这个手机号:\n%1$s</string>
     <string name="smssdk_write_mobile_phone">手机号码</string>
     <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
     <string name="smssdk_write_identify_code2">填写验证码</string>
