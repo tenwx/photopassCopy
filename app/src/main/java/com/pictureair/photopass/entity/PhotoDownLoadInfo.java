@@ -27,7 +27,7 @@ public class PhotoDownLoadInfo {
     private int videoWidth;
     private int videoHeight;
     private int isVideo;
-    private long readLength;
+    private long readLength;//断点下载使用字段，表示当前下载的点
 
     @Transient
     private boolean isSelect;//表示是否被勾选
