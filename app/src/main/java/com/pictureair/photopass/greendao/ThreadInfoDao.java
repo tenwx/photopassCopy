@@ -25,11 +25,11 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Url = new Property(1, String.class, "url", false, "URL");
-        public final static Property ThreadId = new Property(2, int.class, "threadId", false, "THREAD_ID");
-        public final static Property Start = new Property(3, int.class, "start", false, "START");
-        public final static Property End = new Property(4, int.class, "end", false, "END");
-        public final static Property Finished = new Property(5, int.class, "finished", false, "FINISHED");
+        public final static Property ThreadId = new Property(1, int.class, "threadId", false, "THREAD_ID");
+        public final static Property Url = new Property(2, String.class, "url", false, "URL");
+        public final static Property Start = new Property(3, long.class, "start", false, "START");
+        public final static Property End = new Property(4, long.class, "end", false, "END");
+        public final static Property Finished = new Property(5, long.class, "finished", false, "FINISHED");
     }
 
 
@@ -46,8 +46,8 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"THREAD_INFO\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"URL\" TEXT," + // 1: url
-                "\"THREAD_ID\" INTEGER NOT NULL ," + // 2: threadId
+                "\"THREAD_ID\" INTEGER NOT NULL ," + // 1: threadId
+                "\"URL\" TEXT," + // 2: url
                 "\"START\" INTEGER NOT NULL ," + // 3: start
                 "\"END\" INTEGER NOT NULL ," + // 4: end
                 "\"FINISHED\" INTEGER NOT NULL );"); // 5: finished
@@ -67,12 +67,12 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getThreadId());
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(2, url);
+            stmt.bindString(3, url);
         }
-        stmt.bindLong(3, entity.getThreadId());
         stmt.bindLong(4, entity.getStart());
         stmt.bindLong(5, entity.getEnd());
         stmt.bindLong(6, entity.getFinished());
@@ -86,12 +86,12 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
+        stmt.bindLong(2, entity.getThreadId());
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(2, url);
+            stmt.bindString(3, url);
         }
-        stmt.bindLong(3, entity.getThreadId());
         stmt.bindLong(4, entity.getStart());
         stmt.bindLong(5, entity.getEnd());
         stmt.bindLong(6, entity.getFinished());
@@ -106,11 +106,11 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     public ThreadInfo readEntity(Cursor cursor, int offset) {
         ThreadInfo entity = new ThreadInfo( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // url
-            cursor.getInt(offset + 2), // threadId
-            cursor.getInt(offset + 3), // start
-            cursor.getInt(offset + 4), // end
-            cursor.getInt(offset + 5) // finished
+            cursor.getInt(offset + 1), // threadId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // url
+            cursor.getLong(offset + 3), // start
+            cursor.getLong(offset + 4), // end
+            cursor.getLong(offset + 5) // finished
         );
         return entity;
     }
@@ -118,11 +118,11 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     @Override
     public void readEntity(Cursor cursor, ThreadInfo entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setUrl(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setThreadId(cursor.getInt(offset + 2));
-        entity.setStart(cursor.getInt(offset + 3));
-        entity.setEnd(cursor.getInt(offset + 4));
-        entity.setFinished(cursor.getInt(offset + 5));
+        entity.setThreadId(cursor.getInt(offset + 1));
+        entity.setUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setStart(cursor.getLong(offset + 3));
+        entity.setEnd(cursor.getLong(offset + 4));
+        entity.setFinished(cursor.getLong(offset + 5));
      }
     
     @Override

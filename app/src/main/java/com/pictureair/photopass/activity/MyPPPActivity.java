@@ -64,7 +64,7 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * 显示用户所有的PP+或是对应某个PP而言可使用的PP+
  */
-public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRefreshListener, PWDialog.OnPWDialogClickListener{
+public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRefreshListener, PWDialog.OnPWDialogClickListener {
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
     private boolean isDailyPPP = false;
@@ -123,7 +123,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         @Override
         public void onGlobalLayout() {
             PictureAirLog.out("MyPPPActivity onGlobalLayout out");
-            if (listPPP.isShown() && listPPPAdapter != null && listPPPAdapter.getArrayList()!= null && listPPPAdapter.getArrayList().size() > 0) {
+            if (listPPP.isShown() && listPPPAdapter != null && listPPPAdapter.getArrayList() != null && listPPPAdapter.getArrayList().size() > 0) {
                 PictureAirLog.out("MyPPPActivity onGlobalLayout in");
                 if (listPPP.getViewTreeObserver().isAlive()) {
                     listPPP.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -137,7 +137,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     public void onRefresh() {
         Message message = new Message();
         message.what = 3;
-        myPPPHandler.sendMessageDelayed(message,1000);
+        myPPPHandler.sendMessageDelayed(message, 1000);
     }
 
     private static class MyPPPHandler extends Handler {
@@ -176,7 +176,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 dismissPWProgressDialog();
                 refreshLayout.setVisibility(View.VISIBLE);
                 PictureAirLog.v(TAG, "list=========" + list1.size());
-                listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
+                listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
                 listPPP.setAdapter(listPPPAdapter);
                 break;
 
@@ -186,11 +186,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case 2:
-                ok.setText(formaStringPPP(listPPPAdapter.getMap().size(),1));
-                if (listPPPAdapter.getMap().size() >=1){
+                ok.setText(formaStringPPP(listPPPAdapter.getMap().size(), 1));
+                if (listPPPAdapter.getMap().size() >= 1) {
                     ok.setEnabled(true);
                     ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.pp_blue));
-                }else{
+                } else {
                     ok.setEnabled(false);
                     ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.gray_light5));
                 }
@@ -205,19 +205,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     status = full;
                     finishLoad();
                     listPPPAdapter.notifyDataSetChanged();
-                    listPPP.setSelection(listPPP.getLastVisiblePosition()+1);
-                }else if (status == unUse) {
+                    listPPP.setSelection(listPPP.getLastVisiblePosition() + 1);
+                } else if (status == unUse) {
                     status = full;
                     newToast.setTextAndShow(R.string.ppp_load_all);
                     finishLoad();
-                }else if (status == full){
+                } else if (status == full) {
                     newToast.setTextAndShow(R.string.ppp_load_all);
                     finishLoad();
                 }
                 break;
 
             case ListOfPPPAdapter.HEAD_CLICK:
-                int position = (int)msg.obj;
+                int position = (int) msg.obj;
                 if (position >= list1.size()) {
                     return;
                 }
@@ -247,8 +247,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         refreshLayout.finishRefreshing();
     }
 
-    /**显示引导层*/
-    private void showGuideView(){
+    /**
+     * 显示引导层
+     */
+    private void showGuideView() {
         boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, false);
         if (!isGuide) {//引导层没显示过，则保存状态
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, true);
@@ -256,35 +258,35 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             View view = listPPP.getChildAt(0);
             if (view != null) {
                 if (view.getTag() != null && view.getTag() instanceof ListOfPPPAdapter.ViewHolder) {
-                    ListOfPPPAdapter.ViewHolder holder = (ListOfPPPAdapter.ViewHolder)view.getTag();
+                    ListOfPPPAdapter.ViewHolder holder = (ListOfPPPAdapter.ViewHolder) view.getTag();
                     if (holder != null && holder.pp3_img != null && holder.time != null) {
 
-                        holder.pp3_img.measure(0,0);
-                        holder.time.measure(0,0);
+                        holder.pp3_img.measure(0, 0);
+                        holder.time.measure(0, 0);
                         //计算列表第三个米奇头的宽高
                         int height = holder.pp3_img.getMeasuredHeight();
-                        int tWidth =  holder.time.getMeasuredWidth();
+                        int tWidth = holder.time.getMeasuredWidth();
                         //计算列表中第三个米奇头的宽
                         int width = (ScreenUtil.getScreenWidth(MyPPPActivity.this) - (2 * ScreenUtil.dip2px(MyPPPActivity.this, 16) + tWidth + ScreenUtil.dip2px(MyPPPActivity.this, 100))) / 3;
 
                         int oriImgWidth = 583;//图片原宽
-                        int oriImgHeight= 324;//图片高
+                        int oriImgHeight = 324;//图片高
                         //计算引导图中imageView的宽高
                         int guideImgWidth = ScreenUtil.getScreenWidth(MyPPPActivity.this) - 2 * ScreenUtil.dip2px(MyPPPActivity.this, 16);
-                        int guideImgHeight = (int)(((guideImgWidth*1.0f) / oriImgWidth) * oriImgHeight);
+                        int guideImgHeight = (int) (((guideImgWidth * 1.0f) / oriImgWidth) * oriImgHeight);
                         //计算列表中第三个米奇头的中心
-                        int midLeft = (int)(ScreenUtil.getScreenWidth(MyPPPActivity.this) - width/2f - ScreenUtil.dip2px(MyPPPActivity.this, 16));
-                        int midTop = (int)(ScreenUtil.dip2px(MyPPPActivity.this, 52)+ ScreenUtil.dip2px(MyPPPActivity.this, 10)+ height /2f);
+                        int midLeft = (int) (ScreenUtil.getScreenWidth(MyPPPActivity.this) - width / 2f - ScreenUtil.dip2px(MyPPPActivity.this, 16));
+                        int midTop = (int) (ScreenUtil.dip2px(MyPPPActivity.this, 52) + ScreenUtil.dip2px(MyPPPActivity.this, 10) + height / 2f);
                         //计算引导图右上角米奇头的中心
                         //引导图右上角米奇头宽62，米奇头距离右边15
-                        int guideMikeyMidLeft =ScreenUtil.getScreenWidth(MyPPPActivity.this) - ScreenUtil.dip2px(MyPPPActivity.this, 16) - (int)(((guideImgWidth * 1.0f) / oriImgWidth ) * (31 + 15));
+                        int guideMikeyMidLeft = ScreenUtil.getScreenWidth(MyPPPActivity.this) - ScreenUtil.dip2px(MyPPPActivity.this, 16) - (int) (((guideImgWidth * 1.0f) / oriImgWidth) * (31 + 15));
                         //引导图右上角米奇头宽52，米奇头距离上边25
-                        int guideMikeyMidTop = ScreenUtil.dip2px(MyPPPActivity.this, 52) + (int)(((guideImgWidth * 1.0f) / oriImgWidth) * (26 + 25));
+                        int guideMikeyMidTop = ScreenUtil.dip2px(MyPPPActivity.this, 52) + (int) (((guideImgWidth * 1.0f) / oriImgWidth) * (26 + 25));
                         LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) ppp_guideView.getLayoutParams();
                         //设置margin移动图片重合两个米奇头的中心
                         params1.rightMargin += (guideMikeyMidLeft - midLeft);
                         params1.leftMargin -= (guideMikeyMidLeft - midLeft);
-                        if (params1.rightMargin < 0 ) {
+                        if (params1.rightMargin < 0) {
                             params1.rightMargin = 0;
                         }
 
@@ -295,8 +297,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         params1.height = guideImgHeight;
                         params1.topMargin += (midTop - guideMikeyMidTop);
                         ppp_guideView.setLayoutParams(params1);
-                        PictureAirLog.out("midLeft: "+String.valueOf(midLeft)+" "+"midTop: "+String.valueOf(midTop));
-                        PictureAirLog.out("guideMikeyMidLeft: "+String.valueOf(guideMikeyMidLeft)+" "+"guideMikeyMidTop: "+String.valueOf(guideMikeyMidTop));
+                        PictureAirLog.out("midLeft: " + String.valueOf(midLeft) + " " + "midTop: " + String.valueOf(midTop));
+                        PictureAirLog.out("guideMikeyMidLeft: " + String.valueOf(guideMikeyMidLeft) + " " + "guideMikeyMidTop: " + String.valueOf(guideMikeyMidTop));
                         ll_guide_layout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -311,16 +313,17 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         setContentView(R.layout.activity_my_ppp);
         initViewCommon();
-        isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
+        isUseHavedPPP = getIntent().getBooleanExtra("isUseHavedPPP", false);
         isDailyPPP = getIntent().getBooleanExtra("dailyppp", false);
-        if (isUseHavedPPP){
+        if (isUseHavedPPP) {
             ppsStr = getIntent().getStringExtra("ppsStr");
             initViewUseHavedPPP();
-        }else{
+        } else {
             initView();
         }
     }
-    private void initViewCommon(){
+
+    private void initViewCommon() {
         //初始化
         newToast = new PWToast(this);
 
@@ -346,7 +349,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         back.setOnClickListener(this);
     }
 
-    private void initViewUseHavedPPP(){
+    private void initViewUseHavedPPP() {
 
         mTitle.setText(R.string.select_ppp_title);
         // 显示右上角 ok 按钮。隐藏 ＋ 号
@@ -375,7 +378,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             }
             list1.add(ppPinfo);
         }
-        listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
+        listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
 //        View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
 //        listPPP.addHeaderView(view);
         listPPP.setAdapter(listPPPAdapter);
@@ -660,9 +663,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         super.onResume();
         PictureAirLog.out(MyPPPActivity.class.getSimpleName() + "------>onreusme");
         isOnResume = true;
-        if (isUseHavedPPP){
+        if (isUseHavedPPP) {
 
-        }else{
+        } else {
             if (MyApplication.getInstance().getNeedRefreshPPPList()) { //解决问题，从PPP页面扫描PP+成功之后不刷新的问题。
                 PictureAirLog.out("start get ppplist");
                 GetPPPList();
@@ -678,9 +681,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         // TODO Auto-generated method stub
         super.onDestroy();
         PictureAirLog.out(MyPPPActivity.class.getSimpleName() + "------>ondestroy");
-        if (isUseHavedPPP){
+        if (isUseHavedPPP) {
 //            API1.PPPlist.clear();
-        }else{
+        } else {
             //防止在出现引导页的时候，按手机返回键，导致数据没有清空造成下次依旧出现弹框的问题。
             MyApplication.getInstance().clearIsBuyingPhotoList();
             MyApplication.getInstance().setBuyPPPStatus("");
@@ -689,7 +692,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 EventBus.getDefault().unregister(this);
             }
             myPPPHandler.removeCallbacksAndMessages(null);
-            if (listPPP.getViewTreeObserver().isAlive()){
+            if (listPPP.getViewTreeObserver().isAlive()) {
                 listPPP.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
             }
         }
@@ -707,7 +710,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     }
 
 
-    private void showDialog(){
+    private void showDialog() {
         boolean isGuide = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, isDailyPPP ? Common.DAILY_PPP_GUIDE : Common.PPP_GUIDE, false);
         if (isGuide) {
             if (getIntent().getBooleanExtra("upgradePP", false) && hasUnUpgradedPP()) {//需要选择pp进行升级
@@ -746,6 +749,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
     /**
      * 是否有未升级的pp卡
+     *
      * @return
      */
     private boolean hasUnUpgradedPP() {
@@ -765,10 +769,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         if (which == DialogInterface.BUTTON_POSITIVE) {
             switch (dialogId) {
                 case UPDATE_TIPS_DIALOG://升级提示
-                    if (listPPPAdapter.getMap().size() == 1){
+                    if (listPPPAdapter.getMap().size() == 1) {
                         showPWProgressDialog();
                         bindPPsDateToPPP(JSONArray.parseArray(ppsStr), API2.PPPlist.get(listPPPAdapter.getOnclickPosition()).PPPCode);
-                    }else{
+                    } else {
                         newToast.setTextAndShow(R.string.select_your_ppp, Common.TOAST_SHORT_TIME);
                     }
                     break;
@@ -868,7 +872,36 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     }
 
     private void getPPPListSuccess() {
-        if (API2.PPPlist.size() == 0) {
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API2.PPPlist.size());
+        list1.clear();
+        for (int i = 0; i < API2.PPPlist.size(); i++) {
+            PPPinfo ppPinfo = API2.PPPlist.get(i);
+            if (isDailyPPP) {//一日通
+                if (ppPinfo.capacity != 1) {
+                    continue;
+
+                }
+
+            } else {//一卡通
+                if (ppPinfo.capacity == 1) {
+                    continue;
+                }
+
+            }
+            //判断是否有可用的ppp
+            if (!hasOtherAvailablePPP) {
+                if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp
+                    hasOtherAvailablePPP = true;
+                }
+            }
+            // 需要对ppp进行排序
+            list1.add(ppPinfo);
+            PictureAirLog.v(TAG, "the ppp code ====>"
+                    + ppPinfo.PPPCode + "expericePPP===>" + ppPinfo.expericePPP + "capacity" + ppPinfo.capacity);
+        }
+        PictureAirLog.v(TAG, "list-=--=" + list1.size());
+
+        if (list1.size() == 0) {
             refreshLayout.setVisibility(View.GONE);
             nopppLayout.setVisibility(View.VISIBLE);
             ll_button_area.setVisibility(View.VISIBLE);
@@ -880,40 +913,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             }
 
         } else {
-            SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API2.PPPlist.size());
-            list1.clear();
+            Collections.sort(list1);
             if (listNormal == null) listNormal = new ArrayList<>();
             if (listNoUse == null) listNoUse = new ArrayList<>();
             listNormal.clear();
             listNoUse.clear();
-            for (int i = 0; i < API2.PPPlist.size(); i++) {
-                PPPinfo ppPinfo = API2.PPPlist.get(i);
-                if (isDailyPPP) {//一日通
-                    if (ppPinfo.capacity != 1) {
-                        continue;
 
-                    }
-
-                } else {//一卡通
-                    if (ppPinfo.capacity == 1) {
-                        continue;
-                    }
-
-                }
-                //判断是否有可用的ppp
-                if (!hasOtherAvailablePPP) {
-                    if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp
-                        hasOtherAvailablePPP = true;
-                    }
-                }
-                // 需要对ppp进行排序
-                list1.add(ppPinfo);
-                PictureAirLog.v(TAG, "the ppp code ====>"
-                        + ppPinfo.PPPCode + "expericePPP===>" + ppPinfo.expericePPP + "capacity" + ppPinfo.capacity);
-            }
-            Collections.sort(list1);
-            PictureAirLog.v(TAG, "list-=--=" + list1.size());
-            for (int i = 0; i<list1.size(); i++) {
+            for (int i = 0; i < list1.size(); i++) {
                 PPPinfo info = list1.get(i);
                 if (info.bindInfo.size() < info.capacity && info.expired == 0) {
                     listNormal.add(info);
@@ -927,7 +933,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             if (listNormal != null && listNormal.size() > 0) {
                 status = normal;
                 listPPPAdapter = new ListOfPPPAdapter(listNormal, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
-            }else if (listNoUse != null && listNoUse.size() > 0) {
+            } else if (listNoUse != null && listNoUse.size() > 0) {
                 status = unUse;
                 listPPPAdapter = new ListOfPPPAdapter(listNoUse, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
             }
@@ -1046,10 +1052,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     public void _onNext(JSONObject jsonObject) {
 
                         dismissPWProgressDialog();
-                        if (API2.PPPlist.size() != 0 ){
+                        if (API2.PPPlist.size() != 0) {
                             API2.PPPlist.clear(); // 绑定成功 之后 清空API中的数据。
                         }
-                        if (AppManager.getInstance().checkActivity(SelectPPActivity.class)){ //SelectPPActivity，就把这个类杀掉。
+                        if (AppManager.getInstance().checkActivity(SelectPPActivity.class)) { //SelectPPActivity，就把这个类杀掉。
                             AppManager.getInstance().killActivity(SelectPPActivity.class);
                         }
 
@@ -1057,7 +1063,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         SPUtils.put(MyPPPActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                         PictureAirDbManager.insertRefreshPPFlag(JSONArray.parseArray(ppsStr), JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
 
-                        if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+                        if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)) { //如果存在MyPPActivity，就把这个类杀掉。
                             AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
                         }
 

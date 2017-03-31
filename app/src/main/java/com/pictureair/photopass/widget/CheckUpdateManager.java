@@ -63,13 +63,13 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
                 long totalSize = 100;
                 boolean onFailure = intent.getBooleanExtra("onFailure", false);
 
-                if (bytesWritten == 100){
+                PictureAirLog.out("totalSize---->" + bytesWritten);
+                if (bytesWritten == 100l){
                     //下载完毕
                     handler.sendEmptyMessage(INSTALL_APK);
                 } else if (onFailure){//下载失败
                     handler.sendEmptyMessage(API2.DOWNLOAD_APK_FAILED);
                 } else{//还在下载
-                    PictureAirLog.out("totalSize---->" + totalSize);
                     long[] numbers ={bytesWritten,totalSize};
                     handler.obtainMessage(UPDATE_PB,numbers).sendToTarget();
                 }

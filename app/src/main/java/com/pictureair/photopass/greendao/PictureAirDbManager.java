@@ -870,7 +870,7 @@ public class PictureAirDbManager {
      * @param threadId
      * @param finished
      */
-    public static void updateThread(String url, int threadId, int finished) {
+    public static void updateThread(String url, int threadId, long finished) {
         ThreadInfoDao threadInfoDao = MyApplication.getInstance().getDaoSession().getThreadInfoDao();
         QueryBuilder<ThreadInfo> queryBuilder = threadInfoDao.queryBuilder()
                 .where(ThreadInfoDao.Properties.Url.eq(url), ThreadInfoDao.Properties.ThreadId.eq(threadId));

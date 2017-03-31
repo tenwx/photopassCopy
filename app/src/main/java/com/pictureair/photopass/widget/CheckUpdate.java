@@ -91,6 +91,7 @@ public class CheckUpdate implements BaseCheckUpdate{
 					.subscribe(new RxSubscribe<JSONObject>() {
 						@Override
 						public void _onNext(JSONObject jsonObject) {
+//							jsonObject = JSONObject.parseObject(API2.checkUpdateTestingString);//使用测试代码
 							PictureAirLog.out("update---->" + jsonObject);
 							ACache.get(context).put(Common.UPDATE_INFO, jsonObject.toString());
 							if (baseCheckListener != null) {

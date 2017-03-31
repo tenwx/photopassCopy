@@ -17,17 +17,17 @@ public class ThreadInfo implements Serializable {
     private static final long serialVersionUID = -7060210544600464481L;
     @Id
     private Long id;//自增长id
-    private String url;
     private int threadId;
-    private int start;
-    private int end;
-    private int finished;
-    @Generated(hash = 1868453095)
-    public ThreadInfo(Long id, String url, int threadId, int start, int end,
-            int finished) {
+    private String url;
+    private long start;
+    private long end;
+    private long finished;
+    @Generated(hash = 568823959)
+    public ThreadInfo(Long id, int threadId, String url, long start, long end,
+            long finished) {
         this.id = id;
-        this.url = url;
         this.threadId = threadId;
+        this.url = url;
         this.start = start;
         this.end = end;
         this.finished = finished;
@@ -41,34 +41,34 @@ public class ThreadInfo implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getUrl() {
-        return this.url;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
     public int getThreadId() {
         return this.threadId;
     }
     public void setThreadId(int threadId) {
         this.threadId = threadId;
     }
-    public int getStart() {
+    public String getUrl() {
+        return this.url;
+    }
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    public long getStart() {
         return this.start;
     }
-    public void setStart(int start) {
+    public void setStart(long start) {
         this.start = start;
     }
-    public int getEnd() {
+    public long getEnd() {
         return this.end;
     }
-    public void setEnd(int end) {
+    public void setEnd(long end) {
         this.end = end;
     }
-    public int getFinished() {
+    public long getFinished() {
         return this.finished;
     }
-    public void setFinished(int finished) {
+    public void setFinished(long finished) {
         this.finished = finished;
     }
 }

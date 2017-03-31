@@ -847,7 +847,7 @@ public class API2 {
      **************************************/
 
     public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
-            + "'version': '2.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
+            + "'version': '5.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
             + " 'mandatory': 'true',  '__v': 0, "
             + " 'versionOS': ['android'], "
             + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"

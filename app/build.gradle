@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.pictureair.photopass"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 11
         versionName "3.0.0"
@@ -121,8 +121,6 @@ dependencies {
     compile files('libs/socketio.jar')
     //数据库
     compile files('libs/sqlcipher.jar')
-    //友盟统计
-    compile files('libs/umeng-analytics-v5.6.1.jar')
     //银联
     compile files('libs/UPPayAssistEx.jar')
     compile files('libs/UPPayPluginExPro.jar')
@@ -148,5 +146,8 @@ dependencies {
     //greendao
     compile 'org.greenrobot:greendao:3.2.0'
     //leakCanary
-    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    //友盟统计
+    compile 'com.umeng.analytics:analytics:6.1.0'
 }

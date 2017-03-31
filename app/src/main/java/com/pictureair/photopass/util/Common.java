@@ -18,7 +18,6 @@ public class Common {
     /**
      * 外网可访问的8.3测试服务器
      */
-//    public static final boolean DEBUG_MODE = true;
 //    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
 //    public static final String BASE_URL_SOCKET = "http://211.95.27.34:3006";
 //    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
@@ -48,7 +47,6 @@ public class Common {
     /**
      * 域名线上服务器
      */
-    public static final boolean DEBUG_MODE = false;
     public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
     public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
     public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";

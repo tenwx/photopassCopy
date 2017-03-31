@@ -125,7 +125,7 @@
     <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
     <string name="story_scan_daily_ppp">Activate your PhotoPass One Day Pass</string>
     <string name="story_card">Card No.:%1$s</string>
-    <string name="story_blur_expire_time">(Non-purchase photos valid for 30 days)</string>
+    <string name="story_blur_expire_time">(Non-purchased photos valid for 30 days)</string>
     <string name="story_expire_time">(Purchased photos valid for 60 days)</string>
     <string name="story_want_to_buy">Buy</string>
     <string name="story_buy_dialog">Purchase Disney PhotoPass One Day Pass to get all the digital downloads from one (1) Disney PhotoPass card used in a single day</string>

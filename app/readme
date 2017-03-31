@@ -1,7 +1,15 @@
 更新日志   bauer
 
 
--------17/3/30--------
+-------17/3/xx--------
+versionCode 12     versionName "3.0.1"
+更新要点：
+
+
+
+
+
+-------17/3/31--------
 versionCode 11     versionName "3.0.0"
 更新要点：
 公用更新点
@@ -39,6 +47,9 @@ versionCode 11     versionName "3.0.0"
 10.网络请求框架全部替换成rxjava + retrofit + okhttp
 11.添加lint 和 leakcanary性能检测
 12.兼容API25
+13.最低版本改成API16
+14.更新友盟统计sdk
+15.更新自动更新代码，解决自动更新下载异常
 
 -------17/01/16--------
 versionCode 10     versionName "2.0.1"

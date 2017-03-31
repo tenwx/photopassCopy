@@ -25,7 +25,7 @@ public class DownloadTask {
     private final String TAG = "DownloadTask";
     private Context context;
     private FileInfo fileInfo;
-    private int mFinish = 0;
+    private long mFinish = 0;
     public boolean isPause = false;//是否暂停
     public Handler mHandler;
 
@@ -41,7 +41,7 @@ public class DownloadTask {
         ThreadInfo threadInfo = null;
         if (null != list && list.size() == 0) {
             //无线程，初始化线程对象，重新添加
-            threadInfo = new ThreadInfo(null, fileInfo.getUrl(), 0, 0, fileInfo.getLength(), 0);
+            threadInfo = new ThreadInfo(null, 0, fileInfo.getUrl(), 0, fileInfo.getLength(), 0);
         } else {
             //有线程存在
             threadInfo = list.get(0);
@@ -152,7 +152,7 @@ public class DownloadTask {
         /**
          * 保存下载进度
          */
-        private void saveThreadInfo(int finish){
+        private void saveThreadInfo(long finish){
             PictureAirDbManager.updateThread(threadInfo.getUrl(), threadInfo.getThreadId(), finish);
         }
     }
