@@ -853,9 +853,9 @@ public class API2 {
             + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
             + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
             + "'downloadChannel':[ {'channel':'website',"
-            + "'downloadUrl':'http://www.disneyphotopass.com.cn/downloads/android/photopass/PhotoPassV1.1.0-website.apk'},"
+            + "'downloadUrl':'https://www.disneyphotopass.com.cn/downloads/android/photopass3.0.0.11.apk'},"
             + " { 'channel':'tencent',"
-            + "'downloadUrl':'http://dd.myapp.com/16891/2FA495F1283F48658CEACFF53DB6F856.apk?fsname=com.pictureair.photopass_1.1.1_4.apk'}]}}";
+            + "'downloadUrl':'https://www.disneyphotopass.com.cn/downloads/android/photopass3.0.0.11.apk'}]}}";
 
 
     /**

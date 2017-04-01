@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -371,7 +373,16 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
         //开始安装新版本
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(downloadAPKFile), "application/vnd.android.package-archive");
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//7.0以及以上适配
+            uri = FileProvider.getUriForFile(context, "com.pictureair.photopass.udeskfileprovider", downloadAPKFile);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        } else {
+            uri = Uri.fromFile(downloadAPKFile);
+
+        }
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
         context.startActivity(intent);
         AppManager.getInstance().AppExit(context);
     }

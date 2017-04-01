@@ -1055,6 +1055,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                     @Override
                     public void onCompleted() {
+                        if (pppGoodsInfo == null) {//失败
+                            _onError(401);
+                            return;
+                        }
                         dismissPWProgressDialog();
                         //生成订单
                         Intent intent3 = new Intent(context, SubmitOrderActivity.class);
