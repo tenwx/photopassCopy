@@ -98,7 +98,7 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">Please scan the QR code on your Disney PhotoPass card or PhotoPass One Day Pass card or Seasonal PhotoPass+ card to preview your photos!</string>
+    <string name="story_no_pp">Please scan the QR code on your Disney PhotoPass card or Seasonal PhotoPass+ card to preview your photos!</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
@@ -121,7 +121,7 @@
     <string name="five_days_ago">5 days ago</string>
     <string name="six_days_ago">6 days ago</string>
     <string name="video_location">My Disney Story</string>
-    <string name="story_buy_ppp">Buy One Day PhotoPass Now</string>
+    <string name="story_buy_ppp">Buy Disney PhotoPass One Day Pass</string>
     <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
     <string name="story_scan_daily_ppp">Activate your PhotoPass One Day Pass</string>
     <string name="story_card">Card No.:%1$s</string>
@@ -136,7 +136,7 @@
     <string name="auto_scan">Auto-scan</string>
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">Disney PhotoPass+</string>
-    <string name="scan_intro">Please scan the QR code on your Disney PhotoPass card or PhotoPass One Day Pass card or Seasonal PhotoPass+ card to preview your photos!</string>
+    <string name="scan_intro">Please scan the QR code on your Disney PhotoPass card or Seasonal PhotoPass+ card to preview your photos!</string>
     <string name="re_scan">Retake</string>
     <string name="textview_center_hint">Please align the back of your Disney PhotoPass+ in this area</string>
     <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
@@ -224,10 +224,10 @@
     <string name="like_and_buy">Touch to preview your photo</string>
     <string name="reloadphoto">Please reload this photo</string>
     <string name="neednotdownload">The photo has been saved in the local album!</string>
-    <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
-    <string name="not_support_makegift">Sorry we cannot print your digital souvenir photos.</string>
+    <string name="local_photo_not_support_makegift">Sorry, we cannot print your edited photos.</string>
+    <string name="not_support_makegift">Sorry, we cannot print your digital souvenir photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="photo_cannot_edit_content">Sorry, the pictures selected is not suitable for futher edit.</string>
+    <string name="photo_cannot_edit_content">Sorry, the pictures selected is not suitable for further edit.</string>
     <string name="local_photo_cannot_edit_content">Sorry, your pictures does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
@@ -545,7 +545,7 @@
     <string name="edit_story_all_unpay_tips">The selected photos has not been purchased.</string>
     <string name="edit_story_all_unpay_share_tips">The selected photos has not been purchased.</string>
     <string name="edit_story_addto_downloadlist">Downloading in progress.\nClick on Downloads to check on the status.</string>
-    <string name="edit_story_photo_title">Photo(%1$d)</string>
+    <string name="edit_story_photo_title">Story (%1$d)</string>
     <string name="edit_story_edit_tip">Click on edit to download\nor delete your photos in batches!</string>
     <!-- edit story end -->
 

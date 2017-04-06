@@ -60,6 +60,7 @@
     <dimen name="pp_px_2">2px</dimen>
     <dimen name="pp_px_10">10px</dimen>
     <dimen name="pp_px_20">20px</dimen>
+    <dimen name="pp_px_40">40px</dimen>
 
     <!-- 距离 别称 -->
     <!-- 顶部状态栏高度 -->

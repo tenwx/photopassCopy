@@ -215,18 +215,15 @@
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_16" />
 
-            <Button
+            <ImageView
                 android:id="@+id/main_slide_unbound"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/pp_dp_25"
+                android:layout_height="@dimen/pp_dp_25"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/main_slide_text"
+                android:scaleType="centerInside"
                 android:layout_marginTop="@dimen/pp_dp_10"
-                android:textAllCaps="false"
-                android:background="@null"
-                android:text="@string/story_unbound"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:src="@drawable/edit_album_delete_enable"/>
 
         </RelativeLayout>
 

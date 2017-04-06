@@ -9,13 +9,42 @@
         android:id="@+id/head"
         layout="@layout/top_bar" />
 
+    <!-- 头部文字  下的蓝色的线 start-->
+    <LinearLayout
+        android:id="@+id/cursor_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/head"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/cursor"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_dp_40"
+            android:layout_weight="1"
+            android:background="@color/pp_blue" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_dp_40"
+            android:layout_weight="1"
+            android:background="@color/transparent" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_dp_40"
+            android:layout_weight="1"
+            android:background="@color/transparent" />
+    </LinearLayout>
+    <!-- 头部文字  下的蓝色的线 end-->
+
     <!-- 头部文字  start-->
     <LinearLayout
         android:id="@+id/lead_bar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@id/head"
-        android:background="@color/white"
         android:orientation="horizontal">
 
         <TextView
@@ -61,36 +90,6 @@
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
     <!-- 头部文字  end-->
-
-
-    <!-- 头部文字  下的蓝色的线 start-->
-    <LinearLayout
-        android:id="@+id/cursor_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lead_bar"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/cursor"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_dp_2"
-            android:layout_weight="1"
-            android:background="@color/pp_blue" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_dp_2"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_dp_2"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
-    </LinearLayout>
-    <!-- 头部文字  下的蓝色的线 end-->
 
 
     <!--<android.support.v4.widget.SwipeRefreshLayout-->

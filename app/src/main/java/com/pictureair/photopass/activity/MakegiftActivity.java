@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -235,38 +234,11 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     }
 
     /**
-     * 头部三角符号 朝上（pop显示的时候）
-     */
-    private void buttonSelectproductShowUp() {
-        setRotatingAnimation(180f);
-    }
-
-    /**
-     * 头部三角符号 朝下（pop显示的时候）
-     */
-    private void buttonSelectproductShowDown() {
-        setRotatingAnimation(360f);
-    }
-
-    /**
-     * 设置旋转动画
-     */
-    private void setRotatingAnimation(float value) {
-        RotateAnimation ra;
-        ra = new RotateAnimation(0f, value, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        ra.setRepeatCount(1);//设置重复次数
-        ra.setDuration(10);//设置动画持续时间
-        ra.setFillAfter(true);//动画执行完后是否停留在执行完的状态
-        buttonSelectproduct.startAnimation(ra);
-    }
-
-    /**
      * popwindow消失
      */
     private void gonePopupwindow() {
         if (selproductPopupWindow.isShowing()) {
             selproductPopupWindow.dismiss();
-            buttonSelectproductShowDown();
         }
     }
 
@@ -382,11 +354,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 }
                 if (selproductPopupWindow.isShowing()) {
                     selproductPopupWindow.dismiss();
-                    buttonSelectproductShowDown();
                 } else {
                     mAdapter.notifyDataSetChanged();
                     selproductPopupWindow.showAsDropDown(findViewById(R.id.product_name_tv));
-                    buttonSelectproductShowUp();
                 }
                 break;
 

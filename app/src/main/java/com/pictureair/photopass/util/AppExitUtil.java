@@ -73,7 +73,7 @@ public class AppExitUtil {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         MyApplication.getInstance().startActivity(i);
 
-        AppManager.getInstance().AppExit(MyApplication.getInstance());
+        AppManager.getInstance().AppLogout();
     }
 
     private void Logout() {

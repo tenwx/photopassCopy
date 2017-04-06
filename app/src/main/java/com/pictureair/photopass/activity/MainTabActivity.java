@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,7 +89,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private LinearLayout storyTab, discoverTab, shopTab, meTab;
     private ImageView storyIV, discoverIV, shopIV, meIV;
     private TextView storyTV, discoverTV, shopTV, meTV, slideLogoTV;
-    private Button btn_delete;
+    private ImageView deleteIV;
 
     private RelativeLayout parentLayout;
     private WaterDrop waterDropView;
@@ -234,17 +233,17 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         slideLogoTV = (TextView) mDrawerLayout.findViewById(R.id.main_slide_text);
-        btn_delete = (Button) mDrawerLayout.findViewById(R.id.main_slide_unbound);
+        deleteIV = (ImageView) mDrawerLayout.findViewById(R.id.main_slide_unbound);
         //设置监听是为了拦截该层面的点击事件，不做具体事件处理，这样事件就不会传递到下层
         mDrawerLayout.findViewById(R.id.slide_head).setOnClickListener(this);
-        btn_delete.setOnClickListener(this);
+        deleteIV.setOnClickListener(this);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
                 if (adapter != null) {
                     if (adapter.getDeleteStatus()) {
-                        btn_delete.setText(R.string.story_unbound);
+                        deleteIV.setImageResource(R.drawable.edit_album_delete_enable);
                         adapter.refreshDeleteStatus(false);
                     }
                 }
@@ -359,12 +358,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             setTabSelection(4, false);
             slideLogoTV.setText(R.string.story_myphotopass);
             if (adapter == null) {
-                btn_delete.setText(R.string.story_unbound);
+                deleteIV.setImageResource(R.drawable.edit_album_delete_enable);
             } else {
                 if (adapter.getDeleteStatus()) {
-                    btn_delete.setText(R.string.delete_pp_cancel);
+                    deleteIV.setImageResource(R.drawable.edit_album_disall_enable);
                 } else {
-                    btn_delete.setText(R.string.story_unbound);
+                    deleteIV.setImageResource(R.drawable.edit_album_delete_enable);
                 }
             }
             currentLanguage = MyApplication.getInstance().getLanguageType();
@@ -413,10 +412,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 }
                 if (adapter != null) {
                     if (adapter.getDeleteStatus()) {
-                        btn_delete.setText(R.string.story_unbound);
+                        deleteIV.setImageResource(R.drawable.edit_album_delete_enable);
                         adapter.refreshDeleteStatus(false);
                     } else {
-                        btn_delete.setText(R.string.delete_pp_cancel);
+                        deleteIV.setImageResource(R.drawable.edit_album_disall_enable);
                         adapter.refreshDeleteStatus(true);
                     }
                 }
@@ -471,9 +470,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     public void _onNext(List<PPinfo> pPinfos) {
                         adapter.refreshSlideList(ppList);
                         if (ppList.size() == 0) {
-                            btn_delete.setVisibility(View.INVISIBLE);
+                            deleteIV.setVisibility(View.INVISIBLE);
                         } else {
-                            btn_delete.setVisibility(View.VISIBLE);
+                            deleteIV.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -771,7 +770,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             bundle.putBoolean("logout",true);
             intent1.putExtras(bundle);
             startService(intent1);
-            AppManager.getInstance().killAllActivity();
+            AppManager.getInstance().AppExit(this);
         }
     }
 
@@ -968,9 +967,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     adapter.refreshSlideList(ppList);
                 }
                 if (ppList.size() == 0) {
-                    btn_delete.setVisibility(View.INVISIBLE);
+                    deleteIV.setVisibility(View.INVISIBLE);
                 } else {
-                    btn_delete.setVisibility(View.VISIBLE);
+                    deleteIV.setVisibility(View.VISIBLE);
                 }
             }
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);

@@ -558,7 +558,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CAMERA_PERMISSION:
-                if (Manifest.permission.CAMERA.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (permissions.length > 0 && grantResults.length > 0 &&
+                        Manifest.permission.CAMERA.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initCamera(surfaceView.getHolder());
                 } else {
                     newToast.setTextAndShow(R.string.camera_closed, Common.TOAST_SHORT_TIME);

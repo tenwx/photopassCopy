@@ -79,7 +79,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 PictureAirLog.d(TAG, "error : " + e);
             }
             //退出程序
-            AppManager.getInstance().killAllActivity();
+            AppManager.getInstance().AppExit(mContext);
         }
     }
 

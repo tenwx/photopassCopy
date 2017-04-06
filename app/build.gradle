@@ -13,7 +13,7 @@ android {
         targetSdkVersion 25
         versionCode 12
         versionName "3.0.1"
-        multiDexEnabled true//是使用多个dex文件，防止方法过多，超过限制
+        multiDexEnabled true//是使用多个dex文件，防止方法过多，超过65536限制
         ndk {//so文件的过滤
             abiFilters "armeabi", "armeabi-v7a"
         }
@@ -127,7 +127,7 @@ dependencies {
     //zxing扫码
     compile files('libs/zxing-4.7.5.jar')
     //json
-    compile 'com.alibaba:fastjson:1.2.7'
+    compile 'com.alibaba:fastjson:1.2.31'
     //material design
     compile 'com.android.support:design:25.1.1'
     compile 'com.android.support:cardview-v7:25.1.1'

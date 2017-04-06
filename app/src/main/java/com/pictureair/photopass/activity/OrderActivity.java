@@ -203,7 +203,7 @@ public class OrderActivity extends BaseFragmentActivity {
         lead_bar = (LinearLayout) findViewById(R.id.lead_bar);
         cursor_layout = (LinearLayout) findViewById(R.id.cursor_layout);
 
-        paymentOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
+        paymentOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.white));
         deliveryOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_dark_blue));
         allOrderTextView.setTextColor(ContextCompat.getColor(this, R.color.pp_dark_blue));
 
@@ -435,45 +435,52 @@ public class OrderActivity extends BaseFragmentActivity {
         int one = screenW / 3;//偏移量
 
         @Override
-        public void onPageSelected(int arg0) {
+        public void onPageSelected(final int arg0) {
             Animation animation = new TranslateAnimation(one * currentIndex, one * arg0, 0, 0);
             currentIndex = arg0;
             animation.setFillAfter(true);
             animation.setDuration(300);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    switch (arg0) {
+                        case 0:
+                            paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.white));
+                            deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                            allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+
+                            break;
+
+                        case 1:
+                            paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                            deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.white));
+                            allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                            break;
+
+                        case 2:
+                            paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                            deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
+                            allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.white));
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
             cursorImageView.startAnimation(animation);
-            //将expandablelistview展开
-
-            /**
-             * ---------------------------------
-             */
-//            orderAdapter.expandGropu(arg0);
-            /**
-             * ---------------------------------
-             */
-
-            switch (arg0) {
-                case 0:
-                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
-                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-
-                    break;
-
-                case 1:
-                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
-                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-                    break;
-
-                case 2:
-                    paymentOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-                    deliveryOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_dark_blue));
-                    allOrderTextView.setTextColor(ContextCompat.getColor(OrderActivity.this, R.color.pp_blue));
-                    break;
-
-                default:
-                    break;
-            }
         }
 
         @Override

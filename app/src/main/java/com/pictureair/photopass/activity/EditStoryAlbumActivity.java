@@ -165,6 +165,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					if (hasUnPayPhotos && albumArrayList.get(i).getIsPaid() == 0) {
 
 					} else {
+						if (albumArrayList.get(i).getId() == null) {//如果没有设置ID，则手动设置ID
+							albumArrayList.get(i).setId(1L);
+						}
 						hasPayedList.add(albumArrayList.get(i));
 					}
 				}

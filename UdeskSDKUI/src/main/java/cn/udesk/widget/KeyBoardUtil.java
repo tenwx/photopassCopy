@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
@@ -74,8 +73,11 @@ public class KeyBoardUtil {
     /**
      * 解决inputmethodManager内存溢出问题
      *
+     * 以下代码是可以解决inputmethodmanager的问题，但是同时会造成requestWindowFeature的问题，从而导致支付宝无法调起网页版的页面。所以目前不启用如下代码
+     *
      * @param activity
      */
+    @Deprecated
     public static void fixFocusedViewLeak(Activity activity) {
         // Don't know about other versions yet.
         //23的依旧有问题，24以上，应该系统已经修复这个问题（没去测试）
@@ -83,67 +85,68 @@ public class KeyBoardUtil {
             return;
         }
 
-        final InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        final Field mServedViewField;
-        final Field mHField;
-        final Method finishInputLockedMethod;
-        final Method focusInMethod;
-        try {
-            mServedViewField = InputMethodManager.class.getDeclaredField("mServedView");
-            mServedViewField.setAccessible(true);
-            mHField = InputMethodManager.class.getDeclaredField("mServedView");
-            mHField.setAccessible(true);
-            finishInputLockedMethod = InputMethodManager.class.getDeclaredMethod("finishInputLocked");
-            finishInputLockedMethod.setAccessible(true);
-            focusInMethod = InputMethodManager.class.getDeclaredMethod("focusIn", View.class);
-            focusInMethod.setAccessible(true);
-        } catch (Exception unexpected) {
-            Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
-            return;
-        }
-
-        activity.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStarted(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                ReferenceCleaner cleaner = new ReferenceCleaner(inputMethodManager, mHField, mServedViewField,
-                        finishInputLockedMethod);
-                View rootView = activity.getWindow().getDecorView().getRootView();
-                ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
-                viewTreeObserver.addOnGlobalFocusChangeListener(cleaner);
-            }
-        });
+        //以下代码是可以解决inputmethodmanager的问题，但是同时会造成requestWindowFeature的问题，从而导致支付宝无法调起网页版的页面。所以目前不启用如下代码
+//        final InputMethodManager inputMethodManager =
+//                (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+//
+//        final Field mServedViewField;
+//        final Field mHField;
+//        final Method finishInputLockedMethod;
+//        final Method focusInMethod;
+//        try {
+//            mServedViewField = InputMethodManager.class.getDeclaredField("mServedView");
+//            mServedViewField.setAccessible(true);
+//            mHField = InputMethodManager.class.getDeclaredField("mServedView");
+//            mHField.setAccessible(true);
+//            finishInputLockedMethod = InputMethodManager.class.getDeclaredMethod("finishInputLocked");
+//            finishInputLockedMethod.setAccessible(true);
+//            focusInMethod = InputMethodManager.class.getDeclaredMethod("focusIn", View.class);
+//            focusInMethod.setAccessible(true);
+//        } catch (Exception unexpected) {
+//            Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
+//            return;
+//        }
+//
+//        activity.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+//            @Override
+//            public void onActivityDestroyed(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityStarted(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityResumed(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityPaused(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityStopped(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+//                ReferenceCleaner cleaner = new ReferenceCleaner(inputMethodManager, mHField, mServedViewField,
+//                        finishInputLockedMethod);
+//                View rootView = activity.getWindow().getDecorView().getRootView();
+//                ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
+//                viewTreeObserver.addOnGlobalFocusChangeListener(cleaner);
+//            }
+//        });
     }
 
     static class ReferenceCleaner implements MessageQueue.IdleHandler, View.OnAttachStateChangeListener,

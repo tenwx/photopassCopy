@@ -111,7 +111,7 @@ public class AppManager {
 	/**
 	 * 结束所有Activity
 	 */
-	public void killAllActivity() {
+	private void killAllActivity() {
 		for (int i = 0, size = mActivityStack.size(); i < size; i++) {
 			if (null != mActivityStack.get(i)) {
 				mActivityStack.get(i).finish();
@@ -136,7 +136,7 @@ public class AppManager {
 	}
 
 	/**
-	 * 退出应用程序
+	 * 退出应用程序，并且杀死进程
 	 */
 	public void AppExit(Context context) {
 		try {
@@ -145,8 +145,16 @@ public class AppManager {
 					.getSystemService(Context.ACTIVITY_SERVICE);
 			activityMgr.killBackgroundProcesses(context.getPackageName());
 			System.exit(0);
+//			Process.killProcess(Process.myPid());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 退出应用程序，logout的时候，不需要将进程杀死，否则会有一段时间的黑屏
+	 */
+	public void AppLogout() {
+		killAllActivity();
 	}
 }

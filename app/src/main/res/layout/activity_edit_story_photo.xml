@@ -134,7 +134,7 @@
             android:id="@+id/select_tools_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:background="@color/gray_light4"
+            android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingTop="@dimen/pp_dp_4"

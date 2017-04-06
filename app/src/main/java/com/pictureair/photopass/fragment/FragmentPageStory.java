@@ -275,8 +275,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         specialDealLL.setOnClickListener(this);
         specialDealOnTV.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         //初始化数据
-        myToast = new PWToast(getActivity());
-        screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
+        myToast = new PWToast(context);
+        screenWidth = ScreenUtil.getScreenWidth(context);
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
         //获取sp中的值
         needfresh = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
@@ -341,7 +341,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void getLocationData(final boolean isRefresh) {
         PictureAirLog.d("loadData start");
         //先获取缓存的数据
-        Observable.just(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))
+        Observable.just(ACache.get(context).getAsString(Common.DISCOVER_LOCATION))
                 .flatMap(new Func1<String, Observable<JSONObject>>() {
                     @Override
                     public Observable<JSONObject> call(final String s) {
@@ -978,7 +978,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             return;
         }
         //从缓层中获取数据
-        Observable.just(ACache.get(getActivity()).getAsString(Common.ALL_GOODS))
+        Observable.just(ACache.get(context).getAsString(Common.ALL_GOODS))
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<String, Observable<JSONObject>>() {
                     @Override

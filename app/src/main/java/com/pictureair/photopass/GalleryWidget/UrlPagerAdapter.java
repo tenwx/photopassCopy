@@ -102,7 +102,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         iv.setId(position);
         if (cardMode) {
-            iv.setTimeText(photoInfo.getShootDate());//暂时去除过期时间
+            iv.setTimeText(photoInfo.getStrShootOn());//暂时去除过期时间
 //            iv.setTimeText(photoInfo.getShootDate() + String.format(mContext.getString(R.string.gallery_expire_time), photoInfo.getExipreDate()));
             iv.setFullScreenMode(fullScreenMode);
         }

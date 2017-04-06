@@ -98,7 +98,7 @@
     <string name="story_tab_favorite">收藏</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">请扫描您的迪士尼乐拍通卡或者乐拍通一日通卡或者乐拍通季卡上的二维码，更快获得您的游玩照片！</string>
+    <string name="story_no_pp">请扫描您的迪士尼乐拍通卡或者乐拍通季卡背面二维码，更快获得您的游玩照片！</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_photo_in_magiccam">收藏全部的已编辑图片</string>
@@ -128,7 +128,7 @@
     <string name="story_blur_expire_time">（未付款照片有效期30天）</string>
     <string name="story_expire_time">（已付款照片有效期60天）</string>
     <string name="story_want_to_buy">我想购买</string>
-    <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载同一天任意一张迪士尼乐拍通卡里的所有数码照片。</string>
+    <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有数码照片。</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -136,7 +136,7 @@
     <string name="auto_scan">自动扫描</string>
     <string name="scan_qr_code">二维码</string>
     <string name="scan_ppp_code">迪士尼乐拍通一卡通</string>
-    <string name="scan_intro">请扫描您的迪士尼乐拍通卡或者乐拍通一日通卡或者乐拍通季卡上的二维码，更快获得您的游玩照片！</string>
+    <string name="scan_intro">请扫描您的迪士尼乐拍通卡或者乐拍通季卡上的二维码，更快获得您的游玩照片！</string>
     <string name="re_scan">重新扫描</string>
     <string name="textview_center_hint">请将迪士尼乐拍通一卡通卡背面置于此区域，尝试对齐边缘</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>
@@ -246,7 +246,7 @@
     <string name="buythisphoto">我要购买单张数码照片</string>
     <string name="cancel1">取消</string>
     <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可下载同一天任意三张迪士尼乐拍通卡里的所有照片。</string>
-    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，即可下载同一天任意一张迪士尼乐拍通卡里的所有照片。</string>
+    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <!-- blur end -->
 
@@ -404,7 +404,7 @@
 
     <!-- ppp start -->
     <string name="instruction">使用迪士尼乐拍通一卡通，您即可下载在度假区通过迪士尼乐拍通摄影师拍摄的和在度假区指定景点上所拍摄的，并激活最多三张迪士尼乐拍通卡上同一天的，或同一张迪士尼乐拍通卡上连续三天的所有照片。</string>
-    <string name="instruction_daily_ppp">购买迪士尼乐拍通一日通，您即可下载同一天任意一张迪士尼乐拍通卡里的高清数码照片。</string>
+    <string name="instruction_daily_ppp">购买迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <string name="select_pp_hasUpgraded">该迪士尼乐拍通已经被绑定</string>
     <string name="not_ppp_card">这张不是迪士尼乐拍通一卡通</string>
     <string name="bind_pp_now">您有一张迪士尼乐拍通，是否现在就去绑定？</string>
@@ -545,7 +545,7 @@
     <string name="edit_story_all_unpay_tips">当前选中的照片未付费，不可下载</string>
     <string name="edit_story_all_unpay_share_tips">当前选中的照片未付费，不可分享</string>
     <string name="edit_story_addto_downloadlist">照片已在下载列队\n可去下载管理内查询，请耐心等待！</string>
-    <string name="edit_story_photo_title">照片(%1$d)</string>
+    <string name="edit_story_photo_title">故事 (%1$d)</string>
     <string name="edit_story_edit_tip">点击编辑可批量下载\n删除照片哦！</string>
     <!-- edit story end -->
 

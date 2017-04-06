@@ -3,42 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
-    tools:context="com.pictureair.photopass.activity.AboutActivity"
-    style="@style/ImmersiveMode">
+    tools:context="com.pictureair.photopass.activity.AboutActivity">
 
-    <include
-        android:id="@+id/head"
-        layout="@layout/top_bar" />
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_light3">
+
+        <include
+            android:id="@+id/head"
+            layout="@layout/top_bar" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/head"
+        android:layout_below="@+id/head2"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="bottom">
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:src="@drawable/scan_bottom" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -52,8 +62,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/logo_text"
-                android:layout_marginBottom="10dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
                 android:text="@string/share_app_name"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_20" />
@@ -70,66 +80,63 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
                 android:layout_marginBottom="30dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/pp_light_gray_normal"/>
+                android:background="@color/pp_light_gray_normal" />
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/copyright"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_14"
+                android:visibility="gone" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/copyright"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_14"
-                    android:visibility="gone"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pp_dp_5"
+                android:text="@string/copyright1"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_14" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_dp_5"
-                    android:text="@string/copyright1"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_14" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pp_dp_5"
+                android:text="@string/copyright2"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_14" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_dp_5"
-                    android:text="@string/copyright2"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_14" />
+            <TextView
+                android:id="@+id/develop_version_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pp_dp_16"
+                android:text="dddd"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_16" />
 
-                <TextView
-                    android:id="@+id/develop_version_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_dp_16"
-                    android:textColor="@color/pp_gray"
-                    android:text="dddd"
-                    android:textSize="@dimen/text_size_16"/>
-
-                <TextView
-                    android:id="@+id/tv_terms_policy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="@dimen/pp_dp_16"
-                    android:textColor="@color/pp_blue"
-                    android:textSize="@dimen/text_size_14"
-                    android:lineSpacingMultiplier="1.5"
-                    android:text="@string/terms_and_policy"/>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_terms_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pp_dp_16"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.5"
+                android:text="@string/terms_and_policy"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_14" />
+        </LinearLayout>
     </LinearLayout>
-
 </RelativeLayout>
