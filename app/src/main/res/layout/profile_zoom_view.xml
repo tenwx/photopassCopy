@@ -11,5 +11,4 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:src="@drawable/me_title_bg" />
-
 </RelativeLayout>

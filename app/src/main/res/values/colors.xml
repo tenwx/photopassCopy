@@ -6,6 +6,7 @@
     <!-- 透明白色 -->
     <color name="transparent_white">#AAFFFFFF</color>
     <color name="transparent_white_50">#88FFFFFF</color>
+    <color name="transparent_white_90">#e6ffffff</color>
     <color name="transparent_pp_blue">#886799ca</color>
 
     <!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
@@ -76,5 +77,8 @@
     <color name="color14">#EE0000</color>
     <color name="color15">@color/black</color>
     <color name="color16">@color/white</color>
+
+    <!--沉浸式状态栏的颜色-->
+    <color name="immersive_color">@color/gray_light3</color>
 
 </resources>

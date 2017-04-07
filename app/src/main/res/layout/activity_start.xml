@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_blue" >
+    android:background="@color/pp_blue">
 
     <ImageView
         android:id="@+id/img"
@@ -11,40 +11,29 @@
         android:adjustViewBounds="true"
         android:src="@drawable/launch_page_logo" />
 
-    <TextView
-        android:id="@+id/start_version_code_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_14"
-        android:textColor="@color/white"
-        android:layout_marginLeft="@dimen/pp_dp_5"
-        android:layout_toRightOf="@id/img"
-        android:layout_marginBottom="@dimen/pp_dp_5_"
-        android:visibility="gone"
-        android:layout_alignBottom="@id/img"/>
-
     <LinearLayout
         android:id="@+id/ll_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:gravity="center"
         android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:visibility="gone">
+
         <ImageView
             android:id="@+id/img_update"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/loading_anim"/>
+            android:background="@drawable/loading_anim" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="@string/app_update"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/text_size_10"
+            android:gravity="center"
+            android:text="@string/app_update"
             android:textColor="@color/white"
-            android:gravity="center"/>
+            android:textSize="@dimen/text_size_10" />
     </LinearLayout>
 </RelativeLayout>

@@ -36,8 +36,6 @@
             android:text="@string/gallery_buy_blur_photo"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
-
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -103,8 +101,5 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
-
     </RelativeLayout>
-
-
 </RelativeLayout>

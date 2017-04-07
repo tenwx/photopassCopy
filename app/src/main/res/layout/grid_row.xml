@@ -32,5 +32,4 @@
         android:scaleType="centerInside"
         android:src="@drawable/sel3"
         android:visibility="invisible" />
-
 </RelativeLayout>

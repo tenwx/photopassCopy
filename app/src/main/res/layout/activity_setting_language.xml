@@ -3,78 +3,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
-    style="@style/ImmersiveMode"
     tools:context="com.pictureair.photopass.activity.SettingLanguageActivity">
 
-    <RelativeLayout
-        android:id="@+id/head"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
         <RelativeLayout
-            android:id="@+id/back_set"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:paddingRight="@dimen/pp_dp_10"
-            android:layout_above="@+id/language_line">
+            android:id="@+id/head"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:background="@color/white">
 
-            <ImageView
+            <RelativeLayout
+                android:id="@+id/back_set"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingBottom="@dimen/pp_dp_15"
-                android:paddingLeft="@dimen/pp_dp_14"
-                android:paddingRight="@dimen/pp_dp_14"
-                android:paddingTop="@dimen/pp_dp_15"
-                android:scaleType="centerInside"
-                android:src="@drawable/back_blue" />
-        </RelativeLayout>
+                android:layout_height="match_parent"
+                android:layout_above="@+id/language_line"
+                android:layout_alignParentLeft="true"
+                android:paddingRight="@dimen/pp_dp_10">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/setting_language"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <RelativeLayout
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:visibility="gone"
-            android:layout_above="@+id/language_line">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingBottom="@dimen/pp_dp_15"
+                    android:paddingLeft="@dimen/pp_dp_14"
+                    android:paddingRight="@dimen/pp_dp_14"
+                    android:paddingTop="@dimen/pp_dp_15"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/back_blue" />
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/save_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/save"
+                android:layout_centerInParent="true"
+                android:text="@string/setting_language"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16"
-                android:visibility="gone"/>
-        </RelativeLayout>
+                android:textSize="@dimen/text_size_16" />
 
-        <View
-            android:id="@id/language_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
-            android:layout_alignParentBottom="true"
-            />
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/language_line"
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/save_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/save"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <View
+                android:id="@id/language_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:layout_alignParentBottom="true"
+                android:background="@color/pp_gray" />
+        </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/head"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:layout_below="@+id/head2"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/language_chinese"
@@ -134,7 +140,6 @@
                 android:layout_marginRight="@dimen/pp_dp_10"
                 android:src="@drawable/sele"
                 android:visibility="invisible" />
-
         </RelativeLayout>
 
         <View
@@ -143,7 +148,5 @@
             android:layout_marginLeft="@dimen/pp_dp_8"
             android:layout_marginRight="@dimen/pp_dp_8"
             android:background="@color/gray_light3" />
-
     </LinearLayout>
-
 </RelativeLayout>

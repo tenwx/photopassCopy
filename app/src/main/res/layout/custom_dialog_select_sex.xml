@@ -3,21 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <TextView
         android:id="@+id/rl01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_dialog_blue_top">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pp_dp_10"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/gender"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
-    </RelativeLayout>
+        android:background="@drawable/bg_dialog_blue_top"
+        android:paddingBottom="@dimen/pp_dp_10"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_10"
+        android:paddingTop="@dimen/pp_dp_10"
+        android:text="@string/gender"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,5 +74,4 @@
                 android:src="@drawable/nosele" />
         </RelativeLayout>
     </LinearLayout>
-
 </RelativeLayout>

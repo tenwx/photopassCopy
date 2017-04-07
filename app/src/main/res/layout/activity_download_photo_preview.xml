@@ -1,74 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    style="@style/ImmersiveMode">
-    <RelativeLayout
-        android:id="@+id/download_preview_titlebar"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true"
-         >
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <ImageView
-            android:id="@+id/download_preview_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/download_preview_line"/>
-
-        <TextView
-            android:id="@+id/download_preview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:layout_toLeftOf="@+id/download_preview_share"
-            android:layout_toRightOf="@id/download_preview_back"
-            android:maxLines="1"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16"/>
-        <ImageButton
-            android:id="@+id/download_preview_share"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/edit_album_share_button"
-            android:visibility="invisible"
-            android:layout_above="@+id/download_preview_line"/>
-
-        <View
-            android:id="@id/download_preview_line"
+        <RelativeLayout
+            android:id="@+id/download_preview_titlebar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
-            android:layout_alignParentBottom="true"
-            />
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:background="@color/white">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/download_preview_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/download_preview_line"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue" />
+
+            <TextView
+                android:id="@+id/download_preview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/download_preview_share"
+                android:layout_toRightOf="@id/download_preview_back"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageButton
+                android:id="@+id/download_preview_share"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/download_preview_line"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/transparent"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/edit_album_share_button"
+                android:visibility="invisible" />
+
+            <View
+                android:id="@id/download_preview_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:layout_alignParentBottom="true"
+                android:background="@color/pp_gray" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/download_preview_fra_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pp_light_gray_background"
-        android:layout_below="@id/download_preview_titlebar"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/head2"
+        android:background="@color/pp_light_gray_background">
 
         <com.pictureair.photopass.GalleryWidget.GalleryViewPager
             android:id="@+id/download_preview_viewer"

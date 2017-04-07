@@ -9,6 +9,7 @@
         android:id="@+id/status_bar_empty_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/immersive_color"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -156,10 +157,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/story_top_bg"
                         android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/pp_dp_5"
+                        android:layout_marginBottom="@dimen/pp_dp_10"
                         android:layout_marginLeft="@dimen/pp_dp_16"
                         android:layout_marginRight="@dimen/pp_dp_16"
-                        android:layout_marginBottom="@dimen/pp_dp_10"
+                        android:layout_marginTop="@dimen/pp_dp_5"
                         android:gravity="center"
                         android:text="@string/storypage_no_pp"
                         android:textColor="@color/pp_dark_blue"
@@ -169,8 +170,8 @@
                         android:id="@+id/story_no_pp_scan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/story_top_tip"
                         android:layout_above="@+id/story_scan"
+                        android:layout_below="@+id/story_top_tip"
                         android:adjustViewBounds="true"
                         android:scaleType="centerInside"
                         android:src="@drawable/scan_pp1" />
@@ -203,6 +204,7 @@
                         android:id="@+id/story_buy_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_above="@+id/story_activate_daily_ppp"
                         android:layout_marginBottom="@dimen/pp_dp_16"
                         android:layout_marginLeft="@dimen/pp_dp_16"
                         android:layout_marginRight="@dimen/pp_dp_16"
@@ -211,17 +213,16 @@
                         android:padding="@dimen/pp_dp_10"
                         android:text="@string/story_buy_ppp"
                         android:textColor="@color/white"
-                        android:layout_above="@+id/story_activate_daily_ppp"
                         android:textSize="@dimen/text_size_14" />
 
                     <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_activate_daily_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_above="@+id/story_activate_ppp"
+                        android:layout_marginBottom="@dimen/pp_dp_16"
                         android:layout_marginLeft="@dimen/pp_dp_16"
                         android:layout_marginRight="@dimen/pp_dp_16"
-                        android:layout_marginBottom="@dimen/pp_dp_16"
-                        android:layout_above="@+id/story_activate_ppp"
                         android:background="@drawable/button_gray_light"
                         android:gravity="center"
                         android:padding="@dimen/pp_dp_10"
@@ -233,17 +234,16 @@
                         android:id="@+id/story_activate_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/pp_dp_16"
                         android:layout_marginLeft="@dimen/pp_dp_16"
                         android:layout_marginRight="@dimen/pp_dp_16"
-                        android:layout_marginBottom="@dimen/pp_dp_16"
-                        android:layout_alignParentBottom="true"
                         android:background="@drawable/button_gray_light"
                         android:gravity="center"
                         android:padding="@dimen/pp_dp_10"
                         android:text="@string/story_scan_ppp"
                         android:textColor="@color/pp_blue"
                         android:textSize="@dimen/text_size_14" />
-
                 </RelativeLayout>
             </ScrollView>
         </RelativeLayout>
@@ -283,6 +283,4 @@
             android:paddingTop="5dp"
             android:src="@drawable/float_hide" />
     </com.pictureair.photopass.widget.DraftLayout>
-
-
 </RelativeLayout>

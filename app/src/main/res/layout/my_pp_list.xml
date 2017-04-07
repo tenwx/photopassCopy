@@ -1,143 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pp_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/gray_light"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/pp_item"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="@dimen/pp_dp_10"
+        android:paddingRight="@dimen/pp_dp_10">
+
+        <TextView
+            android:id="@+id/tv_shoot_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="bottom"
+            android:text="2016-11-25"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/delete_my_pp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/delete_my_pp_btn" />
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_dp_5"
+            android:layout_toLeftOf="@+id/pp_show_select"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/nosele"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@id/pp_show_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/pp_clear_card"
+            android:textColor="@color/pp_light_blue"
+            android:textSize="@dimen/text_size_12"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/pp_image_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        >
+        android:paddingBottom="@dimen/pp_dp_10"
+        android:paddingLeft="@dimen/pp_dp_10"
+        android:paddingRight="@dimen/pp_dp_10"
+        android:paddingTop="@dimen/pp_dp_5">
+
+        <ImageView
+            android:id="@+id/pp_img1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/pp_video_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/play"
+            android:visibility="gone" />
 
         <RelativeLayout
+            android:id="@+id/pp_card_layout"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:paddingRight="@dimen/pp_dp_10"
-            android:paddingLeft="@dimen/pp_dp_10"
-            >
-            <TextView
-                android:id="@+id/tv_shoot_date"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/pp_light_blue"
-                android:textSize="@dimen/text_size_16"
-                android:text="2016-11-25"
-                android:layout_alignParentBottom="true"
-                android:gravity="bottom"
-                android:visibility="gone"
-                />
-
-            <ImageView
-                android:id="@+id/delete_my_pp"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentRight="true"
-                android:clickable="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/delete_my_pp_btn"
-                android:layout_alignParentBottom="true"/>
-
-            <ImageView
-                android:id="@+id/img"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:adjustViewBounds="true"
-                android:clickable="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/nosele"
-                android:layout_toLeftOf="@+id/pp_show_select"
-                android:layout_marginRight="@dimen/pp_dp_5"
-                android:visibility="gone"
-                android:layout_alignParentBottom="true"/>
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/pp_img1"
+            android:background="@color/transparent_white"
+            android:paddingLeft="@dimen/pp_dp_16"
+            android:paddingRight="@dimen/pp_dp_5">
 
             <TextView
-                android:id="@id/pp_show_select"
+                android:id="@+id/pp_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/pp_light_blue"
-                android:textSize="@dimen/text_size_12"
+                android:gravity="center"
+                android:text="SHDR11122212222"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:layout_toLeftOf="@+id/pp_photo_count"
+                android:adjustViewBounds="true"
+                android:src="@drawable/photo_count_gray" />
+
+            <TextView
+                android:id="@id/pp_photo_count"
+                android:layout_width="@dimen/pp_dp_52"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:text="@string/pp_clear_card"
-                android:visibility="gone"
-                android:layout_alignParentBottom="true"/>
-
+                android:gravity="center_vertical"
+                android:text="@string/story_photo_count"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/pp_image_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/pp_dp_10"
-            android:paddingRight="@dimen/pp_dp_10"
-            android:paddingTop="@dimen/pp_dp_5"
-            android:paddingBottom="@dimen/pp_dp_10"
-            >
-
-            <ImageView
-                android:id="@+id/pp_img1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
-
-            <ImageView
-                android:id="@+id/pp_video_cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                android:src="@drawable/play"
-                android:visibility="gone"
-                />
-
-            <RelativeLayout
-                android:id="@+id/pp_card_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignBottom="@id/pp_img1"
-                android:background="@color/transparent_white"
-                android:paddingLeft="@dimen/pp_dp_16"
-                android:paddingRight="@dimen/pp_dp_5"
-                >
-
-                <TextView
-                    android:id="@+id/pp_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_16"
-                    android:text="SHDR11122212222"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"/>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:adjustViewBounds="true"
-                    android:layout_toLeftOf="@+id/pp_photo_count"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/photo_count_gray"
-                    android:layout_marginRight="2dp"
-                    />
-
-                <TextView
-                    android:id="@id/pp_photo_count"
-                    android:layout_width="@dimen/pp_dp_52"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/text_size_12"
-                    android:gravity="center_vertical"
-                    android:text="@string/story_photo_count"
-                    android:layout_alignParentRight="true"
-                    android:textColor="@color/pp_gray"/>
-            </RelativeLayout>
-        </RelativeLayout>
-    </LinearLayout>
-
+    </RelativeLayout>
 </LinearLayout>

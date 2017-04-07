@@ -62,22 +62,22 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
+
                 <ImageView
                     android:id="@+id/bg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/edit_bg"
                     android:adjustViewBounds="true"
-                    android:visibility="invisible"/>
-
+                    android:src="@drawable/edit_bg"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/cartProductCountTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/bg"
                     android:layout_alignLeft="@+id/bg"
                     android:layout_alignRight="@+id/bg"
-                    android:layout_alignBottom="@+id/bg"
                     android:layout_alignTop="@+id/bg"
                     android:background="@drawable/edit_cart_bg"
                     android:gravity="center"
@@ -108,8 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/cartProductImageView"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="@dimen/pp_dp_2"
+            android:layout_marginTop="10dp"
             android:layout_toLeftOf="@id/cartPrice"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
@@ -119,32 +119,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/cartProductImageView"
-            android:layout_marginBottom="10dp"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <GridLayout
+        android:id="@+id/cartPhotoGridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/pp_dp_16">
-
-        <GridLayout
-            android:id="@+id/cartPhotoGridLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/pp_dp_16"
-            android:layout_marginTop="@dimen/pp_dp_8"
-            android:background="@drawable/bg_border_stroke"
-            android:columnCount="4"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/pp_dp_20"
-            android:paddingTop="@dimen/pp_dp_10"
-            android:paddingBottom="@dimen/pp_dp_10"
-            android:useDefaultMargins="true" />
-
-    </RelativeLayout>
+        android:layout_marginLeft="@dimen/pp_dp_16"
+        android:layout_marginRight="@dimen/pp_dp_16"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:background="@drawable/bg_border_stroke"
+        android:columnCount="4"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pp_dp_10"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingTop="@dimen/pp_dp_10"
+        android:useDefaultMargins="true" />
 
     <View
         android:id="@+id/divider"
@@ -152,6 +146,4 @@
         android:layout_height="@dimen/pp_px_1"
         android:layout_marginTop="@dimen/pp_dp_16"
         android:background="@color/pp_light_gray_normal" />
-
-
 </LinearLayout>

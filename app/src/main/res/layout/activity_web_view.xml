@@ -4,17 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    style="@style/ImmersiveMode"
     tools:context="com.pictureair.photopass.activity.WebViewActivity">
 
-    <include
-        android:id="@+id/head"
-        layout="@layout/top_bar" />
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
+
+        <include
+            android:id="@+id/head"
+            layout="@layout/top_bar" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/head">
+        android:layout_below="@+id/head2">
 
         <com.pictureair.photopass.widget.CustomWebView
             android:id="@+id/webView"
@@ -25,21 +32,18 @@
         <ProgressBar
             android:id="@+id/pb"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="3dip"
             android:layout_alignParentTop="true"
             android:indeterminateOnly="false"
             android:max="100"
-            android:progressDrawable="@drawable/progress_bar_style"/>
-
+            android:progressDrawable="@drawable/progress_bar_style" />
     </RelativeLayout>
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/head"
+        android:layout_below="@id/head2"
         android:visibility="invisible" />
-
-
 </RelativeLayout>

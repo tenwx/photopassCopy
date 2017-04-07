@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="@drawable/dialog_corners_bg"
+    android:background="@color/transparent_white_90"
     android:orientation="vertical"
     android:padding="@dimen/pp_dp_20">
 
@@ -38,7 +38,6 @@
             android:text="@string/wechat"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
-
 
         <TextView
             android:id="@+id/qq"
@@ -97,8 +96,9 @@
             android:gravity="center"
             android:text="@string/facebook"
             android:textColor="@color/pp_blue"
-            android:visibility="gone"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/twitter"
             android:layout_width="0dp"
@@ -110,8 +110,8 @@
             android:gravity="center"
             android:text="@string/twitter"
             android:textColor="@color/pp_blue"
-            android:visibility="invisible"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <LinearLayout
@@ -122,17 +122,17 @@
         android:visibility="gone">
 
         <!--<TextView-->
-            <!--android:id="@+id/twitter"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:drawablePadding="@dimen/pp_dp_5"-->
-            <!--android:drawableTop="@drawable/share_twitter"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/twitter"-->
-            <!--android:textColor="@color/pp_gray"-->
-            <!--android:textSize="@dimen/text_size_16" />-->
+        <!--android:id="@+id/twitter"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@color/transparent"-->
+        <!--android:drawablePadding="@dimen/pp_dp_5"-->
+        <!--android:drawableTop="@drawable/share_twitter"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/twitter"-->
+        <!--android:textColor="@color/pp_gray"-->
+        <!--android:textSize="@dimen/text_size_16" />-->
 
         <TextView
             android:layout_width="0dp"
@@ -172,5 +172,4 @@
         android:text="@string/cancel1"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16" />
-
 </LinearLayout>

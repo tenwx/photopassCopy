@@ -57,12 +57,8 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/slide_list_item_count"
                 android:gravity="center_vertical"
-                android:text="SHDRH3H3H3H3H3H3H"
                 android:textColor="@color/pp_light_blue"
                 android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
-
     </LinearLayout>
-
-
 </RelativeLayout>

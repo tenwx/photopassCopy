@@ -11,31 +11,23 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <LinearLayout
-            android:id="@+id/load_success_tips"
+        <TextView
+            android:id="@+id/load_success_tv"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical"
+            android:gravity="left|center_vertical"
+            android:lineSpacingExtra="4dp"
             android:paddingLeft="@dimen/pp_dp_8"
-            android:paddingRight="@dimen/pp_dp_8">
-
-            <TextView
-                android:id="@+id/load_success_tv"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:gravity="left|center_vertical"
-                android:lineSpacingExtra="4dp"
-                android:text="@string/photo_download_tips2"
-                android:textColor="@color/pp_gray"
-                android:textSize="12sp" />
-        </LinearLayout>
+            android:paddingRight="@dimen/pp_dp_8"
+            android:text="@string/photo_download_tips2"
+            android:textColor="@color/pp_gray"
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/dash_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_dp_2"
-            android:layout_below="@id/load_success_tips"
+            android:layout_below="@id/load_success_tv"
             android:background="@drawable/dash_line"
             android:layerType="software" />
 
@@ -129,10 +121,9 @@
                 android:layout_marginTop="60dp"
                 android:background="@drawable/button_translate_with_gray_line"
                 android:gravity="center"
-                android:textAllCaps="false"
                 android:text="@string/photo_download_to_load"
+                android:textAllCaps="false"
                 android:textColor="@color/gray2" />
         </RelativeLayout>
     </ScrollView>
-
 </LinearLayout>

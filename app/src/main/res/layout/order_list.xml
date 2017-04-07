@@ -5,7 +5,6 @@
     android:background="@color/transparent"
     android:orientation="vertical">
 
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
@@ -25,6 +24,5 @@
         android:id="@+id/nonetwork"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"/>
-
+        android:visibility="invisible" />
 </LinearLayout>

@@ -44,12 +44,12 @@
         android:layout_width="@dimen/pp_dp_60"
         android:layout_height="@dimen/pp_dp_60"
         android:layout_centerInParent="true"
+        android:alpha="0.9"
         android:background="@color/transparent"
         android:clickable="false"
         android:scaleType="fitCenter"
         android:src="@drawable/play"
-        android:alpha="0.9"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_controler"
@@ -80,7 +80,6 @@
             android:progressDrawable="@drawable/seekbar_content"
             android:thumb="@color/transparent" />
 
-
         <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
@@ -91,5 +90,4 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12" />
     </LinearLayout>
-
 </RelativeLayout>

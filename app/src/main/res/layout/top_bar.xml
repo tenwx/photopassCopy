@@ -10,22 +10,22 @@
         android:id="@+id/topLeftView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_above="@+id/toptitle_line"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:onClick="TopViewClick"
-        android:orientation="horizontal"
-        android:layout_above="@+id/toptitle_line">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/topLeft_iv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:clickable="false"
             android:layout_marginBottom="@dimen/pp_dp_15"
             android:layout_marginLeft="@dimen/pp_dp_14"
             android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_15"
+            android:clickable="false"
             android:scaleType="centerInside"
             android:src="@drawable/back_blue"
             android:visibility="gone" />
@@ -34,13 +34,13 @@
             android:id="@+id/topLeft_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:clickable="false"
+            android:layout_marginBottom="@dimen/pp_dp_10"
             android:layout_marginLeft="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_10"
-            android:layout_marginBottom="@dimen/pp_dp_10"
+            android:clickable="false"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16"
-            android:gravity="center"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -57,23 +57,22 @@
         android:id="@+id/topRightView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_above="@+id/toptitle_line"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:onClick="TopViewClick"
-        android:orientation="horizontal"
-        android:layout_above="@+id/toptitle_line"
-        >
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/topRight_iv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:clickable="false"
             android:layout_marginBottom="@dimen/pp_dp_15"
             android:layout_marginLeft="@dimen/pp_dp_14"
             android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_15"
+            android:clickable="false"
             android:scaleType="centerInside"
             android:src="@drawable/edit_album_all_enable"
             android:visibility="gone" />
@@ -82,21 +81,20 @@
             android:id="@+id/topRight_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/pp_dp_10"
             android:layout_marginRight="@dimen/pp_dp_14"
             android:layout_marginTop="@dimen/pp_dp_10"
-            android:layout_marginBottom="@dimen/pp_dp_10"
             android:clickable="false"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_14"
-            android:gravity="center"
             android:visibility="gone" />
-
     </LinearLayout>
+
     <View
         android:id="@id/toptitle_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_px_1"
-        android:background="@color/pp_gray"
         android:layout_alignParentBottom="true"
-        />
+        android:background="@color/pp_gray" />
 </RelativeLayout>

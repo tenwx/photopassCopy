@@ -61,8 +61,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/pp_dp_10"
             android:drawableTop="@drawable/story_buy"
-            android:text="@string/story_want_to_buy"
             android:gravity="center"
+            android:text="@string/story_want_to_buy"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -74,8 +74,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/pp_dp_10"
             android:drawableTop="@drawable/download_white"
-            android:text="@string/down"
             android:gravity="center"
+            android:text="@string/down"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -133,9 +133,7 @@
                 android:padding="@dimen/pp_dp_5"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16" />
-
         </RelativeLayout>
-
     </RelativeLayout>
 </android.support.v7.widget.CardView>
 

@@ -19,5 +19,4 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/pp_dp_10"
         android:textColor="@color/white" />
-
 </LinearLayout>

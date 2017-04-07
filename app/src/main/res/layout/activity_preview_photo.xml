@@ -1,72 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/preview_relativelayout"
-    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <RelativeLayout
-        android:id="@+id/preview_titlebar"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <ImageView
-            android:id="@+id/button1_shop_rt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/preview_line"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue" />
-
-        <TextView
-            android:id="@+id/preview_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/preview_more"
-            android:layout_toRightOf="@id/button1_shop_rt"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <ImageButton
-            android:id="@+id/preview_more"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/preview_line"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_5"
-            android:paddingRight="@dimen/pp_dp_5"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/preview_photo_menu" />
-
-        <View
-            android:id="@id/preview_line"
+        <RelativeLayout
+            android:id="@+id/preview_titlebar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:layout_alignParentBottom="true"
-            android:background="@color/pp_gray" />
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:background="@color/white"
+            android:layout_alignParentTop="true">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/button1_shop_rt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/preview_line"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue" />
+
+            <TextView
+                android:id="@+id/preview_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/preview_more"
+                android:layout_toRightOf="@id/button1_shop_rt"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageButton
+                android:id="@+id/preview_more"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/preview_line"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/transparent"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_5"
+                android:paddingRight="@dimen/pp_dp_5"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/preview_photo_menu" />
+
+            <View
+                android:id="@id/preview_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:layout_alignParentBottom="true"
+                android:background="@color/pp_gray" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/fra_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/preview_titlebar"
+        android:layout_below="@id/head2"
         android:background="@color/pp_light_gray_background">
 
         <com.pictureair.photopass.GalleryWidget.GalleryViewPager
@@ -81,14 +92,14 @@
         android:id="@+id/nonetwork_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/preview_titlebar"
+        android:layout_below="@id/head2"
         android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/preivew_no_souvenir_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/preview_titlebar"
+        android:layout_below="@id/head2"
         android:background="@color/pp_light_gray_background"
         android:orientation="vertical"
         android:visibility="gone">

@@ -3,106 +3,112 @@
     android:id="@+id/makegift_relativate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/ImmersiveMode"
     android:background="@color/pp_light_gray_background">
 
-    <RelativeLayout
-        android:id="@+id/makegift_titlebar"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <LinearLayout
-            android:id="@+id/product_name_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/pp_dp_20"
-            android:paddingRight="@dimen/pp_dp_20"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:layout_above="@+id/make_gift_line">
+        <RelativeLayout
+            android:id="@+id/makegift_titlebar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:layout_alignParentTop="true"
+            android:background="@color/white">
 
-            <TextView
-                android:id="@+id/product_name_tv"
+            <LinearLayout
+                android:id="@+id/product_name_ll"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:layout_gravity="center_vertical"
-                android:text="@string/preview"
-                android:paddingRight="@dimen/pp_dp_8"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/pp_dp_20"
+                android:paddingRight="@dimen/pp_dp_20"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:layout_above="@+id/make_gift_line">
+
+                <TextView
+                    android:id="@+id/product_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/preview"
+                    android:paddingRight="@dimen/pp_dp_8"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16" />
+
+                <ImageView
+                    android:id="@+id/button_selectproduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/make_gift_product"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/button_selectproduct"
+                android:id="@+id/button_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/cart"
+                android:layout_above="@+id/make_gift_line"/>
+
+            <TextView
+                android:id="@+id/textview_cart_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitCenter"
-                android:src="@drawable/make_gift_product"
-                android:visibility="visible" />
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/pp_dp_8"
+                android:layout_marginTop="@dimen/pp_dp_4"
+                android:background="@drawable/bg1"
+                android:gravity="center"
+                android:padding="@dimen/pp_dp_1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/rt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue"
+                android:layout_above="@+id/make_gift_line"/>
 
-        <ImageView
-            android:id="@+id/button_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/cart"
-            android:layout_above="@+id/make_gift_line"/>
-
-        <TextView
-            android:id="@+id/textview_cart_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/pp_dp_8"
-            android:layout_marginTop="@dimen/pp_dp_4"
-            android:background="@drawable/bg1"
-            android:gravity="center"
-            android:padding="@dimen/pp_dp_1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_12" />
-
-        <ImageView
-            android:id="@+id/rt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/make_gift_line"/>
-
-        <View
-            android:id="@id/make_gift_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
-            android:layout_alignParentBottom="true"
-            />
-
-    </RelativeLayout>
+            <View
+                android:id="@id/make_gift_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:background="@color/pp_gray"
+                android:layout_alignParentBottom="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 
     <com.pictureair.photopass.widget.MyScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttonllout"
-        android:layout_below="@id/makegift_titlebar"
+        android:layout_below="@id/head2"
         android:scrollbars="none">
 
         <LinearLayout

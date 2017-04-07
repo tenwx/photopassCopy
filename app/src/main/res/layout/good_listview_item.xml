@@ -41,7 +41,6 @@
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
-
     </RelativeLayout>
 
     <TextView
@@ -54,27 +53,10 @@
         android:layout_marginTop="@dimen/pp_dp_5"
         android:textColor="@color/pp_light_gray_press" />
 
-
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/goodImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/goodImageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
-
-        <!--<TextView-->
-        <!--android:id="@+id/goodDetailIntroduce"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/ppp_cover"-->
-        <!--android:padding="10dp"-->
-        <!--android:singleLine="true"-->
-        <!--android:textColor="@color/white" />-->
-    </RelativeLayout>
-
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
 </LinearLayout>

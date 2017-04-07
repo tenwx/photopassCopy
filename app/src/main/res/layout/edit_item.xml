@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/edit_item"
@@ -58,5 +57,4 @@
         android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_8"
         android:visibility="gone" />
-
 </LinearLayout>

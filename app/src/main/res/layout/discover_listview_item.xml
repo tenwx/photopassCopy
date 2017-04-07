@@ -19,7 +19,7 @@
     <RelativeLayout
         android:id="@+id/photo_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/discover_location_photo"
@@ -33,34 +33,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout 
+            <View
                 android:id="@+id/empty_view"
                 android:layout_width="60dp"
-                android:layout_alignParentRight="true"
-                android:layout_height="match_parent">
-                
-            </RelativeLayout>
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+
             <ImageView
                 android:id="@+id/discover_location_blur_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY" />
-            
-            <ImageView 
+
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/empty_view"
-                android:background="@color/ppp_cover"/>
+                android:background="@color/ppp_cover" />
 
             <TextView
                 android:id="@+id/discover_place_introduce"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/pp_dp_5"
                 android:layout_marginLeft="@dimen/pp_dp_10"
                 android:layout_marginTop="@dimen/pp_dp_5"
-                android:layout_marginBottom="@dimen/pp_dp_5"
-                android:gravity="center|left"
                 android:layout_toLeftOf="@+id/empty_view"
+                android:gravity="center|left"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16" />
@@ -72,11 +71,11 @@
             android:layout_height="match_parent"
             android:layout_alignBottom="@id/discover_location_photo"
             android:layout_alignParentRight="true"
-            android:paddingLeft="@dimen/pp_dp_2"
-            android:paddingRight="@dimen/pp_dp_2"
             android:background="@color/ppp_cover"
             android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/pp_dp_2"
+            android:paddingRight="@dimen/pp_dp_2">
 
             <ImageView
                 android:id="@+id/discover_love"
@@ -118,5 +117,4 @@
                 android:src="@drawable/discover_show_detail" />
         </LinearLayout>
     </RelativeLayout>
-
 </LinearLayout>

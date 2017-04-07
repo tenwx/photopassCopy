@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
@@ -12,15 +12,15 @@
 
     <TextView
         android:id="@+id/catalog"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1.0"
         android:background="@color/white"
         android:paddingBottom="10dip"
         android:paddingTop="10dip"
-        android:textSize="@dimen/text_size_16"
         android:text="A"
-        android:textColor="@color/pp_light_gray_press" />
+        android:textColor="@color/pp_light_gray_press"
+        android:textSize="@dimen/text_size_16" />
 
     <View
         android:layout_width="match_parent"
@@ -29,8 +29,8 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_weight="1.0"
         android:gravity="center_vertical"
@@ -39,6 +39,4 @@
         android:text="hhhh"
         android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
-
-
 </LinearLayout>

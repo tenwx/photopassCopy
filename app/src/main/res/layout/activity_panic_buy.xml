@@ -1,55 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/special_deal_title_layout"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <ImageView
-            android:id="@+id/special_deal_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/special_deal_line"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue" />
-
-        <TextView
-            android:id="@+id/special_deal_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/special_deal_title"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <View
-            android:id="@id/special_deal_line"
+        <RelativeLayout
+            android:id="@+id/special_deal_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:layout_alignParentBottom="true"
-            android:background="@color/pp_gray" />
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:background="@color/white">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/special_deal_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/special_deal_line"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue" />
+
+            <TextView
+                android:id="@+id/special_deal_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/special_deal_title"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+
+            <View
+                android:id="@id/special_deal_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:layout_alignParentBottom="true"
+                android:background="@color/pp_gray" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/special_deal_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/special_deal_title_layout"
+        android:layout_below="@id/head2"
         android:visibility="gone">
 
         <ScrollView
@@ -226,7 +236,7 @@
         android:id="@+id/special_deal_NoNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/special_deal_title_layout"
+        android:layout_below="@id/head2"
         android:visibility="gone" />
 
 </RelativeLayout>

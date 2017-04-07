@@ -3,20 +3,26 @@
     android:id="@+id/submitOrderRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/ImmersiveMode"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <include
-        android:id="@+id/head"
-        layout="@layout/top_bar" />
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
+
+        <include
+            android:id="@+id/head"
+            layout="@layout/top_bar" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listView_submitorder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/line"
-        android:layout_below="@+id/head"
+        android:layout_below="@+id/head2"
         android:background="@color/white"
         android:divider="@color/pp_light_gray_normal"
         android:dividerHeight="0dp"
@@ -27,16 +33,14 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/pp_light_gray_normal"
         android:layout_above="@+id/linearLayout1"
-        />
+        android:background="@color/pp_light_gray_normal" />
 
     <RelativeLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/good_count"
@@ -95,5 +99,4 @@
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
-
 </RelativeLayout>

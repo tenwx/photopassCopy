@@ -9,57 +9,52 @@
         android:id="@+id/user_head_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        >
+        android:layout_centerVertical="true">
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/user_photo"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/user_photo"
+            android:gravity="left|bottom"
             android:text="@string/nn"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16"
-            android:gravity="left|bottom"/>
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:layout_width="@dimen/pp_dp_15"
             android:layout_height="@dimen/pp_dp_15"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/user_name"
-            android:src="@drawable/back_white"
-            android:rotation="180"
-            android:adjustViewBounds="true"
             android:layout_marginLeft="@dimen/pp_dp_5"
-            />
+            android:layout_toRightOf="@id/user_name"
+            android:adjustViewBounds="true"
+            android:rotation="180"
+            android:src="@drawable/back_white" />
 
         <com.pictureair.photopass.widget.CircleImageView
             android:id="@+id/user_photo"
             android:layout_width="@dimen/pp_dp_80"
             android:layout_height="@dimen/pp_dp_80"
-            android:layout_centerVertical="true"
-            android:src="@drawable/default_photo"
-            android:layout_marginLeft="@dimen/pp_dp_30"
             android:layout_alignParentLeft="true"
-            app:border_width= "2dp"
-            app:border_color= "@color/white"
-            app:border_double="true"/>
-
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/pp_dp_30"
+            android:src="@drawable/default_photo"
+            app:border_color="@color/white"
+            app:border_double="true"
+            app:border_width="2dp" />
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/user_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/pp_dp_20"
-        android:src="@drawable/me_setting"
+        android:adjustViewBounds="true"
         android:scaleType="centerInside"
-        />
-
+        android:src="@drawable/me_setting" />
 </RelativeLayout>

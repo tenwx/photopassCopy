@@ -37,6 +37,5 @@
         android:layout_toLeftOf="@+id/section_photo_count_tv"
         android:adjustViewBounds="true"
         android:src="@drawable/photo_count"
-        android:visibility="invisible"/>
-
+        android:visibility="invisible" />
 </RelativeLayout>

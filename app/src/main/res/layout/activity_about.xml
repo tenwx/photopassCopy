@@ -10,7 +10,7 @@
         style="@style/ImmersiveMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray_light3">
+        android:background="@color/immersive_color">
 
         <include
             android:id="@+id/head"

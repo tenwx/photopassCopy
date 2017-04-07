@@ -2,22 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background"
-    style="@style/ImmersiveMode">
+    android:background="@color/pp_light_gray_background">
 
-    <include
-        android:id="@+id/head"
-        layout="@layout/top_bar"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
+
+        <include
+            android:id="@+id/head"
+            layout="@layout/top_bar" />
+
+    </LinearLayout>
 
     <!-- 优惠卷-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/head"
+        android:layout_below="@+id/head2"
         android:visibility="gone" />
 
     <LinearLayout
@@ -55,8 +60,8 @@
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_gravity="center"
+            android:gravity="center_horizontal"
             android:padding="@dimen/pp_dp_10"
             android:text="@string/no_coupon"
             android:textColor="@color/pp_dark_blue"
@@ -67,7 +72,7 @@
         android:id="@+id/nonetwork_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/head"
+        android:layout_below="@id/head2"
         android:visibility="invisible" />
 
 </RelativeLayout>

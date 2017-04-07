@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_background"
+    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/ImmersiveMode"
     android:background="@color/black">
 
     <com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView
         android:id="@+id/video_player_pmv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <RelativeLayout
         android:id="@+id/preview_titlebar"
@@ -23,14 +23,12 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:alpha="0.8"
             android:paddingBottom="@dimen/pp_dp_15"
             android:paddingLeft="@dimen/pp_dp_14"
             android:paddingRight="@dimen/pp_dp_14"
             android:paddingTop="@dimen/pp_dp_15"
             android:scaleType="centerInside"
-            android:src="@drawable/back_white"
-            android:alpha="0.8"/>
-
+            android:src="@drawable/back_white" />
     </RelativeLayout>
-
 </RelativeLayout>

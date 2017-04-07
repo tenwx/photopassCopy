@@ -10,7 +10,6 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.networkbench.agent.impl.NBSAppAgent;
 import com.pictureair.photopass.BuildConfig;
@@ -37,7 +36,6 @@ import static android.os.Handler.Callback;
 public class StartActivity extends BaseActivity implements Callback {
     private int code = 0;
     private String _id;
-    private TextView versionTextView;
     private Handler handler;
     private Class tarClass;
     private static final int UPDATE_SUCCESS = 1111;
@@ -61,15 +59,14 @@ public class StartActivity extends BaseActivity implements Callback {
         img_update = (ImageView) findViewById(R.id.img_update);
         spinner = (AnimationDrawable) img_update.getBackground();
         handler = new Handler(this);
-        versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
-        boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, false);
+        boolean update = SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();
         if (!update) {
             ll_update.setVisibility(View.VISIBLE);
             spinner.start();
             new RemoveRepeatPhotoTask().start();
-        }else {
+        } else {
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
         }
     }
@@ -105,12 +102,11 @@ public class StartActivity extends BaseActivity implements Callback {
     /**
      * 需要在开始跳转的时候，才去判断需要跳转哪个页面。不然会造成，已经判断好跳转的页面，在2s的等待时间内，登录过期，进入重新登录页面之后，2s事件触发，又进入了之前得到的页面
      */
-    private void goToNextActivity(){
+    private void goToNextActivity() {
         PictureAirLog.d("go to next activity");
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
             int versionCode = info.versionCode;
-            versionTextView.setText("V" + info.versionName);
             code = SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, 0);
             PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
 
@@ -134,7 +130,7 @@ public class StartActivity extends BaseActivity implements Callback {
                     tarClass = MainTabActivity.class;
                 }
 
-            } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
+            } else if (code == 0) {//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
                 tarClass = WelcomeActivity.class;
 
             } else {//无登录，也不是第一次安装，版本不一致，表示升级的版本，进入登录页面
@@ -155,7 +151,6 @@ public class StartActivity extends BaseActivity implements Callback {
         startActivity(intent);
         finish();
     }
-
 
     class RemoveRepeatPhotoTask extends Thread {
         @Override
@@ -189,7 +184,6 @@ public class StartActivity extends BaseActivity implements Callback {
             }
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, true);
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
-
         }
     }
 }

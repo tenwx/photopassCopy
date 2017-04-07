@@ -13,5 +13,4 @@
         android:layout_margin="@dimen/pp_dp_5"
         android:textColor="@color/pp_gray"
         android:textSize="@dimen/text_size_16" />
-
 </LinearLayout>

@@ -3,83 +3,93 @@
     android:id="@+id/preview_relativelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/ImmersiveMode"
     android:background="@color/pp_light_gray_background">
 
-    <RelativeLayout
-        android:id="@+id/relative"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <ImageView
-            android:id="@+id/imageButton1_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/preview_product_line"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@color/transparent"
-            android:text="@string/preview"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <ImageView
-            android:id="@+id/button1_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/cart"
-            android:layout_above="@+id/preview_product_line"/>
-
-        <TextView
-            android:id="@+id/textview_cart_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/pp_dp_8"
-            android:layout_marginTop="@dimen/pp_dp_4"
-            android:background="@drawable/bg1"
-            android:gravity="center"
-            android:padding="@dimen/pp_dp_1"
-            android:text="0"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_12" />
-
-        <View
-            android:id="@id/preview_product_line"
+        <RelativeLayout
+            android:id="@+id/relative"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
-            android:layout_alignParentBottom="true"
-            />
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/white">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/imageButton1_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue"
+                android:layout_above="@+id/preview_product_line"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/transparent"
+                android:text="@string/preview"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageView
+                android:id="@+id/button1_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/cart"
+                android:layout_above="@+id/preview_product_line"/>
+
+            <TextView
+                android:id="@+id/textview_cart_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/pp_dp_8"
+                android:layout_marginTop="@dimen/pp_dp_4"
+                android:background="@drawable/bg1"
+                android:gravity="center"
+                android:padding="@dimen/pp_dp_1"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12" />
+
+            <View
+                android:id="@id/preview_product_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:background="@color/pp_gray"
+                android:layout_alignParentBottom="true"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/bgpicture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/relative"
+        android:layout_below="@+id/head2"
         android:background="@color/pp_light_gray_background">
 
         <com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct

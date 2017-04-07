@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
     <RelativeLayout
-        android:layout_marginTop="@dimen/pp_dp_8"
         android:id="@+id/submitOrderRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pp_dp_8"
         android:paddingLeft="@dimen/pp_dp_16"
         android:paddingRight="@dimen/pp_dp_16">
 
@@ -37,9 +38,9 @@
             android:id="@+id/textView_pr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_dp_10"
-            android:layout_alignTop="@+id/imageView_pd"
             android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/imageView_pd"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -47,9 +48,9 @@
             android:id="@+id/textView_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_dp_10"
             android:layout_alignTop="@+id/imageView_pd"
             android:layout_marginRight="@dimen/pp_dp_2"
+            android:layout_marginTop="@dimen/pp_dp_10"
             android:layout_toLeftOf="@id/textView_pr"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
@@ -63,7 +64,6 @@
             android:layout_marginBottom="@dimen/pp_dp_10"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
-
     </RelativeLayout>
 
     <GridLayout
@@ -76,10 +76,10 @@
         android:background="@drawable/bg_border_stroke"
         android:columnCount="4"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/pp_dp_10"
         android:paddingLeft="@dimen/pp_dp_20"
         android:paddingTop="@dimen/pp_dp_10"
-        android:paddingBottom="@dimen/pp_dp_10"
-        android:useDefaultMargins="true"/>
+        android:useDefaultMargins="true" />
 
     <View
         android:layout_width="match_parent"
@@ -87,5 +87,4 @@
         android:layout_marginLeft="@dimen/pp_dp_16"
         android:layout_marginTop="@dimen/pp_dp_8"
         android:background="@color/pp_light_gray_normal" />
-
 </LinearLayout>

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background">
+
     <RelativeLayout
         android:id="@+id/rl_list_downloading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
+
         <LinearLayout
             android:id="@+id/poplayout_downloading"
             android:layout_width="match_parent"
@@ -19,52 +21,52 @@
             android:paddingBottom="@dimen/pp_dp_4"
             android:paddingTop="@dimen/pp_dp_4"
             android:visibility="gone">
+
             <TextView
                 android:id="@+id/tv_downloading_select_all"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
                 android:drawableTop="@drawable/edit_album_all_button"
                 android:gravity="center_horizontal|bottom"
-                android:drawablePadding="@dimen/pp_dp_5"
                 android:text="@string/edit_story_all"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
+
             <TextView
                 android:id="@+id/tv_downloading_reconnect"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
                 android:drawableTop="@drawable/edit_photo_reconnect_button"
                 android:gravity="center_horizontal|bottom"
-                android:drawablePadding="@dimen/pp_dp_5"
                 android:text="@string/photo_download_reconnect"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
+
             <TextView
                 android:id="@+id/tv_downloading_delete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/pp_dp_5"
                 android:drawableTop="@drawable/edit_album_delete_button"
                 android:gravity="center_horizontal|bottom"
-                android:drawablePadding="@dimen/pp_dp_5"
                 android:text="@string/delete"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
         </LinearLayout>
+
         <ListView
             android:id="@+id/lv_downloading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/gray_light3"
-            android:dividerHeight="@dimen/pp_px_1"
-            android:layout_alignParentTop="true"
             android:layout_above="@id/poplayout_downloading"
-            />
+            android:layout_alignParentTop="true"
+            android:divider="@color/gray_light3"
+            android:dividerHeight="@dimen/pp_px_1" />
     </RelativeLayout>
 
     <ScrollView
@@ -73,51 +75,46 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:scrollbars="none"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="80dp"
             android:background="@color/pp_light_gray_background"
+            android:paddingTop="80dp">
 
-            >
             <ImageView
                 android:id="@+id/downloading_show_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/download_manager_download"
                 android:layout_centerHorizontal="true"
-                />
+                android:scaleType="fitXY"
+                android:src="@drawable/download_manager_download" />
 
             <TextView
                 android:id="@+id/downloading_show_text2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/downloading_show_img"
-                android:textSize="@dimen/text_size_14"
-                android:textColor="@color/gray2"
-                android:text="@string/photo_download_tips"
-                android:gravity="center"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="80dp"
-                />
+                android:gravity="center"
+                android:text="@string/photo_download_tips"
+                android:textColor="@color/gray2"
+                android:textSize="@dimen/text_size_14" />
+
             <Button
                 android:id="@+id/downloading_btn_toload"
                 android:layout_width="180dp"
                 android:layout_height="40dp"
-                android:text="@string/photo_download_to_load"
                 android:layout_below="@id/downloading_show_text2"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
-                android:textColor="@color/gray2"
-                android:textAllCaps="false"
-                android:gravity="center"
                 android:background="@drawable/button_translate_with_gray_line"
-                />
+                android:gravity="center"
+                android:text="@string/photo_download_to_load"
+                android:textAllCaps="false"
+                android:textColor="@color/gray2" />
         </RelativeLayout>
     </ScrollView>
-
-
 </RelativeLayout>

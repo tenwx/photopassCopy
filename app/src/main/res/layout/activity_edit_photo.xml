@@ -4,126 +4,133 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    style="@style/ImmersiveMode"
     tools:context="com.pictureair.photopass.activity.EditPhotoActivity">
 
-    <RelativeLayout
-        android:id="@+id/preview_titlebar"
+    <LinearLayout
+        android:id="@+id/head2"
+        style="@style/ImmersiveMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
-        android:layout_alignParentTop="true"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/immersive_color">
 
-        <ImageView
-            android:id="@+id/edit_return"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_blue"
-            android:layout_above="@+id/edit_photo_line"/>
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/edit"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/btn_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_14"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:src="@drawable/back_blue"
-            android:visibility="gone"
-            android:layout_above="@+id/edit_photo_line"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:layout_above="@+id/edit_photo_line"
-            >
-
-            <ImageButton
-                android:id="@+id/btn_last_step"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:padding="@dimen/pp_dp_15"
-                android:scaleType="centerInside"
-                android:src="@drawable/edit_rotate_last_disable" />
-
-            <ImageButton
-                android:id="@+id/btn_next_step"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:padding="@dimen/pp_dp_15"
-                android:scaleType="centerInside"
-                android:src="@drawable/edit_rotate_next_disable" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_really_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:padding="@dimen/pp_dp_10"
-            android:text="@string/save"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16"
-            android:visibility="gone"
-            android:layout_above="@+id/edit_photo_line"/>
-
-        <ImageButton
-            android:id="@+id/ib_temp_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:paddingBottom="@dimen/pp_dp_15"
-            android:paddingLeft="@dimen/pp_dp_14"
-            android:paddingRight="@dimen/pp_dp_10"
-            android:paddingTop="@dimen/pp_dp_15"
-            android:scaleType="centerInside"
-            android:src="@drawable/edit_album_all_enable"
-            android:visibility="gone"
-            android:layout_above="@+id/edit_photo_line"/>
-
-        <View
-            android:id="@id/edit_photo_line"
+        <RelativeLayout
+            android:id="@+id/preview_titlebar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
-            android:layout_alignParentBottom="true"
-            />
-    </RelativeLayout>
+            android:layout_height="@dimen/pp_top_bar_height"
+            android:layout_alignParentTop="true"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/edit_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_blue"
+                android:layout_above="@+id/edit_photo_line"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/edit"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/btn_left_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_14"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:src="@drawable/back_blue"
+                android:visibility="gone"
+                android:layout_above="@+id/edit_photo_line"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:layout_above="@+id/edit_photo_line"
+                >
+
+                <ImageButton
+                    android:id="@+id/btn_last_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/pp_dp_15"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/edit_rotate_last_disable" />
+
+                <ImageButton
+                    android:id="@+id/btn_next_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/pp_dp_15"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/edit_rotate_next_disable" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_really_save"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:padding="@dimen/pp_dp_10"
+                android:text="@string/save"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:visibility="gone"
+                android:layout_above="@+id/edit_photo_line"/>
+
+            <ImageButton
+                android:id="@+id/ib_temp_save"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/transparent"
+                android:paddingBottom="@dimen/pp_dp_15"
+                android:paddingLeft="@dimen/pp_dp_14"
+                android:paddingRight="@dimen/pp_dp_10"
+                android:paddingTop="@dimen/pp_dp_15"
+                android:scaleType="centerInside"
+                android:src="@drawable/edit_album_all_enable"
+                android:visibility="gone"
+                android:layout_above="@+id/edit_photo_line"/>
+
+            <View
+                android:id="@id/edit_photo_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_px_1"
+                android:background="@color/pp_gray"
+                android:layout_alignParentBottom="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/preframe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/edittoolsbar"
-        android:layout_below="@id/preview_titlebar"
+        android:layout_below="@id/head2"
         android:background="@color/transparent">
 
         <!--  <com.pictureAir.editPhoto.ImageViewTouch

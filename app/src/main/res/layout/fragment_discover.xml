@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/gray_light">
 
     <View
         android:id="@+id/status_bar_empty_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone"/>
+        android:background="@color/immersive_color"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/discover_title"
@@ -32,9 +32,8 @@
             android:id="@+id/discover_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_px_1"
-            android:background="@color/pp_gray"
             android:layout_alignParentBottom="true"
-            />
+            android:background="@color/pp_gray" />
     </RelativeLayout>
 
     <ListView
@@ -53,5 +52,4 @@
         android:layout_height="match_parent"
         android:layout_below="@id/discover_title"
         android:visibility="gone" />
-
 </RelativeLayout>
