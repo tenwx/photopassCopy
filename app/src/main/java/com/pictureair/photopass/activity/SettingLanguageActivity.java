@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -23,7 +22,6 @@ import java.util.Locale;
 public class SettingLanguageActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private static final String TAG = "SettingLanguageActivity";
     private Configuration config;
-    private DisplayMetrics dm;
 
     private RelativeLayout back;
     private RelativeLayout languageChinese;
@@ -47,7 +45,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private void initView() {
         // 修改语言需要的配置信息
         config = getResources().getConfiguration();
-        dm = getResources().getDisplayMetrics();
 
         back = (RelativeLayout) findViewById(R.id.back_set);
         languageChinese = (RelativeLayout) findViewById(R.id.language_chinese);
@@ -56,7 +53,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         chineseSeleted = (ImageView) findViewById(R.id.chinese_imageView);
         englishSeleted = (ImageView) findViewById(R.id.english_imageView);
 
-//        save.setOnClickListener(this);
         back.setOnClickListener(this);
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
@@ -76,7 +72,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             oldLanguage = currentLanguage;//使用系统默认语言
         }
         updateUI(currentLanguage);
-
     }
 
     /**
@@ -117,9 +112,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
 //                    updateUI(currentLanguage);
                     createDialog();
                 }
-
                 break;
-
 
             default:
                 break;
@@ -131,7 +124,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         ACache.get(this).remove(Common.ALL_GOODS);
         ACache.get(this).remove(Common.ACACHE_ADDRESS);
     }
-
 
     // 改变语言设置时的对话框
     private void createDialog() {
@@ -150,9 +142,9 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            if (currentLanguage.equals(Common.SIMPLE_CHINESE)){
+            if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
                 currentLanguage = Common.ENGLISH;
-            }else{
+            } else {
                 currentLanguage = Common.SIMPLE_CHINESE;
             }
             updateUI(currentLanguage);

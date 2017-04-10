@@ -23,6 +23,7 @@
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_above="@+id/ppp_line"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:paddingBottom="@dimen/pp_dp_15"
@@ -30,8 +31,7 @@
                 android:paddingRight="@dimen/pp_dp_14"
                 android:paddingTop="@dimen/pp_dp_15"
                 android:scaleType="centerInside"
-                android:src="@drawable/back_blue"
-                android:layout_above="@+id/ppp_line"/>
+                android:src="@drawable/back_blue" />
 
             <TextView
                 android:id="@+id/myppp"
@@ -46,12 +46,12 @@
                 android:id="@+id/ppp_rl"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_above="@+id/ppp_line"
                 android:layout_alignParentRight="true"
                 android:paddingBottom="@dimen/pp_dp_15"
                 android:paddingLeft="@dimen/pp_dp_8"
                 android:paddingRight="@dimen/pp_dp_14"
                 android:paddingTop="@dimen/pp_dp_15"
-                android:layout_above="@+id/ppp_line"
                 android:visibility="gone">
 
                 <ImageView
@@ -61,7 +61,6 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/souvenir" />
             </RelativeLayout>
-
 
             <TextView
                 android:id="@+id/ok"
@@ -80,15 +79,10 @@
                 android:id="@id/ppp_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_px_1"
-                android:background="@color/pp_gray"
                 android:layout_alignParentBottom="true"
-                />
-
+                android:background="@color/pp_gray" />
         </RelativeLayout>
-
     </LinearLayout>
-
-
 
     <ScrollView
         android:id="@+id/nopppinfo"
@@ -186,7 +180,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/guide_background"
+        android:orientation="vertical"
         android:visibility="gone">
+
+        <View
+            android:id="@+id/ppp_img_guide_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1" />
 
         <ImageView
             android:id="@+id/ppp_img_guide_view"
@@ -197,5 +197,4 @@
             android:layout_marginTop="52dp"
             android:scaleType="fitXY" />
     </LinearLayout>
-
 </RelativeLayout>

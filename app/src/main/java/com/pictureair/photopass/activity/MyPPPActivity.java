@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +11,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -265,40 +267,41 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         holder.time.measure(0, 0);
                         //计算列表第三个米奇头的宽高
                         int height = holder.pp3_img.getMeasuredHeight();
-                        int tWidth = holder.time.getMeasuredWidth();
-                        //计算列表中第三个米奇头的宽
-                        int width = (ScreenUtil.getScreenWidth(MyPPPActivity.this) - (2 * ScreenUtil.dip2px(MyPPPActivity.this, 16) + tWidth + ScreenUtil.dip2px(MyPPPActivity.this, 100))) / 3;
 
                         int oriImgWidth = 583;//图片原宽
                         int oriImgHeight = 324;//图片高
                         //计算引导图中imageView的宽高
                         int guideImgWidth = ScreenUtil.getScreenWidth(MyPPPActivity.this) - 2 * ScreenUtil.dip2px(MyPPPActivity.this, 16);
                         int guideImgHeight = (int) (((guideImgWidth * 1.0f) / oriImgWidth) * oriImgHeight);
+
                         //计算列表中第三个米奇头的中心
-                        int midLeft = (int) (ScreenUtil.getScreenWidth(MyPPPActivity.this) - width / 2f - ScreenUtil.dip2px(MyPPPActivity.this, 16));
                         int midTop = (int) (ScreenUtil.dip2px(MyPPPActivity.this, 52) + ScreenUtil.dip2px(MyPPPActivity.this, 10) + height / 2f);
+
                         //计算引导图右上角米奇头的中心
-                        //引导图右上角米奇头宽62，米奇头距离右边15
-                        int guideMikeyMidLeft = ScreenUtil.getScreenWidth(MyPPPActivity.this) - ScreenUtil.dip2px(MyPPPActivity.this, 16) - (int) (((guideImgWidth * 1.0f) / oriImgWidth) * (31 + 15));
-                        //引导图右上角米奇头宽52，米奇头距离上边25
+                        //引导图右上角米奇头高52，米奇头距离上边25
                         int guideMikeyMidTop = ScreenUtil.dip2px(MyPPPActivity.this, 52) + (int) (((guideImgWidth * 1.0f) / oriImgWidth) * (26 + 25));
+
                         LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) ppp_guideView.getLayoutParams();
-                        //设置margin移动图片重合两个米奇头的中心
-                        params1.rightMargin += (guideMikeyMidLeft - midLeft);
-                        params1.leftMargin -= (guideMikeyMidLeft - midLeft);
+                        //引导图右上角米奇头宽62，米奇头距离右边15
+                        params1.rightMargin -= 15 * ((guideImgWidth * 1.0f) / oriImgWidth);
+                        params1.leftMargin += 15 * ((guideImgWidth * 1.0f) / oriImgWidth);
                         if (params1.rightMargin < 0) {
                             params1.rightMargin = 0;
                         }
 
-                        if (params1.leftMargin <= 0) {
+                        if (params1.leftMargin < 0) {
                             params1.leftMargin = 0;
                         }
                         params1.width = guideImgWidth;
                         params1.height = guideImgHeight;
                         params1.topMargin += (midTop - guideMikeyMidTop);
                         ppp_guideView.setLayoutParams(params1);
-                        PictureAirLog.out("midLeft: " + String.valueOf(midLeft) + " " + "midTop: " + String.valueOf(midTop));
-                        PictureAirLog.out("guideMikeyMidLeft: " + String.valueOf(guideMikeyMidLeft) + " " + "guideMikeyMidTop: " + String.valueOf(guideMikeyMidTop));
+                        PictureAirLog.out("midTop: " + String.valueOf(midTop));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            View v = findViewById(R.id.ppp_img_guide_status_bar);
+                            ViewGroup.LayoutParams params = v.getLayoutParams();
+                            params.height = ScreenUtil.getStatusBarHeight(this);
+                        }
                         ll_guide_layout.setVisibility(View.VISIBLE);
                     }
                 }

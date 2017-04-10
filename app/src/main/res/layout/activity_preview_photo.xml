@@ -16,8 +16,8 @@
             android:id="@+id/preview_titlebar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_top_bar_height"
-            android:background="@color/white"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/button1_shop_rt"
@@ -66,12 +66,8 @@
                 android:layout_height="@dimen/pp_px_1"
                 android:layout_alignParentBottom="true"
                 android:background="@color/pp_gray" />
-
         </RelativeLayout>
-
     </LinearLayout>
-
-
 
     <RelativeLayout
         android:id="@+id/fra_layout"
@@ -85,7 +81,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/pp_light_gray_background" />
-
     </RelativeLayout>
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
@@ -133,7 +128,5 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
     </LinearLayout>
-
 </RelativeLayout>

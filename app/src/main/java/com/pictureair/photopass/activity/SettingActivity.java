@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference;
 public class SettingActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;
     private Button logout;
-    private TextView tvSettingLanguage,tvAbout;
+    private TextView tvSettingLanguage, tvAbout;
     private MyApplication application;
     private ImageView backBtn;
 
@@ -48,11 +48,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
 
     private final Handler settingHandler = new HelpHandler(this);
 
-
-    private static class HelpHandler extends Handler{
+    private static class HelpHandler extends Handler {
         private final WeakReference<SettingActivity> mActivity;
 
-        public HelpHandler(SettingActivity activity){
+        public HelpHandler(SettingActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -68,7 +67,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
 
     private void dealHandler(Message msg) {
         dismissPWProgressDialog();
-        switch (msg.what){
+        switch (msg.what) {
             case 1:
                 ibGprWifiDownload.setImageResource(R.drawable.nosele);
                 ibWifiOnlyDownload.setImageResource(R.drawable.sele);
@@ -111,16 +110,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
 
         ibGprWifiDownload = (ImageButton) findViewById(R.id.ib_gprs_wifi_download);
         ibWifiOnlyDownload = (ImageButton) findViewById(R.id.ib_wifi_only_download);
-//        ibAutoUpdate = (ImageButton) findViewById(R.id.ib_auto_update);
 
         rlGprsWifiDoenload = (RelativeLayout) findViewById(R.id.rl_gprs_wifi_download);
         rlWifiOnlyDownload = (RelativeLayout) findViewById(R.id.rl_wifi_only_download);
-//        rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
-//        logout.setTypeface(MyApplication.getInstance().getFontBold());
-//        tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
-//        tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
-//        ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
-//        ((TextView) findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);
         backBtn.setOnClickListener(this);
@@ -128,10 +120,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         tvAbout.setOnClickListener(this);
         rlGprsWifiDoenload.setOnClickListener(this);
         rlWifiOnlyDownload.setOnClickListener(this);
-//        rlAutoUpdate.setOnClickListener(this);
         ibGprWifiDownload.setOnClickListener(this);
         ibWifiOnlyDownload.setOnClickListener(this);
-//        ibAutoUpdate.setOnClickListener(this);
 
         settingUtil = new SettingUtil();
         userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
@@ -205,7 +195,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                 break;
 
             case R.id.setting_about:
-                Intent i = new Intent(MyApplication.getInstance(),AboutActivity.class);
+                Intent i = new Intent(MyApplication.getInstance(), AboutActivity.class);
                 startActivity(i);
                 break;
 
@@ -222,18 +212,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
             settingHandler.sendEmptyMessage(1);
         } else {
             settingHandler.sendEmptyMessage(2);
-        }
-    }
-
-    @Override
-    public void TopViewClick(View view) {
-        super.TopViewClick(view);
-        switch (view.getId()) {
-            case R.id.topLeftView:
-                finish();
-                break;
-            default:
-                break;
         }
     }
 

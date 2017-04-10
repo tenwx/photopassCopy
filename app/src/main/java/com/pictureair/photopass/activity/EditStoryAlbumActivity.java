@@ -626,18 +626,27 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			viewHolder.mSelectImageView.setImageResource(R.drawable.sel2);
 			viewHolder.mMaskImageView.setVisibility(View.VISIBLE);
 		}
-		if (selectCount == 0) {
-			deleteTextView.setEnabled(false);
-			downloadTextView.setEnabled(false);
-		} else if (selectCount == (albumArrayList.size() - albumArrayList.get(albumArrayList.size() - 1).getSectionId() - 1)) {
+		//设置是否全选状态
+		if (selectCount == (albumArrayList.size() - albumArrayList.get(albumArrayList.size() - 1).getSectionId() - 1)) {
 			selectAllTextView.setVisibility(View.GONE);
 			disAllTextView.setVisibility(View.VISIBLE);
+
 		} else {
 			selectAllTextView.setVisibility(View.VISIBLE);
 			disAllTextView.setVisibility(View.GONE);
+
+		}
+
+		//设置下载和删除按钮状态
+		if (selectCount > 0) {
 			deleteTextView.setEnabled(true);
 			downloadTextView.setEnabled(true);
+		} else {
+			deleteTextView.setEnabled(false);
+			downloadTextView.setEnabled(false);
 		}
+
+		//设置分享按钮状态
 		if (selectCount == 1) {
 			shareTextView.setEnabled(true);
 

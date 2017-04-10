@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -54,6 +56,7 @@ import com.pictureair.photopass.util.PPInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CheckUpdateListener;
 import com.pictureair.photopass.widget.CheckUpdateManager;
@@ -307,6 +310,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             leadViewIV.setImageResource(R.drawable.story_lead_en);
         } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             leadViewIV.setImageResource(R.drawable.story_lead_zh);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View v = findViewById(R.id.story_lead_status_bar);
+            ViewGroup.LayoutParams params = v.getLayoutParams();
+            params.height = ScreenUtil.getStatusBarHeight(this);
         }
     }
 

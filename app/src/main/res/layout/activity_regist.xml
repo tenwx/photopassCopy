@@ -31,7 +31,6 @@
                 android:clickable="false"
                 android:scaleType="centerInside"
                 android:src="@drawable/back_white" />
-
         </LinearLayout>
 
         <TextView
@@ -156,7 +155,6 @@
                             android:background="@color/white" />
 
                         <com.pictureair.photopass.widget.EditTextWithClear
-
                             android:id="@+id/et_write_phone"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -213,7 +211,6 @@
                                 android:textColor="@color/white"
                                 android:textColorHint="@color/white"
                                 android:textSize="@dimen/text_size_16" />
-
                         </LinearLayout>
 
                         <View
@@ -252,7 +249,6 @@
                                 android:textColor="@color/white"
                                 android:textColorHint="@color/white"
                                 android:textSize="@dimen/text_size_16" />
-
                         </LinearLayout>
                     </LinearLayout>
 
@@ -343,9 +339,7 @@
                             android:text="@string/smssdk_explain_briefly"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_14" />
-
                     </RelativeLayout>
-
                 </LinearLayout>
 
                 <RelativeLayout
@@ -422,9 +416,7 @@
                             android:text="@string/china"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_14" />
-
                     </LinearLayout>
-
 
                     <!-- 手机输入这一行 -->
                     <LinearLayout
@@ -466,7 +458,6 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
                                 android:background="@color/white" />
-
 
                             <com.pictureair.photopass.widget.EditTextWithClear
                                 android:id="@+id/et_forget_write_phone"
@@ -557,7 +548,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="1px"
                             android:background="@color/white" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -604,9 +594,7 @@
                             android:paddingRight="@dimen/pp_dp_10"
                             android:text="@string/smssdk_send_verification_code"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_16"
-
-                            />
+                            android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
                     <com.pictureair.photopass.widget.CustomButtonFont
@@ -620,17 +608,13 @@
                         android:text="@string/sign"
                         android:textColor="@drawable/textview_selector_white_other"
                         android:textSize="@dimen/text_size_16" />
-
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
-
             </LinearLayout>
-
         </RelativeLayout>
     </ScrollView>
-
 </LinearLayout>
