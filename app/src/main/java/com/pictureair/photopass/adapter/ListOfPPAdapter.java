@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.GlideUtil;
@@ -25,7 +26,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * pp数据的适配器
@@ -138,20 +138,31 @@ public class ListOfPPAdapter extends BaseAdapter {
         }
 
         //显示图片
-        if (ppInfo1.getUrlList() != null) {
-            Map<String, String> map = ppInfo1.getUrlList().get(0);
-            boolean isEncrypt = false;
-            if ("1".equals(map.get("isEnImage"))) {
-                isEncrypt = true;
-            }
-            if (holder.image1.getTag(R.id.glide_image_tag) == null || !holder.image1.getTag(R.id.glide_image_tag).equals(map.get("url"))) {
-                GlideUtil.load(mContext, map.get("url"), isEncrypt, holder.image1);
-                holder.image1.setTag(R.id.glide_image_tag, map.get("url"));
-            }
+        PhotoInfo photoInfo = ppInfo1.getAlbumCoverPhotoInfo();
+        boolean isEncrypt;
+        boolean isVideo;
+        String url;
+        if (photoInfo == null) {
+            isEncrypt = false;
+            isVideo = false;
+            url = "";
 
-            if (map.get("isVideo").equals("1")) {
-                holder.videoCover.setVisibility(View.VISIBLE);
+        } else {
+            isEncrypt = photoInfo.getIsEnImage() == 1;
+            isVideo = photoInfo.getIsVideo() == 1;
+            if (photoInfo.getIsPaid() == 1) {
+                url = Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512();
+
+            } else {
+                url = photoInfo.getPhotoThumbnail_128();
+
             }
+        }
+
+        holder.videoCover.setVisibility(isVideo ? View.VISIBLE : View.INVISIBLE);
+        if (holder.image1.getTag(R.id.glide_image_tag) == null || !holder.image1.getTag(R.id.glide_image_tag).equals(url)) {
+            GlideUtil.load(mContext, url, isEncrypt, holder.image1);
+            holder.image1.setTag(R.id.glide_image_tag, url);
         }
         return convertView;
     }

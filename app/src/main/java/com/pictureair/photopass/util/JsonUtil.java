@@ -1103,6 +1103,9 @@ public class JsonUtil {
                 pPinfo.setPpCode(pplist.getString("customerId"));
                 pPinfo.setPhotoCount(pplist.getIntValue("photoCount"));
                 pPinfo.setShootDate(pplist.getString("shootDate"));
+                if (pplist.containsKey("photoInfos")) {
+                    pPinfo.setAlbumCoverPhotoInfo(getLocationPhoto(pplist.getJSONObject("photoInfos")));
+                }
                 ppInfoArrayList.add(pPinfo);
             }
         }

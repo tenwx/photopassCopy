@@ -30,7 +30,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_margin="@dimen/pp_dp_16">
+            android:layout_marginBottom="@dimen/pp_dp_24"
+            android:layout_marginLeft="@dimen/pp_dp_16"
+            android:layout_marginRight="@dimen/pp_dp_16"
+            android:layout_marginTop="@dimen/pp_dp_24">
 
             <TextView
                 android:id="@+id/tv_message"

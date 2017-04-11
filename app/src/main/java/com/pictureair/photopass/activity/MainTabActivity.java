@@ -968,7 +968,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 ppList.addAll(mainTabSwitchEvent.getArrayList());
                 Collections.sort(ppList, new PPInfoSortUtil());
                 PictureAirLog.d("update dragerView---->" + ppList.size());
-                ppList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(this, (ArrayList<PPinfo>) ppList, 1);
+                ppList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList((ArrayList<PPinfo>) ppList);
                 if (adapter == null) {
                     adapter = new SlideListAdapter(MainTabActivity.this, ppList, false);
                     slidList.setAdapter(adapter);

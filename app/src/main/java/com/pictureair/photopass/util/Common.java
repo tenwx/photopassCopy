@@ -60,7 +60,7 @@ public class Common {
     public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
     public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
     public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
-    public final static String HELP_FAQ = "https://www.disneyphotopass.com.cn/help.html?lange=";//FAQ
+    public final static String HELP_FAQ = "https://www.disneyphotopass.com.cn/help.html?type=app&lange=";//FAQ
 
     //接口
     /**

@@ -132,13 +132,18 @@ public class CartInfoAdapter extends BaseAdapter {
             pictureUrl = "";
         }
         PictureAirLog.v(TAG, "pictureUrl" + pictureUrl);
+
+        if (viewHolder.cartGoodImageView.getTag(R.id.glide_image_tag) == null ||
+                !viewHolder.cartGoodImageView.getTag(R.id.glide_image_tag).equals(Common.PHOTO_URL + pictureUrl)) {
+            GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
+            viewHolder.cartGoodImageView.setTag(R.id.glide_image_tag, Common.PHOTO_URL + pictureUrl);
+        }
+
         //设置商品图片
         if (goodArrayList.get(position).getEntityType() == 0 && Common.GOOD_NAME_PPP.equals(goodArrayList.get(position).getProductName())) {//ppp商品
-            GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
-            GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
             for (int i = 0; i < gridviewlist.size(); i++) {

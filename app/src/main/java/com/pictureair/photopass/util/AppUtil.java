@@ -2089,7 +2089,11 @@ public class AppUtil {
 
         if (!account.contains("@")) {
             String[] data = account.split(",");
-            return data[0]+data[1];
+            if (data.length < 2) {//0&1
+                return data[0];
+            } else {// >= 2
+                return data[0] + data[1];
+            }
         } else {
             return account;
         }

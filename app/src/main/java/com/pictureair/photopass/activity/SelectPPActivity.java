@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,12 +44,11 @@ import rx.android.schedulers.AndroidSchedulers;
 /*
  * @author talon
  */
-public class SelectPPActivity extends BaseActivity implements View.OnClickListener, PWDialog.OnPWDialogClickListener{
+public class SelectPPActivity extends BaseActivity implements View.OnClickListener, PWDialog.OnPWDialogClickListener {
     private TextView ok;
     private ImageView back;
     private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
     private PPPinfo dppp;
-    private final int GET_SELECT_PP_SUCCESS = 2222;
     private static final int BIND_TIP_DIALOG = 5555;
     private static final int WRONG_DATE_DIALOG = 6666;
     private JSONArray pps;
@@ -61,13 +59,12 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout noPhotoPassView;
     private PWToast myToast;
     private PWDialog pictureWorksDialog;
-    private boolean fromPPP;
     private boolean isDailyPPP;
 
-    private static class MyPPHandler extends Handler{
+    private static class MyPPHandler extends Handler {
         private final WeakReference<SelectPPActivity> mActivity;
 
-        public MyPPHandler(SelectPPActivity activity){
+        public MyPPHandler(SelectPPActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -83,26 +80,11 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
     /**
      * 处理 message 的方法
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
-
-        switch (msg.what){
-            case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, myPPHandler, dppp);
-                listPP.setAdapter(listPPAdapter);
-
-                if (showPPCodeList.size() == 0) {
-                    ok.setEnabled(false);
-                    ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
-                    PictureAirLog.out("has not pp code");
-                    listPP.setVisibility(View.INVISIBLE);
-                    noPhotoPassView.setVisibility(View.VISIBLE);
-                } else {
-                    noPhotoPassView.setVisibility(View.GONE);
-                }
-                dismissPWProgressDialog();
-                break;
+        switch (msg.what) {
             case 2:
                 ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
                 if (msg.arg1 - dppp.bindInfo.size() == 0) {
@@ -117,7 +99,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
             default:
                 break;
         }
-
     }
 
     @Override
@@ -134,14 +115,10 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
 
-        String photoPassCode = this.getIntent().getStringExtra("photoPassCode");
-        final String shootTime = this.getIntent().getStringExtra("shootTime");
-        fromPPP = false;
         isDailyPPP = getIntent().getBooleanExtra("dailyppp", false);
         Bundle bundle = getIntent().getBundleExtra("bundle");
         if (bundle.getParcelable("ppp") != null) {
             dppp = bundle.getParcelable("ppp");
-            fromPPP = true;
         }
 
         ok = (TextView) findViewById(R.id.ok);
@@ -149,83 +126,38 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         ok.setEnabled(false);
         ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
 
-        if (fromPPP) {
-            initFromPPP();
-        } else {
-            initFromOther(photoPassCode, shootTime);
-        }
-
-    }
-
-    private void initFromPPP() {
         ok.setText(formaStringPPP(dppp.bindInfo.size(), dppp.capacity));
         View view = LayoutInflater.from(this).inflate(R.layout.pp_header, null);
         listPP.addHeaderView(view);
-        showPWProgressDialog();
-        getPhotoUrlFromDatabase();
-    }
+        showPPCodeList = new ArrayList<>();
+        showPPCodeList.addAll(API2.PPlist);
+        listPPAdapter = new ListOfPPAdapter(showPPCodeList, SelectPPActivity.this, myPPHandler, dppp);
+        listPP.setAdapter(listPPAdapter);
 
-    private void initFromOther(String photoPassCode, final String shootTime) {
-
-        String[] photoCode = null;
-        if (photoPassCode.contains(",")){
-            photoCode = photoPassCode.split(",");
+        if (showPPCodeList.size() == 0) {
+            ok.setEnabled(false);
+            ok.setTextColor(ContextCompat.getColor(this, R.color.gray_light5));
+            PictureAirLog.out("has not pp code");
+            listPP.setVisibility(View.INVISIBLE);
+            noPhotoPassView.setVisibility(View.VISIBLE);
+        } else {
+            noPhotoPassView.setVisibility(View.GONE);
         }
-        ok.setText(formaStringPPP(0, 1));
-        showPWProgressDialog();
-
-        final String[] finalPhotoCode = photoCode;
-        new Thread() {
-            public void run() {
-                ArrayList<PPinfo> PPlist = new ArrayList<>(); //创造一个List。
-                if (finalPhotoCode != null) {
-                    for (int i = 0; i< finalPhotoCode.length; i++){
-                        PPinfo pPinfo = new PPinfo();
-                        pPinfo.setPpCode(finalPhotoCode[i]);
-                        pPinfo.setShootDate(shootTime);
-                        pPinfo.setPhotoCount(-1);//不请求网络数据，因此不知道这个值，如果为-1，则使用本地数据处理（在其他地方会处理）
-                        PPlist.add(pPinfo);
-                    }
-                }
-                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, PPlist, 2);
-
-                dppp = new PPPinfo();
-                dppp.capacity = 1;
-                dppp.bindInfo = new ArrayList<>();
-
-                myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
-            }
-        }.start();
-    }
-
-    //处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
-    private void getPhotoUrlFromDatabase() {
-        new Thread() {
-            public void run() {
-//                PictureAirLog.e("","API1.PPlist:"+API1.PPlist.size());
-                showPPCodeList = PictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, API2.PPlist, 2);
-//                PictureAirLog.e("","showPPCodeList.size():"+showPPCodeList.size());
-                myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
-            }
-        }.start();
     }
 
     @Override
     public void onClick(View view) {
-
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back:// 返回按钮
-                this.finish();
+                finish();
                 break;
+
             case R.id.ok://确认绑定按钮
                 SparseBooleanArray map = listPPAdapter.getMap();
                 if (map.size() == 0) {
                     myToast.setTextAndShow(R.string.select_your_pp, Common.TOAST_SHORT_TIME);
                     return;
                 }
-//                for (int i = 0; i < map.size(); i++) {
-//                    PictureAirLog.out("->" + map.get(i));
-//                }
                 pps = new JSONArray();
                 String selectedString = "";
                 for (int j = 0; j < showPPCodeList.size(); j++) {
@@ -237,9 +169,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
                             photoInfo.setPhotoId(showPPCodeList.get(j).getPpCode());
                             photoInfo.setShootDate(showPPCodeList.get(j).getShootDate());
-                            if (fromPPP) {
-                                selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
-                            }
+                            selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -248,37 +178,19 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     }
                 }
                 PictureAirLog.d("pps--> " + pps.toJSONString());
-                if (fromPPP) {
-                    pictureWorksDialog.setPWDialogId(BIND_TIP_DIALOG)
-                            .setPWDialogMessage(String.format(getString(isDailyPPP ? R.string.select_pp_right_date2 : R.string.select_pp_right_date), selectedString))
-                            .setPWDialogNegativeButton(R.string.button_cancel)
-                            .setPWDialogPositiveButton(R.string.button_ok)
-                            .setPWDialogContentCenter(false)
-                            .pwDilogShow();
-                } else {
-                    if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
-                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3) {
-                        pictureWorksDialog.setPWDialogId(WRONG_DATE_DIALOG)
-                                .setPWDialogMessage(R.string.select_pp_wrong_date)
-                                .setPWDialogNegativeButton(null)
-                                .setPWDialogPositiveButton(R.string.button_ok)
-                                .setPWDialogContentCenter(true)
-                                .pwDilogShow();
-                    } else {
-                        Intent intent = new Intent(SelectPPActivity.this, MyPPPActivity.class);
-                        intent.putExtra("ppsStr", pps.toString());
-                        intent.putExtra("isUseHavedPPP", true);
-                        startActivity(intent);
-                    }
-                }
+                pictureWorksDialog.setPWDialogId(BIND_TIP_DIALOG)
+                        .setPWDialogMessage(String.format(getString(isDailyPPP ? R.string.select_pp_right_date2 : R.string.select_pp_right_date), selectedString))
+                        .setPWDialogNegativeButton(R.string.button_cancel)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .setPWDialogContentCenter(false)
+                        .pwDilogShow();
                 break;
         }
     }
 
-
     @Override
     protected void onDestroy() {
-        if (API2.PPPlist.size() != 0){
+        if (API2.PPPlist.size() != 0) {
             API2.PPPlist.clear();
         }
         super.onDestroy();
@@ -294,7 +206,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
             switch (dialogId) {
                 case BIND_TIP_DIALOG:
                     if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
-                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
+                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3) {
                         pictureWorksDialog.setPWDialogId(WRONG_DATE_DIALOG)
                                 .setPWDialogMessage(R.string.select_pp_wrong_date)
                                 .setPWDialogNegativeButton(null)

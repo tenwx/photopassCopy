@@ -1,19 +1,17 @@
 package com.pictureair.photopass.entity;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class PPinfo {
     private String ppCode;//照片对应pp号码
     private int photoCount;//照片数量
-    private int isUpgrade;//是否已经绑定到PP+（0否，1是）
     private String shootDate;//拍摄日期
     private int visiblePhotoCount;//已经加载过的本地照片数量
     private int isHidden;//是否已经隐藏（0否，1是）
     private String location;//图片位置
-    private List<HashMap<String, String>> urlList;//图片路径
     private List<PhotoInfo> selectPhotoItemInfos;//用于点进去看图片详情
     private int isSelected;//0，未选中，1，选中，2，不可选    DayOfPP里面
+    private PhotoInfo albumCoverPhotoInfo;
 
     public String getPpCode() {
         return ppCode;
@@ -37,14 +35,6 @@ public class PPinfo {
 
     public void setVisiblePhotoCount(int visiblePhotoCount) {
         this.visiblePhotoCount = visiblePhotoCount;
-    }
-
-    public int getIsUpgrade() {
-        return isUpgrade;
-    }
-
-    public void setIsUpgrade(int isUpgrade) {
-        this.isUpgrade = isUpgrade;
     }
 
     public String getShootDate() {
@@ -71,14 +61,6 @@ public class PPinfo {
         this.location = location;
     }
 
-    public List<HashMap<String, String>> getUrlList() {
-        return urlList;
-    }
-
-    public void setUrlList(List<HashMap<String, String>> urlList) {
-        this.urlList = urlList;
-    }
-
     public List<PhotoInfo> getSelectPhotoItemInfos() {
         return selectPhotoItemInfos;
     }
@@ -99,4 +81,11 @@ public class PPinfo {
         super();
     }
 
+    public PhotoInfo getAlbumCoverPhotoInfo() {
+        return albumCoverPhotoInfo;
+    }
+
+    public void setAlbumCoverPhotoInfo(PhotoInfo albumCoverPhotoInfo) {
+        this.albumCoverPhotoInfo = albumCoverPhotoInfo;
+    }
 }

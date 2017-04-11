@@ -128,7 +128,7 @@
     <string name="story_blur_expire_time">（未付款照片有效期30天）</string>
     <string name="story_expire_time">（已付款照片有效期60天）</string>
     <string name="story_want_to_buy">我想购买</string>
-    <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有数码照片。</string>
+    <string name="story_buy_dialog">购买迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -136,7 +136,7 @@
     <string name="auto_scan">自动扫描</string>
     <string name="scan_qr_code">二维码</string>
     <string name="scan_ppp_code">迪士尼乐拍通一卡通</string>
-    <string name="scan_intro">请扫描您的迪士尼乐拍通卡或者乐拍通季卡上的二维码，更快获得您的游玩照片！</string>
+    <string name="scan_intro">请扫描您的迪士尼乐拍通卡或者乐拍通季卡上的二维码，获得您的游园照片。</string>
     <string name="re_scan">重新扫描</string>
     <string name="textview_center_hint">请将迪士尼乐拍通一卡通卡背面置于此区域，尝试对齐边缘</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>

@@ -190,6 +190,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                         //进入ppp页面
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                         API2.PPPlist.clear();
+                        intent2.putExtra("dailyppp", true);
                         intent2.putExtra("upgradePP", true);
                         startActivity(intent2);
 

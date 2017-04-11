@@ -1,13 +1,11 @@
 package com.pictureair.photopass.greendao;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.ADLocationInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -23,7 +21,6 @@ import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -32,8 +29,6 @@ import net.sqlcipher.SQLException;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -116,80 +111,28 @@ public class PictureAirDbManager {
      * 根据pp列表获取对应的PPCodeInfo1列表
      *
      * @param ppCodeList ppCodeList
-     * @param type       1 代表直接进入的 PP 页面， 2 代表是从selectPP进入，这个情况只显示模糊图
      * @return
      */
-    public static ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(Context c, ArrayList<PPinfo> ppCodeList, int type) {
+    public static ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList) {
         ArrayList<PPinfo> showPPCodeList = new ArrayList<>();
         //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
-        if (type == 1) {
-            for (int j = 0; j < ppCodeList.size(); j++) {
-                if (j + 1 < ppCodeList.size() && ppCodeList.get(j).getPpCode().equals(ppCodeList.get(j + 1).getPpCode())) {
-                    ppCodeList.remove(j);
-                }
+        for (int j = 0; j < ppCodeList.size(); j++) {
+            if (j + 1 < ppCodeList.size() && ppCodeList.get(j).getPpCode().equals(ppCodeList.get(j + 1).getPpCode())) {
+                ppCodeList.remove(j);
             }
-        } else {
-
         }
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
-        ArrayList<HashMap<String, String>> urlList;
         ArrayList<PhotoInfo> selectPhotoItemInfos;
-        HashMap<String, String> map;
         for (int i = 0; i < ppCodeList.size(); i++) {
             if (ppCodeList.get(i).getIsHidden() == 1) {
                 continue;
             }
-            urlList = new ArrayList<>();
             PPinfo ppInfo = ppCodeList.get(i);
-            if (type == 1) {
-                selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                        .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
-                        .orderAsc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
-            } else {
-                selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                        .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"),
-                                PhotoInfoDao.Properties.IsPaid.eq(0),
-                                PhotoInfoDao.Properties.ShootDate.eq(ppInfo.getShootDate()))
-                        .orderAsc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
-            }
+            selectPhotoItemInfos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppInfo.getPpCode() + "%"))
+                    .orderAsc(PhotoInfoDao.Properties.StrShootOn).build().forCurrentThread().list();
 
-            for (PhotoInfo photoInfo : selectPhotoItemInfos) {
-                // 获取图片路径
-                map = new HashMap<>();
-                if (photoInfo.getIsPaid() == 1) {
-                    map.put("url", Common.PHOTO_URL + photoInfo.getPhotoThumbnail_512());
-
-                } else {
-                    map.put("url", photoInfo.getPhotoThumbnail_128());
-
-                }
-                map.put("isVideo", photoInfo.getIsVideo() + "");
-                map.put("isEnImage", photoInfo.getIsEnImage()+"");
-                urlList.add(map);
-            }
-
-            if (type == 2) {
-                Collections.reverse(urlList);
-            }
-
-            int count = urlList.size();
-            if (count < 6) {//不满6或者12的，需要补全
-                for (int j = 6 - count; j > 0; j--) {
-                    map = new HashMap<>();
-                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.ic_loading));
-                    map.put("isVideo", "0");
-                    map.put("isEnImage", "0");
-                    urlList.add(map);
-                }
-            } else if (count < 12) {
-                for (int j = 12 - count; j > 0; j--) {
-                    map = new HashMap<>();
-                    map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.ic_loading));
-                    map.put("isVideo", "0");
-                    map.put("isEnImage", "0");
-                    urlList.add(map);
-                }
-            }
+            int count = selectPhotoItemInfos.size();
             PPinfo ppInfo1 = new PPinfo();
             ppInfo1.setPpCode(ppInfo.getPpCode());
             ppInfo1.setShootDate(ppInfo.getShootDate());
@@ -200,7 +143,6 @@ public class PictureAirDbManager {
                 ppInfo1.setPhotoCount(ppInfo.getPhotoCount());
 
             }
-            ppInfo1.setUrlList(urlList);
             ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
             ppInfo1.setVisiblePhotoCount(count);
             showPPCodeList.add(ppInfo1);

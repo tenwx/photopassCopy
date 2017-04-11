@@ -114,7 +114,10 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                     }
                     recyclerViewHolder.leftPhotoIV.setVisibility(View.VISIBLE);
-                    GlideUtil.load(context, photoUrl, leftPhoto.getIsEnImage() == 1, recyclerViewHolder.leftPhotoIV);
+                    if (recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
+                        GlideUtil.load(context, photoUrl, leftPhoto.getIsEnImage() == 1, recyclerViewHolder.leftPhotoIV);
+                        recyclerViewHolder.leftPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
+                    }
                     recyclerViewHolder.leftLocationTV.setText(leftPhoto.getLocationName());
                     recyclerViewHolder.leftLocationTV.setVisibility(View.VISIBLE);
 
@@ -131,7 +134,10 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                     recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
                     recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    GlideUtil.load(context, photoUrl, rightPhoto.getIsEnImage() == 1, recyclerViewHolder.rightPhotoIV);
+                    if (recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
+                        GlideUtil.load(context, photoUrl, rightPhoto.getIsEnImage() == 1, recyclerViewHolder.rightPhotoIV);
+                        recyclerViewHolder.rightPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
+                    }
                     recyclerViewHolder.rightLocationTV.setText(rightPhoto.getLocationName());
                     recyclerViewHolder.rightLocationTV.setVisibility(View.VISIBLE);
 
