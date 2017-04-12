@@ -39,7 +39,7 @@ import rx.functions.Func1;
 public class InvoiceActivity extends BaseActivity implements View.OnClickListener {
     private final static int ADD_ADDRESS=101;
     private final static int MODI_ADDRESS=102;
-    //是否开发票
+    //是否开发票,true 需要，false 不需要
     private boolean checkInvoice=true;
     private RelativeLayout personRl;
     private RelativeLayout companyRl;
@@ -54,7 +54,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private ScrollView scrollView;
     private Button newAddressBtn;
     private Button okBtn;
-    private View lineTopList;
     private List<SendAddress> listData;
     private SendAddressAdapter addressAdapter;
     private SendAddress newAddAddress;
@@ -118,7 +117,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         okBtn= (Button) findViewById(R.id.invoice_btn);
         arrowIv= (ImageView) findViewById(R.id.arrow_invoice_iv);
         backIV= (ImageView) findViewById(R.id.invoice_back);
-        lineTopList=findViewById(R.id.invoice_line);
 
         personRl.setOnClickListener(this);
         personIb.setOnClickListener(this);
@@ -271,6 +269,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
                 invoiceInfo.setTitle(InvoiceInfo.PERSONAL);
                 invoiceInfo.setCompanyName("");
+                noInvoice.setImageResource(R.drawable.invoice_nor);
+                checkInvoice = true;
+                invoiceInfo.setNeedInvoice(checkInvoice);
                 break;
             case R.id.invoice_company_ib:
             case R.id.invoice_company_rl:
@@ -280,17 +281,18 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                     editText.setVisibility(View.VISIBLE);
 
                 invoiceInfo.setTitle(InvoiceInfo.COMPANY);
+                noInvoice.setImageResource(R.drawable.invoice_nor);
+                checkInvoice = true;
+                invoiceInfo.setNeedInvoice(checkInvoice);
                 break;
             case R.id.invoice_new_addr_rl:
                 if(listAddress.getVisibility()==View.VISIBLE){
-                    lineTopList.setVisibility(View.GONE);
                     listAddress.setVisibility(View.GONE);
                     newAddressRl.setVisibility(View.GONE);
                     arrowIv.setRotation(0);
                 }else{
                     arrowIv.setRotation(90);
                     listAddress.setVisibility(View.VISIBLE);
-                    lineTopList.setVisibility(View.VISIBLE);
                     newAddressRl.setVisibility(View.VISIBLE);
                     if(null!=listData && listData.size()>0)
                         addressAdapter.notifyDataSetChanged();
@@ -299,9 +301,16 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.invoice_nocheck_ib:
             case R.id.invoice_nocheck:
-                if(checkInvoice){
+                if(checkInvoice){//不开发票
                     noInvoice.setImageResource(R.drawable.invoice_press);
-                }else{
+                    personIb.setImageResource(R.drawable.invoice_nor);
+                    companyIb.setImageResource(R.drawable.invoice_nor);
+                    if(editText.getVisibility()==View.VISIBLE)
+                        editText.setVisibility(View.GONE);
+                    //需要清空状态
+                    invoiceInfo.setTitle(InvoiceInfo.NONE);
+
+                }else{//开发票
                     noInvoice.setImageResource(R.drawable.invoice_nor);
                 }
                 checkInvoice = !checkInvoice;

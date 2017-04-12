@@ -1,6 +1,8 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,6 +151,8 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                 }
             }
+            //设置卡片颜色
+            recyclerViewHolder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 
@@ -170,6 +174,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
         private ImageView leftPhotoIV, rightPhotoIV;
         private TextView leftLocationTV, rightLocationTV;
         private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV;
+        private CardView cardView;
 
         public RecyclerItemViewHolder(View convertView) {
             super(convertView);
@@ -182,6 +187,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             leftLocationTV = (TextView) itemView.findViewById(R.id.daily_pp_header_left_tv);
             rightPhotoIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_right_iv);
             rightLocationTV = (TextView) itemView.findViewById(R.id.daily_pp_header_right_tv);
+            cardView = (CardView) itemView.findViewById(R.id.daily_pp_item_cardv);
 
             ViewGroup.LayoutParams params1 = leftPhotoIV.getLayoutParams();
             params1.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 50)) / COLUMN_COUNT;

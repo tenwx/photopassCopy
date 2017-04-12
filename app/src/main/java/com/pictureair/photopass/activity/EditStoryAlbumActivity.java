@@ -1244,7 +1244,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					AppManager.getInstance().killActivity(LoadManageActivity.class);
 					Intent i = new Intent(EditStoryAlbumActivity.this, LoadManageActivity.class);
 					startActivity(i);
-					finish();
 
 				} else if (dialogId == GO_SETTING_DIALOG) {
 					//去更改：跳转到设置界面。

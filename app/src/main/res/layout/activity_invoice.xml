@@ -1,77 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ImmersiveMode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/immersive_color"
     tools:context="com.pictureair.photopass.activity.InvoiceActivity">
 
-    <LinearLayout
-        android:id="@+id/head2"
-        style="@style/ImmersiveMode"
+    <RelativeLayout
+        android:id="@+id/head"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/immersive_color">
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/head"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_top_bar_height"
-            android:layout_alignParentTop="true"
+        <ImageView
+            android:id="@+id/invoice_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/invoice_line"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@color/white">
+            android:paddingBottom="@dimen/pp_dp_15"
+            android:paddingLeft="@dimen/pp_dp_14"
+            android:paddingRight="@dimen/pp_dp_14"
+            android:paddingTop="@dimen/pp_dp_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_blue" />
 
-            <ImageView
-                android:id="@+id/invoice_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/invoice_line"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingBottom="@dimen/pp_dp_15"
-                android:paddingLeft="@dimen/pp_dp_14"
-                android:paddingRight="@dimen/pp_dp_14"
-                android:paddingTop="@dimen/pp_dp_15"
-                android:scaleType="centerInside"
-                android:src="@drawable/back_blue" />
+        <TextView
+            android:id="@+id/invoice_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/invoice_title"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
 
-            <TextView
-                android:id="@+id/invoice_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/invoice_title"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+        <View
+            android:id="@id/invoice_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:layout_alignParentBottom="true"
+            android:background="@color/pp_gray" />
+    </RelativeLayout>
 
-            <View
-                android:id="@id/invoice_line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/pp_px_1"
-                android:layout_alignParentBottom="true"
-                android:background="@color/pp_gray" />
-
-        </RelativeLayout>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/invoice_btn"
+    <LinearLayout
+        android:id="@+id/invoice_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/pp_dp_16"
-        android:background="@drawable/button_blue"
-        android:padding="@dimen/pp_dp_10"
-        android:text="@string/ok"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_16" />
+        android:background="@color/white">
+
+        <Button
+            android:id="@+id/invoice_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/pp_dp_16"
+            android:background="@drawable/button_blue"
+            android:padding="@dimen/pp_dp_10"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/invoice_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/invoice_btn"
-        android:layout_below="@id/head2">
+        android:layout_above="@id/invoice_ll"
+        android:layout_below="@id/head"
+        android:background="@color/white"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +83,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/pp_dp_16">
@@ -113,7 +113,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/pp_dp_16">
 
@@ -214,7 +213,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/pp_dp_16">
@@ -234,8 +232,6 @@
                     android:text="@string/invoice_service"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_14" />
-
-
             </RelativeLayout>
 
             <View
@@ -277,7 +273,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -352,7 +347,6 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_16" />
                 </RelativeLayout>
-
             </RelativeLayout>
 
             <View
@@ -361,6 +355,4 @@
                 android:background="@color/pp_light_gray_normal" />
         </LinearLayout>
     </ScrollView>
-
-
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by jiaxing on 16/6/13.
  */
 public class InvoiceInfo implements Parcelable {
+    public static final int NONE=100;
     public static final int PERSONAL=101;
     public static final int COMPANY=102;
     public static final int PHOTO=103;
