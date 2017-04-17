@@ -248,6 +248,7 @@
     <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可下载同一天任意三张迪士尼乐拍通卡里的所有照片。</string>
     <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
+    <string name="no_daily_ppp_tips">您没有可用的迪士尼乐拍通一日通哦！</string>
     <!-- blur end -->
 
     <!-- download start -->

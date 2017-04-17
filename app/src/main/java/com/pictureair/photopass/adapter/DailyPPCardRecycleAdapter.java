@@ -1,7 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -146,13 +146,21 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 } else {
                     recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
                     recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_placeholder), recyclerViewHolder.rightPhotoIV);
+                    GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_pholder), recyclerViewHolder.rightPhotoIV);
                     recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
 
                 }
             }
             //设置卡片颜色
-            recyclerViewHolder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            recyclerViewHolder.cardView.setCardBackgroundColor(Color.rgb(dailyPPCardInfoArrayList.get(position).getColorR(),
+                    dailyPPCardInfoArrayList.get(position).getColorG(), dailyPPCardInfoArrayList.get(position).getColorB()));
+
+            //设置卡片样式
+            String logoUrl = Common.PHOTO_URL + dailyPPCardInfoArrayList.get(position).getLogoUrl();
+            if (recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag).equals(logoUrl)) {
+                GlideUtil.load(context, logoUrl, recyclerViewHolder.logoIV);
+                recyclerViewHolder.logoIV.setTag(R.id.glide_image_tag, logoUrl);
+            }
         }
     }
 
@@ -171,7 +179,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
-        private ImageView leftPhotoIV, rightPhotoIV;
+        private ImageView leftPhotoIV, rightPhotoIV, logoIV;
         private TextView leftLocationTV, rightLocationTV;
         private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV;
         private CardView cardView;
@@ -188,12 +196,13 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             rightPhotoIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_right_iv);
             rightLocationTV = (TextView) itemView.findViewById(R.id.daily_pp_header_right_tv);
             cardView = (CardView) itemView.findViewById(R.id.daily_pp_item_cardv);
+            logoIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_logo_iv);
 
             ViewGroup.LayoutParams params1 = leftPhotoIV.getLayoutParams();
-            params1.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 50)) / COLUMN_COUNT;
+            params1.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 54)) / COLUMN_COUNT;
 
             ViewGroup.LayoutParams params2 = rightPhotoIV.getLayoutParams();
-            params2.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 50)) / COLUMN_COUNT;
+            params2.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 54)) / COLUMN_COUNT;
         }
     }
 

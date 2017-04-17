@@ -98,9 +98,9 @@ public class AppManager {
 	 * 结束指定类名的Activity
 	 */
 	public void killActivity(Class<?> cls) {
-		System.out.println("kill activity"+cls+"==========="+mActivityStack.size());
+		PictureAirLog.d("kill activity"+cls+"==========="+mActivityStack.size());
 		for (Activity activity : mActivityStack) {
-			System.out.println("in mactivitystack = "+ activity.getClass());
+			PictureAirLog.d("in mactivitystack = "+ activity.getClass());
 			if (activity.getClass().equals(cls)) {
 				killActivity(activity);
 				break;

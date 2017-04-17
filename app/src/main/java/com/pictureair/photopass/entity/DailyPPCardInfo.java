@@ -9,6 +9,8 @@ public class DailyPPCardInfo {
     private String ppCode;
     private String shootDate;//年月日
     private String shootOn;//年月日时分秒
+    private String logoUrl;//logo的路径
+    private int colorR, colorG, colorB;//颜色RGB
     private int activated;
     private int photoCount;
     private PhotoInfo leftPhoto;//左边地点显示图片
@@ -79,5 +81,37 @@ public class DailyPPCardInfo {
 
     public void setRightPhoto(PhotoInfo rightPhoto) {
         this.rightPhoto = rightPhoto;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public int getColorR() {
+        return colorR;
+    }
+
+    public void setColorR(int colorR) {
+        this.colorR = colorR;
+    }
+
+    public int getColorG() {
+        return colorG;
+    }
+
+    public void setColorG(int colorG) {
+        this.colorG = colorG;
+    }
+
+    public int getColorB() {
+        return colorB;
+    }
+
+    public void setColorB(int colorB) {
+        this.colorB = colorB;
     }
 }

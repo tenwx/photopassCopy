@@ -248,6 +248,7 @@
     <string name="use_ppp_intro">Simply activate existing Disney PhotoPass+ to get all your digital photos from three (3) Disney PhotoPass cards used in a single day</string>
     <string name="use_ppp_daily_intro">Simply activate existing Disney PhotoPass One Day Pass to get all your digital photos from one (1) Disney PhotoPass card used in a single day</string>
     <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
+    <string name="no_daily_ppp_tips">You do not have any valid PhotoPass One Day Pass</string>
     <!-- blur end -->
 
     <!-- download start -->

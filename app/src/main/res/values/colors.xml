@@ -34,8 +34,6 @@
     <color name="secondary_progress">#9fE25B3C</color>
     <!--优惠券状态的颜色-->
     <color name="coupon_status">#AFB7BE</color>
-    <!-- 黄色，季卡的背景色-->
-    <color name="pp_yellow">#fccc60</color>
 
     <!-- 全透明 -->
     <color name="transparent">#00000000</color>

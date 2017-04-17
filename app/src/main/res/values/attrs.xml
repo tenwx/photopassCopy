@@ -35,9 +35,6 @@
         <attr name="border_double" format="boolean" />
     </declare-styleable>
 
-    <attr name="fontPath" format="string" />
-
-
     <!-- TAB -->
     <declare-styleable name="ViewPagerIndicator">
         <attr name="vpiTabPageIndicatorStyle" format="reference" />

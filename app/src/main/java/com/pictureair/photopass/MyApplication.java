@@ -92,7 +92,11 @@ public class MyApplication extends Application {
         LeakCanary.install(this);
 
         if (CustomFontManager.IS_CUSOTM_FONT) {
-            CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
+            CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                    .setDefaultFontPath(CustomFontManager.CUSOTM_FONT_NAME)
+                    .setFontAttrId(R.attr.fontPath)
+                    .build()
+            );
             FontResource.getInstance().initFout(this);
             typeface = FontResource.getInstance().loadingFout(this);
             typefaceBold = FontResource.getInstance().loadingBoldFout(this);

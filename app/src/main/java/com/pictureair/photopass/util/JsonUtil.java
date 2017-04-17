@@ -298,6 +298,24 @@ public class JsonUtil {
             dailyPPCardInfo.setPhotoCount(photoCount);
         }
 
+        if (location.containsKey("cardBg")) {
+            dailyPPCardInfo.setLogoUrl(location.getString("cardBg"));
+        }
+
+        if (location.containsKey("bgColor")) {
+            String color = location.getString("bgColor");
+            String[] colors = color.split(",");
+            if (colors.length == 3) {
+                dailyPPCardInfo.setColorR(Integer.valueOf(colors[0]));
+                dailyPPCardInfo.setColorG(Integer.valueOf(colors[1]));
+                dailyPPCardInfo.setColorB(Integer.valueOf(colors[2]));
+            } else {
+                dailyPPCardInfo.setColorR(255);
+                dailyPPCardInfo.setColorG(255);
+                dailyPPCardInfo.setColorB(255);
+            }
+        }
+
         dailyPPCardInfo.setSectionId(index);
 
         if (location.containsKey("loc")) {

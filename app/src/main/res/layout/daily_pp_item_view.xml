@@ -21,17 +21,16 @@
             android:layout_marginLeft="@dimen/pp_dp_10"
             android:layout_marginTop="@dimen/pp_dp_10"
             android:text="date"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <ImageView
             android:id="@+id/daily_pp_header_logo_iv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/pp_dp_80"
             android:layout_below="@+id/daily_pp_header_date_tv"
             android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/pp_dp_25"
-            android:src="@drawable/photopass_logo" />
+            android:layout_margin="@dimen/pp_dp_25" />
 
         <TextView
             android:id="@+id/daily_pp_header_card_no_tv"
@@ -40,7 +39,7 @@
             android:layout_below="@+id/daily_pp_header_logo_iv"
             android:layout_marginLeft="@dimen/pp_dp_10"
             android:text="card no"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
 
         <TextView
@@ -51,7 +50,7 @@
             android:layout_marginBottom="@dimen/pp_dp_5"
             android:layout_marginLeft="@dimen/pp_dp_10"
             android:text="tip"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
@@ -64,7 +63,7 @@
             android:drawableTop="@drawable/story_buy"
             android:gravity="center"
             android:text="@string/story_want_to_buy"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
 
         <TextView
@@ -77,7 +76,7 @@
             android:drawableTop="@drawable/download_white"
             android:gravity="center"
             android:text="@string/down"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
 
         <RelativeLayout
@@ -92,48 +91,64 @@
 
             <View
                 android:id="@+id/daily_pp_header_center_v"
-                android:layout_width="@dimen/pp_px_1"
+                android:layout_width="@dimen/pp_dp_2"
                 android:layout_height="@dimen/pp_px_1"
                 android:layout_centerInParent="true"
-                android:layout_margin="@dimen/pp_dp_5" />
+                android:layout_margin="@dimen/pp_dp_4" />
 
-            <ImageView
-                android:id="@+id/daily_pp_header_left_iv"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/daily_pp_header_left_rl"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/daily_pp_header_center_v"
-                android:scaleType="centerCrop" />
+                android:background="@color/white"
+                android:padding="@dimen/pp_dp_1">
 
-            <TextView
-                android:id="@+id/daily_pp_header_left_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toLeftOf="@+id/daily_pp_header_center_v"
-                android:background="@color/ppp_cover"
-                android:gravity="center"
-                android:padding="@dimen/pp_dp_5"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16" />
+                <ImageView
+                    android:id="@+id/daily_pp_header_left_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop" />
 
-            <ImageView
-                android:id="@+id/daily_pp_header_right_iv"
-                android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/daily_pp_header_left_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/daily_pp_header_left_iv"
+                    android:background="@color/ppp_cover"
+                    android:gravity="center"
+                    android:padding="@dimen/pp_dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_16" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/daily_pp_header_right_rl"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/daily_pp_header_center_v"
-                android:scaleType="centerCrop" />
+                android:background="@color/white"
+                android:padding="@dimen/pp_dp_1">
 
-            <TextView
-                android:id="@+id/daily_pp_header_right_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/daily_pp_header_center_v"
-                android:background="@color/ppp_cover"
-                android:gravity="center"
-                android:padding="@dimen/pp_dp_5"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16" />
+                <ImageView
+                    android:id="@+id/daily_pp_header_right_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/daily_pp_header_right_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/daily_pp_header_right_iv"
+                    android:background="@color/ppp_cover"
+                    android:gravity="center"
+                    android:padding="@dimen/pp_dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_16" />
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

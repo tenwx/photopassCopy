@@ -1006,7 +1006,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             intent.putExtra("dailyppp", isDaily);
                             startActivity(intent);
                         } else {
-                            newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
+                            newToast.setTextAndShow(isDaily ? R.string.no_daily_ppp_tips : R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                         }
                     }
 

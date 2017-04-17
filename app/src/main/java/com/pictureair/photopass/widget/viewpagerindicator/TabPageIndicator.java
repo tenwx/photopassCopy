@@ -72,9 +72,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (null != tabViews && tabViews.size() > 0) {
             for (int i = 0; i < tabViews.size(); i++) {
                 if (tabViews.get(index) == tabViews.get(i)) {
-                    tabViews.get(i).setTextColor(ContextCompat.getColor(getContext(), R.color.pp_blue));
+                    tabViews.get(i).setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    tabViews.get(i).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.pp_blue));
                 } else {
                     tabViews.get(i).setTextColor(ContextCompat.getColor(getContext(), R.color.pp_dark_blue));
+                    tabViews.get(i).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
                 }
             }
         }

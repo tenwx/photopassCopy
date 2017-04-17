@@ -95,8 +95,6 @@ dependencies {
     compile files('libs/AMap2DMap_2.8.1_AMapLocation_2.4.1_20160425.jar')
     //百度统计
     compile files('libs/Baidu_Mtj_3.7.5.5.jar')
-    //统一字体
-    compile files('libs/calligraphy-1.1.0.jar')
     //eventbus
     compile files('libs/eventbus-3.0.0-beta1.jar')
     //微信支付
@@ -150,4 +148,6 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     //友盟统计
     compile 'com.umeng.analytics:analytics:6.1.0'
+    //统一自定义字体
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
 }

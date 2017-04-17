@@ -11,9 +11,11 @@
 
     <TextView
         android:id="@+id/section_location_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/pp_dp_10"
+        android:layout_toLeftOf="@+id/section_photo_iv"
         android:gravity="center_vertical"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_14" />
