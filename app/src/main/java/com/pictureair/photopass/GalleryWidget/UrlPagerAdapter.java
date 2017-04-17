@@ -18,8 +18,10 @@
 package com.pictureair.photopass.GalleryWidget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -102,8 +104,10 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         iv.setId(position);
         if (cardMode) {
-            iv.setTimeText(photoInfo.getShootDate());//暂时去除过期时间
-//            iv.setTimeText(photoInfo.getShootDate() + String.format(mContext.getString(R.string.gallery_expire_time), photoInfo.getExipreDate()));
+            iv.setTimeText(photoInfo.getShootDate() + String.format(mContext.getString(R.string.gallery_expire_time),
+                    TextUtils.isEmpty(photoInfo.getExipreDate()) ?
+                            AppUtil.getNewExpiredTime(photoInfo, photoInfo.getIsPaid() == 1 ? 60 : 30) :
+                            photoInfo.getExipreDate()));//如果数据库没有获取到时间，需要给他默认的时间
             iv.setFullScreenMode(fullScreenMode);
         }
         collection.addView(iv, 0);

@@ -233,7 +233,7 @@ public class PictureAirDbManager {
 
         } else {//同步操作
             photoInfo.setIsPaid(1);
-            photoInfo.setExipreDate(AppUtil.getNewExpiredTime(photoInfo));//更新过期时间
+            photoInfo.setExipreDate(AppUtil.getNewExpiredTime(photoInfo, CACHE_DAY * 2));//更新过期时间
             photoInfoDao.update(photoInfo);
         }
     }
@@ -263,7 +263,7 @@ public class PictureAirDbManager {
             }
             for (PhotoInfo photo : photos) {
                 photo.setIsPaid(1);
-                photo.setExipreDate(AppUtil.getNewExpiredTime(photo));//更新过期时间
+                photo.setExipreDate(AppUtil.getNewExpiredTime(photo, CACHE_DAY * 2));//更新过期时间
             }
             photoInfoDao.updateInTx(photos);
         }

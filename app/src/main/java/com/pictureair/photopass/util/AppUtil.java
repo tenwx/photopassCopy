@@ -2012,12 +2012,12 @@ public class AppUtil {
      * @param photoInfo
      * @return
      */
-    public static String getNewExpiredTime(PhotoInfo photoInfo) {
-        String result = photoInfo.getExipreDate();
+    public static String getNewExpiredTime(PhotoInfo photoInfo, int day) {
+        String result = photoInfo.getShootDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
         try {
             Date date = sdf.parse(result);
-            long time = date.getTime() + PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+            long time = date.getTime() + day * PictureAirDbManager.DAY_TIME;
             date = new Date(time);
             result = sdf.format(date);
         } catch (ParseException e) {

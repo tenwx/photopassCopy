@@ -314,6 +314,14 @@ public class JsonUtil {
                 dailyPPCardInfo.setColorG(255);
                 dailyPPCardInfo.setColorB(255);
             }
+        } else {
+            dailyPPCardInfo.setColorR(255);
+            dailyPPCardInfo.setColorG(255);
+            dailyPPCardInfo.setColorB(255);
+        }
+
+        if (location.containsKey("expiredDays")) {
+            dailyPPCardInfo.setExpiredDays(location.getIntValue("expiredDays"));
         }
 
         dailyPPCardInfo.setSectionId(index);

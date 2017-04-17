@@ -15,6 +15,7 @@ public class DailyPPCardInfo {
     private int photoCount;
     private PhotoInfo leftPhoto;//左边地点显示图片
     private PhotoInfo rightPhoto;//右边地点显示图片
+    private int expiredDays;//过保质期
 
     public DailyPPCardInfo() {
     }
@@ -113,5 +114,13 @@ public class DailyPPCardInfo {
 
     public void setColorB(int colorB) {
         this.colorB = colorB;
+    }
+
+    public int getExpiredDays() {
+        return expiredDays;
+    }
+
+    public void setExpiredDays(int expiredDays) {
+        this.expiredDays = expiredDays;
     }
 }

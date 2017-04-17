@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,8 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                 recyclerViewHolder.expireTV.setVisibility(View.VISIBLE);
                 if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {//已升级PP
-                    recyclerViewHolder.expireTV.setText(context.getString(R.string.story_expire_time));
+                    recyclerViewHolder.expireTV.setText(String.format(context.getString(R.string.story_expire_time),
+                            dailyPPCardInfoArrayList.get(position).getExpiredDays() == 0 ? 60 : dailyPPCardInfoArrayList.get(position).getExpiredDays()));
                     recyclerViewHolder.downloadTV.setVisibility(View.VISIBLE);
                     recyclerViewHolder.buyTV.setVisibility(View.INVISIBLE);
 
@@ -156,7 +158,12 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                     dailyPPCardInfoArrayList.get(position).getColorG(), dailyPPCardInfoArrayList.get(position).getColorB()));
 
             //设置卡片样式
-            String logoUrl = Common.PHOTO_URL + dailyPPCardInfoArrayList.get(position).getLogoUrl();
+            String logoUrl;
+            if (TextUtils.isEmpty(dailyPPCardInfoArrayList.get(position).getLogoUrl())) {
+                logoUrl = GlideUtil.getDrawableUrl(context, R.drawable.photopass_logo_default);
+            } else {
+                logoUrl = Common.PHOTO_URL + dailyPPCardInfoArrayList.get(position).getLogoUrl();
+            }
             if (recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag).equals(logoUrl)) {
                 GlideUtil.load(context, logoUrl, recyclerViewHolder.logoIV);
                 recyclerViewHolder.logoIV.setTag(R.id.glide_image_tag, logoUrl);
