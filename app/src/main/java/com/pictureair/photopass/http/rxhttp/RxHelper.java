@@ -1,8 +1,10 @@
 package com.pictureair.photopass.http.rxhttp;
 
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.activity.LoginActivity;
 import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.util.AppExitUtil;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -44,11 +46,13 @@ public class RxHelper {
                                     case 5030://not login
                                     case 5011://not login
                                         boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
-                                        if (!isLogin){//没有登录
-                                            return Observable.error(new ServerException(response.getStatus()));
-                                        } else {//如果在登录状态，需要退出操作
+                                        if (isLogin || !AppManager.getInstance().checkActivity(LoginActivity.class)){//通过登录标记得到的已登录状态，或者 通过activity判断的已登录状态
+                                            //如果在登录状态，需要退出操作
                                             SPUtils.remove(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN);
                                             AppExitUtil.getInstance().AppReLogin();
+                                        } else {
+                                            //没有登录
+                                            return Observable.error(new ServerException(response.getStatus()));
                                         }
                                         break;
                                     default:
