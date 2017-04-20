@@ -912,25 +912,27 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					@Override
 					public void onCompleted() {
 						dismissPWProgressDialog();
-						//生成订单
-						Intent intent3 = new Intent(EditStoryAlbumActivity.this, SubmitOrderActivity.class);
-						ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-						CartItemInfo cartItemInfo = new CartItemInfo();
-						cartItemInfo.setCartId(cartId);
-						cartItemInfo.setProductName(pppGoodsInfo.getName());
-						cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
-						cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
-						cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
-						cartItemInfo.setDescription(pppGoodsInfo.getDescription());
-						cartItemInfo.setQty(1);
-						cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
-						cartItemInfo.setPictures(photoUrls);
-						cartItemInfo.setPrice(pppGoodsInfo.getPrice());
-						cartItemInfo.setCartProductType(3);
+						if (pppGoodsInfo != null) {
+							//生成订单
+							Intent intent3 = new Intent(EditStoryAlbumActivity.this, SubmitOrderActivity.class);
+							ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+							CartItemInfo cartItemInfo = new CartItemInfo();
+							cartItemInfo.setCartId(cartId);
+							cartItemInfo.setProductName(pppGoodsInfo.getName());
+							cartItemInfo.setProductNameAlias(pppGoodsInfo.getNameAlias());
+							cartItemInfo.setUnitPrice(pppGoodsInfo.getPrice());
+							cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+							cartItemInfo.setDescription(pppGoodsInfo.getDescription());
+							cartItemInfo.setQty(1);
+							cartItemInfo.setStoreId(pppGoodsInfo.getStoreId());
+							cartItemInfo.setPictures(photoUrls);
+							cartItemInfo.setPrice(pppGoodsInfo.getPrice());
+							cartItemInfo.setCartProductType(3);
 
-						orderinfoArrayList.add(cartItemInfo);
-						intent3.putExtra("orderinfo", orderinfoArrayList);
-						startActivity(intent3);
+							orderinfoArrayList.add(cartItemInfo);
+							intent3.putExtra("orderinfo", orderinfoArrayList);
+							startActivity(intent3);
+						}
 					}
 				});
 	}

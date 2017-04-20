@@ -168,11 +168,11 @@ public class SocketUtil {
                 if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity)) {
                     int photoCountLocal = SPUtils.getInt(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
                     photoCount = photoCount + photoCountLocal;
-                    showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_new_photo));
                     SPUtils.put(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", photoCount);
                 } else {
                     redPointHandler.sendEmptyMessage(RED_POINT);
                 }
+                showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_new_photo));
 
                 application.setPushPhotoCount(photoCount);
             }
