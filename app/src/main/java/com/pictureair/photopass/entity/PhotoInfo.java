@@ -53,7 +53,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	@Transient
 	private int sectionId;//悬浮的id
 	@Transient
-	private int isRefreshInfo;//0：不需要刷新旧数据，1：需要刷新旧数据列表，只针对刷新的旧图片，其他均用不到
+	private int isRefreshInfo;//0：不需要刷新旧数据，1：需要刷新旧数据列表，目前用不到
 	@Transient
 	private int isChecked;//图片是否被检索到，用在ViewPhotoActivity中的全选操作，1，true，0，false
 	@Transient

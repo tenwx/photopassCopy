@@ -359,7 +359,7 @@ public class PictureAirDbManager {
                     photoInfoDao.update(dbPhotoInfo);
 
                     photo.setIsRefreshInfo(1);
-                    resultArrayList.add(photo);
+//                    resultArrayList.add(photo);
                     continue;
                 }
             }
