@@ -44,6 +44,9 @@ public class StartActivity extends BaseActivity implements Callback {
     private LinearLayout ll_update;
     private ImageView img_update;
     private AnimationDrawable spinner;
+    private boolean isStopped = false;
+    private boolean timeReady = false;
+    private boolean gotoNextActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +91,12 @@ public class StartActivity extends BaseActivity implements Callback {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            timeReady = true;
                             goToNextActivity();
                         }
                     }, 2000 - between);
                 } else {
+                    timeReady = true;
                     goToNextActivity();
                 }
                 break;
@@ -99,10 +104,29 @@ public class StartActivity extends BaseActivity implements Callback {
         return false;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isStopped = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isStopped = false;
+        goToNextActivity();
+    }
+
     /**
      * 需要在开始跳转的时候，才去判断需要跳转哪个页面。不然会造成，已经判断好跳转的页面，在2s的等待时间内，登录过期，进入重新登录页面之后，2s事件触发，又进入了之前得到的页面
      */
     private void goToNextActivity() {
+        //如果时间没到，或者activity不在前台工作，或者已经进入了，都没法进入下一页
+        if (!timeReady || isStopped || gotoNextActivity) {
+            return;
+        }
+        gotoNextActivity = true;
+
         PictureAirLog.d("go to next activity");
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);

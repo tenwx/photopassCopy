@@ -144,8 +144,10 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                         GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject, GoodsInfoJson.class);//GoodsInfoJson.getString()
                         if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                             allGoodsList = goodsInfoJson.getGoods();
-                            PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                        } else {
+                            allGoodsList = new ArrayList<>();
                         }
+                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                         //获取PP+
                         for (GoodsInfo goodsInfo : allGoodsList) {
                             if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
@@ -294,7 +296,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
      */
     private void initSheetDialog() {
         for (GoodsInfo good: allGoodsList) {
-            if (good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+            if (good != null && good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
                 pppGoodsInfo = good;
                 buyPPPNameTV.setText(good.getNameAlias());
                 PictureAirLog.d("----> " + good.getPrice());

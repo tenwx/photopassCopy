@@ -192,7 +192,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case PPPPop.POP_INPUT://进入手动输入页面
                 Intent intent2 = new Intent(context, AddPPPCodeActivity.class);
                 intent2.putExtra("type", "ppp");//只扫描ppp
+                intent2.putExtra("daily", false);//一卡通
                 startActivity(intent2);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT_ONE_DAY_PASS://进入手动输入页面
+                Intent intent3 = new Intent(context, AddPPPCodeActivity.class);
+                intent3.putExtra("type", "ppp");//只扫描ppp
+                intent3.putExtra("daily", true);//一日通
+                startActivity(intent3);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
                 }

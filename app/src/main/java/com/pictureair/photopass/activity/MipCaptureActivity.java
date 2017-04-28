@@ -44,6 +44,7 @@ import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.util.TextTransferAllCaps;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.AmbientLightManager;
@@ -286,6 +287,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         offset = ScreenUtil.getScreenWidth(this) / 2;// 获取分辨率宽度
 
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
+        inputCodeEdit.setTransformationMethod(new TextTransferAllCaps());
         wordSpaceTextView = (TextView) findViewById(R.id.scancodetextview);
         wordSpaceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         wordSpaceTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -307,13 +309,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     if (wordSpaceTextView.isShown()) {
                         wordSpaceTextView.scrollTo(0, 0);//保证放大的textview正常显示
                         wordSpaceTextView.setVisibility(View.INVISIBLE);
-                        wordSpaceTextView.setText(editString.trim());
+                        wordSpaceTextView.setText(editString.toUpperCase().trim());
                     }
                 }else {
                     if (!wordSpaceTextView.isShown()) {
                         wordSpaceTextView.setVisibility(View.VISIBLE);
                     }
-                    wordSpaceTextView.setText(editString.trim());
+                    wordSpaceTextView.setText(editString.toUpperCase().trim());
                 }
 
             }

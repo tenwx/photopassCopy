@@ -17,12 +17,13 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	private LayoutInflater inflater;
 	private Context context;
 	private View pppView;
-	private TextView llAuto, llInput;
+	private TextView llAuto, llInput, onedayPassTV;
 	private Handler handler;
 	private int type;
 	public static final int POP_BUY = 9999;
 	public static final int POP_SCAN = 8888;
 	public static final int POP_INPUT = 7777;
+	public static final int POP_INPUT_ONE_DAY_PASS = 6666;
 
 	public static final int MENU_TYPE_STORY = 111;
 	public static final int MENU_TYPE_PP = 222;
@@ -41,9 +42,11 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 		setContentView(pppView);
 		llAuto = (TextView) pppView.findViewById(R.id.scanTextView);
 		llInput = (TextView) pppView.findViewById(R.id.input_tv);
+		onedayPassTV = (TextView) pppView.findViewById(R.id.input_oneday_tv);
 
 		llAuto.setOnClickListener(this);
 		llInput.setOnClickListener(this);
+		onedayPassTV.setOnClickListener(this);
 
 		setWidth(LayoutParams.WRAP_CONTENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
@@ -62,6 +65,10 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 
 			case R.id.input_tv:
 				handler.sendEmptyMessage(POP_INPUT);
+				break;
+
+			case R.id.input_oneday_tv:
+				handler.sendEmptyMessage(POP_INPUT_ONE_DAY_PASS);
 				break;
 
 			default:

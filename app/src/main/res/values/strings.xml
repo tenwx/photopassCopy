@@ -150,9 +150,11 @@
     <string name="manual">手动输入</string>
     <string name="active">激活</string>
     <string name="active_ppp">激活迪士尼\n乐拍通一卡通</string>
+    <string name="active_oneday_ppp">激活迪士尼\n乐拍通一日通</string>
     <string name="ok">确认</string>
     <string name="manul_input_intro">请输入您的迪士尼乐拍通卡或者乐拍通一日通卡或者乐拍通季卡背后的编码</string>
     <string name="manul_input_intro2">请输入您的迪士尼乐拍通一卡通卡背后的编码</string>
+    <string name="manul_input_intro3">请输入您的迪士尼乐拍通一日通卡背后的编码</string>
     <string name="nocontext">输入您的编码</string>
     <string name="input_code">手动输入卡号</string>
     <string name="wrong_length">请检查您的迪士尼乐拍通卡片</string>

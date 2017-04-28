@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
@@ -15,6 +17,7 @@ import com.pictureair.photopass.util.API2;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
+import com.pictureair.photopass.util.TextTransferAllCaps;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -23,14 +26,18 @@ import java.lang.ref.WeakReference;
 /**
  * 手动输入条码的页面
  */
-public class AddPPPCodeActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener{
+public class AddPPPCodeActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private Button ok;
+    private TextView tipsTv;
     private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
+    private ImageView cardTopIv, cardBottomIv, cardRightIv;
 
     private EditTextWithClear inputCodeEdit;
 
     private PWDialog pwDialog;
+
+    private boolean isOneDayPass;
 
     private static final int TYPE_NOT_SAME_DIALOG = 333;
 
@@ -108,6 +115,7 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
         Intent intent2 = new Intent();
         intent2.setClass(AddPPPCodeActivity.this, MyPPPActivity.class);
         intent2.putExtra("upgradePP", true);
+        intent2.putExtra("dailyppp", isOneDayPass);
         API2.PPPlist.clear();
         startActivity(intent2);
         AppManager.getInstance().killActivity(MipCaptureActivity.class);
@@ -126,13 +134,23 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
     }
 
     private void initview() {
+        isOneDayPass = getIntent().getBooleanExtra("daily", false);
         ok = (Button) findViewById(R.id.sure);
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
+        inputCodeEdit.setTransformationMethod(new TextTransferAllCaps());
+        tipsTv = (TextView) findViewById(R.id.tv_manul_input_intro);
+        cardTopIv = (ImageView) findViewById(R.id.add_code_card_top);
+        cardBottomIv = (ImageView) findViewById(R.id.add_code_card_bottom);
+        cardRightIv = (ImageView) findViewById(R.id.add_code_card_right);
 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_blue, true);
+        tipsTv.setText(isOneDayPass ? R.string.manul_input_intro3 : R.string.manul_input_intro2);
+        cardTopIv.setImageResource(isOneDayPass ? R.drawable.input_card_top_odp : R.drawable.input_card_top);
+        cardBottomIv.setImageResource(isOneDayPass ? R.drawable.input_card_bottom_odp : R.drawable.input_card_bottom);
+        cardRightIv.setVisibility(isOneDayPass ? View.VISIBLE : View.GONE);
 
-        setTopTitleShow(R.string.mypage_ppp);
+        setTopTitleShow(R.string.active);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);
     }
 

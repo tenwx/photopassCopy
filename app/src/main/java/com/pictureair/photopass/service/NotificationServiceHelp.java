@@ -49,11 +49,13 @@ public class NotificationServiceHelp {
 
                                 @Override
                                 public void _onError(int status) {
+                                    unsubscribe();
                                     PictureAirLog.v(TAG, "noticeSocketConnect 链接失败,状态码：" + status);
                                 }
 
                                 @Override
                                 public void onCompleted() {
+                                    unsubscribe();
                                     PictureAirLog.v(TAG, "noticeSocketConnect 链接成功");
                                 }
                             });
@@ -70,11 +72,13 @@ public class NotificationServiceHelp {
 
                                     @Override
                                     public void _onError(int status) {
+                                        unsubscribe();
                                         PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
                                     }
 
                                     @Override
                                     public void onCompleted() {
+                                        unsubscribe();
                                         PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息成功");
                                     }
                                 });

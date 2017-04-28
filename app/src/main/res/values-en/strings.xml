@@ -150,9 +150,11 @@
     <string name="manual">Manual</string>
     <string name="active">Activate</string>
     <string name="active_ppp">Activate Disney\nPhotoPass+</string>
+    <string name="active_oneday_ppp">Activate Disney\nPhotoPass One\nDay Pass</string>
     <string name="ok">OK</string>
     <string name="manul_input_intro">Please input the code on the back of your Disney PhotoPass card or PhotoPass One Day Pass card or Seasonal PhotoPass+ card</string>
     <string name="manul_input_intro2">Please input the code on the back of your Disney PhotoPass+ card</string>
+    <string name="manul_input_intro3">Please input the code on the back of your PhotoPass One Day Pass card</string>
     <string name="nocontext">Input your code</string>
     <string name="input_code">Manual Input</string>
     <string name="wrong_length">Please check your card</string>
