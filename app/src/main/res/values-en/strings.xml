@@ -409,7 +409,7 @@
     <string name="instruction">With the use of Disney PhotoPass+, you will be able to download all photos and other digital content taken on selected attractions at the Resort from up to three (3) Disney PhotoPass cards in one (1) day or one (1) Disney PhotoPass card used during three (3) consecutive days</string>
     <string name="instruction_daily_ppp">With the purchase of Disney PhotoPass One Day Pass, you will be able to download all your high-resolution photos from one(1) Disney PhotoPass card used in a single day.</string>
     <string name="select_pp_hasUpgraded">You have associated this Disney PhotoPass card</string>
-    <string name="not_ppp_card">Invalid Disney PhotoPass+</string>
+    <string name="not_ppp_card">Invalid Disney PhotoPass One Day Pass / PhotoPass+</string>
     <string name="bind_pp_now">You have one Disney PhotoPass, do you want to bind it now?</string>
     <string name="dialog_cancel">No, Thanks</string>
     <string name="dialog_ok">Yes, I do</string>
@@ -458,8 +458,8 @@
     <!-- select ppp start -->
     <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
     <string name="select_ppp_title">Select</string>
-    <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass+.</string>
-    <string name="update_daily_ppp_msg">You are going to activate your photos in PhotoPass using this One Day Pass.</string>
+    <string name="update_ppp_msg">You have chosen to activate the digital photos in this PhotoPass card with your PhotoPass+.\nPlease confirm to continue.</string>
+    <string name="update_daily_ppp_msg">You have chosen to activate the digital photos in this PhotoPass card with your PhotoPass One Day Pass.\nPlease confirm to continue.</string>
     <string name="update_ppp_cancel">Cancel</string>
     <string name="update_ppp_ok">OK</string>
     <!-- select ppp end -->

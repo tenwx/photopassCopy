@@ -409,7 +409,7 @@
     <string name="instruction">使用迪士尼乐拍通一卡通，您即可下载在度假区通过迪士尼乐拍通摄影师拍摄的和在度假区指定景点上所拍摄的，并激活最多三张迪士尼乐拍通卡上同一天的，或同一张迪士尼乐拍通卡上连续三天的所有照片。</string>
     <string name="instruction_daily_ppp">购买迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <string name="select_pp_hasUpgraded">该迪士尼乐拍通已经被绑定</string>
-    <string name="not_ppp_card">这张不是迪士尼乐拍通一卡通</string>
+    <string name="not_ppp_card">这张不是迪士尼乐拍通一日通／乐拍通一卡通</string>
     <string name="bind_pp_now">您有一张迪士尼乐拍通，是否现在就去绑定？</string>
     <string name="dialog_cancel">不用了，谢谢</string>
     <string name="dialog_ok">好的</string>
@@ -458,8 +458,8 @@
     <!-- select ppp start -->
     <string name="select_your_ppp">请选择你的迪士尼乐拍通一卡通</string>
     <string name="select_ppp_title">选择</string>
-    <string name="update_ppp_msg">您将使用迪士尼乐拍通一卡通升级您此张迪士尼乐拍通卡内包含的照片，以便您浏览清晰照片吗？</string>
-    <string name="update_daily_ppp_msg">您将使用迪士尼乐拍通一日通升级您此张迪士尼乐拍通卡内包含的照片，以便您浏览清晰照片吗？</string>
+    <string name="update_ppp_msg">你将使用迪士尼乐拍通一卡通升级此乐拍通卡内的照片。\n请确认继续</string>
+    <string name="update_daily_ppp_msg">你将使用迪士尼乐拍通一日通升级此乐拍通卡内的照片。\n请确认继续。</string>
     <string name="update_ppp_cancel">取消</string>
     <string name="update_ppp_ok">确认</string>
     <!-- select ppp end -->

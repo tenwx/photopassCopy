@@ -43,7 +43,8 @@ public class CheckUpdate implements BaseCheckUpdate{
 	@Override
 	public void getTokenId(final Context context) {
 		API2.getTokenId(context)
-				.compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+				.compose(context instanceof RxActivity ? ((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY)
+						: ((RxAppCompatActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(new RxSubscribe<JSONObject>() {
 					@Override

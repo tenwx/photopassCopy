@@ -28,6 +28,9 @@ public class ReflectionUtil {
         if (paramContext == null) {
             return 401;
         }
+        if (paramString < 5000 || (paramString > 5050 && paramString < 6000) || paramString > 6177){
+            return 401;
+        }
         return paramContext.getResources().getIdentifier(BASE_CODE_STRING + paramString, "string",
                 paramContext.getPackageName());
     }
