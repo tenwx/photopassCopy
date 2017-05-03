@@ -11,8 +11,8 @@ android {
         applicationId "com.pictureair.photopass"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 12
-        versionName "3.0.1"
+        versionCode 13
+        versionName "3.0.2"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过65536限制
         ndk {//so文件的过滤
             abiFilters "armeabi", "armeabi-v7a"
