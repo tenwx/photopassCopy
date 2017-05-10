@@ -2,6 +2,8 @@ package com.pictureair.photopass.util;
 
 import android.content.Context;
 
+import com.pictureair.photopass.R;
+
 /**
  * Created by bauer_bao on 15/12/10.
  */
@@ -26,10 +28,10 @@ public class ReflectionUtil {
      */
     public static int getStringId(Context paramContext, int paramString) {
         if (paramContext == null) {
-            return 401;
+            return R.string.http_error_code_401;
         }
-        if (paramString < 5000 || (paramString > 5050 && paramString < 6000) || paramString > 6177){
-            return 401;
+        if (paramString < 5000 || (paramString > 5050 && paramString < 6000) || paramString > 6183){
+            return R.string.http_error_code_401;
         }
         return paramContext.getResources().getIdentifier(BASE_CODE_STRING + paramString, "string",
                 paramContext.getPackageName());

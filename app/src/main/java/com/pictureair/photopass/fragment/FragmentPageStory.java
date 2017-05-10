@@ -351,6 +351,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private void getLocationData(final boolean isRefresh) {
         PictureAirLog.d("loadData start");
+        if (context == null) {
+            loadError(true);
+            return;
+        }
         //先获取缓存的数据
         Observable.just(ACache.get(context).getAsString(Common.DISCOVER_LOCATION))
                 .flatMap(new Func1<String, Observable<JSONObject>>() {
