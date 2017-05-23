@@ -130,6 +130,10 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
      * @param updateInfo
      */
     private void dealUpdateInfo(String updateInfo) {
+        if (deviceInfos == null) {
+            handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+            return;
+        }
         JSONObject jsonObject = JSONObject.parseObject(updateInfo);
         String thisVerName = deviceInfos.get(1);
         String language = currentLanguage;

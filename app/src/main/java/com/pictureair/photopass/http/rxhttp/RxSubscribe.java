@@ -25,10 +25,23 @@ public abstract class RxSubscribe<T> extends Subscriber<T> {
     @Override
     public void onError(Throwable e) {
         PictureAirLog.e(TAG, e.toString());
+
+        //如果需要打印详细error信息，取消注释如下代码
+//        Writer writer = new StringWriter();
+//        PrintWriter printWriter = new PrintWriter(writer);
+//        e.printStackTrace(printWriter);
+//        Throwable cause = e.getCause();
+//        while (cause != null) {
+//            cause.printStackTrace(printWriter);
+//            cause = cause.getCause();
+//        }
+//        printWriter.close();
+//        String result = writer.toString();
+//        PictureAirLog.d("e--->" + result);
+
         if (e instanceof ServerException) {
             _onError(((ServerException) e).getState());
         } else {
-            PictureAirLog.e(e.toString());
             if (e != null && e instanceof HttpException) {
                 HttpException exception = (HttpException) e;
                 _onError(exception.code());

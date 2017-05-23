@@ -1,9 +1,11 @@
 更新日志   bauer
 
--------17/xxx/xxx--------
+-------17/5/xxx--------
 versionCode 13     versionName "3.0.2"
 更新要点：
-
+1.更新错误代码
+2.解决部分无网络情况，请求api报错的问题
+3.解决友盟已知bug
 
 -------17/5/3--------
 versionCode 12     versionName "3.0.1"
