@@ -759,9 +759,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             JSONObject invoice = new JSONObject();
             invoice.put("invoiceType", 0);
             invoice.put("invoiceTitle", invoiceInfo.getTitle() == InvoiceInfo.PERSONAL ? 0 : 1);
-            if(invoiceInfo.getTitle() == InvoiceInfo.COMPANY)
+            if(invoiceInfo.getTitle() == InvoiceInfo.COMPANY || invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
                 invoice.put("invoiceCompanyName", invoiceInfo.getCompanyName());
+                invoice.put("invoiceIdentificationCode", invoiceInfo.getCompanyId());
+            }
             invoice.put("invoiceAddressId", invoiceInfo.getAddress().getAddressId());
+
+            PictureAirLog.json(invoice.toJSONString());
             return invoice;
         }
         return null;

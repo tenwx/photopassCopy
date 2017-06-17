@@ -48,7 +48,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private ImageButton companyIb;
     private ImageButton noInvoice;
     private ImageView backIV;
-    private EditTextWithClear editText;
+    private EditTextWithClear editText, idEditText;
     private NoScrollListView listAddress;
     private RelativeLayout sendAddressRl,newAddressRl;
     private ScrollView scrollView;
@@ -80,15 +80,26 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             if (invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
                 personIb.setImageResource(R.drawable.invoice_press);
                 companyIb.setImageResource(R.drawable.invoice_nor);
-                if (editText.getVisibility() == View.VISIBLE)
-                    editText.setVisibility(View.GONE);
+                if (editText.getVisibility() != View.VISIBLE)
+                    editText.setVisibility(View.VISIBLE);
+                if (idEditText.getVisibility() != View.VISIBLE)
+                    idEditText.setVisibility(View.VISIBLE);
+                editText.setText(invoiceInfo.getCompanyName());
+                idEditText.setText(invoiceInfo.getCompanyId());
+                editText.setHint(R.string.invoice_input_personal_name);
+                idEditText.setHint(R.string.invoice_input_personal_id);
 
             } else if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY) {
                 personIb.setImageResource(R.drawable.invoice_nor);
                 companyIb.setImageResource(R.drawable.invoice_press);
                 if (editText.getVisibility() != View.VISIBLE)
                     editText.setVisibility(View.VISIBLE);
+                if (idEditText.getVisibility() != View.VISIBLE)
+                    idEditText.setVisibility(View.VISIBLE);
                 editText.setText(invoiceInfo.getCompanyName());
+                idEditText.setText(invoiceInfo.getCompanyId());
+                editText.setHint(R.string.invoice_input_company);
+                idEditText.setHint(R.string.invoice_input_company_id);
             }
             checkInvoice = invoiceInfo.isNeedInvoice();
             if (checkInvoice) {
@@ -110,6 +121,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         nocheckRl= (RelativeLayout) findViewById(R.id.invoice_nocheck);
         noInvoice=(ImageButton) findViewById(R.id.invoice_nocheck_ib);
         editText= (EditTextWithClear) findViewById(R.id.invoice_et);
+        idEditText= (EditTextWithClear) findViewById(R.id.invoice_id_et);
         listAddress= (NoScrollListView) findViewById(R.id.invoice_address_list);
         sendAddressRl=(RelativeLayout) findViewById(R.id.invoice_new_addr_rl);
         newAddressRl=(RelativeLayout) findViewById(R.id.invoice_new_address_rl);
@@ -245,6 +257,30 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             public void afterTextChanged(Editable s) {
             }
         });
+
+        idEditText.addTextChangedListener(new TextWatcher() {
+            int cou = 0;
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                cou = before + count;
+                String editable = idEditText.getText().toString();
+                String str = AppUtil.inputTextFilter(editable); //过滤特殊字符
+                if (!editable.equals(str)) {
+                    idEditText.setText(str);
+                }
+                idEditText.setSelection(idEditText.length());
+                cou = idEditText.length();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
 
@@ -262,23 +298,45 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()){
             case R.id.invoice_personal_ib:
             case R.id.invoice_personal_rl:
+                if (invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
+                    return;
+                }
                 personIb.setImageResource(R.drawable.invoice_press);
                 companyIb.setImageResource(R.drawable.invoice_nor);
-                if(editText.getVisibility()==View.VISIBLE)
-                    editText.setVisibility(View.GONE);
+                if(editText.getVisibility()!=View.VISIBLE)
+                    editText.setVisibility(View.VISIBLE);
+                if(idEditText.getVisibility()!=View.VISIBLE)
+                    idEditText.setVisibility(View.VISIBLE);
 
                 invoiceInfo.setTitle(InvoiceInfo.PERSONAL);
                 invoiceInfo.setCompanyName("");
+                invoiceInfo.setCompanyId("");
+                editText.setText("");
+                idEditText.setText("");
+                editText.setHint(R.string.invoice_input_personal_name);
+                idEditText.setHint(R.string.invoice_input_personal_id);
                 noInvoice.setImageResource(R.drawable.invoice_nor);
                 checkInvoice = true;
                 invoiceInfo.setNeedInvoice(checkInvoice);
                 break;
             case R.id.invoice_company_ib:
             case R.id.invoice_company_rl:
+                if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY) {
+                    return;
+                }
                 personIb.setImageResource(R.drawable.invoice_nor);
                 companyIb.setImageResource(R.drawable.invoice_press);
                 if(editText.getVisibility()!=View.VISIBLE)
                     editText.setVisibility(View.VISIBLE);
+                if(idEditText.getVisibility()!=View.VISIBLE)
+                    idEditText.setVisibility(View.VISIBLE);
+
+                invoiceInfo.setCompanyName("");
+                invoiceInfo.setCompanyId("");
+                editText.setText("");
+                idEditText.setText("");
+                editText.setHint(R.string.invoice_input_company);
+                idEditText.setHint(R.string.invoice_input_company_id);
 
                 invoiceInfo.setTitle(InvoiceInfo.COMPANY);
                 noInvoice.setImageResource(R.drawable.invoice_nor);
@@ -307,9 +365,12 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                     companyIb.setImageResource(R.drawable.invoice_nor);
                     if(editText.getVisibility()==View.VISIBLE)
                         editText.setVisibility(View.GONE);
+                    if(idEditText.getVisibility()==View.VISIBLE)
+                        idEditText.setVisibility(View.GONE);
                     //需要清空状态
                     invoiceInfo.setTitle(InvoiceInfo.NONE);
-
+                    invoiceInfo.setCompanyName("");
+                    invoiceInfo.setCompanyId("");
                 }else{//开发票
                     noInvoice.setImageResource(R.drawable.invoice_nor);
                 }
@@ -421,8 +482,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private void setInvoice(){
         if(checkData()) {
             Intent intent = new Intent();
-            if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY) {
+            if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY || invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
                 invoiceInfo.setCompanyName(editText.getText().toString());
+                invoiceInfo.setCompanyId(idEditText.getText().toString());
             }
             if(null != addressAdapter && addressAdapter.getCurIndex() >= 0)
                 invoiceInfo.setAddress(listData.get(addressAdapter.getCurIndex()));
@@ -438,9 +500,24 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 new PWToast(this).setTextAndShow(R.string.invoice_tips_title, Common.TOAST_SHORT_TIME);
                 return false;
             }
-            if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY && TextUtils.isEmpty(editText.getText().toString())) {
-                PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_company, Common.TOAST_SHORT_TIME);
-                return false;
+            if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY) {
+                if (TextUtils.isEmpty(editText.getText().toString())) {
+                    PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_company, Common.TOAST_SHORT_TIME);
+                    return false;
+                }
+                if (TextUtils.isEmpty(idEditText.getText().toString())) {
+                    PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_company_id, Common.TOAST_SHORT_TIME);
+                    return false;
+                }
+            } else if (invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
+                if (TextUtils.isEmpty(editText.getText().toString())) {
+                    PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_personal_name, Common.TOAST_SHORT_TIME);
+                    return false;
+                }
+                if (TextUtils.isEmpty(idEditText.getText().toString())) {
+                    PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_personal_id, Common.TOAST_SHORT_TIME);
+                    return false;
+                }
             }
             if (null == addressAdapter || addressAdapter.getCurIndex() < 0) {
                 new PWToast(this).setTextAndShow(R.string.invoice_tips_address, Common.TOAST_SHORT_TIME);

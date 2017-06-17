@@ -44,7 +44,8 @@ android {
         }
 
         release {
-            buildConfigField "boolean", "LOG_DEBUG", "false"// 不显示Log, 在java代码中的调用方式为：BuildConfig.LOG_DEBUG
+            // 不显示Log, 在java代码中的调用方式为：BuildConfig.LOG_DEBUG
+            buildConfigField "boolean", "LOG_DEBUG", "false"
 
             minifyEnabled true
             shrinkResources true
@@ -150,4 +151,6 @@ dependencies {
     compile 'com.umeng.analytics:analytics:6.1.0'
     //统一自定义字体
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    //分包
+    compile 'com.android.support:multidex:1.0.1'
 }

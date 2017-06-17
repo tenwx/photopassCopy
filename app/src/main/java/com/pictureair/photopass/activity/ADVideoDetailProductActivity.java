@@ -118,12 +118,12 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 .flatMap(new Func1<Integer, Observable<JSONObject>>() {
                     @Override
                     public Observable<JSONObject> call(Integer integer) {
-                        if (integer != 0) {
-                            String goodsByACache = ACache.get(ADVideoDetailProductActivity.this).getAsString(Common.ALL_GOODS);
-                            PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
-                            if (!TextUtils.isEmpty(goodsByACache)) {
-                                return Observable.just(JSONObject.parseObject(goodsByACache));
-                            } else {
+                        String goodsByACache = ACache.get(ADVideoDetailProductActivity.this).getAsString(Common.ALL_GOODS);
+                        PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
+                        if (!TextUtils.isEmpty(goodsByACache)) {
+                            return Observable.just(JSONObject.parseObject(goodsByACache));
+                        } else {
+                            if (integer != 0) {
                                 return API2.getGoods()
                                         .map(new Func1<JSONObject, JSONObject>() {
                                             @Override
@@ -132,9 +132,9 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                                                 return jsonObject;
                                             }
                                         });
+                            } else {
+                                return Observable.error(new ServerException(401));
                             }
-                        } else {
-                            return Observable.error(new ServerException(401));
                         }
                     }
                 })
@@ -295,14 +295,16 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
      * 初始化数据
      */
     private void initSheetDialog() {
-        for (GoodsInfo good: allGoodsList) {
-            if (good != null && good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
-                pppGoodsInfo = good;
-                buyPPPNameTV.setText(good.getNameAlias());
-                PictureAirLog.d("----> " + good.getPrice());
-                buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
-                buyPPPIntroTV.setText(good.getDescription());
-                break;
+        if (allGoodsList != null) {
+            for (GoodsInfo good : allGoodsList) {
+                if (good != null && good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+                    pppGoodsInfo = good;
+                    buyPPPNameTV.setText(good.getNameAlias());
+                    PictureAirLog.d("----> " + good.getPrice());
+                    buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+                    buyPPPIntroTV.setText(good.getDescription());
+                    break;
+                }
             }
         }
     }

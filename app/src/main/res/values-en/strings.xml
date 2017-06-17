@@ -568,6 +568,9 @@
     <string name="invoice_no">No Invoice</string>
     <string name="invoice_address">Address</string>
     <string name="invoice_input_company">Please input your company name</string>
+    <string name="invoice_input_company_id">Please input your taxpayer\'s registration number</string>
+    <string name="invoice_input_personal_name">Please input your name</string>
+    <string name="invoice_input_personal_id">Please input your ID card number</string>
     <string name="invoice_new_address">New Address</string>
     <string name="invoice_edit_address">Edit Address</string>
     <string name="invoice_receiver_name">Name:</string>
