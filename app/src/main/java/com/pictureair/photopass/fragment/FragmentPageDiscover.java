@@ -151,7 +151,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     public void onResume() {
         super.onResume();
         if (isVisible()) {
-            PictureAirLog.out(TAG+ " truly ==onResume--->discover");
+            PictureAirLog.out(TAG + " truly ==onResume--->discover");
             if (mIsAskLocationPermission) {
                 mIsAskLocationPermission = false;
                 return;
@@ -245,7 +245,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     public void _onError(int status) {
                         //失败了，取上次的缓存
                         PictureAirLog.out("get location failed");
-                        if (TextUtils.isEmpty(locationCache)){//失败
+                        if (TextUtils.isEmpty(locationCache)) {//失败
                             discoverListView.setVisibility(View.GONE);
                             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
                             noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageDiscoverHandler, true);
@@ -523,8 +523,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSION:
                 PictureAirLog.out("33333333333");
-                if (Manifest.permission.ACCESS_COARSE_LOCATION.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startService();
+                if (permissions.length > 0 && grantResults.length > 0) {
+                    if (Manifest.permission.ACCESS_COARSE_LOCATION.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        startService();
+                    }
                 }
                 break;
             default:
