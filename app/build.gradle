@@ -95,7 +95,7 @@ dependencies {
     //高德地图
     compile files('libs/AMap2DMap_2.8.1_AMapLocation_2.4.1_20160425.jar')
     //百度统计
-    compile files('libs/Baidu_Mtj_3.7.5.5.jar')
+    compile files('libs/Baidu_Mtj_3.8.0.2.jar')
     //eventbus
     compile files('libs/eventbus-3.0.0-beta1.jar')
     //微信支付

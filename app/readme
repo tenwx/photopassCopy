@@ -3,6 +3,7 @@
 versionCode 14     versionName "3.0.3"
 更新要点：
 1.升级银联控件3.3.7
+2.升级百度统计sdk
 
 -------17/6/21--------
 versionCode 13     versionName "3.0.2"
@@ -11,7 +12,7 @@ versionCode 13     versionName "3.0.2"
 2.解决部分无网络情况，请求api报错的问题
 3.解决友盟已知bug
 4.发票更新参数
-5.as升级导致签名选项升级
+5.as升级导致签名选项升级（v1 v2 全选）
 
 -------17/5/3--------
 versionCode 12     versionName "3.0.1"

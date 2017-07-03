@@ -22,6 +22,7 @@ import com.pictureair.photopass.greendao.DaoSession;
 import com.pictureair.photopass.receiver.NetBroadCastReciver;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.AESKeyHelper;
+import com.pictureair.photopass.util.BaiduMobUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -110,6 +111,7 @@ public class MyApplication extends Application {
         registerConnectDector();
         // 初始化友盟
         UmengUtil.initUmeng();
+        BaiduMobUtil.init(this, true, false);
         PictureAirLog.out("application on create--->");
     }
 

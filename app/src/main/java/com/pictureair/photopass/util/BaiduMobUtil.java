@@ -9,6 +9,16 @@ import com.baidu.mobstat.StatService;
  * Created by talon on 16/5/16.
  */
 public class BaiduMobUtil {
+    /**
+     * 初始化
+     *
+     * @param context
+     * @param autoTrace
+     * @param autoTrackWebview
+     */
+    public static void init(Context context, boolean autoTrace, boolean autoTrackWebview) {
+        StatService.autoTrace(context, autoTrace, autoTrackWebview);
+    }
 
     /**
      * onResume
