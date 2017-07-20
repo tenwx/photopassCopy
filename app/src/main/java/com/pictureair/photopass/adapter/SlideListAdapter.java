@@ -46,12 +46,9 @@ public class SlideListAdapter extends BaseAdapter {
         return position;
     }
 
-    public void setPPlist(List<PPinfo> list) {
-        this.ppList = list;
-    }
-
     public void refreshSlideList(List<PPinfo> ppList) {
-        this.ppList = ppList;
+        this.ppList.clear();
+        this.ppList.addAll(ppList);
         notifyDataSetChanged();
     }
 
