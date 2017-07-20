@@ -13,6 +13,9 @@ import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
 
+/**
+ * 制作礼物的商品列表
+ */
 public class MakegiftGoodsAdapter extends BaseAdapter{
 	private Context mContext;
 	private LayoutInflater mInflater;

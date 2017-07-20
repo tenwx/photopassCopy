@@ -44,6 +44,9 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * 支付页面，目前是  银联  支付宝   微信   ipaylinks 4种支付方式
+ */
 public class PaymentOrderActivity extends BaseActivity implements OnClickListener {
     private TextView sbmtButton;
     private String nameString;

@@ -36,6 +36,9 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * 邮箱注册页面
+ */
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     // 声明控件

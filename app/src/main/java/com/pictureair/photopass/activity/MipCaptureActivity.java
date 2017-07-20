@@ -62,7 +62,7 @@ import java.util.Vector;
 import de.greenrobot.event.EventBus;
 
 /**
- * Initial the camera
+ * 二维码扫码页面，目前既支持二维码自动扫码，也支持手动输入
  *
  * @author Talon
  */

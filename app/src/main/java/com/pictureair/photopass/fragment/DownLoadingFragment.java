@@ -48,6 +48,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import de.greenrobot.event.EventBus;
 
 /**
+ * 下载管理－下载中的tab
  * Created by pengwu on 16/7/8.
  */
 public class DownLoadingFragment extends BaseFragment implements View.OnClickListener,AdapterView.OnItemClickListener {

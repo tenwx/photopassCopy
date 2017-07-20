@@ -60,6 +60,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+/**
+ * 制作礼物页面，按照目前来讲，其实就是商店的一个变种。初始目的，图片和商品合成的预览图
+ */
 public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private ListView goodsGridView;
     private MakegiftGoodsAdapter mAdapter;

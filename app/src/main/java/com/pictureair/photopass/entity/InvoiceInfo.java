@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * 发票实体类
  * Created by jiaxing on 16/6/13.
  */
 public class InvoiceInfo implements Parcelable {

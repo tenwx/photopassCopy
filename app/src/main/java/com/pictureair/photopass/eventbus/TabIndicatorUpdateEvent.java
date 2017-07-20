@@ -1,6 +1,7 @@
 package com.pictureair.photopass.eventbus;
 
 /**
+ * 下载管理事件
  * Created by pengwu on 16/7/11.
  */
 public class TabIndicatorUpdateEvent implements BaseBusEvent{

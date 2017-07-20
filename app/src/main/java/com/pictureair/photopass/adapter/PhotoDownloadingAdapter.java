@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
+ * 图片下载
  * Created by pengwu on 16/7/11.
  */
 public class PhotoDownloadingAdapter extends BaseAdapter {

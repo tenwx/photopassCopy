@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 升级类
  * Created by bauer_bao on 16/11/29.
  */
 

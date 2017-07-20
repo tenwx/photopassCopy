@@ -22,7 +22,7 @@ import java.io.File;
 
 
 /**
- * 播放视频（需要优化播放）
+ * 播放视频
  *
  * @author bass
  */

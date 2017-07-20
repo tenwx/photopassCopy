@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Id;
 import java.io.Serializable;
 
 /**
- *
+ * 断点下载
  * 线程信息
  * Created by bass on 16/3/1.
  */

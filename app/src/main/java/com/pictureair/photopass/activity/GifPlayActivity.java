@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.pictureair.photopass.R;
 
 /**
- * gif播放页面
+ * gif播放页面，目前没有用到了
  * Created by bauer_bao on 16/12/8.
  */
 

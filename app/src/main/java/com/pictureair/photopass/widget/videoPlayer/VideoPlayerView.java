@@ -18,7 +18,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import java.io.IOException;
 
 /**
- * 播放器
+ * 播放器，基于MediaPlayer实现
  * 1.setVideoPath
  * 2.cancelDelayHide();
  * 3.hideControllerDelay();

@@ -19,6 +19,9 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 
+/**
+ * 订单详情
+ */
 public class OrderProductDetailAdapter extends BaseAdapter {
     private ArrayList<CartItemInfo> list;
     private LayoutInflater inflater;

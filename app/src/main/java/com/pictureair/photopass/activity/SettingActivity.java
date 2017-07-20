@@ -25,8 +25,8 @@ import com.pictureair.photopass.util.SettingUtil;
 import java.lang.ref.WeakReference;
 
 /**
+ * 用户功能设置
  * @author talon
- *         用户功能设置
  */
 public class SettingActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;

@@ -5,6 +5,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import java.util.List;
 
 /**
+ * pp删除事件
  * Created by pengwu on 16/12/15.
  */
 

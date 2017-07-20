@@ -45,7 +45,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.exceptions.Exceptions;
 import rx.functions.Func1;
 
-
+/**
+ * 图片编辑 边框，滤镜，饰品的适配器
+ */
 public class EditActivityAdapter extends RecyclerView.Adapter<EditActivityAdapter.EditHolder> implements PWDialog.OnPWDialogClickListener {
     private Context mContext;
     private List<String> stickerPathList;

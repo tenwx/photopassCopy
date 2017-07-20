@@ -4,6 +4,7 @@ versionCode 14     versionName "3.0.3"
 更新要点：
 1.升级银联控件3.3.7
 2.升级百度统计sdk
+3.添加log追踪日志功能的代码，没有实际启用
 
 -------17/6/21--------
 versionCode 13     versionName "3.0.2"
@@ -200,3 +201,16 @@ jniLibs
   -libpw_cipher_manager.so  key管理
   -libsqlcipher.so          sqlcipher
   -libuptsmaddon.so         银联
+
+主要构成
+    基础          rxjava + retrofit + okhttp + glide + eventbus + butterknife + greendao & sqlcipher
+    客服          Udesk
+    统计          百度 & 听云 & 友盟统计
+    支付          支付宝 & 微信 & ipaylinks & 银联
+    分享          sharesdk
+    长链接         socketio
+    二维码         zxing
+    内存泄露        leakCanary
+    字体替换        calligraphy
+
+架构模式    mvc + mvp 杂糅

@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
- * 优惠卷view
+ * 优惠券view
  * bass
  */
 public class CouponActivity extends BaseActivity implements CouponViewInterface{

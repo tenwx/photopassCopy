@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * 手机注册
+ * 手机注册或者忘记密码
  * Created by bass on 16/4/27.
  */
 public class RegisterOrForgetActivity extends BaseActivity implements RegisterOrForgetCallback, View.OnClickListener, TextWatcher, PWDialog.OnPWDialogClickListener {

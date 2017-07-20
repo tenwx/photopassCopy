@@ -36,6 +36,9 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
+/**
+ * 开发票页面
+ */
 public class InvoiceActivity extends BaseActivity implements View.OnClickListener {
     private final static int ADD_ADDRESS=101;
     private final static int MODI_ADDRESS=102;

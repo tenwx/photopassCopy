@@ -16,6 +16,7 @@ import com.pictureair.photopass.util.GlideUtil;
 import java.util.List;
 
 /**
+ * 图片下载成功
  * Created by pengwu on 16/7/8.
  */
 public class PhotoLoadSuccessAdapter extends BaseAdapter {

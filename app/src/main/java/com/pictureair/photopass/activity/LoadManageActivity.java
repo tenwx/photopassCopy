@@ -28,6 +28,9 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
+/**
+ * 下载管理页面
+ */
 public class LoadManageActivity extends BaseFragmentActivity implements ViewPager.OnPageChangeListener,View.OnClickListener{
 
     private TabPageIndicator indicator;

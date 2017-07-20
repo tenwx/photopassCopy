@@ -17,6 +17,9 @@ import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskConfig;
 
+/**
+ * 第三方客服入口，目前一直没有启用
+ */
 public class OpinionsActivity extends BaseActivity implements View.OnClickListener{
 
 

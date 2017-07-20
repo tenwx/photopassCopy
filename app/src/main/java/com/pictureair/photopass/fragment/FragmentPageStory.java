@@ -83,9 +83,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * PhotoPass照片的图片墙，用来显示从服务器返回的照片信息，以及通过magic相机拍摄的图片
- * 可以左右滑动切换不同的相册
- * 可以下拉刷新，获取更多的图片信息
+ * 一卡一天的列表
  */
 public class FragmentPageStory extends BaseFragment implements OnClickListener, DailyPPCardRecycleAdapter.OnRecyclerViewItemClickListener, PWDialog.OnPWDialogClickListener {
     //声明静态变量

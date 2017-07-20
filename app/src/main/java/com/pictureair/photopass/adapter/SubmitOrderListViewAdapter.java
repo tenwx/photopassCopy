@@ -22,6 +22,9 @@ import com.pictureair.photopass.util.ScreenUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 订单提交
+ */
 public class SubmitOrderListViewAdapter extends BaseAdapter {
     private ArrayList<CartItemInfo> arrayList;
     private Context context;

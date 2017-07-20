@@ -23,6 +23,9 @@ import com.trello.rxlifecycle.android.ActivityEvent;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * 忘记密码
+ */
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private EditTextWithClear oldPassword, newPassword;
     private Button submit;

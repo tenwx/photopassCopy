@@ -20,6 +20,9 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * 网页
+ */
 public class WebViewActivity extends BaseActivity implements CustomWebView.MyWebviewImp {
     private CustomWebView webView;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;

@@ -37,6 +37,9 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * 订单item
+ */
 public class OrderListViewAdapter extends BaseExpandableListAdapter implements PWDialog.OnPWDialogClickListener {
     private LayoutInflater mInflater;
     private Context context;

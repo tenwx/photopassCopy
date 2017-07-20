@@ -8,6 +8,9 @@ import android.widget.ImageView;
 
 import java.util.List;
 
+/**
+ * 广告位adapter
+ */
 public class BannerViewAdapter extends PagerAdapter {
 	private List<ImageView> list;
 	

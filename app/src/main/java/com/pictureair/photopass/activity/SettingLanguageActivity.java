@@ -19,6 +19,9 @@ import com.pictureair.photopass.util.SPUtils;
 
 import java.util.Locale;
 
+/**
+ * 语言设置页面
+ */
 public class SettingLanguageActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private static final String TAG = "SettingLanguageActivity";
     private Configuration config;

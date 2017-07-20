@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- *
+ * 选择照片页面
  * @author bauer_bao
  */
 

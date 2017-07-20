@@ -77,7 +77,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
 /**
- * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
+ * 包含四个页面，photo显示、发现导航、商城，账号设置，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
 public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback,

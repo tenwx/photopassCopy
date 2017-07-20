@@ -51,6 +51,9 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * 订单提交页面
+ */
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
     public static int PREVIEW_COUPON_CODE = 10000;

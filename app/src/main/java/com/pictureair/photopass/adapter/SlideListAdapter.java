@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 侧边栏列表
  * Created by pengwu on 16/11/29.
  */
 

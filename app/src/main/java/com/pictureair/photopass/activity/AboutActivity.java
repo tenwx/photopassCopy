@@ -84,13 +84,14 @@ public class AboutActivity extends BaseActivity {
 
     private class MyURLSpan extends ClickableSpan {
         final String mUrl;
+
         MyURLSpan(String url) {
             mUrl = url;
         }
 
         @Override
         public void onClick(View widget) {
-            Intent intent=new Intent();
+            Intent intent = new Intent();
             intent.putExtra("key", Integer.valueOf(mUrl));
             intent.setClass(AboutActivity.this, WebViewActivity.class);
             startActivity(intent);

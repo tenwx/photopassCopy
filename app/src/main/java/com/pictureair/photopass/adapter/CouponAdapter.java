@@ -19,6 +19,7 @@ import com.pictureair.photopass.util.CouponTool;
 import java.util.List;
 
 /**
+ * 抵用券
  * Created by bass on 16/3/11.
  */
 public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHolder> implements View.OnClickListener {

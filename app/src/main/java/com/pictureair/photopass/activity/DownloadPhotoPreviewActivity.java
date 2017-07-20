@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * 下载的图片预览页面
  * Created by pengwu on 16/7/29.
  */
 public class DownloadPhotoPreviewActivity extends BaseActivity implements View.OnClickListener,PhotoEventListener {

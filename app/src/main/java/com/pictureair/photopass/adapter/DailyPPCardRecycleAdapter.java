@@ -21,6 +21,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import java.util.ArrayList;
 
 /**
+ * 首页一卡一天的adapter
  * Created by bauer_bao on 16/11/10.
  */
 

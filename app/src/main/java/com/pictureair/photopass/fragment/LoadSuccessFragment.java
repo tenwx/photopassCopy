@@ -48,6 +48,7 @@ import java.util.concurrent.Executors;
 import de.greenrobot.event.EventBus;
 
 /**
+ * 下载管理－下载成功
  * Created by pengwu on 16/7/8.
  */
 public class LoadSuccessFragment extends BaseFragment implements View.OnClickListener,AdapterView.OnItemClickListener{

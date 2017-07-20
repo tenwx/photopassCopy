@@ -39,6 +39,9 @@ import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 邮箱登录页面
+ */
 public class OtherLoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener ,TextWatcher, PWDialog.OnPWDialogClickListener, RegisterOrForgetCallback{
     private static final String TAG = "OtherLoginActivity";
     // 申明控件

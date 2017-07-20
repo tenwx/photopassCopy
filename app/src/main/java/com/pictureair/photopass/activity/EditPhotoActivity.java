@@ -22,7 +22,10 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.PWToast;
 import com.trello.rxlifecycle.components.RxActivity;
 
-//显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
+/**
+ * 编辑图片的功能
+ * 显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
+ */
 public class EditPhotoActivity extends BaseActivity implements View.OnClickListener, IPWEditView, PWDialog.OnPWDialogClickListener, StickerView.OnStickItemDeleteListener {
     private PWEditPresenter pwEditPresenter;
     private PWToast myToast;

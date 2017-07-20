@@ -41,6 +41,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
+ * 订单
  * Created by bass on 16/4/25.
  */
 public class OrderFragment extends Fragment implements OrderListViewAdapter.RemoveOrderItemListener{

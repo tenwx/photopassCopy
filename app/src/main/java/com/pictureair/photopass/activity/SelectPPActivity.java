@@ -41,7 +41,8 @@ import java.util.ArrayList;
 
 import rx.android.schedulers.AndroidSchedulers;
 
-/*
+/**
+ * 选择pp升级页面
  * @author talon
  */
 public class SelectPPActivity extends BaseActivity implements View.OnClickListener, PWDialog.OnPWDialogClickListener {

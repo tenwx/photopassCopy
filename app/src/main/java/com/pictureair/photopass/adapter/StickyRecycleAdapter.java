@@ -22,6 +22,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import java.util.ArrayList;
 
 /**
+ * 首页图片悬浮
  * Created by bauer_bao on 16/11/10.
  */
 

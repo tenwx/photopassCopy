@@ -14,6 +14,7 @@ import com.pictureair.photopass.entity.SendAddress;
 import java.util.List;
 
 /**
+ * 收货地址
  * Created by jiaxing on 16/5/19.
  */
 public class SendAddressAdapter extends BaseAdapter {

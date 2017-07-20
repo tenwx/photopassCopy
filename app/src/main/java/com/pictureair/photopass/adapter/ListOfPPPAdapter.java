@@ -29,7 +29,9 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
 
-/**pp+数据的适配器*/
+/**
+ * pp+数据的适配器
+ */
 public class ListOfPPPAdapter extends BaseAdapter {
 	private static final String TAG = "MyPPPActivity";
 	private ArrayList<?> arrayList = null;

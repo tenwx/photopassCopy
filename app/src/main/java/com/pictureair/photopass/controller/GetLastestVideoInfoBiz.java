@@ -19,6 +19,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
+ * 获取视频最新数据的逻辑
  * Created by bauer_bao on 16/9/18.
  */
 public class GetLastestVideoInfoBiz implements GetLastestVideoInfoContract.Model {

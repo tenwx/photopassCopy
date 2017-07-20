@@ -50,6 +50,9 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * 目前只针对发票的收货地址的管理
+ */
 public class NewAddressActivity extends BaseActivity implements View.OnClickListener {
     private String AddressXML;// xml格式的中国省市区信息
     private List<ProvinceModel> provinceList; // 地址列表

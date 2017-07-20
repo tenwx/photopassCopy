@@ -9,6 +9,9 @@ import com.pictureair.photopass.widget.CompositeImageProductView;
 
 import java.util.List;
 
+/**
+ * 商品合成预览adapter
+ */
 public class CompositeImageProductAdapter extends PagerAdapter {
 	private List<CompositeImageProductView> list;
 	

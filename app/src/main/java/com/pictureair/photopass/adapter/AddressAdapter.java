@@ -14,8 +14,8 @@ import com.pictureair.photopass.entity.Address;
 import java.util.List;
 
 /**
- * Created by milo on 15/12/19.
  * 地址选择适配器
+ * Created by milo on 15/12/19.
  */
 public class AddressAdapter extends BaseAdapter {
     private Context context;

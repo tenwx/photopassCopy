@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 /**
+ * 下载管理
  * Created by pengwu on 16/7/8.
  */
 public class DownLoadFramentAdapter extends FragmentPagerAdapter {

@@ -46,6 +46,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
+ * 未购买视频的广告页面
  * Created by bauer_bao on 16/9/2.
  */
 public class ADVideoDetailProductActivity extends BaseActivity implements View.OnClickListener {
