@@ -201,7 +201,7 @@
         android:layout_above="@id/discountPriceLinearLayout"
         android:background="@color/gray_light5" />
 
-    <com.pictureair.photopassCopy.widget.NoNetWorkOrNoCountView
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/noNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

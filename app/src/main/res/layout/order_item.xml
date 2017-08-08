@@ -92,7 +92,7 @@
             android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
-    <com.pictureair.photopassCopy.widget.DashedLineView
+    <com.pictureair.photopass.widget.DashedLineView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
@@ -211,7 +211,7 @@
             android:textSize="@dimen/text_size_14" />
     </LinearLayout>
 
-    <com.pictureair.photopassCopy.widget.DashedLineView
+    <com.pictureair.photopass.widget.DashedLineView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/pp_dp_16"

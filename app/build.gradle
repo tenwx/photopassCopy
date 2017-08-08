@@ -8,7 +8,7 @@ android {
     buildToolsVersion '25.0.2'
 
     defaultConfig {
-        applicationId "com.pictureair.photopassCopy"
+        applicationId "com.pictureair.photopass"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 14
@@ -83,7 +83,7 @@ repositories {
 greendao {
     schemaVersion 4 //指定数据库版本号
     targetGenDir 'src/main/java' //生成数据库文件的目录
-    daoPackage 'com.pictureair.photopassCopy.greendao' //dao的包名
+    daoPackage 'com.pictureair.photopass.greendao' //dao的包名
 }
 
 dependencies {

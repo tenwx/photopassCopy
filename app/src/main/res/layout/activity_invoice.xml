@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/immersive_color"
-    tools:context="com.pictureair.photopassCopy.activity.InvoiceActivity">
+    tools:context="com.pictureair.photopass.activity.InvoiceActivity">
 
     <RelativeLayout
         android:id="@+id/head"
@@ -192,7 +192,7 @@
                         android:layout_height="@dimen/pp_dp_1"
                         android:background="@color/pp_light_gray_normal" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/invoice_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                         android:textSize="@dimen/text_size_14"
                         android:visibility="gone" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/invoice_id_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -324,7 +324,7 @@
                     android:background="@color/pp_light_gray_normal"
                     android:visibility="gone" />
 
-                <com.pictureair.photopassCopy.widget.NoScrollListView
+                <com.pictureair.photopass.widget.NoScrollListView
                     android:id="@+id/invoice_address_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

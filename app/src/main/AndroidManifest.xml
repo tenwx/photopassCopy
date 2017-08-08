@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pictureair.photopassCopy">
+    package="com.pictureair.photopass">
 
     <supports-screens
         android:anyDensity="true"
@@ -43,7 +43,7 @@
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
-        android:name="com.pictureair.photopassCopy.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
@@ -51,7 +51,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.pictureair.photopassCopy.activity.StartActivity"
+            android:name=".activity.StartActivity"
             android:configChanges="keyboard|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -73,67 +73,67 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.pictureair.photopassCopy.activity.CouponActivity"
+            android:name=".activity.CouponActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/StartActivityTheme"/>
         <activity
-            android:name="com.pictureair.photopassCopy.activity.MainTabActivity"
+            android:name=".activity.MainTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme2" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.EditStoryAlbumActivity"
+            android:name=".activity.EditStoryAlbumActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.ProfileActivity"
+            android:name=".activity.ProfileActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.DetailProductActivity"
+            android:name=".activity.DetailProductActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SelectPhotoActivity"
+            android:name=".activity.SelectPhotoActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SelectCountryActivity"
+            android:name=".activity.SelectCountryActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.AddPPPCodeActivity"
+            android:name=".activity.AddPPPCodeActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.PreviewProductActivity"
+            android:name=".activity.PreviewProductActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SubmitOrderActivity"
+            android:name=".activity.SubmitOrderActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.CartActivity"
+            android:name=".activity.CartActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.PaymentOrderActivity"
+            android:name=".activity.PaymentOrderActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -145,133 +145,133 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.pictureair.photopassCopy.activity.MyPPPActivity"
+            android:name=".activity.MyPPPActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.PreviewPhotoActivity"
+            android:name=".activity.PreviewPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.EditPhotoActivity"
+            android:name=".activity.EditPhotoActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SettingActivity"
+            android:name=".activity.SettingActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.MakegiftActivity"
+            android:name=".activity.MakegiftActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.PPPDetailProductActivity"
+            android:name=".activity.PPPDetailProductActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.OrderActivity"
+            android:name=".activity.OrderActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme2"/>
         <activity
-            android:name="com.pictureair.photopassCopy.activity.OrderDetailActivity"
+            android:name=".activity.OrderDetailActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.OtherLoginActivity"
+            android:name=".activity.OtherLoginActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.OtherRegisterActivity"
+            android:name=".activity.OtherRegisterActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.UpdateUserinfoActivity"
+            android:name=".activity.UpdateUserinfoActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SettingLanguageActivity"
+            android:name=".activity.SettingLanguageActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.AboutActivity"
+            android:name=".activity.AboutActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.ModifyPasswordActivity"
+            android:name=".activity.ModifyPasswordActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <!-- 扫描 -->
         <activity
-            android:name="com.pictureair.photopassCopy.activity.MipCaptureActivity"
+            android:name=".activity.MipCaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.WebViewActivity"
+            android:name=".activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <!-- Disney Video start -->
         <activity
-            android:name="com.pictureair.photopassCopy.activity.VideoPlayerActivity"
+            android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- Disney Video end -->
 
         <activity
-            android:name="com.pictureair.photopassCopy.activity.ADVideoDetailProductActivity"
+            android:name=".activity.ADVideoDetailProductActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
 
         <!-- 忘记密码 -->
         <activity
-            android:name="com.pictureair.photopassCopy.activity.FindPasswordActivity"
+            android:name=".activity.FindPasswordActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.pictureair.photopassCopy.activity.RegisterOrForgetActivity"
+            android:name=".activity.RegisterOrForgetActivity"
             android:configChanges="keyboard|orientation"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.pictureair.photopassCopy.activity.SelectPPActivity"
+            android:name=".activity.SelectPPActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.pictureair.photopassCopy.activity.InvoiceActivity"
+            android:name=".activity.InvoiceActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.pictureair.photopassCopy.activity.NewAddressActivity"
+            android:name=".activity.NewAddressActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.pictureair.photopassCopy.activity.GifPlayActivity"
+            android:name=".activity.GifPlayActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 
         <!-- download photo begin -->
         <activity
-            android:name="com.pictureair.photopassCopy.activity.LoadManageActivity"
+            android:name=".activity.LoadManageActivity"
             android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.pictureair.photopassCopy.activity.DownloadPhotoPreviewActivity"
+            android:name=".activity.DownloadPhotoPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"/>
         <!-- download photo end -->
 
         <!-- panic buy begin-->
-        <activity android:name="com.pictureair.photopassCopy.activity.PanicBuyActivity"
+        <activity android:name=".activity.PanicBuyActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
         <!-- panic buy end-->
@@ -305,14 +305,14 @@
 
         <!-- wechat支付 -->
         <activity
-            android:name="com.pictureair.photopassCopy.wxapi.WXPayEntryActivity"
+            android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- 客服系统 -->
         <activity
-            android:name="com.pictureair.photopassCopy.activity.OpinionsActivity"
+            android:name=".activity.OpinionsActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
         <!-- 客服系统 -->
@@ -386,7 +386,7 @@
 
         <!-- 微信分享回调 -->
         <activity
-            android:name="com.pictureair.photopassCopy.wxapi.WXEntryActivity"
+            android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
@@ -394,7 +394,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service
-            android:name="com.pictureair.photopassCopy.service.DownloadService"
+            android:name=".service.DownloadService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -411,12 +411,12 @@
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->
-        <service android:name="com.pictureair.photopassCopy.service.NotificationService" />
-        <service android:name="com.pictureair.photopassCopy.service.BreakpointDownloadService" />
+        <service android:name=".service.NotificationService" />
+        <service android:name=".service.BreakpointDownloadService" />
 
         <!-- 开机自启 -->
         <receiver
-            android:name="com.pictureair.photopassCopy.receiver.BootReceiver"
+            android:name=".receiver.BootReceiver"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

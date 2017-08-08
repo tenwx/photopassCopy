@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <com.pictureair.photopassCopy.zxing.view.ViewfinderView
+    <com.pictureair.photopass.zxing.view.ViewfinderView
         android:id="@+id/viewfinder_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -150,7 +150,7 @@
             android:layout_below="@+id/scancodetextview"
             android:padding="@dimen/pp_dp_10">
 
-            <com.pictureair.photopassCopy.widget.EditTextWithClear
+            <com.pictureair.photopass.widget.EditTextWithClear
                 android:id="@+id/input_manaul_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_dp_40"

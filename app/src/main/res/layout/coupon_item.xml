@@ -32,7 +32,7 @@
         android:padding="@dimen/pp_dp_16">
 
         <!-- 优惠卷名字-->
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:textSize="@dimen/text_size_16" />
 
         <!-- 有效期-->
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_validity_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             android:textSize="@dimen/text_size_12" />
 
         <!-- 描述-->
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_describe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:textSize="@dimen/text_size_12" />
 
         <!-- 优惠卷价格或者折扣-->
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
             android:textSize="@dimen/text_size_20" />
 
         <!-- 状态-->
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

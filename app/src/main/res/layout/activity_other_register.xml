@@ -79,7 +79,7 @@
                         android:adjustViewBounds="true"
                         android:src="@drawable/login_email" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/other_sign_email"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -116,7 +116,7 @@
                         android:adjustViewBounds="true"
                         android:src="@drawable/login_code" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/other_sign_password"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -154,7 +154,7 @@
                         android:adjustViewBounds="true"
                         android:src="@drawable/login_code" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/other_sign_password2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -192,7 +192,7 @@
                         android:adjustViewBounds="true"
                         android:src="@drawable/login_nn" />
 
-                    <com.pictureair.photopassCopy.widget.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/other_sign_name"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

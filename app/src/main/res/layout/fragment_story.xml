@@ -39,7 +39,7 @@
                 android:src="@drawable/menu" />
         </RelativeLayout>
 
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -88,7 +88,7 @@
         android:paddingTop="@dimen/pp_dp_8"
         android:visibility="gone">
 
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/special_deal_on"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
             android:layout_marginRight="@dimen/pp_dp_5"
             android:background="@color/pp_gray" />
 
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/special_deal_detail_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                         android:adjustViewBounds="true"
                         android:src="@drawable/story_tips_bg" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_top_tip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/scan_pp1" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_scan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
                         android:textSize="@dimen/text_size_20"
                         android:textStyle="bold" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_scan_tip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
                         android:textColor="@color/pp_blue"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_buy_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_activate_daily_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -230,7 +230,7 @@
                         android:textColor="@color/pp_blue"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/story_activate_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -249,14 +249,14 @@
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.pictureair.photopassCopy.widget.NoNetWorkOrNoCountView
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/storyNoNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/special_deal_ll"
         android:visibility="gone" />
 
-    <com.pictureair.photopassCopy.widget.DraftLayout
+    <com.pictureair.photopass.widget.DraftLayout
         android:id="@+id/draft_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -282,5 +282,5 @@
             android:paddingRight="8dp"
             android:paddingTop="5dp"
             android:src="@drawable/float_hide" />
-    </com.pictureair.photopassCopy.widget.DraftLayout>
+    </com.pictureair.photopass.widget.DraftLayout>
 </RelativeLayout>

@@ -46,7 +46,7 @@
             android:textColor="@color/pp_gray"
             android:textSize="15sp" />
 
-        <com.pictureair.photopassCopy.widget.country.SideBar
+        <com.pictureair.photopass.widget.country.SideBar
             android:id="@+id/sidrbar"
             android:layout_width="30.0dip"
             android:layout_height="match_parent"

@@ -103,7 +103,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <com.pictureair.photopassCopy.widget.MyScrollView
+    <com.pictureair.photopass.widget.MyScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -116,7 +116,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.pictureair.photopassCopy.widget.BannerView_PreviewCompositeProduct
+            <com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct
                 android:id="@+id/bannerview_makegift_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/pp_dp_16">
 
-                <com.pictureair.photopassCopy.widget.CustomTextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:id="@+id/product_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/pp_dp_5">
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                         android:textSize="@dimen/text_size_14" />
 
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/textview_productprice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                         android:textColor="@color/pp_blue"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.pictureair.photopassCopy.widget.CustomTextView
+                    <com.pictureair.photopass.widget.CustomTextView
                         android:id="@+id/detail_receive_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
 
             </LinearLayout>
         </LinearLayout>
-    </com.pictureair.photopassCopy.widget.MyScrollView>
+    </com.pictureair.photopass.widget.MyScrollView>
 
     <LinearLayout
         android:id="@+id/buttonllout"

@@ -76,7 +76,7 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/login_email" />
 
-                <com.pictureair.photopassCopy.widget.EditTextWithClear
+                <com.pictureair.photopass.widget.EditTextWithClear
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -98,7 +98,7 @@
                 android:layout_height="@dimen/pp_px_1"
                 android:background="@color/white" />
 
-            <com.pictureair.photopassCopy.widget.CustomButtonFont
+            <com.pictureair.photopass.widget.CustomButtonFont
                 android:id="@+id/btn_send_email"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_dp_40"
@@ -119,7 +119,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <com.pictureair.photopassCopy.widget.CustomTextView
+            <com.pictureair.photopass.widget.CustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/pp_dp_30"
                 android:layout_marginTop="@dimen/pp_dp_20"
@@ -129,7 +129,7 @@
                 android:textSize="@dimen/text_size_16" />
 
 
-            <com.pictureair.photopassCopy.widget.CustomButtonFont
+            <com.pictureair.photopass.widget.CustomButtonFont
                 android:id="@+id/btn_back_login"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/pp_dp_40"

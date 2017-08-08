@@ -482,7 +482,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						}
 						break;
 
-					case 1://photopassCopy
+					case 1://photopass
 						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,

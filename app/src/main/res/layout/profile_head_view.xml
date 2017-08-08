@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true">
 
-        <com.pictureair.photopassCopy.widget.CustomTextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:rotation="180"
             android:src="@drawable/back_white" />
 
-        <com.pictureair.photopassCopy.widget.CircleImageView
+        <com.pictureair.photopass.widget.CircleImageView
             android:id="@+id/user_photo"
             android:layout_width="@dimen/pp_dp_80"
             android:layout_height="@dimen/pp_dp_80"

@@ -765,7 +765,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         e.printStackTrace();
                     }
 
-                } else if (tabName.equals("photopassCopy")) {//获取pp图片
+                } else if (tabName.equals("photopass")) {//获取pp图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,

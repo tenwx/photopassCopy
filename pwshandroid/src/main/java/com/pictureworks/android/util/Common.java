@@ -9,7 +9,7 @@ public class Common {
     public static final String APP_NAME = "appName";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
-    public static final String PACKGE_NAME = "com.pictureair.photopassCopy";// 应用包名
+    public static final String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
 
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
@@ -300,7 +300,7 @@ public class Common {
     public static final String ALBUM_BOUGHT = "Bought";
 
     //图片保存文件夹名字字段
-    public static final String ALBUM_FILE_PICTURE_NAME = "photopassCopy";
+    public static final String ALBUM_FILE_PICTURE_NAME = "photopass";
 
 
     //其他字段
