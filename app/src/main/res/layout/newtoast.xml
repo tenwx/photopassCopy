@@ -6,7 +6,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
-    <com.pictureair.photopass.widget.CustomTextView
+    <com.pictureair.photopassCopy.widget.CustomTextView
         android:id="@+id/toast_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

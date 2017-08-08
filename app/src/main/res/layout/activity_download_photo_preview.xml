@@ -79,7 +79,7 @@
         android:layout_below="@id/head2"
         android:background="@color/pp_light_gray_background">
 
-        <com.pictureair.photopass.GalleryWidget.GalleryViewPager
+        <com.pictureair.photopassCopy.GalleryWidget.GalleryViewPager
             android:id="@+id/download_preview_viewer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

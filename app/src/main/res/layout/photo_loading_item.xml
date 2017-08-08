@@ -40,7 +40,7 @@
         android:layout_centerVertical="true"
         android:orientation="vertical">
 
-        <com.pictureair.photopass.widget.CircleProgressImage
+        <com.pictureair.photopassCopy.widget.CircleProgressImage
             android:id="@+id/photo_loading_img_status"
             android:layout_width="25dp"
             android:layout_height="25dp"

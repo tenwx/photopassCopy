@@ -47,7 +47,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.pictureair.photopass.widget.EditTextWithClear
+            <com.pictureair.photopassCopy.widget.EditTextWithClear
                 android:id="@+id/input_manaul_edittext"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/pp_dp_40"

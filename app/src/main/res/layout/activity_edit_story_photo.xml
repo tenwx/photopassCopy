@@ -68,7 +68,7 @@
         android:layout_above="@+id/bottom_rl"
         android:layout_below="@id/layout1">
 
-        <com.pictureair.photopass.widget.PWStickySectionRecyclerView
+        <com.pictureair.photopassCopy.widget.PWStickySectionRecyclerView
             android:id="@+id/pullToRefreshPinnedSectionListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -243,7 +243,7 @@
                     android:layout_weight="3" />
             </LinearLayout>
 
-            <com.pictureair.photopass.widget.CustomTextView
+            <com.pictureair.photopassCopy.widget.CustomTextView
                 android:id="@+id/no_photo_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -292,7 +292,7 @@
             android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+    <com.pictureair.photopassCopy.widget.NoNetWorkOrNoCountView
         android:id="@+id/edit_story_no_net_count_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

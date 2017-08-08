@@ -86,7 +86,7 @@
         android:layout_height="@dimen/pp_dp_40"
         android:orientation="horizontal">
 
-        <com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator
+        <com.pictureair.photopassCopy.widget.viewpagerindicator.TabPageIndicator
             android:id="@+id/load_manage_indicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

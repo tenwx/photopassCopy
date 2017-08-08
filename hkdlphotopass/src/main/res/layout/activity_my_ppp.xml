@@ -62,7 +62,7 @@
 
     </RelativeLayout>
 
-    <!--<com.pictureair.photopass.widget.BannerView_PPPIntroduce-->
+    <!--<photopassCopyCopy.widget.BannerView_PPPIntroduce-->
         <!--android:id="@+id/nopppinfo"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->

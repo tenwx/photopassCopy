@@ -20,7 +20,7 @@
             android:scrollbars="none" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+    <com.pictureair.photopassCopy.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

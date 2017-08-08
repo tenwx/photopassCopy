@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
-    tools:context="com.pictureair.photopass.activity.AboutActivity">
+    tools:context="com.pictureair.photopassCopy.activity.AboutActivity">
 
     <LinearLayout
         android:id="@+id/head2"

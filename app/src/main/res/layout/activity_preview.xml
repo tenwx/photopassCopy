@@ -87,7 +87,7 @@
         android:layout_above="@+id/llbutton"
         android:layout_below="@+id/head2">
 
-        <com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct
+        <com.pictureair.photopassCopy.widget.BannerView_PreviewCompositeProduct
             android:id="@+id/bannerview_preview_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

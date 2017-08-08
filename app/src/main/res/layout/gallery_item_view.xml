@@ -80,7 +80,7 @@
             android:layout_below="@+id/gallery_item_time_tv"
             android:layout_margin="@dimen/pp_dp_10">
 
-            <com.pictureair.photopass.GalleryWidget.TouchImageView
+            <com.pictureair.photopassCopy.GalleryWidget.TouchImageView
                 android:id="@+id/gallery_item_photo_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

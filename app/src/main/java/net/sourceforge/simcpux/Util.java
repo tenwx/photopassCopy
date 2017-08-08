@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopassCopy.util.PictureAirLog;
 
 import junit.framework.Assert;
 

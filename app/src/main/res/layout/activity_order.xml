@@ -118,7 +118,7 @@
             android:flipInterval="10"
             android:persistentDrawingCache="animation" />
 
-        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        <com.pictureair.photopassCopy.widget.NoNetWorkOrNoCountView
             android:id="@+id/nonetwork_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

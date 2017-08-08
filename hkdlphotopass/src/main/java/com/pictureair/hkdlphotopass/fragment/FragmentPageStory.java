@@ -1042,7 +1042,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     /**
      * 数据组合排序
-     * 遍历已经存在了的图片资源，分成四大类，all，photopass，magic，bought
+     * 遍历已经存在了的图片资源，分成四大类，all，photopassCopy，magic，bought
      *
      * @throws ParseException
      */

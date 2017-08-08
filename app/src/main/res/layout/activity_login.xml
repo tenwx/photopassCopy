@@ -112,7 +112,7 @@
                 android:layout_marginTop="2dp"
                 android:background="@color/white" />
 
-            <com.pictureair.photopass.widget.EditTextWithClear
+            <com.pictureair.photopassCopy.widget.EditTextWithClear
 
                 android:id="@+id/login_username"
                 android:layout_width="match_parent"
@@ -150,7 +150,7 @@
                 android:adjustViewBounds="true"
                 android:src="@drawable/login_code" />
 
-            <com.pictureair.photopass.widget.EditTextWithClear
+            <com.pictureair.photopassCopy.widget.EditTextWithClear
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

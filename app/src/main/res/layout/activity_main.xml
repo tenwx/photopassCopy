@@ -53,7 +53,7 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_photos_nor" />
 
-                    <com.pictureair.photopass.widget.dropview.WaterDrop
+                    <com.pictureair.photopassCopy.widget.dropview.WaterDrop
                         android:id="@+id/waterdrop"
                         android:layout_width="@dimen/pp_dp_10"
                         android:layout_height="@dimen/pp_dp_10"

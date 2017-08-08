@@ -3,7 +3,7 @@
     android:id="@+id/bg_update_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pictureair.photopass.activity.UpdateUserinfoActivity">
+    tools:context="com.pictureair.photopassCopy.activity.UpdateUserinfoActivity">
 
     <LinearLayout
         android:id="@+id/head2"
@@ -25,7 +25,7 @@
         android:orientation="vertical"
         android:padding="@dimen/pp_dp_16">
 
-        <com.pictureair.photopass.widget.EditTextWithClear
+        <com.pictureair.photopassCopy.widget.EditTextWithClear
             android:id="@+id/et_userinfo_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

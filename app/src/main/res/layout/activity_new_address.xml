@@ -97,7 +97,7 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.pictureair.photopass.widget.EditTextWithClear
+                <com.pictureair.photopassCopy.widget.EditTextWithClear
                     android:id="@+id/newaddress_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.pictureair.photopass.widget.EditTextWithClear
+                <com.pictureair.photopassCopy.widget.EditTextWithClear
                     android:id="@+id/newaddress_phone_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -301,7 +301,7 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.pictureair.photopass.widget.EditTextWithClear
+                <com.pictureair.photopassCopy.widget.EditTextWithClear
                     android:id="@+id/newaddress_detail_addr_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

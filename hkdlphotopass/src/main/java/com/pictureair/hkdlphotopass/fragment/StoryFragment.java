@@ -58,7 +58,7 @@ public class StoryFragment extends Fragment {
 	private static StoryFragment storyFragment;
 
 	private static final int REFRESH = 666;
-	private String[] tabName = {"all", "photopass", "local", "bought", "favourite"};
+	private String[] tabName = {"all", "photopassCopy", "local", "bought", "favourite"};
 	
 	public static StoryFragment getInstance(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int tab, Handler h){
 //		System.out.println("storyfragment----->getinstance");
