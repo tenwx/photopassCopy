@@ -151,6 +151,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
     private String cartId = null;
+    private String siteId;
 
     private Handler previewPhotoHandler;
 
@@ -411,7 +412,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 netWorkOrNoCountView.setVisibility(View.GONE);
                                 photoFraRelativeLayout.setVisibility(View.VISIBLE);
                                 for (int i = 0; i < responseArray.size(); i++) {
-                                    PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i));
+                                    PhotoInfo photoInfo = JsonUtil.getPhoto(responseArray.getJSONObject(i), "");
                                     if (photoInfo != null) {
                                         photoInfo.setId(1L);
                                         photolist.add(photoInfo);
@@ -447,7 +448,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 photoFraRelativeLayout.setVisibility(View.VISIBLE);
                                 JSONArray jsonArray = (JSONArray) object;
                                 for (int i = 0; i < jsonArray.size(); i++) {
-                                    PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i));
+                                    PhotoInfo photoInfo = JsonUtil.getPhoto(jsonArray.getJSONObject(i), "");
                                     if (photoInfo != null) {
                                         photoInfo.setId(1L);
                                         photolist.add(photoInfo);
@@ -482,6 +483,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 //获取intent传递过来的信息
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
+                siteId = bundle.getString("siteId");
                 currentPosition = bundle.getInt("position", 0);
                 PictureAirLog.out("currentposition---->" + currentPosition);
                 tabName = bundle.getString("tab");
@@ -491,7 +493,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     currentShootDate = bundle.getString("shootDate");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insertSortFavouritePhotos(
-                            PictureAirDbManager.getPhotoInfosByPPCode(currentPPCode, currentShootDate, locationList, MyApplication.getInstance().getLanguageType()), false));
+                            PictureAirDbManager.getPhotoInfosByPPCode(currentPPCode, currentShootDate, siteId, locationList, MyApplication.getInstance().getLanguageType()), false));
 
                 } else {//获取列表图片， other，不需要根据photoid重新找到地点
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
@@ -849,7 +851,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case R.id.preview_blur_dialog_buy_photo_ll:
+            case R.id.preview_blur_dialog_buy_photo_ll://去买单张照片
                 if (sheetDialog.isShowing()) {
                     sheetDialog.dismiss();
                 }
@@ -867,7 +869,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 buyPhoto(photoInfo.getPhotoId());
                 break;
 
-            case R.id.preview_blur_dialog_buy_ppp_ll:
+            case R.id.preview_blur_dialog_buy_ppp_ll://去买pp+
                 if (sheetDialog.isShowing()) {
                     sheetDialog.dismiss();
                 }
@@ -884,7 +886,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 buyPPP();
                 break;
 
-            case R.id.preview_blur_dialog_upgrade_photo_ll:
+            case R.id.preview_blur_dialog_upgrade_photo_ll://使用已有的一卡通
                 if (sheetDialog.isShowing()) {
                     sheetDialog.dismiss();
                 }
@@ -902,7 +904,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
-            case R.id.preview_blur_dialog_upgrade_daily_photo_ll:
+            case R.id.preview_blur_dialog_upgrade_daily_photo_ll://使用已有的一日通
                 if (sheetDialog.isShowing()) {
                     sheetDialog.dismiss();
                 }
@@ -981,7 +983,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
-        API2.getPPPsByShootDate(shootDate)
+        API2.getPPPsByShootDate(shootDate, photoInfo.getLocationId())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {

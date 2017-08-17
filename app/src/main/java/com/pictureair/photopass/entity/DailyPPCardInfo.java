@@ -16,6 +16,7 @@ public class DailyPPCardInfo {
     private PhotoInfo leftPhoto;//左边地点显示图片
     private PhotoInfo rightPhoto;//右边地点显示图片
     private int expiredDays;//过保质期
+    private String siteId;//siteId
 
     public DailyPPCardInfo() {
     }
@@ -122,5 +123,13 @@ public class DailyPPCardInfo {
 
     public void setExpiredDays(int expiredDays) {
         this.expiredDays = expiredDays;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
     }
 }

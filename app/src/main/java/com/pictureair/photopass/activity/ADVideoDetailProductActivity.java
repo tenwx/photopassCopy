@@ -311,7 +311,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     }
 
     private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
-        API2.getPPPsByShootDate(shootDate)
+        API2.getPPPsByShootDate(shootDate, videoInfo.getLocationId())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {

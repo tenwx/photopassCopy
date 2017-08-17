@@ -24,6 +24,8 @@ public class GoodsInfo implements Serializable {
     private String good_SVG_Info = "";//SVG信息
     private boolean isAllowBuy;//true：所有照片都可以选择（除了纪念照和视频）；false：只能选择未购买图片
     private DealingInfo dealing;
+    private int slot;
+    private List<String> locationIds;
 
 
     public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info, boolean isAllowBuy, DealingInfo dealing) {
@@ -174,6 +176,22 @@ public class GoodsInfo implements Serializable {
 
     public void setDealing(DealingInfo dealing) {
         this.dealing = dealing;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+
+    public List<String> getLocationIds() {
+        return locationIds;
+    }
+
+    public void setLocationIds(List<String> locationIds) {
+        this.locationIds = locationIds;
     }
 
     @Override

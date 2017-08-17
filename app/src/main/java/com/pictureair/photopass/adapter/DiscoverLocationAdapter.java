@@ -200,6 +200,11 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationNameTextView.setText(info.placeCHName);
             //设置地点详情
             viewHolder.locationDetailInfoTextView.setText(info.placeDetailCHIntroduce);
+        } else if (MyApplication.getInstance().getLanguageType().equals(Common.TRADITIONAL_CHINESE)){
+            //设置地点名称
+            viewHolder.locationNameTextView.setText(info.placeHKName);
+            //设置地点详情
+            viewHolder.locationDetailInfoTextView.setText(info.placeDetailHKIntroduce);
         } else {
             //设置地点名称
             viewHolder.locationNameTextView.setText(info.placeENName);

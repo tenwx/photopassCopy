@@ -128,7 +128,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         PictureAirLog.out("goodsinfo---->" + goodsInfo.getGoodsKey());
         if (goodsInfo != null) {
             if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-                photocount = 10;
+                photocount = 1;
             } else {
                 photocount = goodsInfo.getEmbedPhotosCount();
             }

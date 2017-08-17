@@ -75,6 +75,7 @@
     <string name="wechatmoments">微信朋友圈</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
+    <string name="instagram">Instagram</string>
     <string name="qq">QQ好友</string>
     <string name="share_text">我愿和您分享每一刻在上海迪士尼度假区的美妙体验！</string>
     <string name="share_not_open">请在应用上线后使用此功能！</string>
@@ -481,6 +482,7 @@
     <!-- change language start -->
     <string name="Chinese">简体中文</string>
     <string name="English">English</string>
+    <string name="Traditional">繁體中文</string>
     <!-- change language end -->
 
     <!-- about start -->

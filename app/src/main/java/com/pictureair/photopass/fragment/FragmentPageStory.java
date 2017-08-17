@@ -833,7 +833,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public void itemClick(int position) {
-        PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode());
+        PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode() +"<---siteId--->"+dailyPPCardInfoArrayList.get(position).getSiteId());
         if (dailyPPCardInfoArrayList.get(position).getPhotoCount() == 0) {//空卡，不可点击
             return;
         }
@@ -843,6 +843,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         i.putExtra("shootDate", dailyPPCardInfoArrayList.get(position).getShootDate());
         i.putExtra("activated", dailyPPCardInfoArrayList.get(position).getActivated());
         i.putExtra("photoCount", dailyPPCardInfoArrayList.get(position).getPhotoCount());
+        i.putExtra("siteId", dailyPPCardInfoArrayList.get(position).getSiteId());
         startActivity(i);
     }
 

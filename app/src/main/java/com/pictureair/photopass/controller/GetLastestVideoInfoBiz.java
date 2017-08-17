@@ -79,7 +79,7 @@ public class GetLastestVideoInfoBiz implements GetLastestVideoInfoContract.Model
                         PictureAirLog.out("jsonobject---->" + jsonObject.toString());
                         JSONArray photos = jsonObject.getJSONArray("photos");
                         if (photos.size() > 0) {
-                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0), "");
                             PictureAirLog.out("1024url---->" + photoInfo.getPhotoThumbnail_1024());
                             return Observable.just(photoInfo);
 

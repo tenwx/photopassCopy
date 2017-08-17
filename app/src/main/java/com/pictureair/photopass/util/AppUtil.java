@@ -169,7 +169,7 @@ public class AppUtil {
     }
 
     /**
-     *  检查电话号码是否符合规则,true为符合正确格式，false为不符合手机格式
+     * 检查电话号码是否符合规则,true为符合正确格式，false为不符合手机格式
      */
     public static boolean checkPhoneNumber(String phoneStr) {
         boolean tem;
@@ -180,6 +180,7 @@ public class AppUtil {
 
         return tem;
     }
+
     /**
      * 获取camera中最后的一张照片路径，用于显示预览
      *
@@ -561,6 +562,7 @@ public class AppUtil {
 
     /**
      * 判断是否是全部数字
+     *
      * @param str
      * @return
      */
@@ -860,6 +862,7 @@ public class AppUtil {
 
     /**
      * 转成list<list<A>>的形式
+     *
      * @param list
      * @return
      */
@@ -916,6 +919,7 @@ public class AppUtil {
 
     /**
      * 将list<list<A>>转成list<A> 并设置sectionId，header，和locationPhotoCount
+     *
      * @param list
      * @return
      */
@@ -995,6 +999,7 @@ public class AppUtil {
 
     /**
      * 需要对favorite数据进行header的排序
+     *
      * @param list
      * @return
      */
@@ -1159,7 +1164,7 @@ public class AppUtil {
      * @param right
      */
     public static void expandViewTouchDelegate(final View view, final int top,
-                                         final int bottom, final int left, final int right) {
+                                               final int bottom, final int left, final int right) {
 
         ((View) view.getParent()).post(new Runnable() {
             @Override
@@ -1184,18 +1189,19 @@ public class AppUtil {
 
     /**
      * 检查手动输入框是否处于编辑状态
-     * @param codeCount 当前code长度的数组
+     *
+     * @param codeCount   当前code长度的数组
      * @param cursorIndex 当前光标位置
-     * @param inputIndex 当前输入的位置，从0开始计算
+     * @param inputIndex  当前输入的位置，从0开始计算
      * @return
      */
-    public static boolean isInputCodeEditing(int[] codeCount, int cursorIndex, int inputIndex){
+    public static boolean isInputCodeEditing(int[] codeCount, int cursorIndex, int inputIndex) {
         int codeAllCount = 0;
         /**
          * 先判断前面的格子是否都已经满了
          */
         for (int i = 0; i < inputIndex; i++) {
-            if (codeCount[i] != 4){//不满，则为编辑状态
+            if (codeCount[i] != 4) {//不满，则为编辑状态
                 PictureAirLog.out("edit");
                 return true;
             }
@@ -1210,8 +1216,9 @@ public class AppUtil {
 
     /**
      * 判断光标是否该自动切换
+     *
      * @param cursorIndex 当前光标位置
-     * @param inputIndex 当前输入的位置，从0开始计算
+     * @param inputIndex  当前输入的位置，从0开始计算
      * @return 1往后切换，-1往前切换，0不切换
      */
     public static int inputCodeEditJump(int cursorIndex, int inputIndex) {
@@ -1244,16 +1251,16 @@ public class AppUtil {
         /** 读取国家简码 */
         codeStrings = context.getResources().getStringArray(R.array.smssdk_country);
 
-            for (int i = 0; i < codeStrings.length; i++) {
-                String bb[] = codeStrings[i].split(",");
-                //bb[0]:国家
-                //bb[1]:简码
-                //				countryMap.put(bb[1].trim(), bb[0].trim());
-                if (countryCode.trim().equals(bb[4].trim())) {
-                    country = bb[0].trim();
-                    break;
-                }
+        for (int i = 0; i < codeStrings.length; i++) {
+            String bb[] = codeStrings[i].split(",");
+            //bb[0]:国家
+            //bb[1]:简码
+            //				countryMap.put(bb[1].trim(), bb[0].trim());
+            if (countryCode.trim().equals(bb[4].trim())) {
+                country = bb[0].trim();
+                break;
             }
+        }
         //		country = countryMap.get(countryCode.trim());
         return country;
     }
@@ -1261,6 +1268,7 @@ public class AppUtil {
 
     /**
      * 计算文件md5
+     *
      * @param file
      * @return
      * @throws FileNotFoundException
@@ -1304,6 +1312,7 @@ public class AppUtil {
 
     /**
      * str过滤，验证输入str，不允许特殊字符
+     *
      * @param str
      */
     public static String inputTextFilter(String str) throws PatternSyntaxException {
@@ -1315,11 +1324,12 @@ public class AppUtil {
 
     /**
      * 获取manifest中meta值
+     *
      * @param context
      * @return
      * @throws PackageManager.NameNotFoundException
      */
-    public static String getMetaData(Context context, String key){
+    public static String getMetaData(Context context, String key) {
         String result = "";
         try {
             if (context != null) {
@@ -1342,6 +1352,7 @@ public class AppUtil {
 
     /**
      * 判断是否有sd卡
+     *
      * @return
      */
     public static boolean hasSDCard() {
@@ -1350,6 +1361,7 @@ public class AppUtil {
 
     /**
      * 扫描本地文件夹
+     *
      * @param context
      * @param filePath
      * @param albumName
@@ -1368,7 +1380,7 @@ public class AppUtil {
         File file = new File(filePath);
         if (!file.exists()) {//如果文件不存在，创建文件夹
             file.mkdirs();
-            return  resultList;
+            return resultList;
         }
         File[] files = file.listFiles();
         Date date;
@@ -1397,6 +1409,7 @@ public class AppUtil {
 
     /**
      * 获取预览图片需要的图片列表
+     *
      * @param locationList
      * @param deleteTime
      * @param sdf
@@ -1422,6 +1435,7 @@ public class AppUtil {
 
     /**
      * 获取预览页面的所有排序好的图片列表
+     *
      * @param context
      * @param locationList
      * @param targetList
@@ -1498,6 +1512,7 @@ public class AppUtil {
 
     /**
      * 将图片按照地点重新组合
+     *
      * @param locationList
      * @param photoList
      * @param sdf
@@ -1521,7 +1536,7 @@ public class AppUtil {
                 resultPosition = locationList.size() - 1;
                 info.setLocationId("others");
             }
-            if (resultPosition < 0 ) {
+            if (resultPosition < 0) {
                 resultPosition = 0;
             }
             //					PictureAirLog.d(TAG, "find the location");
@@ -1534,6 +1549,8 @@ public class AppUtil {
                         if (language.equals(Common.SIMPLE_CHINESE)) {
                             info.setLocationName(locationList.get(resultPosition).placeCHName);
 
+                        } if (language.equals(Common.TRADITIONAL_CHINESE)) {
+                            info.setLocationName(locationList.get(resultPosition).placeHKName);
                         } else {
                             info.setLocationName(locationList.get(resultPosition).placeENName);
 
@@ -1556,13 +1573,16 @@ public class AppUtil {
 //                if (isOther) {
 //                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString() + info.locationId;
 //                } else {
-                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds;
+                photoItemInfo.locationIds = locationList.get(resultPosition).locationIds;
 //                }
                 photoItemInfo.shootTime = info.getShootDate();
                 if (language.equals(Common.SIMPLE_CHINESE)) {
                     photoItemInfo.place = locationList.get(resultPosition).placeCHName;
                     info.setLocationName(locationList.get(resultPosition).placeCHName);
 
+                } else if (language.equals(Common.TRADITIONAL_CHINESE)) {
+                    photoItemInfo.place = locationList.get(resultPosition).placeHKName;
+                    info.setLocationName(locationList.get(resultPosition).placeHKName);
                 } else {
                     photoItemInfo.place = locationList.get(resultPosition).placeENName;
                     info.setLocationName(locationList.get(resultPosition).placeENName);
@@ -1584,8 +1604,9 @@ public class AppUtil {
 
     /**
      * 获取地点列表
+     *
      * @param locationJson
-     * @param showPhoto true显示照片，需要手动添加一个地点,false显示列表，不需要手动添加地点
+     * @param showPhoto    true显示照片，需要手动添加一个地点,false显示列表，不需要手动添加地点
      * @return
      */
     public static ArrayList<DiscoverLocationItemInfo> getLocation(Context context, String locationJson, boolean showPhoto) {
@@ -1667,7 +1688,7 @@ public class AppUtil {
      * 检查手机权限
      *
      * @param permission 权限
-     * */
+     */
     public static boolean checkPermission(Context context, String permission) {
         if (Build.VERSION.SDK_INT < 23) {
             return true;
@@ -1679,16 +1700,17 @@ public class AppUtil {
     /**
      * 得到url中正确的文件名,根据 isVideo 获取是视频还是图片
      * 如果没有后缀名，说明是加密过的数据，文件名比较长，需要处理下，目前采用md5，将长度转成32位
-     * @param url 原始url
+     *
+     * @param url     原始url
      * @param isVideo 判断是照片还是视频，0 代表是照片。
      * @return 文件名
      */
-    public static String getReallyFileName(String url,int isVideo) {
+    public static String getReallyFileName(String url, int isVideo) {
         if (TextUtils.isEmpty(url)) {
             return "";
         }
         String filename = url;
-        if (isVideo == 0){
+        if (isVideo == 0) {
             if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
                 filename = filename.substring(filename.lastIndexOf("/") + 1);
             } else {
@@ -1704,20 +1726,20 @@ public class AppUtil {
         return filename;
     }
 
-    public static String getReallyFileNameWithoutSuffix(String url,int isVideo) {
+    public static String getReallyFileNameWithoutSuffix(String url, int isVideo) {
         if (TextUtils.isEmpty(url)) {
             return "";
         }
         String filename = url;
-        if (isVideo == 0){
+        if (isVideo == 0) {
             if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
-                filename = filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4);
+                filename = filename.substring(filename.lastIndexOf("/") + 1, filename.length() - 4);
             } else {
                 filename = filename.substring(filename.lastIndexOf("/") + 1);
             }
         } else {//如果是视频数据，文件名统一经过md5处理
             if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
-                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1, filename.length()-4));
+                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1, filename.length() - 4));
             } else {
                 filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1));
             }
@@ -1727,6 +1749,7 @@ public class AppUtil {
 
     /**
      * 从cursor中获取photoInfo，不支持收藏表
+     *
      * @param cursor
      * @return
      */
@@ -1757,6 +1780,7 @@ public class AppUtil {
 
     /**
      * 进入应用市场
+     *
      * @param paramContext
      * @param targetPackage 目前市场，如果为空，则让用户选择已安装的市场
      */
@@ -1812,18 +1836,19 @@ public class AppUtil {
         return hasEncryptionData ? result : null;
     }
 
-    public static String getFormatCurrentTime(){
+    public static String getFormatCurrentTime() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return df.format(new Date());
     }
 
-    public static String formatData(double data){
-        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+    public static String formatData(double data) {
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
         return decimalFormat.format(data);
     }
 
     /**
      * 检查是否需要解密数据
+     *
      * @param isEncrypted
      * @return
      */
@@ -1849,7 +1874,8 @@ public class AppUtil {
 
     /**
      * 根据宽高比例比较获取留白方向
-     * @param targetW 比较的view
+     *
+     * @param targetW   比较的view
      * @param targetH
      * @param comparedW 被比较的view
      * @param comparedH
@@ -1872,23 +1898,23 @@ public class AppUtil {
      * @param photoThumbnail
      * @return
      */
-    public static boolean isOldVersionOfTheVideo(String photoPathOrURL, String photoThumbnail_1024, String photoThumbnail_512, String photoThumbnail){
+    public static boolean isOldVersionOfTheVideo(String photoPathOrURL, String photoThumbnail_1024, String photoThumbnail_512, String photoThumbnail) {
         if (TextUtils.isEmpty(photoPathOrURL)) return true;
 
-        if (!TextUtils.isEmpty(photoThumbnail_1024)){
-            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail_1024)){
+        if (!TextUtils.isEmpty(photoThumbnail_1024)) {
+            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail_1024)) {
                 return true;
             }
         }
 
-        if (!TextUtils.isEmpty(photoThumbnail_512)){//不要用equals，因为PHOTO_URL会改端口号
-            if (photoPathOrURL.endsWith(photoThumbnail_512)){
+        if (!TextUtils.isEmpty(photoThumbnail_512)) {//不要用equals，因为PHOTO_URL会改端口号
+            if (photoPathOrURL.endsWith(photoThumbnail_512)) {
                 return true;
             }
         }
 
-        if (!TextUtils.isEmpty(photoThumbnail)){
-            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail)){
+        if (!TextUtils.isEmpty(photoThumbnail)) {
+            if (photoPathOrURL.equalsIgnoreCase(photoThumbnail)) {
                 return true;
             }
         }
@@ -1897,6 +1923,7 @@ public class AppUtil {
 
     /**
      * 在locationlist中查找指定的loactionid，如果有，返回对应的索引值，如果没有，则返回-1，表示是其他地点
+     *
      * @param info
      * @param locationList
      * @return
@@ -1915,8 +1942,8 @@ public class AppUtil {
 
     /**
      * 把服务器日期转换成手机当前时区时间
-     * */
-    public static Date getDateLocalFromStr(String date) throws ParseException{
+     */
+    public static Date getDateLocalFromStr(String date) throws ParseException {
         SimpleDateFormat localFromat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         localFromat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         Date oldDate = localFromat.parse(date);
@@ -1928,6 +1955,7 @@ public class AppUtil {
 
     /**
      * 初始化语言
+     *
      * @param context
      */
     public static void initLanguage(Context context) {
@@ -1952,6 +1980,12 @@ public class AppUtil {
                 } else {
                     config.setLocale(Locale.SIMPLIFIED_CHINESE);
                 }
+            } else if (languageType.equals(Common.TRADITIONAL_CHINESE)) {
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.TRADITIONAL_CHINESE;
+                } else {
+                    config.setLocale(Locale.TRADITIONAL_CHINESE);
+                }
             }
         } else {//语言为空，说明第一次进入
             PictureAirLog.out("apputil language is null---->" + config.locale.getLanguage());
@@ -1962,6 +1996,13 @@ public class AppUtil {
                     config.locale = Locale.SIMPLIFIED_CHINESE;
                 } else {
                     config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                }
+            } else if (config.locale.getLanguage().contains("TW") || config.locale.getLanguage().contains("HK")) {
+                languageType = Common.TRADITIONAL_CHINESE;
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.TRADITIONAL_CHINESE;
+                } else {
+                    config.setLocale(Locale.TRADITIONAL_CHINESE);
                 }
             } else {
                 languageType = Common.ENGLISH;
@@ -1979,6 +2020,7 @@ public class AppUtil {
 
     /**
      * 获取悬浮header显示的时间
+     *
      * @param photoList
      * @param position
      * @return
@@ -1997,6 +2039,7 @@ public class AppUtil {
 
     /**
      * 获取通知栏的图标
+     *
      * @return
      */
     public static int getNotificationIcon() {
@@ -2009,6 +2052,7 @@ public class AppUtil {
 
     /**
      * 获取图片的有效日期(本地更改的，需要修改过期时间)
+     *
      * @param photoInfo
      * @return
      */
@@ -2028,6 +2072,7 @@ public class AppUtil {
 
     /**
      * 获取repeatTopId
+     *
      * @param resultArrayList
      * @return
      */
@@ -2049,6 +2094,7 @@ public class AppUtil {
 
     /**
      * 获取repeatBottomId
+     *
      * @param resultArrayList
      * @return
      */
@@ -2072,19 +2118,18 @@ public class AppUtil {
 
     /**
      * 通知媒体库更新
-     * */
-    public static void fileScan(Context context, String file){
-        Uri data = Uri.parse("file://" +file);
-        context.sendBroadcast(new  Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
+     */
+    public static void fileScan(Context context, String file) {
+        Uri data = Uri.parse("file://" + file);
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
     }
 
     /**
-     *
      * sp中保存的acccount格式：
      * 手机号格式"86,12345678901"
      * 邮箱格式"123@163.com"
      * 通过此函数将手机号改成正常格式"8612345678901"
-     * */
+     */
     public static String getCorrectAccount(String account) {
 
         if (!account.contains("@")) {
@@ -2100,10 +2145,9 @@ public class AppUtil {
     }
 
     /**
-     *
      * 根据路径保存文件
-     * */
-    public static String writeFile(ResponseBody responseBody, String folderPath, String fileName) throws Exception{
+     */
+    public static String writeFile(ResponseBody responseBody, String folderPath, String fileName) throws Exception {
 
         byte[] buff = new byte[1024];
         int res;
@@ -2131,7 +2175,7 @@ public class AppUtil {
                 if (is != null) {
                     is.close();
                 }
-            }catch (Exception e1) {
+            } catch (Exception e1) {
                 e.printStackTrace();
             }
 
@@ -2139,7 +2183,7 @@ public class AppUtil {
                 if (fos != null) {
                     fos.close();
                 }
-            }catch (Exception e1) {
+            } catch (Exception e1) {
                 e.printStackTrace();
             }
             responseBody.close();

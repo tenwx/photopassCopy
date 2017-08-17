@@ -326,13 +326,13 @@
         <!-- 统计，百度/友盟 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="564c08dee0f55a15de002a72" />
+            android:value="57071f8467e58e070f002867" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
         <meta-data
             android:name="BaiduMobAd_STAT_ID"
-            android:value="FVwu3al4gAKBjSfLvhedEkQAiFarNoRV" />
+            android:value="65e6631acf" />
         <meta-data
             android:name="BaiduMobAd_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
@@ -368,7 +368,7 @@
             	则分享结束以后不能得到正确的回调
             -->
             <intent-filter>
-                <data android:scheme="tencent1105004402" />
+                <data android:scheme="tencent1105308903" />
 
                 <action android:name="android.intent.action.VIEW" />
 
@@ -405,7 +405,7 @@
         <!-- 高德地图 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="67e009eeb01ae95ab229247e3d1153e0" />
+            android:value="0764718e5215563f037624716c6d9929" />
 
         <service android:name="com.amap.api.location.APSService" />
 

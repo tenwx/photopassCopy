@@ -63,6 +63,8 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	@Transient
 	private int currentLocationPhotoCount;//只有展示照片页才需要这个字段，每个地点对应的照片数量
 
+	private String siteId;//siteId
+
 	@Override
 	public int compareTo(PhotoInfo another) {
 		//此处为通用的排序方法
@@ -136,6 +138,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeInt(isSelected);
 		dest.writeInt(isUploaded);
 		dest.writeInt(currentLocationPhotoCount);
+		dest.writeString(siteId);
 	}
 
 	@Override
@@ -171,6 +174,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 				", isSelected=" + isSelected +
 				", isUploaded=" + isUploaded +
 				", currentLocationPhotoCount=" + currentLocationPhotoCount +
+				", siteId=" + siteId +
 				'}';
 	}
 
@@ -414,6 +418,14 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		this.exipreDate = exipreDate;
 	}
 
+	public String getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(String siteId) {
+		this.siteId = siteId;
+	}
+
 	private PhotoInfo(Parcel source) {
 		id = source.readLong();
 		photoId = source.readString();
@@ -445,15 +457,20 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		isSelected = source.readInt();
 		isUploaded = source.readInt();
 		currentLocationPhotoCount = source.readInt();
+		siteId = source.readString();
 	}
 
-	@Generated(hash = 133317568)
+	@Generated(hash = 2143356537)
+	public PhotoInfo() {
+	}
+
+	@Generated(hash = 134633989)
 	public PhotoInfo(Long id, String photoId, String photoPassCode, String shootDate,
 			String photoThumbnail_128, String photoThumbnail_512, String photoThumbnail_1024,
 			String photoOriginalURL, String locationId, String strShootOn, String shareURL,
 			String adURL, String receivedOn, String exipreDate, int isPaid, int isVideo,
 			int isPreset, int isEnImage, int isOnLine, int fileSize, int videoWidth,
-			int videoHeight) {
+			int videoHeight, String siteId) {
 		this.id = id;
 		this.photoId = photoId;
 		this.photoPassCode = photoPassCode;
@@ -476,9 +493,6 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		this.fileSize = fileSize;
 		this.videoWidth = videoWidth;
 		this.videoHeight = videoHeight;
-	}
-
-	@Generated(hash = 2143356537)
-	public PhotoInfo() {
+		this.siteId = siteId;
 	}
 }

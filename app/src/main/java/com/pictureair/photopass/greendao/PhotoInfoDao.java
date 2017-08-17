@@ -46,6 +46,7 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         public final static Property FileSize = new Property(19, int.class, "fileSize", false, "FILE_SIZE");
         public final static Property VideoWidth = new Property(20, int.class, "videoWidth", false, "VIDEO_WIDTH");
         public final static Property VideoHeight = new Property(21, int.class, "videoHeight", false, "VIDEO_HEIGHT");
+        public final static Property SiteId = new Property(22, String.class, "siteId", false, "SITE_ID");
     }
 
 
@@ -82,7 +83,8 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
                 "\"IS_ON_LINE\" INTEGER NOT NULL ," + // 18: isOnLine
                 "\"FILE_SIZE\" INTEGER NOT NULL ," + // 19: fileSize
                 "\"VIDEO_WIDTH\" INTEGER NOT NULL ," + // 20: videoWidth
-                "\"VIDEO_HEIGHT\" INTEGER NOT NULL );"); // 21: videoHeight
+                "\"VIDEO_HEIGHT\" INTEGER NOT NULL ," + // 21: videoHeight
+                "\"SITE_ID\" TEXT);"); // 22: siteId
     }
 
     /** Drops the underlying database table. */
@@ -172,6 +174,11 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         stmt.bindLong(20, entity.getFileSize());
         stmt.bindLong(21, entity.getVideoWidth());
         stmt.bindLong(22, entity.getVideoHeight());
+ 
+        String siteId = entity.getSiteId();
+        if (siteId != null) {
+            stmt.bindString(23, siteId);
+        }
     }
 
     @Override
@@ -255,6 +262,11 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         stmt.bindLong(20, entity.getFileSize());
         stmt.bindLong(21, entity.getVideoWidth());
         stmt.bindLong(22, entity.getVideoHeight());
+ 
+        String siteId = entity.getSiteId();
+        if (siteId != null) {
+            stmt.bindString(23, siteId);
+        }
     }
 
     @Override
@@ -286,7 +298,8 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
             cursor.getInt(offset + 18), // isOnLine
             cursor.getInt(offset + 19), // fileSize
             cursor.getInt(offset + 20), // videoWidth
-            cursor.getInt(offset + 21) // videoHeight
+            cursor.getInt(offset + 21), // videoHeight
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22) // siteId
         );
         return entity;
     }
@@ -315,6 +328,7 @@ public class PhotoInfoDao extends AbstractDao<PhotoInfo, Long> {
         entity.setFileSize(cursor.getInt(offset + 19));
         entity.setVideoWidth(cursor.getInt(offset + 20));
         entity.setVideoHeight(cursor.getInt(offset + 21));
+        entity.setSiteId(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
      }
     
     @Override

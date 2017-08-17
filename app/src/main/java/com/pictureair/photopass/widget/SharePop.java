@@ -71,7 +71,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     private Context context;
     private LayoutInflater inflater;
     private View defaultView;
-    private TextView wechat, wechatMoments, qq, qqzone, sina, facebook, twitter;
+    private TextView wechat, wechatMoments, qq, qqzone, sina, facebook, twitter, instagram;
     private TextView sharecancel;
     private String imagePath, imageUrl, thumbnailUrl, shareUrl;
     private boolean isOnline;
@@ -95,7 +95,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
     private void initPopupWindow() {
         ShareSDK.initSDK(context);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        defaultView = inflater.inflate(R.layout.share_dialog, null);
+        defaultView = inflater.inflate(R.layout.share_dialog_hk, null);
         defaultView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         setContentView(defaultView);
         setWidth(LayoutParams.MATCH_PARENT);
@@ -113,6 +113,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         facebook = (TextView) defaultView.findViewById(R.id.facebook);
         twitter = (TextView) defaultView.findViewById(R.id.twitter);
         sharecancel = (TextView) defaultView.findViewById(R.id.share_cancel);
+        instagram = (TextView) defaultView.findViewById(R.id.instagram);
 
         wechat.setOnClickListener(this);
         wechatMoments.setOnClickListener(this);
@@ -122,6 +123,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
         twitter.setOnClickListener(this);
         facebook.setOnClickListener(this);
         sharecancel.setOnClickListener(this);
+        instagram.setOnClickListener(this);
 
     }
 
@@ -497,6 +499,16 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                     twitterShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
                 }
                 break;
+            case R.id.instagram:
+                shareType = Common.EVENT_ONCLICK_SHARE_INSTAGRAM;
+                sharePlatform = "instagram";
+
+                if (!isOnline && !isVideo) {// 本地
+                    createThumbNail(id);
+                } else {
+                    instagramShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, isOnline);
+                }
+                break;
 
             default:
                 break;
@@ -516,6 +528,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
             case R.id.qqzone:
             case R.id.facebook:
             case R.id.twitter:
+            case R.id.instagram:
                 PictureAirLog.d(TAG, "share on click--->");
                 if (!isOnline || isVideo) {//本地图片或者视频，都直接开始分享
                     PictureAirLog.d(TAG, "local or video");
@@ -651,7 +664,7 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
                         PictureAirLog.out("jsonobject---->" + jsonObject.toString());
                         JSONArray photos = jsonObject.getJSONArray("photos");
                         if (photos.size() > 0) {
-                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                            PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0), "");
                             PictureAirLog.out("jsonobject---->" + photoInfo.getPhotoThumbnail_1024());
                             imageUrl = photoInfo.getPhotoThumbnail_1024();
                             startShare(vId);
@@ -891,7 +904,10 @@ public class SharePop extends PopupWindow implements OnClickListener, PlatformAc
             eventName = Common.EVENT_SHARE_TWITTER_FINISH;
         } else if (typeName.equals("Qq")) {
             eventName = Common.EVENT_SHARE_QQ_FINISH;
+        } else if (typeName.equals("instagram")) {
+            eventName = Common.EVENT_SHARE_INSTAGRAM_FINISH;
         }
+
 
         // 分享完成统计事件
         if (!TextUtils.isEmpty(eventName)) {

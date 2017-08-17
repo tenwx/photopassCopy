@@ -721,7 +721,7 @@ public class DownloadService extends Service {
                         JSONArray photos = jsonObject.getJSONArray("photos");
                         if (!hasOriginUrl) {
                             if (photos.size() > 0) {
-                                PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                                PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0), "");
                                 fileStatus.setNewUrl(photoInfo.getPhotoOriginalURL());
                                 if (!TextUtils.isEmpty(fileStatus.getNewUrl())) {
                                     handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS, fileStatus).sendToTarget();

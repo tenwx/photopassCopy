@@ -29,9 +29,11 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private RelativeLayout back;
     private RelativeLayout languageChinese;
     private RelativeLayout languageEnglish;
+    private RelativeLayout languageTraditional;
 
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
+    private ImageView traditionalSeleted;
 
     private String oldLanguage = "";
     private String currentLanguage = "";   // en表示英语，zh表示简体中文。
@@ -52,13 +54,16 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         back = (RelativeLayout) findViewById(R.id.back_set);
         languageChinese = (RelativeLayout) findViewById(R.id.language_chinese);
         languageEnglish = (RelativeLayout) findViewById(R.id.language_english);
+        languageTraditional = (RelativeLayout) findViewById(R.id.language_traditional);
 
         chineseSeleted = (ImageView) findViewById(R.id.chinese_imageView);
         englishSeleted = (ImageView) findViewById(R.id.english_imageView);
+        traditionalSeleted = (ImageView) findViewById(R.id.traditional_imageView);
 
         back.setOnClickListener(this);
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
+        languageTraditional.setOnClickListener(this);
 
         oldLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         currentLanguage = oldLanguage;
@@ -68,8 +73,11 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             //获取本地数据
             if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
                 currentLanguage = Common.SIMPLE_CHINESE;
+            } else if (config.equals(Common.TRADITIONAL_CHINESE)) {
+                currentLanguage = Common.TRADITIONAL_CHINESE;
             } else {
                 currentLanguage = Common.ENGLISH;
+
             }
 
             oldLanguage = currentLanguage;//使用系统默认语言
@@ -86,9 +94,15 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         if (cur.equals(Common.SIMPLE_CHINESE)) {
             chineseSeleted.setVisibility(View.VISIBLE);
             englishSeleted.setVisibility(View.INVISIBLE);
+            traditionalSeleted.setVisibility(View.INVISIBLE);
         } else if (cur.equals(Common.ENGLISH)) {
             englishSeleted.setVisibility(View.VISIBLE);
             chineseSeleted.setVisibility(View.INVISIBLE);
+            traditionalSeleted.setVisibility(View.INVISIBLE);
+        } else if (cur.equals(Common.TRADITIONAL_CHINESE)) {
+            englishSeleted.setVisibility(View.INVISIBLE);
+            chineseSeleted.setVisibility(View.INVISIBLE);
+            traditionalSeleted.setVisibility(View.VISIBLE);
         }
     }
 
@@ -107,12 +121,21 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             case R.id.language_chinese:
                 if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
 //                    updateUI(currentLanguage);
+                    currentLanguage = Common.SIMPLE_CHINESE;
                     createDialog();
                 }
                 break;
             case R.id.language_english:
                 if (!currentLanguage.equals(Common.ENGLISH)) {
 //                    updateUI(currentLanguage);
+                    currentLanguage = Common.ENGLISH;
+                    createDialog();
+                }
+                break;
+            case R.id.language_traditional:
+                if (!currentLanguage.equals(Common.TRADITIONAL_CHINESE)) {
+//                    updateUI(currentLanguage);
+                    currentLanguage = Common.TRADITIONAL_CHINESE;
                     createDialog();
                 }
                 break;
@@ -146,9 +169,11 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-                currentLanguage = Common.ENGLISH;
-            } else {
                 currentLanguage = Common.SIMPLE_CHINESE;
+            } else if (currentLanguage.equals(Common.TRADITIONAL_CHINESE)){
+                currentLanguage = Common.TRADITIONAL_CHINESE;
+            } else {
+                currentLanguage = Common.ENGLISH;
             }
             updateUI(currentLanguage);
             if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
@@ -165,6 +190,13 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                     config.setLocale(Locale.US);
                 }
                 MyApplication.getInstance().setLanguageType(Common.ENGLISH);
+            } else if (currentLanguage.equals(Common.TRADITIONAL_CHINESE)) {
+                if (Build.VERSION.SDK_INT < 24) {
+                    config.locale = Locale.TRADITIONAL_CHINESE;
+                } else {
+                    config.setLocale(Locale.TRADITIONAL_CHINESE);
+                }
+                MyApplication.getInstance().setLanguageType(Common.TRADITIONAL_CHINESE);
             }
             getResources().updateConfiguration(config, getResources().getDisplayMetrics());
             //把语言写入数据库

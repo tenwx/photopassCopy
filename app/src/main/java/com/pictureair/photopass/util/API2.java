@@ -219,7 +219,7 @@ public class API2 {
      *
      * @param tokenId 加了 shootDate
      */
-    public static Observable<JSONObject> getPhotosByConditions(String tokenId, int type, String receiveOn, String repeatIds, String ppCode, String shootDate, int limit) {
+    public static Observable<JSONObject> getPhotosByConditions(String tokenId, int type, String receiveOn, String repeatIds, String ppCode, String shootDate, String siteId, int limit) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, tokenId);
         if (type == GET_NEW_PHOTOS) {
@@ -237,6 +237,10 @@ public class API2 {
 
         if (!TextUtils.isEmpty(shootDate)) {
             params.put(Common.SHOOTDATE, shootDate);
+        }
+
+        if (!TextUtils.isEmpty(siteId)) {
+            params.put(Common.SITE, siteId);
         }
 
         params.put(Common.LIMIT, limit);
@@ -1126,11 +1130,15 @@ public class API2 {
      *
      * @param shootDate
      */
-    public static Observable<JSONObject> getPPPsByShootDate(String shootDate) {
+    public static Observable<JSONObject> getPPPsByShootDate(String shootDate, String locationId) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (shootDate != null) {
             params.put(Common.SHOOTDATE, shootDate);
+        }
+
+        if (locationId != null) {
+            params.put(Common.LOCATION_ID, locationId);
         }
 
         return get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, null);

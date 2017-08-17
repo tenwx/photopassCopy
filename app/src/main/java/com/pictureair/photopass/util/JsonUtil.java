@@ -50,6 +50,9 @@ public class JsonUtil {
         if (object.containsKey("location_EN")) {
             info.placeENName = object.getString("location_EN");
         }
+        if (object.containsKey("location_HK")) {
+            info.placeHKName = object.getString("location_HK");
+        }
         info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
         if (object.containsKey("GPS")) {
             JSONObject obj = (JSONObject) object.get("GPS");
@@ -74,6 +77,10 @@ public class JsonUtil {
         if (object.containsKey("description_EN")) {
             info.placeDetailENIntroduce = object.getString("description_EN");
         }
+
+        if (object.containsKey("description_HK")) {
+            info.placeDetailHKIntroduce = object.getString("description_HK");
+        }
         info.popularity = "popularity";
         info.islove = 0;
         info.showDetail = 0;
@@ -83,9 +90,11 @@ public class JsonUtil {
     /**
      * 照片信息解析 ，并且把数据插入到数据库中作为缓存数据
      */
-    public static PhotoInfo getPhoto(JSONObject object) throws JSONException {
+    public static PhotoInfo getPhoto(JSONObject object, String siteId) throws JSONException {
         PhotoInfo info = new PhotoInfo();
         info.setIsOnLine(1);
+
+        info.setSiteId(siteId);
         //获取图片的ID
         if (object.containsKey("_id"))
             info.setPhotoId(object.getString("_id"));
@@ -273,6 +282,13 @@ public class JsonUtil {
         int isActivated = 0;
         int photoCount = 0;
         String shootOn = null;
+        String siteId = "";
+
+        if (location.containsKey("site")) {
+            siteId = location.getString("site");
+            dailyPPCardInfo.setSiteId(siteId);
+        }
+
         if (location.containsKey("PPCode")) {
             ppCode = location.getString("PPCode");
             dailyPPCardInfo.setPpCode(ppCode);
@@ -351,6 +367,8 @@ public class JsonUtil {
                         }
                         if (language.equals(Common.SIMPLE_CHINESE)) {
                             photoInfo.setLocationName(locationList.get(resultPosition).placeCHName);
+                        } else if (language.equals(Common.TRADITIONAL_CHINESE)){
+                            photoInfo.setLocationName(locationList.get(resultPosition).placeHKName);
                         } else {
                             photoInfo.setLocationName(locationList.get(resultPosition).placeENName);
                         }

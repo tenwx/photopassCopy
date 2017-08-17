@@ -310,6 +310,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             leadViewIV.setImageResource(R.drawable.story_lead_en);
         } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             leadViewIV.setImageResource(R.drawable.story_lead_zh);
+        } else if (application.getLanguageType().equals(Common.TRADITIONAL_CHINESE)) {
+            leadViewIV.setImageResource(R.drawable.story_lead_tw);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

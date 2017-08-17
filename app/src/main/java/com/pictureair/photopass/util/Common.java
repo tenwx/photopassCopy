@@ -11,7 +11,7 @@ public class Common {
     public static final String TINGYUN_KEY = "3186b0cffd3b49c0b7e6cdf472300437";//听云的key
 
     public static final String APP_TYPE_PA = "pa";
-    public static final String APP_TYPE_SHDRPP = "shdrpp";
+    public static final String APP_TYPE_SHDRPP = "hkdlpp";
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
     public static final int[] NEED_RELOGIN_VERSION_CODE = new int[]{9, 11};//对应版本号需要重新登录，记录的都是versionCode
 
@@ -34,21 +34,21 @@ public class Common {
 //    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 
-    /**
-     * 域名线上服务器
-     */
-    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
-    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
-    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/weChatNotify";//wechat的异步通知URL
-
-    /**
-     * 公用的链接
-     */
-    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
-    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
-    public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+//    /**
+//     * 域名线上服务器
+//     */
+//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
+//    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.cn:3006";
+//    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/weChatNotify";//wechat的异步通知URL
+//
+//    /**
+//     * 公用的链接
+//     */
+//    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+//    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
+//    public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
     public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
     public final static String HELP_FAQ = "https://www.disneyphotopass.com.cn/help.html?type=app&lange=";//FAQ
 
@@ -338,6 +338,7 @@ public class Common {
     //app的语言
     public static final String ENGLISH = "en";//英语
     public static final String SIMPLE_CHINESE = "zh";//简体中文
+    public static final String TRADITIONAL_CHINESE = "zh_TW";//简体中文
 
     //购买单张回来是否更新View的字段
     public static final String FROM_VIEWORSELECTACTIVITY = "fromViewOrSelect";
@@ -390,6 +391,9 @@ public class Common {
     public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
     public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
 
+    public static final String EVENT_ONCLICK_SHARE_INSTAGRAM = "event_onclick_share_instagram";// instagram
+    public static final String EVENT_SHARE_INSTAGRAM_FINISH = "event_share_instagram_finish";// instagram
+
     public static final String EVENT_ONCLICK_DEL_PP = "event_onclick_del_pp";// 点击删除PP的按钮。不是具体删除的按钮。
     public static final String EVENT_ONCLICK_EDIT_PHOTO = "event_onclick_edit_photo";// 点击编辑图片按钮,删除照片时候的按钮。
     public static final String EVENT_ONCLICK_DEL_PHOTO = "event_onclick_del_photo";// 具体删除照片的按钮。
@@ -398,4 +402,22 @@ public class Common {
     public static final String USERINFO_SALT = "salt";//加密必须参数
     public static final String PBKDF2WITHHMANSHA1 = "PBKDF2WithHmacSHA1";
 
+
+    //切换为香港版
+    /**
+     * HK disney 线上域名服务器
+     */
+    public static final String BASE_URL_TEST = "http://52.74.190.1:3006";
+    public static final String PHOTO_URL = "http://www.disneyphotopass.com.hk:4000/";
+    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String PAYECO_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/payecoNotify";//payeco的异步通知URL
+    public static final String BARCODEURL = "http://www.disneyphotopass.com.hk?src=pp&vid=";
+    public final static String POLICY_AGREEMENT = "http://Hk-DisneyWeb-LB-332234259.ap-southeast-1.elb.amazonaws.com/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.hk/terms.html?source=outer";  //条款 2
+    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+
+    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.hk:3006";
+
+    public static final String SITE = "site";
 }

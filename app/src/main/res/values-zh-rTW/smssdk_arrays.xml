@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="smssdk_country">
+		<item>阿爾巴尼亞,355,108,276,AL</item>
+		<item>阿爾及利亞,213,50,603,DZ</item>
+		<item>阿富汗,93,45,412,AF</item>
+		<item>阿根廷,54,27,722,AR</item>
+		<item>阿拉伯聯合酋長國,971,180,424|430|431,AE</item>
+		<item>阿魯巴,297,100,363,AW</item>
+		<item>阿曼,968,178,422,OM</item>
+		<item>阿塞拜疆,994,189,400,AZ</item>
+		<item>埃及,20,5,602,EG</item>
+		<item>埃塞俄比亞,251,82,636,ET</item>
+		<item>愛爾蘭,353,106,272,IE</item>
+		<item>愛沙尼亞,372,115,248,EE</item>
+		<item>安道爾,376,119,213,AD</item>
+		<item>安哥拉,244,77,631,AO</item>
+		<item>安圭拉,1264,195,365,AI</item>
+		<item>安提瓜和巴布達,1268,196,344,AG</item>
+		<item>奧地利,43,16,232,AT</item>
+		<item>澳大利亞,61,33,505,AU</item>
+		<item>澳門,853,165,455,MO</item>
+    
+		<item>巴巴多斯,1246,194,342,BB</item>
+		<item>巴布亞新幾內亞,675,153,537,PG</item>
+		<item>巴哈馬群島,1242,193,364,BS</item>
+		<item>巴拉圭,595,146,744,PY</item>
+		<item>巴勒斯坦領土,970,179,425,PS</item>
+		<item>巴林,973,182,426,PH</item>
+		<item>巴拿馬,507,138,714,PA</item>
+		<item>巴西,55,28,724,BR</item>
+		<item>白俄罗斯,375,118,257,BY</item>
+		<item>百慕達,1441,200,350,BM</item>
+		<item>保加利亞,359,112,284,BG</item>
+		<item>貝寧,229,62,616,BJ</item>
+		<item>比利時,32,9,206,BE</item>
+		<item>冰島,354,107,274,IS</item>
+		<item>波多黎各,1787,208,330,BO</item>
+		<item>波蘭,48,22,260,BL</item>
+		<item>波士尼亞與赫塞哥維納,387,127,218,BA</item>
+		<item>玻利維亞,591,142,736,BO</item>
+		<item>伯利茲,501,132,702,BZ</item>
+		<item>博茨瓦納,267,97,652,BW</item>
+		<item>不丹,975,184,402,BT</item>
+		<item>布吉納法索,226,59,613,BF</item>
+		<item>蒲隆地,257,88,642,BI</item>
+    
+		<item>北韓,850,163,467,KP</item>
+		<item>赤道畿內亞,240,73,627,GQ</item>
+    
+		<item>丹麥,45,19,238,DK</item>
+		<item>德國,49,23,262,DE</item>
+		<item>東帝汶,670,151,514,TL</item>
+		<item>多哥,228,61,615,TG</item>
+		<item>多明尼加共和國,1809,209,370,DO</item>
+		<item>多米尼克,1767,206,366,DM</item>
+    
+		<item>俄國,7,4,250,RU</item>
+		<item>厄瓜多爾,593,144,740,EC</item>
+    
+		<item>法國,33,10,208,FR</item>
+		<item>法羅群島,298,101,288,FO</item>
+		<item>法屬波利尼西亞,689,161,547,PF</item>
+		<item>法屬蓋亞那,594,145,742,GF</item>
+		<item>菲律賓,63,35,515,PH</item>
+		<item>斐濟,679,156,542,FJ</item>
+		<item>芬蘭,358,111,244,FI</item>
+		<item>佛得角,238,71,625,CV</item>
+    
+		<item>岡比亞,220,53,607,GM</item>
+		<item>剛果共和國,242,75,629,CG</item>
+		<item>剛果民主共和國,243,76,630,CD</item>
+		<item>哥倫比亞,57,30,732,CO</item>
+		<item>哥斯達黎加,506,137,712,CR</item>
+		<item>格林納達,1473,201,352,GD</item>
+		<item>格陵蘭島,299,102,290,GL</item>
+		<item>喬治亞,995,190,282,GE</item>
+		<item>古巴,53,26,368,CU</item>
+		<item>瓜德羅普島,590,141,340,GP</item>
+		<item>关岛,1671,204,535,GU</item>
+		<item>圭亞那,592,143,738,GY</item>
+    
+		<item>哈薩克斯坦,7,3,401,KZ</item>
+		<item>海地,509,140,372,HT</item>
+		<item>韓國,82,40,450,KR</item>
+		<item>荷蘭,31,8,204,NL</item>
+		<item>荷屬安的列斯,599,150,362,NULL</item>
+		<item>黑山,382,124,297,ME</item>
+		<item>洪都拉斯,504,135,708,HN</item>
+    
+		<item>基里巴斯,686,159,545,KI</item>
+		<item>吉布提,253,84,638,DJ</item>
+		<item>吉爾吉斯斯坦,996,191,437,KG</item>
+		<item>幾內亞,224,57,611,GN</item>
+		<item>幾內亞比索,245,78,632,GW</item>
+		<item>加拿大,1,1,302,CA</item>
+		<item>加納,233,66,620,GH</item>
+		<item>加蓬,241,74,628,GA</item>
+		<item>柬埔寨,855,166,456,KH</item>
+		<item>捷克共和國,420,129,230,CZ</item>
+		<item>津巴布韋,263,93,648,ZW</item>
+
+				<item>喀麥隆,237,70,624,CM</item>
+		<item>卡塔爾,974,183,427,QA</item>
+		<item>開曼群島,1345,199,346,KY</item>
+		<item>科摩羅,269,99,654,KM</item>
+		<item>象牙海岸,225,58,612,CT</item>
+		<item>科威特,965,175,419,KW</item>
+		<item>克羅地亞,385,125,219,HR</item>
+		<item>肯亞,254,85,639,KE</item>
+		<item>庫克群島,682,157,548,CK</item>
+	    
+		<item>拉脫維亞,371,114,247,LV</item>
+		<item>萊索托,266,96,651,LS</item>
+		<item>老撾,856,167,457,LA</item>
+		<item>黎巴嫩,961,171,415,LB</item>
+		<item>立陶宛,370,113,246,LT</item>
+		<item>利比里亞,231,64,618,LR</item>
+		<item>利比亞,218,52,606,LY</item>
+		<item>列支敦士登,423,131,295,LI</item>
+		<item>留尼旺島，法國,262,92,647,RE</item>
+		<item>盧森堡,352,105,270|294,LU</item>
+		<item>盧旺達,250,81,635,RW</item>
+		<item>羅馬尼亞,40,14,226,RO</item>
+    
+		<item>馬達加斯加,261,91,646,MG</item>
+		<item>馬爾代夫,960,170,472,MV</item>
+		<item>馬耳他,356,109,278,MT</item>
+		<item>馬拉維,265,95,650,MW</item>
+		<item>馬來西亞,60,32,502,MY</item>
+		<item>馬里,223,56,610,ML</item>
+		<item>馬其頓,389,128,294,MK</item>
+		<item>馬提尼克島,596,147,340,MQ</item>
+		<item>毛里求斯,230,63,617,MU</item>
+		<item>毛里塔尼亞,222,55,609,MR</item>
+		<item>美國,1,2,310|311|312|313|314|315|316,US</item>
+		<item>蒙古,976,185,428,MN</item>
+		<item>蒙特塞拉特,1664,203,354,MS</item>
+		<item>孟加拉国,880,168,470,BD</item>
+		<item>秘魯,51,24,716,PE</item>
+		<item>密克羅尼西亞,691,162,550,FM</item>
+		<item>摩爾多瓦,373,116,259,MD</item>
+		<item>摩洛哥,212,49,604,MA</item>
+		<item>摩納哥,377,120,212,MC</item>
+		<item>莫桑比克,258,89,643,MZ</item>
+		<item>墨西哥,52,25,334,MX</item>
+    
+		<item>納米比亞,264,94,649,NA</item>
+		<item>南非,27,6,655,ZA</item>
+		<item>南蘇丹,211,48,659,SS</item>
+		<item>尼泊爾,977,186,429,NP</item>
+		<item>尼加拉瓜,505,136,710,NI</item>
+		<item>尼日爾,227,60,614,NE</item>
+		<item>尼日利亞,234,67,621,NG</item>
+		<item>挪威,47,21,242,NO</item>
+	
+		<item>葡萄牙,351,104,268,PT</item>
+    
+		<item>日本,81,39,441|440,JP</item>
+		<item>瑞典,46,20,240,SE</item>
+		<item>瑞士,41,15,228,CH</item>
+    
+		<item>薩爾瓦多,503,134,706,CV</item>
+		<item>薩摩亞,685,158,549,WS</item>
+		<item>塞爾維亞,381,123,220,RS</item>
+		<item>塞拉利昂,232,65,619,SL</item>
+		<item>塞內加爾,221,54,608,SN</item>
+		<item>塞浦路斯,357,110,280,CY</item>
+		<item>塞舌爾,248,79,633,SC</item>
+		<item>沙特阿拉伯,966,176,420,SA</item>
+		<item>聖多美和普林西比,239,72,626,ST</item>
+		<item>聖基茨和尼維斯,1869,211,356,KN</item>
+		<item>聖盧西亞,1758,205,358,LC</item>
+		<item>聖馬力諾,378,121,292,SM</item>
+		<item>聖皮埃爾和密克隆,508,139,308,PM</item>
+		<item>聖文森特和格林納丁斯,1784,207,360,VC</item>
+		<item>斯里蘭卡,94,46,413,LK</item>
+		<item>斯洛伐克,421,130,231,SK</item>
+		<item>斯洛文尼亞,386,126,293,SI</item>
+		<item>斯威士蘭,268,98,653,SZ</item>
+		<item>蘇丹,249,80,634,SD</item>
+		<item>蘇里南,597,148,746,SR</item>
+		<item>索馬里,252,83,637,SO</item>
+    
+		<item>塔吉克斯坦,992,187,436,TJ</item>
+		<item>台灣,886,169,466,TW</item>
+		<item>泰國,66,38,520,TH</item>
+		<item>坦桑尼亞,255,86,640,TZ</item>
+		<item>湯加,676,154,539,TO</item>
+		<item>特克斯和凱科斯群島,1649,202,376,TC</item>
+		<item>特立尼達和多巴哥,1868,210,374,TT</item>
+		<item>突尼斯,216,51,605,TN</item>
+		<item>土耳其,90,43,286,TR</item>
+		<item>土庫曼斯坦,993,188,438,TM</item>
+	
+		<item>瓦努阿圖,678,155,54,VU</item>
+		<item>危地馬拉,502,133,704,GT</item>
+		<item>美國維爾京群島,1284,197,332,VI</item>
+		<item>英屬維爾京群島,1340,198,348,VG</item>
+		<item>委內瑞拉,58,31,734,VE</item>
+		<item>文萊,673,152,528,BN</item>
+		<item>烏干達,256,87,641,UG</item>
+		<item>烏克蘭,380,122,255,UA</item>
+		<item>烏拉圭,598,149,748,UY</item>
+		<item>烏茲別克斯坦,998,192,434,UZ</item>
+		
+		<item>西班牙,34,11,21,ES</item>
+		<item>希臘,30,7,202,GR</item>
+		<item>香港,852,164,454,HK</item>
+		<item>新加坡,65,37,525,SG</item>
+		<item>新喀裡多尼亞,687,160,546,NC</item>
+		<item>新西蘭,64,36,530,NZ</item>
+		<item>匈牙利,36,12,216,HU</item>
+		<item>敘利亞,963,173,417,SY</item>
+    
+		<item>牙買加,1876,212,338,JM</item>
+		<item>亞美尼亞,374,117,283,AM</item>
+		<item>也門,967,177,421,YE</item>
+		<item>伊拉克,964,174,418,IQ</item>
+		<item>伊朗,98,47,432,IR</item>
+		<item>以色列,972,181,425,IL</item>
+		<item>意大利,39,13,222,IT</item>
+		<item>印度,91,44,404|405|406,IN</item>
+		<item>印度尼西亞,62,34,510,ID</item>
+		<item>英國,44,18,234|235,GB</item>
+		<item>約旦,962,172,416,JO</item>
+		<item>越南,84,41,452,VN</item>
+    
+		<item>贊比亞,260,90,645,ZM</item>
+		<item>新澤西州,44,17,234,JE</item>
+		<item>乍得,235,68,622,TD</item>
+		<item>直布羅陀,350,103,266,GI</item>
+		<item>智利,56,29,730,CL</item>
+		<item>中非共和國,236,69,623,CF</item>
+		<item>中國（大陸）,86,42,460|461,CN</item>
+    </string-array>
+</resources>

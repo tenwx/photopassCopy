@@ -54,6 +54,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final int pos = viewHolder.getAdapterPosition();
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
+            ViewGroup.LayoutParams layoutParams = recyclerViewHolder.itemView.getLayoutParams();
             recyclerViewHolder.ppCodeTV.setText(dailyPPCardInfoArrayList.get(position).getPpCode());
             recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,9 +80,9 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             });
 
             if (dailyPPCardInfoArrayList.get(position).getPhotoCount() == 0) {//空卡
-                recyclerViewHolder.dateTV.setVisibility(View.INVISIBLE);
+                recyclerViewHolder.dateTV.setVisibility(View.GONE);
 
-                recyclerViewHolder.expireTV.setVisibility(View.INVISIBLE);
+                recyclerViewHolder.expireTV.setVisibility(View.GONE);
                 recyclerViewHolder.downloadTV.setVisibility(View.GONE);
                 recyclerViewHolder.buyTV.setVisibility(View.GONE);
 
@@ -90,7 +91,12 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
                 recyclerViewHolder.rightPhotoIV.setVisibility(View.GONE);
 
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                recyclerViewHolder.ppCodeTV2.setText(dailyPPCardInfoArrayList.get(position).getPpCode());
+                recyclerViewHolder.ppCodeTV2.setVisibility(View.VISIBLE);
             } else {
+                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                recyclerViewHolder.ppCodeTV2.setVisibility(View.GONE);
                 recyclerViewHolder.dateTV.setVisibility(View.VISIBLE);
                 recyclerViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate().replace("-", "."));
 
@@ -154,6 +160,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
                 }
             }
+            recyclerViewHolder.itemView.setLayoutParams(layoutParams);
             //设置卡片颜色
             recyclerViewHolder.cardView.setCardBackgroundColor(Color.rgb(dailyPPCardInfoArrayList.get(position).getColorR(),
                     dailyPPCardInfoArrayList.get(position).getColorG(), dailyPPCardInfoArrayList.get(position).getColorB()));
@@ -189,7 +196,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     public class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView leftPhotoIV, rightPhotoIV, logoIV;
         private TextView leftLocationTV, rightLocationTV;
-        private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV;
+        private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV, ppCodeTV2;
         private CardView cardView;
 
         public RecyclerItemViewHolder(View convertView) {
@@ -205,6 +212,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             rightLocationTV = (TextView) itemView.findViewById(R.id.daily_pp_header_right_tv);
             cardView = (CardView) itemView.findViewById(R.id.daily_pp_item_cardv);
             logoIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_logo_iv);
+            ppCodeTV2 = (TextView) itemView.findViewById(R.id.daily_pp_header_card_no_tv2);
 
             ViewGroup.LayoutParams params1 = leftPhotoIV.getLayoutParams();
             params1.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 54)) / COLUMN_COUNT;

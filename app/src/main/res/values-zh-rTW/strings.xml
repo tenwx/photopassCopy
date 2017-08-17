@@ -1,0 +1,593 @@
+<resources>
+    <string name="app_name">PhotoPass</string>
+    <string name="share_app_name">香港迪士尼處處拍</string>
+    <!-- login activity start-->
+    <string name="user_login">用戶登入</string>
+    <string name="country">國家/地區</string>
+    <string name="china">中国大陆</string>
+    <string name="hongkong">香港</string>
+    <string name="pwd">密碼</string>
+    <string name="forget_pwd">忘記密碼？</string>
+    <string name="login">登入</string>
+    <string name="sign">註冊</string>
+    <string name="otherLogin">電子郵箱帳戶登入</string>
+    <string name="pwd_no_all_space">密碼首或尾不能為空格</string>
+    <string name="pwd_head_or_foot_space">密碼首或尾不能為空格</string>
+    <string name="modify_password_empty_hint">請輸入密碼</string>
+    <string name="notify_password_hint">密碼不能少於6位</string>
+    <string name="connecting">正在加載中，請稍後&#8230;</string>
+    <string name="input_mobile">手機號碼未輸入</string>
+    <string name="make_sure_mobile_detail">我們將發送驗證碼短信到這個號碼:</string>
+    <!-- login activity end-->
+
+    <!-- email login start -->
+    <string name="email">電子郵箱</string>
+    <string name="email_error">電子郵箱格式錯誤</string>
+    <!-- email login end-->
+
+    <!-- email register start -->
+    <string name="nn">暱稱</string>
+    <string name="gender">性別</string>
+    <string name="date_of_birth">生日</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="name_is_empty">請輸入暱稱</string>
+    <string name="terms">補充條款及細則</string>
+    <string name="policy">隱私政策</string>
+    <string name="terms_and_policy"><a href="2">補充條款及細則</a>和\n<a href="1">隱私政策</a> </string>
+    <!-- email register end-->
+
+    <!-- select country start-->
+    <string name="select_a_country">選擇國家/地區</string>
+    <!-- select country end -->
+
+    <!-- forget pwd start -->
+    <string name="reset_pwd">重置密碼</string>
+    <string name="send_emal">發送驗證郵件</string>
+    <string name="back_login_page">返回登入頁面</string>
+    <string name="email_is_empty">電子郵箱不能為空</string>
+    <string name="email_sent">驗證郵件已發送</string>
+    <string name="reset_pwd_ok">確定</string>
+    <!-- forget pwd end -->
+
+    <!-- 分享字段 start-->
+    <string name="share">分享</string>
+    <string name="share_completed">分享成功</string>
+    <string name="share_canceled">分享已取消</string>
+    <string name="share_failed">分享失敗</string>
+    <string name="weibo_oauth_regiseter">應用授權</string>
+    <string name="share_failure_wechat">您的手機沒有安裝微信應用程式，請先下載安裝後再分享！</string>
+    <string name="share_failure_weibo">您的手機沒有安裝微博應用程式，請先下載安裝後再分享！</string>
+    <string name="share_failure_qzone">您的手機沒有安裝QQ應用程式，請先下載安裝後再分享！</string>
+    <string name="share_failure_facebook">您的手機沒有安裝Facebook應用程式，請先下載安裝後再分享！</string>
+    <string name="share_failure_twitter">您的手機沒有安裝Twitter應用程式，請先下載安裝後再分享！</string>
+    <string name="share_failure_instagram">您的手機沒有安裝Instagram應用程式，請先下載安裝後再分享！</string>
+
+    <string name="sinaweibo">新浪微博</string>
+    <string name="qzone">QQ空間</string>
+    <string name="wechat">微信好友</string>
+    <string name="wechatmoments">微信朋友圈</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="instagram">Instagram</string>
+    <string name="qq">QQ好友</string>
+    <string name="share_text">我願和您分享每一刻在香港迪士尼度假區的美妙體驗！</string>
+    <string name="share_not_open">請在應用上線後使用此功能！</string>
+    <!-- 分享字段 end-->
+
+    <!-- maintab start -->
+    <string name="exit">再按一次退出迪士尼處處拍</string>
+    <string name="tab_story">照片</string>
+    <string name="tab_discover">探索</string>
+    <string name="tab_camera">相機</string>
+    <string name="tab_shops">商店</string>
+    <string name="tab_me">關於我</string>
+    <string name="please_relogin">請重新登入</string>
+    <!-- maintab end -->
+
+    <!-- story start -->
+    <string name="story_tab_all">全部相冊</string>
+    <string name="story_tab_photopass">處處拍</string>
+    <string name="story_tab_magic">相冊</string>
+    <string name="story_tab_bought">已購買</string>
+    <string name="story_tab_favorite">收藏</string>
+    <string name="story_other_en">Others</string>
+    <string name="story_other_ch">其他</string>
+    <string name="story_other_tw">其他</string>
+    <string name="story_no_pp">請掃描您的迪士尼處處拍咭預覽您的照片。</string>
+    <string name="story_scan">掃一掃</string>
+    <string name="no_photo_in_airpass">趕快去找迪士尼處處拍攝影師為您拍照吧！</string>
+    <string name="no_photo_in_magiccam">收藏全部的已編輯圖片</string>
+    <string name="no_photo_in_bought">沒有照片，趕快來購買吧！</string>
+    <string name="no_photo_in_favourite">沒有照片，趕快去收藏吧！</string>
+    <string name="storypage_no_photo">您的迪士尼處處拍相冊中還沒有遊玩的照片哦</string>
+    <string name="storypage_no_pp">您的迪士尼處處拍照片將在此顯示</string>
+    <string name="story_no_photo">趕快去找迪士尼處處拍攝影師為您拍照吧！</string>
+    <string name="no_network">加載失敗，請檢查您當前的網絡環境</string>
+    <string name="click_button_reload">您可以點擊按鈕重新加載</string>
+    <string name="reload">刷新</string>
+    <string name="nomore">沒有更多數據!</string>
+    <string name="failed_click_load">加載失敗，請點擊重新加載！</string>
+    <string name="click_load_more">點擊加載更多！</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="two_days_ago">2天前</string>
+    <string name="three_days_ago">3天前</string>
+    <string name="four_days_ago">4天前</string>
+    <string name="five_days_ago">5天前</string>
+    <string name="six_days_ago">6天前</string>
+    <string name="video_location">My Disney Story</string>
+    <!-- story end -->
+
+    <!-- scan start -->
+    <string name="auto">掃描</string>
+    <string name="scan_qr_code">QR Code</string>
+    <string name="scan_ppp_code">迪士尼處處拍+</string>
+    <string name="scan_intro">請掃描您的迪士尼處處拍咭上的QR Code，更快獲得您的遊玩照片。</string>
+    <string name="re_scan">重新掃描</string>
+    <string name="textview_center_hint">請將迪士尼處處拍+咭背面置於此區域，嘗試對齊邊緣</string>
+    <string name="camera_closed">請先在設置中打開相機權限</string>
+    <string name="camera_closed_jump_to_manual">因為沒有打開相機權限，所以請手動輸入</string>
+    <string name="confirm_ppp_code_text_hint">請核對迪士尼處處拍+密碼\n\n如密碼錯誤，請手動修改</string>
+    <string name="scan_coupon_tips">請掃描您的迪士尼優惠券上的QR Code</string>
+    <!-- scan end -->
+
+    <!-- manual input start -->
+    <string name="manual">手動輸入</string>
+    <string name="ok">確定</string>
+    <string name="manul_input_intro">請輸入您的迪士尼處處拍咭或迪士尼處處拍+咭背後的16位編碼</string>
+    <string name="nocontext">輸入您的編碼</string>
+    <string name="wrong_length">請檢查您的迪士尼處處拍咭</string>
+    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
+    <!-- manual input end -->
+
+    <!-- discover start -->
+    <string name="discover_popularity">人氣</string>
+    <string name="discover_distance">距離</string>
+    <string name="discover_selection">篩選</string>
+    <string name="discover_collect">收藏</string>
+    <!-- discover start -->
+
+    <!-- disney story start -->
+    <string name="launching_camera">趕快去找您的攝影師為您拍照吧！</string>
+    <string name="select">選擇照片</string>
+    <string name="selected">選擇(0/9)</string>
+    <string name="disney_video_go_to_select_photo">買照片</string>
+    <string name="disney_video_edit_photo">開始製作(%1$d/%2$d)</string>
+    <string name="disney_video_edit_photo_null">開始製作(0/3)</string>
+    <string name="disney_video_bubble">只能選擇%1$d張哦</string>
+    <string name="hasselectedphoto">確定(%1$d/%2$d)</string>
+    <string name="no_photo_update">您還沒有可升級的照片！</string>
+    <string name="photo_selected">此照片已經被選擇</string>
+    <string name="limit_photos">不能超過%1$d張照片</string>
+    <string name="select_photos">請選擇您的照片</string>
+    <string name="magic_in_the_making">魔法動畫照片還未上傳</string>
+    <string name="we_will_send_you_to">我們將立即發送給您！</string>
+    <string name="my_disney_story_once_it_is_ready">當“我的迪士尼故事”製作完成後</string>
+    <string name="disney_video_about_null_photo_note">如果您想開啟“我的迪士尼故事”，請盡快購買迪士尼處處拍+吧！</string>
+    <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
+    <string name="start">開始</string>
+    <!-- disney story end -->
+
+    <!-- me start -->
+    <string name="mypage_message">信息</string>
+    <string name="mypage_coupons">優惠券</string>
+    <string name="mypage_myprofile">個人信息</string>
+    <string name="mypage_myorder">我的訂單</string>
+    <string name="mypage_pp">迪士尼處處拍</string>
+    <string name="mypage_ppp">迪士尼處處拍+</string>
+    <string name="mypage_pp1">迪士尼\n處處拍</string>
+    <string name="mypage_ppp1">迪士尼\n處處拍+</string>
+    <string name="mypage_help">幫助</string>
+    <string name="mypage_setting">設置</string>
+    <string name="mypage_download">下載管理</string>
+    <string name="mypage_about">關於</string>
+    <string name="mypage_opinions">聯繫我們</string>
+    <string name="code_tips">請向迪士尼處處拍攝影師出示此QR Code關聯您的照片，即可輕鬆預覽照片。</string>
+    <!-- me end -->
+
+    <!-- Disney video start-->
+    <string name="my_disney_story">我的迪士尼故事</string>
+    <string name="neednotdownload_video">此視頻已經存在</string>
+    <string name="disney_video_selectphoto_model">選擇模式</string>
+    <string name="down">下載</string>
+    <!-- Disney video End-->
+
+    <!-- preview photo start -->
+    <string name="edit">編輯</string>
+    <string name="makegift">打印</string>
+    <string name="touchtoclean">觸摸即可馬上預覽您的高清圖片哦！</string>
+    <string name="know">我知道了</string>
+    <string name="like_and_buy">觸摸查看清晰圖，喜歡便購買吧！</string>
+    <string name="reloadphoto">請重新加載此照片</string>
+    <string name="neednotdownload">此照片已被保存在相冊</string>
+    <string name="local_photo_not_support_makegift">照片不允許打印</string>
+    <string name="not_support_makegift">紀念照不允許打印</string>
+    <string name="photo_index">%1$d/%2$d</string>
+    <string name="photo_cannot_edit_content">對不起，您的此張迪士尼處處拍照片暫不支持編輯</string>
+    <string name="photo_cannot_edit_no">取消</string>
+    <string name="photo_cannot_edit_yes">確定</string>
+    <!-- preview photo end -->
+
+    <!-- blur start -->
+    <string name="blur_intro">只需購買迪士尼處處拍+，即可預覽和下載所有當日通過處處拍服務捕捉的高清數碼照片</string>
+    <string name="up_ppp_money">升級成為迪士尼處處拍+\n（適用於多張數碼照片購買）</string>
+    <string name="use_ppp">使用已有的迪士尼處處拍+</string>
+    <string name="buythisphoto">購買單張數碼照片</string>
+    <string name="cancel1">取消</string>
+    <string name="no_ppp_tips">您沒有可用的迪士尼處處拍+！</string>
+    <!-- blur end -->
+
+    <!-- download start -->
+    <string name="downloading">正在下載</string>
+    <string name="downloading_percent">正在下載%1$d</string>
+    <string name="finish_download">下載完成！</string>
+    <string name="download_detail1">下載完成%1$d個文件！</string>
+    <string name="download_detail2">下載完成%1$d個文件，下載失敗%2$d個文件，請稍後再試！</string>
+    <!-- download end -->
+
+    <!-- edit start -->
+    <string name="load_photo_error">加載照片出錯, 請重新加載此照片</string>
+    <string name="save">保存</string>
+    <string name="frames">相框</string>
+    <string name="magicbrush">濾鏡</string>
+    <string name="decoration">貼紙</string>
+    <string name="rotate">旋轉</string>
+    <string name="rotate_left">左旋轉90°</string>
+    <string name="rotate_right">右旋轉90°</string>
+    <string name="saving">正在保存&#8230;</string>
+    <string name="dealing">正在處理&#8230;</string>
+    <string name="exit_hint">是否保存圖片？</string>
+    <string name="button_cancel">取消</string>
+    <string name="button_ok">確定</string>
+    <string name="original">原圖</string>
+    <string name="lomo">LOMO</string>
+    <string name="earlybird">流年</string>
+    <string name="natural">美肌</string>
+    <string name="hdr">HDR</string>
+    <string name="whitening">美白</string>
+    <string name="vintage">懷舊</string>
+    <!-- edit end -->
+
+    <!-- detail product start -->
+    <string name="choosephoto">選擇照片</string>
+    <string name="add_to_cart">加入購物車</string>
+    <string name="address_digital_goods">數碼照片下載</string>
+    <string name="self_collect">可前往香港迪士尼度假區指定地點獲取。</string>
+    <string name="buy_good">購買</string>
+    <!-- detail product end -->
+
+    <!-- preview product & make gift start -->
+    <string name="preview">預覽</string>
+    <string name="confirm">立即購買</string>
+    <string name="buy_good2">購買</string>
+    <!-- preview product & make gift end -->
+
+    <!-- cart start -->
+    <string name="cart">購物車</string>
+    <string name="select_all">全選</string>
+    <string name="totalprice">合計：</string>
+    <string name="totalprice1">合計：</string>
+    <string name="go_pay">結算(%1$d)</string>
+    <string name="delete">刪除</string>
+    <string name="no_cart">您的購物車為空</string>
+    <string name="select_cart">請選擇購物車</string>
+    <string name="selectyourcart">選擇您的商品</string>
+    <string name="addphoto">請先添加照片</string>
+    <string name="to_add_good">去添加商品</string>
+    <string name="add_photo"> 添加照片 </string>
+    <string name="cannot_change_count">不能修改數量</string>
+    <!-- cart end -->
+
+    <!-- submit order start -->
+    <string name="submitorder">訂單提交</string>
+    <string name="transport">照片領取處</string>
+    <string name="goods_info">商品信息</string>
+    <string name="all_goods">共%1$d件商品</string>
+    <string name="checkout">確定</string>
+    <string name="multi_goods">迪士尼處處拍多項商品</string>
+    <string name="select_address">請選擇自取地點</string>
+    <!-- submit order end -->
+
+    <!-- payment start -->
+    <string name="pay">支付</string>
+    <string name="payment_ways">付款方式</string>
+    <string name="zfbzf">支付寶</string>
+    <string name="yhkzf">銀聯</string>
+    <string name="paydollar">付款</string>
+    <string name="paydollar_type">其他方式</string>
+    <string name="paypalzf">VISA，MasterCard，JCB</string>
+    <string name="zfbsm">推薦使用支付寶賬號</string>
+    <string name="yhksm">支持銀聯咭</string>
+    <string name="visa">VISA</string>
+    <string name="mastercard">萬事達咭</string>
+    <string name="american_express">美國運通咭</string>
+    <string name="jcb">JCB</string>
+    <string name="payeco">銀聯</string>
+    <string name="paypalsm">支持國際信用咭付款</string>
+    <string name="wxzf">微信支付</string>
+    <string name="weixinsm">推薦安裝5.0及以上的版本使用</string>
+    <string name="submitpayment">付款</string>
+    <string name="cancel_deal">您取消了付款</string>
+    <string name="alipay_error">付款錯誤​​</string>
+    <string name="pay_failed">付款失敗</string>
+    <string name="pay_unsuccesss">未成功付款，請重試</string>
+    <string name="submit_order">訂單已提交</string>
+    <string name="no_pay_tips">您不用額外支付任何費用</string>
+    <string name="no_pay_success">確定</string>
+    <!-- payment end -->
+
+    <!-- set header start -->
+    <string name="loading_percent">正在加載%1$d</string>
+    <!-- set header end -->
+
+    <!-- profile start -->
+    <string name="profile">個人資料</string>
+    <string name="account">帳戶</string>
+    <string name="modify">修改密碼</string>
+    <string name="add">添加</string>
+    <!-- profile end -->
+
+    <!-- modify pwd start -->
+    <string name="old_password">舊密碼</string>
+    <string name="new_password">新密碼</string>
+    <string name="modify_password_success">修改密碼成功</string>
+    <string name="show_password">顯示密碼</string>
+    <!-- modify pwd end -->
+
+    <!-- order start -->
+    <string name="my_order">我的訂單</string>
+    <string name="order_unpaid">未付款</string>
+    <string name="order_paid">已付款</string>
+    <string name="all_order">已取</string>
+    <string name="order_completed">已取</string>
+    <string name="order_refund">已退款</string>
+    <string name="order_status">訂單狀態：</string>
+    <string name="payment_order_btn">付款</string>
+    <string name="order_no">訂單編號：</string>
+    <string name="orderprice">訂單總額：</string>
+    <string name="order_time">下單時間：</string>
+    <string name="order_detail">訂單商品：</string>
+    <string name="delete_order_btn">刪除</string>
+    <string name="order_empty_resultString">您還沒相關的訂單</string>
+    <string name="order_empty_buttonString">去商店看看</string>
+    <string name="want_to_buy">暫無訂單歷史記錄</string>
+    <string name="order_pending">處理中</string>
+    <string name="cancelled">交易取消</string>
+    <string name="pay_error">交易錯誤</string>
+    <string name="pending_refund">退款中</string>
+    <!-- order end -->
+
+    <!-- order detail start -->
+    <string name="order_information">訂單詳情</string>
+    <string name="product_information">商品詳情:</string>
+    <string name="productprice">商品價格：</string>
+    <string name="preferential">優惠：</string>
+    <string name="paymethod">支付方式：</string>
+    <string name="order_info">訂單信息</string>
+    <string name="self_collect_address">自取地點：</string>
+    <string name="waitpay">待付款</string>
+    <!-- order detail end -->
+
+    <!-- ppp start -->
+    <string name="instruction">只需要購買迪士尼處處拍+，即可預覽下載所有當日通過處處拍服務捕捉的高清數碼照片。最多可激活當天三張迪士尼處處拍咭</string>
+    <string name="select_pp_hasUpgraded">該迪士尼處處拍已經被綁定</string>
+    <string name="not_ppp_card">這張不是迪士尼處處拍+</string>
+    <string name="bind_pp_now">您有一張迪士尼處處拍，是否現在就去綁定？</string>
+    <string name="dialog_cancel">不用了，謝謝</string>
+    <string name="dialog_ok">好的</string>
+    <string name="dialog_ok1">我知道了</string>
+    <string name="no_activated">未激活</string>
+    <string name="activated">已激活</string>
+    <string name="ppp_has_used">已用完</string>
+    <string name="ppp_has_expired">已過期</string>
+    <string name="expired_on">有效期:</string>
+    <string name="experiencephotopassplus">體驗迪士尼處處拍+咭</string>
+    <string name="buy_ppp_text">購買迪士尼處處拍+</string>
+    <string name="scan_ppp_text">掃描已有的迪士尼處處拍+</string>
+    <string name="use_ppp_upgrade_read_video">以下迪士尼门票／乐拍通卡包含魔法动画照片。\n%1$s\n\n您可激活此卡查看您的魔法动画照片！</string>
+    <string name="use_ppp_upgrade_read_photo">以下迪士尼门票／乐拍通卡包含清晰照片。\n%1$s\n\n您可激活此卡查看您的清晰照片！</string>
+    <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
+    <string name="use_ppp_upgrade_ok">我知道了</string>
+    <!-- ppp end -->
+
+    <!-- pp start -->
+    <string name="pp_ok">確定(%1$d/%2$d)</string>
+    <!-- pp end -->
+
+    <!-- select pp start -->
+    <string name="selectionpp">選擇迪士尼處處拍</string>
+    <string name="select_your_pp">請選擇您的迪士尼處處拍</string>
+    <string name="no_photopass_update">您還沒有符合升級的迪士尼處處拍！</string>
+    <string name="select_pp_wrong_date">只能選擇連續三天的迪士尼處處拍咭</string>
+    <string name="outofrange">超出範圍</string>
+    <!-- select pp end -->
+
+    <!-- select ppp start -->
+    <string name="select_your_ppp">請選擇你的迪士尼處處拍+</string>
+    <string name="select_ppp_title">選擇</string>
+    <string name="update_ppp_msg">您將使用迪士尼處處拍+升級您此張迪士尼處處拍咭內包含的照片</string>
+    <string name="update_ppp_cancel">取消</string>
+    <string name="update_ppp_ok">確定</string>
+    <!-- select ppp end -->
+
+    <!-- settings start -->
+    <string name="setting">設置</string>
+    <string name="logout">退出</string>
+    <string name="submit_opinions">意見反饋</string>
+    <string name="download_tpye">下載方式</string>
+    <string name="gprs_wifi_download">4G/3G/WiFi下載</string>
+    <string name="wifi_only_download">僅WiFi下載</string>
+    <string name="updata_pictures">同步下載</string>
+    <string name="auto_sync">自動更新</string>
+    <string name="setting_language">語言切換</string>
+    <string name="comfirm_logout">確定退出？</string>
+    <string name="setting_language_msg">您確定修改您的語言設置嗎？</string>
+    <!-- settings end -->
+
+    <!-- change language start -->
+    <string name="Chinese">简体中文</string>
+    <string name="English">English</string>
+    <string name="Traditional">繁體中文</string>
+    <!-- change language end -->
+
+    <!-- about start -->
+    <string name="about_tips">奇妙時光，完美定格</string>
+    <string name="copyright">迪彩公司 版權所有</string>
+    <string name="copyright1">Copyright © Disney</string>
+    <string name="copyright2">All Rights Reserved.</string>
+    <string name="develop_version">調試版 </string>
+    <string name="testing_version">公測版 </string>
+    <!-- about end -->
+
+    <!-- check update start -->
+    <string name="generate_apk_failed">下載失敗</string>
+    <string name="update_version">新版本： %1$s</string>
+    <string name="generate_apk">正在處理&#8230;</string>
+    <!-- check update end -->
+
+    <!-- socket start -->
+    <string name="notifacation_new_message">新的消息</string>
+    <string name="notifacation_new_photo">您有新的照片！</string>
+    <string name="notifacation_new_video">您有新的視頻！</string>
+    <string name="notifacation_order_completed_msg">您已經付款成功，美好影像體驗盡在迪彩！</string>
+    <string name="notifacation_order_submit_msg">您已經下單成功，快去支付吧！</string>
+    <!-- socket end -->
+
+    <!-- tips start -->
+    <!--   推广PhotoPass＋流程  -->
+    <string name="pp_first_up10_msg">親，升級您的迪士尼處處拍+即可擁有此咭內所有高清數碼照片！</string>
+    <string name="pp_first_up10_no_msg">取消</string>
+    <string name="pp_first_up10_yes_msg">去升級</string>
+    <!-- 使用流量提示-->
+    <string name="dialog_download_message">正在使用流量，是否繼續下載？</string>
+    <!--   同步更新照片流程  -->
+    <string name="first_tips_syns_msg1">您需要同步自動更新下載您的迪士尼處處拍相冊嗎？</string>
+    <string name="first_tips_syns_no_msg1">取消</string>
+    <string name="first_tips_syns_yes_msg1">同步更新</string>
+    <string name="first_tips_syns_msg2">親，您需要同步自動更新下載已購買的迪士尼處處拍照片嗎？</string>
+    <string name="first_tips_syns_no_msg2">取消</string>
+    <string name="first_tips_syns_yes_msg2">同步更新</string>
+    <!--   网络下载模式流程  -->
+    <string name="one_photo_download_msg1">親，您設置了僅WIFI狀態下載，當前為非WIFI網絡，是否需要更改？</string>
+    <string name="one_photo_download_no_msg1">考虑下</string>
+    <string name="one_photo_download_yes_msg1">去更改</string>
+    <string name="one_photo_download_msg2">親，當前非WIFI網絡，繼續下載將會消耗手機流量</string>
+    <string name="one_photo_download_no_msg2">停止下載</string>
+    <string name="one_photo_download_yes_msg2">继续下載</string>
+    <string name="confirm_sync_msg">開啟後已付費的迪士尼處處拍照片將自動下載，是否繼續？</string>
+    <string name="confirm_sync_yes">確定</string>
+    <string name="confirm_sync_no">取消</string>
+    <!-- 删除pp的提示-->
+    <string name="delete_pp">一旦删除，即該帳戶不會顯示此迪士尼處處拍的照片！</string>
+    <string name="delete_pp_cancel">取消</string>
+    <string name="delete_pp_ok">刪除</string>
+    <!-- tips end -->
+
+    <!-- edit story start -->
+    <!--<string name="buy">購買</string>-->
+    <!--<string name="all">所有</string>-->
+    <!--<string name="disall">取消</string>-->
+    <string name="edit_story_all">全選</string>
+    <string name="edit_story_disall">取消</string>
+    <string name="delete_percent">正在刪除%1$d/%2$d</string>
+    <string name="start_delete">刪除照片後您的帳戶中將不再顯示此照片，確定刪除？</string>
+    <string name="edit_story_album">編輯</string>
+    <string name="edit_story_confirm_download">确认下载</string>
+    <string name="edit_story_reselect">重新选择</string>
+    <string name="edit_story_unpay_tips">選項中含有未付費的照片不能下載喔，您可繼續下載已付費的照片！</string>
+    <string name="edit_story_all_unpay_tips">當前選中的照片未付費，不可下載</string>
+    <string name="edit_story_addto_downloadlist">照片已在下載隊列，可去下載管理內查詢，請耐心等待！</string>
+    <!-- edit story end -->
+
+    <!-- 我的优惠券 start-->
+    <string name="my_coupon">我的優惠券</string>
+    <string name="coupon">優惠券</string>
+    <string name="coupon_exchange_use">添加</string>
+    <string name="coupon_scan">掃描</string>
+    <string name="shop_price">商品金額</string>
+    <string name="coupon_price">優惠券抵用</string>
+    <string name="coupon_price1">優惠券抵用：</string>
+    <string name="pay_price">實際支付</string>
+    <string name="coupon_count">有%1$d張優惠券可用</string>
+    <string name="no_coupon1">沒有可用的優惠券</string>
+    <string name="no_coupon">您還沒有可使用的優惠券</string>
+    <string name="has_been_used">已使用</string>
+    <string name="expired">已過期</string>
+    <string name="discount">折</string>
+    <string name="conpon_input_hint">請輸入優惠券兌換碼</string>
+    <string name="select_cpupon">使用優惠劵</string>
+    <string name="discount_price">優惠即減</string>
+    <string name="discount_price1">優惠即減：</string>
+    <string name="incorrect_coupon">您輸入的優惠券有誤，不可添加！</string>
+    <string name="coupon_incalid">此優惠券不適用當前商品</string>
+    <string name="coupon_expireto">有效期至：%1$s</string>
+    <!-- 我的优惠券 end-->
+
+    <!--SMSSDK-->
+    <string name="smssdk_regist">用戶登錄</string>
+    <string name="smssdk_pwd2">再次輸入密碼</string>
+    <string name="smssdk_pwd_forget">請輸入新密碼</string>
+    <string name="smssdk_send_verification_code">發送驗證碼</string>
+    <string name="smssdk_other_sign_up">電子郵箱帳戶註冊</string>
+    <string name="smssdk_explain_briefly">我已閱讀並接受<a href="2">補充條款及細則</a>和<a href="1">隱私政策</a>。</string>
+    <string name="smssdk_personal_information_collection_statement">收取香港迪士尼樂園的最新資訊、推廣及優惠 - 本人承諾本人已閱讀及理解載於<a href = "6">個人資料收集聲明</a>之條款，並同意可使用本人的個人資料作直接推廣用途。</string>
+    <string name="please_agree">請確定同意補充條款及細則和隱私政策</string>
+    <string name="smssdk_next">下一步</string>
+    <string name="smssdk_cancel">取消</string>
+    <string name="smssdk_ok">確定</string>
+    <string name="smssdk_make_sure_mobile_detail">我們將發送驗證碼短信到這個號碼:\n%1$s</string>
+    <string name="smssdk_write_mobile_phone">手機號碼</string>
+    <string name="smssdk_write_right_mobile_phone">請填寫正確的手機號碼</string>
+    <string name="smssdk_write_identify_code">填寫驗證碼</string>
+    <string name="smssdk_receive_msg"><Data>倒計時&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
+    <string name="is_loading">正在加載中，請稍候&#8230;</string>
+    <string name="smssdk_pw_is_inconsistency">密碼輸入不一致</string>
+    <string name="personal_info_collect">個人資料收集聲明</string>
+    <!--SMSSDK end-->
+
+    <!-- postcard start-->
+    <string name="customized_postcard">訂製制明信片(三聯套)</string>
+    <string name="postcard_type">款式</string>
+    <string name="preview_goods">預覽商品(%1$d/%2$d)</string>
+    <string name="preview_goods_null">預覽商品(0/3)</string>
+    <!-- postcard end-->
+
+    <!-- permission request start -->
+    <string name="permission_storage_message">請先在設置中打開讀寫手機存儲權限</string>
+    <string name="permission_read_phone_state_message">請先在設置中打開設備信息權限</string>
+    <!-- permission request end -->
+
+    <!--购物车不标准字段,确认之后移动至购物车分类-->
+    <string name="unable_add_to_cart">商品已經加入購物車，請去購物車中結算哦！</string>
+     <!-- photo download manage start -->
+    <string name="photo_download_success">已下載</string>
+    <string name="photo_downloading">正在下載</string>
+    <string name="photo_download_waiting">等待</string>
+    <string name="photo_download_loading">下載中</string>
+    <string name="photo_download_failed">點擊重連</string>
+    <string name="photo_download_reconnecting">重連中</string>
+    <string name="photo_download_complete">下載完成</string>
+    <string name="photo_download_upload">高清圖上傳\n中稍後重連</string>
+    <string name="photo_download_clear">清空列表</string>
+    <string name="photo_download_reconnect">重連</string>
+    <string name="photo_download_clear_tips">下載完成後才可以清除</string>
+    <string name="photo_download_not_exists">源文件已刪除</string>
+    <string name="photo_download_tips">未有正在下載中的照片</string>
+    <string name="photo_download_success_tips">未有已下載完成的照片</string>
+    <string name="photo_download_to_load">去下載</string>
+    <string name="photo_download_tips2">已下載完成的照片將保存至您的手機相冊中，回擊以下列表可以預覽照片，當您在手機相冊中刪除該照片，則提示無法預覽喔</string>
+    <string name="photo_download_select">多選</string>
+    <string name="photo_download_tips3">下載完成後才可編輯，請耐心等待</string>
+    <string name="photo_download_tips4">没有可编辑图片哦</string>
+    <!--photo download manage start-->
+
+    <!--animated photo-->
+    <string name="animated_photo_title">視頻</string>
+    <string name="animated_photo_add_cart">請將迪士尼處處拍+加入購物車</string>
+    <string name="animated_photo_buy_ppp">我要購買迪士尼處處拍+</string>
+    <string name="animated_photo_upgrade_exist_ppp">使用已購買的迪士尼處處拍+</string>
+    <string name="animated_photo_introduce_text">想下載分享這些視頻嗎？立即購買迪士尼處處拍＋開通這個魔法吧！</string>
+    <string name="animated_photo_loading">正在加載%1$d%%</string>
+    <!--animated photo end-->
+</resources>
