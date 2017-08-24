@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 /**
  * 首页一天PP卡的封装类

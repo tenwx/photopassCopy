@@ -1,11 +1,11 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pictureair.photopass.widget.CompositeImageProductView;
+import com.pictureair.hkdlphotopass.widget.CompositeImageProductView;
 
 import java.util.List;
 

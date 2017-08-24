@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -11,15 +11,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.editPhoto.interf.IPWEditView;
-import com.pictureair.photopass.editPhoto.presenter.PWEditPresenter;
-import com.pictureair.photopass.editPhoto.util.PhotoCommon;
-import com.pictureair.photopass.editPhoto.widget.StickerView;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.EditActivityAdapter;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.editPhoto.interf.IPWEditView;
+import com.pictureair.hkdlphotopass.editPhoto.presenter.PWEditPresenter;
+import com.pictureair.hkdlphotopass.editPhoto.util.PhotoCommon;
+import com.pictureair.hkdlphotopass.editPhoto.widget.StickerView;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.components.RxActivity;
 
 /**

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.os.Environment;
 
@@ -250,7 +250,7 @@ public class Common {
     public static final String IP = "ip";
     public static final String ADDRESS_INFO = "addressInfo";
     public static final String NEW_ADDRESS_INFO = "newAddressInfo";
-    public static final String DEFAULT_CURRENCY = "¥";
+    public static final String DEFAULT_CURRENCY = "$";
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
     public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
@@ -300,15 +300,15 @@ public class Common {
     public static final String DOWNLOAD_PHOTO_IDS = "DownloadPhotoIds";
 
     //存放sdk的目录
-    public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
-    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/user/";
-    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/";
-    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/app/";
-    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/download/";
-    public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/download/frames/";
-    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/temppic/";
-    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/share/";
-    public static final String LOG_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/log/";
+    public static final String ALBUM_FILE_DOWLOAD_NAME = "/HongKong Disney PhotoPass/download";
+    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/user/";
+    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/";
+    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/app/";
+    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/download/";
+    public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/download/frames/";
+    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/temppic/";
+    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/share/";
+    public static final String LOG_PATH = Environment.getExternalStorageDirectory().getPath() + "/HongKong Disney PhotoPass/log/";
 
     //缓存的字段
     public static final String ALL_GOODS = "allgoods";
@@ -320,7 +320,7 @@ public class Common {
 
     //photo sqlite数据库字段
     public static final boolean USE_ENCRYPTED_DATABASE = true;//是否使用加密的数据库
-    public static final String PHOTOPASS_INFO_NAME = "photopass_info.db3";
+    public static final String PHOTOPASS_INFO_NAME = "hkdlphotopass_info.db3";
 
     /**
      * 其他设置
@@ -337,7 +337,7 @@ public class Common {
 
     //app的语言
     public static final String ENGLISH = "en";//英语
-    public static final String SIMPLE_CHINESE = "zh";//简体中文
+    public static final String SIMPLE_CHINESE = "zh_CN";//简体中文
     public static final String TRADITIONAL_CHINESE = "zh_TW";//简体中文
 
     //购买单张回来是否更新View的字段
@@ -408,8 +408,11 @@ public class Common {
      * HK disney 线上域名服务器
      */
     public static final String BASE_URL_TEST = "http://52.74.190.1:3006";
+//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.hk:3006";
     public static final String PHOTO_URL = "http://www.disneyphotopass.com.hk:4000/";
-    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/alipayNotify";//alipay的异步通知URL
+    //    public static final String PHOTO_URL = "http://www.disneyphotopass.com.hk:4000/";
+
+    //    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/alipayNotify";//alipay的异步通知URL
     public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String PAYECO_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/payecoNotify";//payeco的异步通知URL
     public static final String BARCODEURL = "http://www.disneyphotopass.com.hk?src=pp&vid=";
@@ -417,7 +420,15 @@ public class Common {
     public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.hk/terms.html?source=outer";  //条款 2
     public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 
+    public final static String POLICY_AGREEMENT_CN = "https://www.hongkongdisneyland.cn/privacy-legal/";
+    public final static String POLICY_AGREEMENT_EN = "https://www.hongkongdisneyland.com/privacy-legal/";
+    public final static String POLICY_AGREEMENT_HK = "https://www.hongkongdisneyland.com/zh-hk/privacy-legal/";
+
     public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.hk:3006";
 
-    public static final String SITE = "site";
+    public static final String SITE_ID = "siteId";
+
+    public static final String PAY_DOLLAR = "/api/webPay";// paydollar/payeco 支付接口。
+    public static final String ALIPAY_NOTIFY = "http://52.74.190.1:3006/api/alipayNotify";//alipay的异步通知URL
+
 }

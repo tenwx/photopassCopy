@@ -1,18 +1,18 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.LoginActivity;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.LoginActivity;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.service.DownloadService;
+import com.pictureair.hkdlphotopass.service.NotificationService;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import rx.android.schedulers.AndroidSchedulers;
 

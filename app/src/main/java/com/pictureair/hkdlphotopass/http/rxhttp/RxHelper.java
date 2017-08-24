@@ -1,13 +1,13 @@
-package com.pictureair.photopass.http.rxhttp;
+package com.pictureair.hkdlphotopass.http.rxhttp;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.activity.LoginActivity;
-import com.pictureair.photopass.entity.BasicResult;
-import com.pictureair.photopass.util.AppExitUtil;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.activity.LoginActivity;
+import com.pictureair.hkdlphotopass.entity.BasicResult;
+import com.pictureair.hkdlphotopass.util.AppExitUtil;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 
 import rx.Observable;
 import rx.Subscriber;

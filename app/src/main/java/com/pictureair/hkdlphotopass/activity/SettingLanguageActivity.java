@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -9,13 +9,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 
 import java.util.Locale;
 

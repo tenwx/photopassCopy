@@ -1,7 +1,7 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
-import com.pictureair.photopass.alipay.Keys;
-import com.pictureair.photopass.alipay.SignUtils;
+import com.pictureair.hkdlphotopass.alipay.Keys;
+import com.pictureair.hkdlphotopass.alipay.SignUtils;
 
 public class AliPayUtil {
 	/**
@@ -59,6 +59,11 @@ public class AliPayUtil {
 		orderInfo += "&return_url=\"m.alipay.com\"";
 		// 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
 		// orderInfo += "&paymethod=\"expressGateway\"";
+
+		//global pay special parameters
+		orderInfo += "&currency=\"HKD\"";
+		orderInfo += "&forex_biz=\"FP\"";
+		orderInfo += "&product_code=\"NEW_WAP_OVERSEAS_SELLER\"";
 		return orderInfo;
 	}
 }

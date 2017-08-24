@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,16 +16,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.ViewPhotoGridViewAdapter;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;

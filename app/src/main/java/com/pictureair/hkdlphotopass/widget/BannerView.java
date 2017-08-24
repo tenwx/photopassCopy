@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.BannerViewAdapter;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.BannerViewAdapter;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;

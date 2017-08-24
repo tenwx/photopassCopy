@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto.interf;
+package com.pictureair.hkdlphotopass.editPhoto.interf;
 
 import android.os.Handler;
 

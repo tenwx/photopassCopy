@@ -1,19 +1,19 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.BaseCheckUpdate;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.AESKeyHelper;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.entity.BaseCheckUpdate;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.AESKeyHelper;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;

@@ -1,7 +1,11 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,30 +19,36 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.payeco.android.plugin.PayecoPluginLoadingActivity;
+import com.pictureair.hkdlphotopass.eventbus.BuySingleDigital;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PayUtils;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.eventbus.AsyncPayResultEvent;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PayUtils;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.unionpay.UPPayAssistEx;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -59,16 +69,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private RelativeLayout zfbLayout;
     private RelativeLayout ylLayout;
     private RelativeLayout visaLayout;
-    private RelativeLayout wechatLayout;
     private RelativeLayout masterCardLayout;
     private RelativeLayout jcbLayout;
+    private RelativeLayout americanexpressLayout;
 
     private ImageView zfButton;
-    private ImageView yhkButton;
+    private ImageView ylButton;
     private ImageView visaButton;
-    private ImageView wechatButton;
     private ImageView masterCardButton;
     private ImageView jcbButton;
+    private ImageView americanexpressButton;
 
     public static final int RQF_SUCCESS = 1;
     public static final int RQF_CANCEL = 2;
@@ -84,13 +94,21 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private boolean paySyncResult = false;
     private org.json.JSONObject payAsyncResultJsonObject;
 
-    private int payType = 1;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
+    private int payType = 2;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
+    private String ccPayType = "VISA";
     private PayUtils payUtils;
+    //广播地址，用于接收易联支付插件支付完成之后回调客户端
+    private final static String BROADCAST_PAY_END = "com.pictureair.hkdlphotopass.broadcast";
+    /**
+     * @Fields payecoPayBroadcastReceiver : 易联支付插件广播
+     */
+    private BroadcastReceiver payecoPayBroadcastReceiver;
 
     private OrderInfo orderInfo;
     private String outletId;
     private JSONArray cartItemIds;
     private String orderid = "";
+    private String orderIdInBackend = "";
     private boolean weChatIsPaying = false;
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
     private String isBack = "0";//用于判断是否需要返回 0- 不返回 1-返回
@@ -101,6 +119,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
     private final String mMode = "00";
     private String tNCode;
+    private String orderCode;
 
     private boolean isNeedPay = true;//是否需要支付
     private JSONArray couponCodes;//优惠券
@@ -124,6 +143,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         }
     };
 
+
     private void getSocketData() {
         API2.getSocketData()
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
@@ -131,10 +151,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
-                        PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: ");
+                        PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: " + jsonObject.toJSONString());
                         boolean isSuccess = false;
                         if (jsonObject.size() > 0) {
-                            isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
+                            isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderIdInBackend);
                         }
                         if (!isSuccess) {
                             dismissPWProgressDialog();
@@ -265,38 +285,47 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         sbmtButton = (TextView) findViewById(R.id.button_smpm);
         sbmtButton.setTypeface(MyApplication.getInstance().getFontBold());
         // 支付方式选择
-        zfButton = (ImageView) findViewById(R.id.imageButton1_zfb);
-        yhkButton = (ImageView) findViewById(R.id.imageButton2_yhk);
-        visaButton = (ImageView) findViewById(R.id.imageButton_payvisa);
-        masterCardButton = (ImageView) findViewById(R.id.imageButton_paymc);
-        jcbButton = (ImageView) findViewById(R.id.imageButton_payjcb);
-        wechatButton = (ImageView) findViewById(R.id.imageButton2_weixin);
-        zfbLayout = (RelativeLayout) findViewById(R.id.zfb);
-        ylLayout = (RelativeLayout) findViewById(R.id.yl);
-        visaLayout = (RelativeLayout) findViewById(R.id.paytype_visa);
-        masterCardLayout = (RelativeLayout) findViewById(R.id.paytype_mc);
-        jcbLayout = (RelativeLayout) findViewById(R.id.paytype_jcb);
-        wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
+        visaButton = (ImageView) findViewById(R.id.imageButton_visa);
+        masterCardButton = (ImageView) findViewById(R.id.imageButton_mastercard);
+        americanexpressButton = (ImageView) findViewById(R.id.imageButton_american_express);
+        jcbButton = (ImageView) findViewById(R.id.imageButton_jcb);
+        ylButton = (ImageView) findViewById(R.id.imageButton_union_pay);
+        zfButton = (ImageView) findViewById(R.id.imageButton_aliPay);
+
+        visaLayout = (RelativeLayout) findViewById(R.id.visa);
+        masterCardLayout = (RelativeLayout) findViewById(R.id.mastercard);
+        americanexpressLayout = (RelativeLayout) findViewById(R.id.american_express);
+        jcbLayout = (RelativeLayout) findViewById(R.id.jcb);
+        ylLayout = (RelativeLayout) findViewById(R.id.union_pay);
+        zfbLayout = (RelativeLayout) findViewById(R.id.aliPay);
+
+
     }
 
     private void init() {
+        //初始化支付结果广播接收器
+        initPayecoPayBroadcastReceiver();
+
+        //注册支付结果广播接收器
+        registerPayecoPayBroadcastReceiver();
+
         newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
 
         sbmtButton.setOnClickListener(this);
-        yhkButton.setImageResource(R.drawable.sele);
-        zfButton.setImageResource(R.drawable.nosele);
-        visaButton.setImageResource(R.drawable.nosele);
+        visaButton.setImageResource(R.drawable.sele);
         masterCardButton.setImageResource(R.drawable.nosele);
+        americanexpressButton.setImageResource(R.drawable.nosele);
         jcbButton.setImageResource(R.drawable.nosele);
-        wechatButton.setImageResource(R.drawable.nosele);
+        ylButton.setImageResource(R.drawable.nosele);
+        zfButton.setImageResource(R.drawable.nosele);
 
-        zfbLayout.setOnClickListener(this);
-        ylLayout.setOnClickListener(this);
         visaLayout.setOnClickListener(this);
         masterCardLayout.setOnClickListener(this);
+        americanexpressLayout.setOnClickListener(this);
         jcbLayout.setOnClickListener(this);
-        wechatLayout.setOnClickListener(this);
+        ylLayout.setOnClickListener(this);
+        zfbLayout.setOnClickListener(this);
 
         if (getIntent().getStringExtra("flag") == null) {
             // 为空，说明是正常流程进入
@@ -306,6 +335,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             priceString = getIntent().getStringExtra("price");// 获取price
             introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
             orderid = getIntent().getStringExtra("orderId");
+            orderIdInBackend = getIntent().getStringExtra("orderIdInBackend");
             outletId = getIntent().getStringExtra("outletId");
             cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
             String couponCodesStr = getIntent().getStringExtra("couponCodes");
@@ -362,10 +392,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (cartItemIds != null) {
             if (productType == 1) {
                 //获取收货地址
-                addOrder(cartItemIds, 1, outletId, "", couponCodes,null, null, null);
+                addOrder(cartItemIds, 1, outletId, "", couponCodes, null, null, null);
             } else {
                 //PP+/数码商品不需要地址
-                addOrder(cartItemIds, 3, "", "", couponCodes,null, null, null);
+                addOrder(cartItemIds, 3, "", "", couponCodes, null, null, null);
             }
         }
     }
@@ -419,73 +449,77 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     //直接提交订单，等待推送
                     checkOut();
                 }
-
                 break;
 
-            case R.id.zfb:// 选择支付宝支付
-                payType = 0;
-                zfButton.setImageResource(R.drawable.sele);
-                yhkButton.setImageResource(R.drawable.nosele);
-                visaButton.setImageResource(R.drawable.nosele);
-                masterCardButton.setImageResource(R.drawable.nosele);
-                jcbButton.setImageResource(R.drawable.nosele);
-                wechatButton.setImageResource(R.drawable.nosele);
-                PictureAirLog.v(TAG, "ZFB");
-                break;
-
-            case R.id.yl:// 选择银联支付
-                payType = 1;
-                zfButton.setImageResource(R.drawable.nosele);
-                yhkButton.setImageResource(R.drawable.sele);
-                visaButton.setImageResource(R.drawable.nosele);
-                masterCardButton.setImageResource(R.drawable.nosele);
-                jcbButton.setImageResource(R.drawable.nosele);
-                wechatButton.setImageResource(R.drawable.nosele);
-                PictureAirLog.v(TAG, "YL");
-                break;
-
-            case R.id.paytype_visa:// paypal支付
-                payType = 6;
-                zfButton.setImageResource(R.drawable.nosele);
-                yhkButton.setImageResource(R.drawable.nosele);
+            case R.id.visa:// paydollar支付 --  visa
+                payType = 2;
+                ccPayType = "VISA";
                 visaButton.setImageResource(R.drawable.sele);
                 masterCardButton.setImageResource(R.drawable.nosele);
+                americanexpressButton.setImageResource(R.drawable.nosele);
                 jcbButton.setImageResource(R.drawable.nosele);
-                wechatButton.setImageResource(R.drawable.nosele);
-                PictureAirLog.v(TAG, "PAYPAL");
-                break;
-            case R.id.paytype_mc:// paypal支付
-                payType = 6;
+                ylButton.setImageResource(R.drawable.nosele);
                 zfButton.setImageResource(R.drawable.nosele);
-                yhkButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
+                break;
+
+            case R.id.mastercard:// paydollar支付 -- mastercard
+                payType = 2;
+                ccPayType = "Master";
                 visaButton.setImageResource(R.drawable.nosele);
                 masterCardButton.setImageResource(R.drawable.sele);
+                americanexpressButton.setImageResource(R.drawable.nosele);
                 jcbButton.setImageResource(R.drawable.nosele);
-                wechatButton.setImageResource(R.drawable.nosele);
-                PictureAirLog.v(TAG, "PAYPAL");
-                break;
-            case R.id.paytype_jcb:// paypal支付
-                payType = 6;
+                ylButton.setImageResource(R.drawable.nosele);
                 zfButton.setImageResource(R.drawable.nosele);
-                yhkButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
+                break;
+
+            case R.id.american_express:// paydollar支付 -- american_express
+                payType = 2;
+                ccPayType = "AMEX";
                 visaButton.setImageResource(R.drawable.nosele);
                 masterCardButton.setImageResource(R.drawable.nosele);
+                americanexpressButton.setImageResource(R.drawable.sele);
+                jcbButton.setImageResource(R.drawable.nosele);
+                ylButton.setImageResource(R.drawable.nosele);
+                zfButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
+                break;
+
+            case R.id.jcb:// paydollar支付 -- jcb
+                payType = 2;
+                ccPayType = "JCB";
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                americanexpressButton.setImageResource(R.drawable.nosele);
                 jcbButton.setImageResource(R.drawable.sele);
-                wechatButton.setImageResource(R.drawable.nosele);
-                PictureAirLog.v(TAG, "PAYPAL");
+                ylButton.setImageResource(R.drawable.nosele);
+                zfButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
                 break;
 
-            case R.id.weixin:// wechat支付
-                payType = 7;
-                zfButton.setImageResource(R.drawable.nosele);
-                yhkButton.setImageResource(R.drawable.nosele);
+            case R.id.union_pay://payeco支付
+                payType = 3;
                 visaButton.setImageResource(R.drawable.nosele);
                 masterCardButton.setImageResource(R.drawable.nosele);
+                americanexpressButton.setImageResource(R.drawable.nosele);
                 jcbButton.setImageResource(R.drawable.nosele);
-                wechatButton.setImageResource(R.drawable.sele);
-                PictureAirLog.v(TAG, "WECHAT");
+                ylButton.setImageResource(R.drawable.sele);
+                zfButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
                 break;
 
+            case R.id.aliPay:// 选择支付宝支付
+                payType = 0;
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                americanexpressButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.nosele);
+                ylButton.setImageResource(R.drawable.nosele);
+                zfButton.setImageResource(R.drawable.sele);
+                PictureAirLog.v(TAG, payType + "--" + ccPayType);
+                break;
             default:
                 break;
         }
@@ -538,9 +572,92 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 newToast.setTextAndShow(R.string.install_wechat_first, Common.TOAST_SHORT_TIME);
                 sbmtButton.setEnabled(true);
             }
+        } else if (payType == 2) {
+            PictureAirLog.v(TAG, "paydollar");
+            Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);
+            intent.putExtra("key", 7);
+            intent.putExtra("orderId", orderId);
+            intent.putExtra("ccPayType", ccPayType);
+            PictureAirLog.out("======  orderId =====" + orderId);
+            PictureAirLog.out("======  ccPayType =====" + ccPayType);
+            startActivityForResult(intent, 4444);
+        } else if (payType == 3) {
+            PictureAirLog.v(TAG, "payeco");
+            if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE)) {//没有权限
+                newToast.setTextAndShow(R.string.permission_read_phone_state_message, Common.TOAST_SHORT_TIME);
+                sbmtButton.setEnabled(true);
+            } else {
+                showPWProgressDialog();
+//                API1.getPayecoInfo(paymentOrderHandler, orderId, 3);
+                getPayecoInfo(orderId);
+            }
         } else {
             PictureAirLog.v(TAG, "other");
         }
+    }
+
+    private void getPayecoInfo(String orderId) {
+        API2.getPayecoInfo(orderId, 3)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.e(TAG, "GET_PAYECO_INFO_SUCCESSS: " + jsonObject);
+                        dismissPWProgressDialog();
+                        PictureAirLog.v(TAG, "msg.obj: " + jsonObject);
+                        if (jsonObject == null || jsonObject.toString().length() == 0) {
+                            paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                        } else {
+                            //获得支付信息成功 -- 解析数据
+                            PictureAirLog.v(TAG, "msg.obj: " + jsonObject);
+                            JSONObject result = (JSONObject) jsonObject;
+                            PictureAirLog.v(TAG, "GET_PAYECO_INFO_SUCCESSS:  result： " + result);
+                            if (result.getString("RetCode") == null || !"0000".equals(result.getString("RetCode"))) {
+                                paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                                return;
+                            }
+
+                            orderCode = result.getString("MerchOrderId");
+                            //组织参数用于跳转至易联支付插件，示例如下
+                            //{
+                            //	"Version": "2.0.0",
+                            //	"MerchOrderId": "1408006824547",
+                            //	"MerchantId": "302020000058",
+                            //	"Amount": "5.00",
+                            //	"TradeTime": "20140814170024",
+                            //	"OrderId": "302014081400038872",
+                            //	"Sign": "QBOiI4xl1CgWNHt+8KTyVR2c9bAGNMMkXTHsYhJrmr9QPuHhRe1CiPGu+beOiayQTGGigTJEzUm23q0lAnDoXcnmwt7bsyG+UOwl3m9OKUd8o+SP741OOJxXHK884OXWuygMXkczK+TvYhNv/RLYKgAVSG6qN0lmsc2lek+cxqo="
+                            //}
+
+                            result.remove("RetCode");//RetCode参数不需要传递给易联支付插件
+                            result.remove("RetMsg");//RetMsg参数不需要传递给易联支付插件
+
+                            String upPayReqString = result.toString();
+                            PictureAirLog.i("test", "请求易联支付插件，参数：" + upPayReqString);
+
+                            //跳转至易联支付插件
+                            Intent intent = new Intent(PaymentOrderActivity.this, PayecoPluginLoadingActivity.class);
+                            intent.putExtra("upPay.Req", upPayReqString);
+                            intent.putExtra("Broadcast", BROADCAST_PAY_END); //广播接收地址
+                            intent.putExtra("Environment", "01"); // 00: 测试环境, 01: 生产环境
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PictureAirLog.v(TAG, "UNIONPAY_GET_TN_FAILED: ");
+                        dismissPWProgressDialog();
+                        newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                        paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     private void getUnionPayTN(String orderId) {
@@ -670,7 +787,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "start finish expired activity");
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
-        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+//        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
@@ -751,7 +868,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);//只能购买一日通
                 intent.putExtra("dailyppp", true);
                 API2.PPPlist.clear();
-
+                startActivity(intent);
             } else {
                 // 以下两种情况，进入图片清晰页面
                 PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
@@ -765,14 +882,15 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     String photoId = myApplication.getIsBuyingPhotoId();
                     PictureAirLog.out("tabname---->" + tab + "photoid--->" + photoId);
 
-                    intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("position", -1);
-                    bundle.putString("tab", tab);
-                    bundle.putString("photoId", photoId);
-                    bundle.putString("ppCode", myApplication.getIsBuyingPhotoPassCode());
-                    bundle.putString("shootDate", myApplication.getIsBuyingPhotoShootTime());
-                    intent.putExtra("bundle", bundle);
+//                    intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("position", -1);
+//                    bundle.putString("tab", tab);
+//                    bundle.putString("photoId", photoId);
+//                    bundle.putString("ppCode", myApplication.getIsBuyingPhotoPassCode());
+//                    bundle.putString("shootDate", myApplication.getIsBuyingPhotoShootTime());
+//                    intent.putExtra("bundle", bundle);
+                    EventBus.getDefault().post(new BuySingleDigital(0));
 
                     // 清空标记
                     myApplication.clearIsBuyingPhotoList();
@@ -790,6 +908,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     PictureAirLog.v(TAG, "----------------->回到订单页面 productType： " + productType);
                     intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                     intent.putExtra("orderType", productType);
+                    startActivity(intent);
                 }
             }
         } catch (JSONException e) {
@@ -800,7 +919,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 //        editor.commit();
         dismissPWProgressDialog();
         SuccessAfterPayment();
-        startActivity(intent);
+//        startActivity(intent);
         finish();
     }
 
@@ -814,6 +933,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         }
         paymentOrderHandler.removeCallbacksAndMessages(null);
 //        unregisterReceiver(broadcastReceiver); // 解除广播
+        unRegisterPayecoPayBroadcastReceiver();
     }
 
 
@@ -875,7 +995,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
             PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());
 
-            if (!asyncTimeOut) {//如果没有超时，需要处理
+            if (asyncTimeOut) {//如果没有超时，需要处理
                 payAsyncResultJsonObject = asyncPayResultEvent.getAsyncPayResult();
                 //接受到推送之后，先将handler清空，然后再执行新的任务
                 paymentOrderHandler.removeCallbacks(runnable);
@@ -886,6 +1006,145 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             //刷新列表
             EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);
         }
+    }
+
+    /**
+     * @Title registerPayecoPayBroadcastReceiver
+     * @Description 注册广播接收器
+     */
+    private void registerPayecoPayBroadcastReceiver() {
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BROADCAST_PAY_END);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(payecoPayBroadcastReceiver, filter);
+    }
+
+    /**
+     * @Title unRegisterPayecoPayBroadcastReceiver
+     * @Description 注销广播接收器
+     */
+    private void unRegisterPayecoPayBroadcastReceiver() {
+
+        if (payecoPayBroadcastReceiver != null) {
+            unregisterReceiver(payecoPayBroadcastReceiver);
+            payecoPayBroadcastReceiver = null;
+        }
+    }
+
+    //初始化支付结果广播接收器
+    private void initPayecoPayBroadcastReceiver() {
+        payecoPayBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                showPWProgressDialog();
+
+                //接收易联支付插件的广播回调
+                String action = intent.getAction();
+                if (!BROADCAST_PAY_END.equals(action)) {
+                    PictureAirLog.e("test", "接收到广播，但与注册的名称不一致[" + action + "]");
+                    return;
+                }
+
+                //商户的业务处理
+                String result = intent.getExtras().getString("upPay.Rsp");
+                PictureAirLog.i("test", "接收到广播内容：" + result);
+
+                final String notifyParams = result;
+
+                //查詢訂單狀態
+                getOrderStatus();
+
+                String mPayResult = result;
+
+                try {
+                    org.json.JSONObject json = new org.json.JSONObject(mPayResult);
+                    PictureAirLog.e("json =======", "json" + json);
+
+                    //返回支付状态
+                    if (json.has("respCode")) {
+
+                        String respCode = json.getString("respCode");
+                        if ("W101".equals(respCode)) { //W101订单未支付，用户主动退出插件
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                        }
+
+                        if (!"0000".equals(respCode)) { //非0000，订单支付响应异常
+                            String respDesc = json.getString("respDesc");
+//                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+                        }
+                    }
+
+                    if (json.has("Status")) {
+                        if ("01".equals(json.getString("Status"))) {
+                            //status = "未支付";
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                        }
+                        if ("02".equals(json.getString("Status"))) {
+                            //status = "已支付";
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                        }
+                        if ("05".equals(json.getString("Status"))) {
+                            //status = "已作废";
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                        }
+                        if ("10".equals(json.getString("Status"))) {
+                            //status = "调账-支付成功";
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+    }
+
+    private void getOrderStatus() {
+        API2.checkOrderStatus(orderCode)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        String result = jsonObject.toJSONString();
+                        dismissPWProgressDialog();
+
+                        if (result == null) {
+                            PictureAirLog.e("test", "通知失败！");
+                            return;
+                        }
+
+                        PictureAirLog.i("test", "响应数据：" + result);
+
+                        try {
+                            //解析响应数据
+                            org.json.JSONObject json = new org.json.JSONObject(result);
+
+                            //校验返回结果
+                            if (!json.has("RetMsg")) {
+                                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                                PictureAirLog.e("test", "返回数据有误:" + result);
+                                return;
+                            }
+                        } catch (JSONException e) {
+                            PictureAirLog.e("test", "解析处理失败！");
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+
     }
 
 }

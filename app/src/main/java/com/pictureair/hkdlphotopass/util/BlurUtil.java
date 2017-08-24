@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -27,7 +27,7 @@ public class BlurUtil {
 		// 缩放尺寸
 		float scaleFactor = 6.0f;
 		// 模糊度，数字越小，高斯效果越小，越清晰
-		float radius = 4;
+		float radius = 2;
 		Bitmap overlay = Bitmap.createBitmap((int) (bkg.getWidth() / scaleFactor), (int) (bkg.getHeight() / scaleFactor), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(overlay);
 		canvas.scale(1.0f / scaleFactor, 1.0f / scaleFactor);
@@ -94,8 +94,8 @@ public class BlurUtil {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		image.compress(Bitmap.CompressFormat.JPEG, 100, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
 		PictureAirLog.out("3---------"+baos.toByteArray().length/1024);
-		int options = 90;
-		while (baos.toByteArray().length / 1024 > 100) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
+		int options = 100;
+		while (baos.toByteArray().length / 1024 > 200) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
 			PictureAirLog.out("4-------"+baos.toByteArray().length/1024);
 			options -= 10;// 每次都减少10
 			baos.reset();// 重置baos即清空baos

@@ -19,7 +19,7 @@
         android:layout_centerHorizontal="true"
         android:background="@color/white">
 
-        <com.pictureair.photopass.widget.CustomTextView
+        <com.pictureair.hkdlphotopass.widget.CustomTextView
             android:id="@+id/photopass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:dividerHeight="@dimen/pp_dp_5"
         android:scrollbars="none" />
 
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+    <com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/discoverNoNetWorkView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

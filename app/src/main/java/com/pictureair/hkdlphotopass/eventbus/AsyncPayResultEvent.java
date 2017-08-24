@@ -1,4 +1,4 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
 import org.json.JSONObject;
 

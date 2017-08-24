@@ -1,10 +1,10 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 /**
  * gif播放页面，目前没有用到了

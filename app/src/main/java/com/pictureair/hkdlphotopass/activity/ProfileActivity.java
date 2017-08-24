@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -14,17 +14,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.wheelview.SelectDateWeidget;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;

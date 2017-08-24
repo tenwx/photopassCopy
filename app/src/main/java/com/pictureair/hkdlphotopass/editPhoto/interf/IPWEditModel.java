@@ -1,15 +1,15 @@
-package com.pictureair.photopass.editPhoto.interf;
+package com.pictureair.hkdlphotopass.editPhoto.interf;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
-import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
-import com.pictureair.photopass.editPhoto.bean.StikerInfo;
-import com.pictureair.photopass.editPhoto.filter.Filter;
-import com.pictureair.photopass.editPhoto.widget.StickerItem;
-import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.hkdlphotopass.editPhoto.bean.PhotoEditorInfo;
+import com.pictureair.hkdlphotopass.editPhoto.bean.StikerInfo;
+import com.pictureair.hkdlphotopass.editPhoto.filter.Filter;
+import com.pictureair.hkdlphotopass.editPhoto.widget.StickerItem;
+import com.pictureair.hkdlphotopass.entity.FrameOrStikerInfo;
 
 import java.io.File;
 import java.util.ArrayList;

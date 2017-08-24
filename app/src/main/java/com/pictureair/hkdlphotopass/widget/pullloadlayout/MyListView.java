@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.pullloadlayout;
+package com.pictureair.hkdlphotopass.widget.pullloadlayout;
 
 import android.content.Context;
 import android.util.AttributeSet;

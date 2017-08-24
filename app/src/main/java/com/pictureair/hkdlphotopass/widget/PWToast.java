@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.os.Handler;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 /**
  * 自定义Toast

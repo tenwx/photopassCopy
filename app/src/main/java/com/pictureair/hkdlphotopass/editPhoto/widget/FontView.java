@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto.widget;
+package com.pictureair.hkdlphotopass.editPhoto.widget;
 
 
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.util.LinkedHashMap;
 

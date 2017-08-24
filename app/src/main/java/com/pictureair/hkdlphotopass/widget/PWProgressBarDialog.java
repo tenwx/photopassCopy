@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -9,9 +9,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 /**
  * 自定义的ProgressBarDialog

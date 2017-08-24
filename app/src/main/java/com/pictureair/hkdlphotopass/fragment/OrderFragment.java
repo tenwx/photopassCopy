@@ -1,4 +1,4 @@
-package com.pictureair.photopass.fragment;
+package com.pictureair.hkdlphotopass.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,24 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.activity.OrderActivity;
-import com.pictureair.photopass.activity.OrderDetailActivity;
-import com.pictureair.photopass.adapter.OrderListViewAdapter;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.OrderProductInfo;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.eventbus.OrderFragmentEvent;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.OrderInfoDateSortUtil;
-import com.pictureair.photopass.util.OrderProductDateSortUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.MainTabActivity;
+import com.pictureair.hkdlphotopass.activity.OrderActivity;
+import com.pictureair.hkdlphotopass.activity.OrderDetailActivity;
+import com.pictureair.hkdlphotopass.adapter.OrderListViewAdapter;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.entity.OrderProductInfo;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.eventbus.OrderFragmentEvent;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.OrderInfoDateSortUtil;
+import com.pictureair.hkdlphotopass.util.OrderProductDateSortUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.io.Serializable;
 import java.util.ArrayList;

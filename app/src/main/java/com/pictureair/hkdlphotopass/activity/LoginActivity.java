@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -19,16 +19,16 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AESKeyHelper;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.SignAndLoginUtil;
-import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AESKeyHelper;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.SignAndLoginUtil;
+import com.pictureair.hkdlphotopass.widget.CheckUpdateManager;
+import com.pictureair.hkdlphotopass.widget.EditTextWithClear;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

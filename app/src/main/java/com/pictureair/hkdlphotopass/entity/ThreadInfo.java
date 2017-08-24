@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

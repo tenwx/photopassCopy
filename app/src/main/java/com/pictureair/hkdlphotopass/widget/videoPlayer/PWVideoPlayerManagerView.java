@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.videoPlayer;
+package com.pictureair.hkdlphotopass.widget.videoPlayer;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -14,13 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.http.rxhttp.HttpCallback;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.http.rxhttp.HttpCallback;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
 

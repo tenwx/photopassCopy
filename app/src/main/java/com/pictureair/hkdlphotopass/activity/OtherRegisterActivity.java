@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,15 +24,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SignAndLoginUtil;
-import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SignAndLoginUtil;
+import com.pictureair.hkdlphotopass.widget.EditTextWithClear;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.dropview;
+package com.pictureair.hkdlphotopass.widget.dropview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

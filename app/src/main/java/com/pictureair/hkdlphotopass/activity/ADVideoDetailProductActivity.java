@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -17,24 +17,24 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.http.rxhttp.ServerException;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfoJson;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.http.rxhttp.ServerException;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.util.ArrayList;
@@ -66,6 +66,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private String ppCode;
     private String tabName;
     private int currentPosition;//记录当前预览照片的索引值
+    private String siteId;
 
     private final static String TAG = ADVideoDetailProductActivity.class.getSimpleName();
 
@@ -107,6 +108,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
         currentPosition = bundle.getInt("position", 0);
         tabName = bundle.getString("tab");
         ppCode = bundle.getString("ppCode");
+        siteId = bundle.getString("siteId");
 
         showPWProgressDialog(true);
         getGoods();
@@ -217,7 +219,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             case R.id.preview_blur_dialog_upgrade_photo_ll://使用已存在的ppp升级
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                }else{
+                } else {
                     if (sheetDialog.isShowing()) {
                         sheetDialog.dismiss();
                     }
@@ -229,7 +231,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
             case R.id.preview_blur_dialog_upgrade_daily_photo_ll://使用已存在的daily ppp升级
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                }else{
+                } else {
                     if (sheetDialog.isShowing()) {
                         sheetDialog.dismiss();
                     }
@@ -298,7 +300,8 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     private void initSheetDialog() {
         if (allGoodsList != null) {
             for (GoodsInfo good : allGoodsList) {
-                if (good != null && good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+//                if (good != null && good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+                if (good.getSlot() == 1 && good.getLocationIds().contains(siteId)) {
                     pppGoodsInfo = good;
                     buyPPPNameTV.setText(good.getNameAlias());
                     PictureAirLog.d("----> " + good.getPrice());
@@ -311,7 +314,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
     }
 
     private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
-        API2.getPPPsByShootDate(shootDate, videoInfo.getLocationId())
+        API2.getPPPsByShootDate(shootDate, videoInfo.getSiteId())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -393,6 +396,11 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
      */
     private void addtocart() {
         showPWProgressDialog();
+        photoUrls = new String[pppGoodsInfo.getPictures().size()];
+        for (int i = 0; i < pppGoodsInfo.getPictures().size(); i++) {
+            photoUrls[i] = pppGoodsInfo.getPictures().get(i).getUrl();
+        }
+        PictureAirLog.i("start to add to cart");
         //调用addToCart API1
         API2.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -400,6 +408,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.i("add to cart finish");
                         int currentCartCount = SPUtils.getInt(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                         SPUtils.put(ADVideoDetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
 

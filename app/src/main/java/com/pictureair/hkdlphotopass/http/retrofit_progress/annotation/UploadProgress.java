@@ -1,4 +1,4 @@
-package com.pictureair.photopass.http.retrofit_progress.annotation;
+package com.pictureair.hkdlphotopass.http.retrofit_progress.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

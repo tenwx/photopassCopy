@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

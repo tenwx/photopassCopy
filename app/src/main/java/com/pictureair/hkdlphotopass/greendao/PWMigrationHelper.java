@@ -1,4 +1,4 @@
-package com.pictureair.photopass.greendao;
+package com.pictureair.hkdlphotopass.greendao;
 
 import android.database.Cursor;
 import android.database.SQLException;

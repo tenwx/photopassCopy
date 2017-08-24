@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.os.Handler;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 
 public class NoNetWorkOrNoCountView extends RelativeLayout implements OnClickListener{

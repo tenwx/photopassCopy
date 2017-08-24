@@ -1,4 +1,4 @@
-package com.pictureair.photopass.http.fastjson;
+package com.pictureair.hkdlphotopass.http.fastjson;
 
 import com.alibaba.fastjson.serializer.SerializeConfig;
 

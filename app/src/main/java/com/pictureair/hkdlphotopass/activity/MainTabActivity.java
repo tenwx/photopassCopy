@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,45 +25,45 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.SlideListAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.DealingInfo;
-import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.eventbus.MainTabOnClickEvent;
-import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
-import com.pictureair.photopass.eventbus.PPDeleteEvent;
-import com.pictureair.photopass.eventbus.RedPointControlEvent;
-import com.pictureair.photopass.eventbus.StoryLoadCompletedEvent;
-import com.pictureair.photopass.fragment.FragmentPageDiscover;
-import com.pictureair.photopass.fragment.FragmentPageMe;
-import com.pictureair.photopass.fragment.FragmentPageShop;
-import com.pictureair.photopass.fragment.FragmentPageStory;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.HttpCallback;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PPInfoSortUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.CheckUpdateListener;
-import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.dropview.CoverManager;
-import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
-import com.pictureair.photopass.widget.dropview.WaterDrop;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.SlideListAdapter;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.entity.DealingInfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.eventbus.MainTabOnClickEvent;
+import com.pictureair.hkdlphotopass.eventbus.MainTabSwitchEvent;
+import com.pictureair.hkdlphotopass.eventbus.PPDeleteEvent;
+import com.pictureair.hkdlphotopass.eventbus.RedPointControlEvent;
+import com.pictureair.hkdlphotopass.eventbus.StoryLoadCompletedEvent;
+import com.pictureair.hkdlphotopass.fragment.FragmentPageDiscover;
+import com.pictureair.hkdlphotopass.fragment.FragmentPageMe;
+import com.pictureair.hkdlphotopass.fragment.FragmentPageShop;
+import com.pictureair.hkdlphotopass.fragment.FragmentPageStory;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.HttpCallback;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.service.DownloadService;
+import com.pictureair.hkdlphotopass.service.NotificationService;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PPInfoSortUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.CheckUpdateListener;
+import com.pictureair.hkdlphotopass.widget.CheckUpdateManager;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.dropview.CoverManager;
+import com.pictureair.hkdlphotopass.widget.dropview.DropCover.OnDragCompeteListener;
+import com.pictureair.hkdlphotopass.widget.dropview.WaterDrop;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -309,7 +309,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (application.getLanguageType().equals(Common.ENGLISH)) {
             leadViewIV.setImageResource(R.drawable.story_lead_en);
         } else if (application.getLanguageType().equals(Common.SIMPLE_CHINESE)) {
-            leadViewIV.setImageResource(R.drawable.story_lead_zh);
+            leadViewIV.setImageResource(R.drawable.story_lead_cn);
         } else if (application.getLanguageType().equals(Common.TRADITIONAL_CHINESE)) {
             leadViewIV.setImageResource(R.drawable.story_lead_tw);
         }
@@ -331,7 +331,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
 
         PictureAirLog.out("maintab ==== resume");
-        Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
+        Intent intent1 = new Intent(this, com.pictureair.hkdlphotopass.service.NotificationService.class);
         this.startService(intent1);
         if (hasCreated) {
             hasCreated = false;

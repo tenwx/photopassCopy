@@ -1,4 +1,4 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
 public interface BaseBusEvent {
 	

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.videoPlayer;
+package com.pictureair.hkdlphotopass.widget.videoPlayer;
 
 
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup.LayoutParams;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.io.IOException;
 

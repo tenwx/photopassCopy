@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -20,36 +20,36 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.StickyRecycleAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWStickySectionRecyclerView;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.SharePop;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.StickyRecycleAdapter;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfoJson;
+import com.pictureair.hkdlphotopass.entity.JsonInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.service.DownloadService;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.SettingUtil;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWStickySectionRecyclerView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.SharePop;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.text.SimpleDateFormat;
@@ -311,6 +311,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
                         bundle.putInt("position", position);
                         bundle.putString("tab", "editStory");
                         bundle.putString("ppCode", ppCode);
+                        bundle.putString("siteId", siteId);
                         intent.putExtra("bundle", bundle);
                         startActivity(intent);
                     } else {
@@ -787,7 +788,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
      * 获取可用的ppp
      */
     private void getAvailablePPP() {
-        API2.getPPPsByShootDate(shootDate, locationId)
+        API2.getPPPsByShootDate(shootDate, siteId)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
@@ -883,7 +884,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //                                pppGoodsInfo = goodsInfo;
 //                                break;
 //                            }
-                            if (goodsInfo.getSlot() == 1 && goodsInfo.getLocationIds().contains(locationId)) {
+                            if (goodsInfo.getSlot() == 1 && goodsInfo.getLocationIds().contains(siteId)) {
                                 pppGoodsInfo = goodsInfo;
                                 break;
                             }

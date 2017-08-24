@@ -1,14 +1,14 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 
 import java.util.HashMap;
 import java.util.Map;

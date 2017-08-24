@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,11 +19,11 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 /**
  * 显示商品合成图的类
  * @author bauer_bao

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,8 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 public class DashedLineView extends View {      
     private int dashColor = 0;

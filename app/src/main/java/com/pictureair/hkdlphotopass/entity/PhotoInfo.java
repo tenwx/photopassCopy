@@ -1,9 +1,9 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

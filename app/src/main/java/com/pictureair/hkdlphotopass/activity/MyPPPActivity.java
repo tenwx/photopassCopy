@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,36 +22,36 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.ListOfPPPAdapter;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.eventbus.ScanInfoEvent;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.pullloadlayout.MyListView;
-import com.pictureair.photopass.widget.pullloadlayout.OnRefreshListener;
-import com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.ListOfPPPAdapter;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfoJson;
+import com.pictureair.hkdlphotopass.entity.JsonInfo;
+import com.pictureair.hkdlphotopass.entity.PPPinfo;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.eventbus.ScanInfoEvent;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.pullloadlayout.MyListView;
+import com.pictureair.hkdlphotopass.widget.pullloadlayout.OnRefreshListener;
+import com.pictureair.hkdlphotopass.widget.pullloadlayout.ReFreshLayout;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.lang.ref.WeakReference;
@@ -74,7 +74,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private TextView pppIntroTv;
     private MyListView listPPP;
     private ImageView back;
-    private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
+    private Button button_buy_ppp, button_scan_ppp, button_scan_ppp_3slot; // 无PP＋时 底部的两个按钮。
     private LinearLayout ll_button_area, ll_guide_layout;//无PP＋时 底部的两个按钮的区域。
     private ScrollView nopppLayout;
 
@@ -365,22 +365,23 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         refreshLayout.setVisibility(View.VISIBLE);
 
         list1 = new ArrayList<>();
-        for (int i = 0; i < API2.PPPlist.size(); i++) {
-            PPPinfo ppPinfo = API2.PPPlist.get(i);
-            if (isDailyPPP) {//一日通
-                if (ppPinfo.capacity != 1) {
-                    continue;
-
-                }
-
-            } else {//一卡通
-                if (ppPinfo.capacity == 1) {
-                    continue;
-                }
-
-            }
-            list1.add(ppPinfo);
-        }
+        list1.addAll(API2.PPPlist);
+//        for (int i = 0; i < API2.PPPlist.size(); i++) {
+//            PPPinfo ppPinfo = API2.PPPlist.get(i);
+//            if (isDailyPPP) {//一日通
+//                if (ppPinfo.capacity != 1) {
+//                    continue;
+//
+//                }
+//
+//            } else {//一卡通
+//                if (ppPinfo.capacity == 1) {
+//                    continue;
+//                }
+//
+//            }
+//            list1.add(ppPinfo);
+//        }
         listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
 //        View view = LayoutInflater.from(MyPPPActivity.this).inflate(R.layout.ppp_select_head, null);
 //        listPPP.addHeaderView(view);
@@ -391,6 +392,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         //找控件
         button_buy_ppp = (Button) findViewById(R.id.button_buy_ppp);
         button_scan_ppp = (Button) findViewById(R.id.button_scan_ppp);
+        button_scan_ppp_3slot = (Button) findViewById(R.id.button_scan_ppp_3slot);
         menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         menuLayout.setVisibility(View.VISIBLE);
         menuLayout.setOnClickListener(this);
@@ -399,6 +401,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         MyApplication.getInstance().setNeedRefreshPPPList(true);
         button_buy_ppp.setOnClickListener(this);
         button_scan_ppp.setOnClickListener(this);
+        button_scan_ppp_3slot.setOnClickListener(this);
         refreshLayout.setListView(listPPP);
         refreshLayout.setOnRefreshListener(this);
         ll_guide_layout.setOnClickListener(this);
@@ -406,28 +409,31 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener);
         String languageType = MyApplication.getInstance().getLanguageType();
         if (languageType == null) {
-            ppp_guideView.setImageResource(R.drawable.ppp_guide_zh);
+            ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
         } else {
             if (languageType.equals(Common.SIMPLE_CHINESE)) {
-                ppp_guideView.setImageResource(R.drawable.ppp_guide_zh);
+                ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
+            } else if (languageType.equals(Common.TRADITIONAL_CHINESE)){
+                ppp_guideView.setImageResource(R.drawable.ppp_guide_tw);
             } else {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
             }
         }
-        if (isDailyPPP) {//一日通
-            mTitle.setText(R.string.mypage_daily_ppp1);
-            pppIntroTv.setText(R.string.instruction_daily_ppp);
-            button_buy_ppp.setVisibility(View.VISIBLE);
-            button_scan_ppp.setText(R.string.scan_ppp_text);
-            button_scan_ppp.setBackgroundResource(R.drawable.button_gray_light);
-            button_scan_ppp.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
-
-        } else {//一卡通
-            mTitle.setText(R.string.mypage_ppp);
-            pppIntroTv.setText(R.string.instruction);
-            button_buy_ppp.setVisibility(View.GONE);
-            button_scan_ppp.setText(R.string.story_scan_ppp);
-        }
+        mTitle.setText(R.string.mypage_daily_ppp1);
+//        if (isDailyPPP) {//一日通
+//            mTitle.setText(R.string.mypage_daily_ppp1);
+//            pppIntroTv.setText(R.string.instruction_daily_ppp);
+//            button_buy_ppp.setVisibility(View.VISIBLE);
+//            button_scan_ppp.setText(R.string.scan_ppp_text);
+//            button_scan_ppp.setBackgroundResource(R.drawable.button_gray_light);
+//            button_scan_ppp.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
+//
+//        } else {//一卡通
+//            mTitle.setText(R.string.mypage_ppp);
+//            pppIntroTv.setText(R.string.instruction);
+//            button_buy_ppp.setVisibility(View.GONE);
+//            button_scan_ppp.setText(R.string.story_scan_ppp);
+//        }
     }
 
     //获取ppp数据
@@ -451,18 +457,18 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             for (int i = 0; i < API2.PPPlist.size(); i++) {
                 PictureAirLog.v(TAG, "load==========");
                 PPPinfo ppPinfo = API2.PPPlist.get(i);
-                if (isDailyPPP) {//一日通
-                    if (ppPinfo.capacity != 1) {
-                        continue;
-
-                    }
-
-                } else {//一卡通
-                    if (ppPinfo.capacity == 1) {
-                        continue;
-                    }
-
-                }
+//                if (isDailyPPP) {//一日通
+//                    if (ppPinfo.capacity != 1) {
+//                        continue;
+//
+//                    }
+//
+//                } else {//一卡通
+//                    if (ppPinfo.capacity == 1) {
+//                        continue;
+//                    }
+//
+//                }
 
                 String bindddateString = ppPinfo.bindInfo.get(0).bindDate;
                 PictureAirLog.v(TAG, bindddateString);
@@ -556,17 +562,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case R.id.button_scan_ppp:
-                Intent intent;
-                if (isDailyPPP) {
-                    intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
-                    intent.putExtra("from", "ppp");
+                Intent intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("from", "ppp");
 
-                } else {
-                    intent = new Intent(MyPPPActivity.this, AddPPPCodeActivity.class);
-                    intent.putExtra("type", "ppp");//只扫描ppp
-
-                }
                 startActivity(intent);
+                break;
+            case R.id.button_scan_ppp_3slot:
+                Intent intent3 = new Intent(MyPPPActivity.this, AddPPPCodeActivity.class);
+                intent3.putExtra("type", "ppp");//只扫描ppp
+                startActivity(intent3);
                 break;
 
             case R.id.ok: // 确定选择之后
@@ -877,20 +881,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private void getPPPListSuccess() {
         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API2.PPPlist.size());
         list1.clear();
-        for (int i = 0; i < API2.PPPlist.size(); i++) {
+        for (int i = API2.PPPlist.size()-1; i >= 0 ; i--) {
             PPPinfo ppPinfo = API2.PPPlist.get(i);
-            if (isDailyPPP) {//一日通
-                if (ppPinfo.capacity != 1) {
-                    continue;
-
-                }
-
-            } else {//一卡通
-                if (ppPinfo.capacity == 1) {
-                    continue;
-                }
-
-            }
+//            if (isDailyPPP) {//一日通
+//                if (ppPinfo.capacity != 1) {
+//                    continue;
+//
+//                }
+//
+//            } else {//一卡通
+//                if (ppPinfo.capacity == 1) {
+//                    continue;
+//                }
+//
+//            }
             //判断是否有可用的ppp
             if (!hasOtherAvailablePPP) {
                 if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera;
+package com.pictureair.hkdlphotopass.zxing.camera;
 
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 final class PreviewCallback implements Camera.PreviewCallback {
     private static final String TAG = PreviewCallback.class.getSimpleName();

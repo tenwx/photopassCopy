@@ -1,4 +1,4 @@
-package com.pictureair.photopass.service;
+package com.pictureair.hkdlphotopass.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,10 +6,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.pictureair.photopass.entity.FileInfo;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DownloadTask;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.entity.FileInfo;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.DownloadTask;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.io.File;
 import java.io.IOException;

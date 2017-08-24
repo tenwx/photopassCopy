@@ -271,3 +271,11 @@ public static java.lang.String TABLENAME;
 #其它
 -keep class com.tencent.bugly.** {*; }
 -keep class de.hdodenhof.circleimageview.** {*;}
+
+#Payeco
+-keep class com.payeco.android.plugin.** {*;}
+-keep class org.apache.http.entity.mime.** {*;}
+-dontwarn com.payeco.android.plugin.**
+-keepclassmembers class com.payeco.android.plugin {public *;}
+-keepattributes *Annotation*
+-keepattributes *JavascriptInterface*

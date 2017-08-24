@@ -1,6 +1,6 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
-import com.pictureair.photopass.MyApplication;
+import com.pictureair.hkdlphotopass.MyApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

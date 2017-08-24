@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,18 +9,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.DownLoadFramentAdapter;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.fragment.LoadSuccessFragment;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.DownLoadFramentAdapter;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.hkdlphotopass.fragment.DownLoadingFragment;
+import com.pictureair.hkdlphotopass.fragment.LoadSuccessFragment;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;

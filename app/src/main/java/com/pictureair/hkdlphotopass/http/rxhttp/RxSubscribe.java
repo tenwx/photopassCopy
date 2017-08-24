@@ -1,6 +1,6 @@
-package com.pictureair.photopass.http.rxhttp;
+package com.pictureair.hkdlphotopass.http.rxhttp;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;

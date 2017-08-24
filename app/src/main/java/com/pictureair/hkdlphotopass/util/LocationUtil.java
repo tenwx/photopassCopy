@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
 
 import java.util.ArrayList;
 

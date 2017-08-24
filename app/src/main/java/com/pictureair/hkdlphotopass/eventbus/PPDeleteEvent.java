@@ -1,6 +1,6 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
-import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
 
 import java.util.List;
 

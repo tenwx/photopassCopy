@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.widget.viewpagerindicator;
+package com.pictureair.hkdlphotopass.widget.viewpagerindicator;
 
 import android.support.v4.view.ViewPager;
 

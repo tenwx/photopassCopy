@@ -1,6 +1,6 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
-import com.pictureair.photopass.entity.OrderProductInfo;
+import com.pictureair.hkdlphotopass.entity.OrderProductInfo;
 
 import java.util.Comparator;
 import java.util.Date;

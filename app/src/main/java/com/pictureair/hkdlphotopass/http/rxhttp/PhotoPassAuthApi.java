@@ -1,11 +1,11 @@
-package com.pictureair.photopass.http.rxhttp;
+package com.pictureair.hkdlphotopass.http.rxhttp;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.entity.BasicResult;
-import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
-import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
-import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
+import com.pictureair.hkdlphotopass.entity.BasicResult;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.ProgressListener;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.StickyRecycleAdapter;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.StickyRecycleAdapter;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 

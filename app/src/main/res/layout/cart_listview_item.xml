@@ -52,7 +52,7 @@
             android:layout_toRightOf="@id/cartProductImageView"
             android:orientation="horizontal">
 
-            <com.pictureair.photopass.widget.ListViewImageView
+            <com.pictureair.hkdlphotopass.widget.ListViewImageView
                 android:id="@+id/cartRemoveImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     android:textSize="@dimen/text_size_14" />
             </RelativeLayout>
 
-            <com.pictureair.photopass.widget.ListViewImageView
+            <com.pictureair.hkdlphotopass.widget.ListViewImageView
                 android:id="@+id/cartAddImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

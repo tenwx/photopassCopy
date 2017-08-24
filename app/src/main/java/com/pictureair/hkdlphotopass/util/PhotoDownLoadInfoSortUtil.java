@@ -1,6 +1,6 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
 
 import java.util.Comparator;
 import java.util.Date;

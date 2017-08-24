@@ -1,11 +1,12 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,7 +147,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 				return 1;
 			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+//			 TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;

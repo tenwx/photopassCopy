@@ -1,7 +1,7 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import com.alibaba.fastjson.JSONArray;
-import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.hkdlphotopass.entity.CouponInfo;
 
 import java.util.List;
 

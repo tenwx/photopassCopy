@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -30,41 +30,43 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
-import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
-import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
-import com.pictureair.photopass.GalleryWidget.UrlTouchImageView;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.controller.GetLastestVideoInfoBiz;
-import com.pictureair.photopass.controller.GetLastestVideoInfoContract;
-import com.pictureair.photopass.controller.GetLastestVideoInfoPresenter;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.SharePop;
+import com.pictureair.hkdlphotopass.GalleryWidget.GalleryViewPager;
+import com.pictureair.hkdlphotopass.GalleryWidget.PhotoEventListener;
+import com.pictureair.hkdlphotopass.GalleryWidget.UrlPagerAdapter;
+import com.pictureair.hkdlphotopass.GalleryWidget.UrlTouchImageView;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.controller.GetLastestVideoInfoBiz;
+import com.pictureair.hkdlphotopass.controller.GetLastestVideoInfoContract;
+import com.pictureair.hkdlphotopass.controller.GetLastestVideoInfoPresenter;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartItemInfoJson;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfoJson;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.eventbus.BaseBusEvent;
+import com.pictureair.hkdlphotopass.eventbus.BuySingleDigital;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.service.DownloadService;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.SettingUtil;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.SharePop;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
 import java.util.ArrayList;
@@ -72,6 +74,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -149,19 +153,25 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private List<GoodsInfo> allGoodsList = new ArrayList<>();
     private GoodsInfo pppGoodsInfo;
+
     private String[] photoUrls;
     private String cartId = null;
     private String siteId;
+    private int buyPosition; //购买单张的position
 
     private Handler previewPhotoHandler;
 
     //点击视频播放的处理对象
     private GetLastestVideoInfoPresenter lastestVideoInfoPresenter;
 
-    /**是否为预览纪念照的状态*/
+    /**
+     * 是否为预览纪念照的状态
+     */
     private boolean isSouvenir;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
-    /**没有纪念照时的布局*/
+    /**
+     * 没有纪念照时的布局
+     */
     private LinearLayout noSouvenirLayout;
 
     /**
@@ -322,6 +332,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_preview_photo);
         PictureAirLog.out("oncreate start----");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -376,13 +387,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 设置广告文案
+     *
      * @param str
      * @param oldP
      */
-    private void setADtext(String str, int oldP){
+    private void setADtext(String str, int oldP) {
         if (oldP == currentPosition) {
             //如果获取的对应索引值，依旧是当期的索引值，则显示广告
-            UrlTouchImageView imageView = (UrlTouchImageView)mViewPager.findViewById(currentPosition);
+            UrlTouchImageView imageView = (UrlTouchImageView) mViewPager.findViewById(currentPosition);
             if (imageView != null) {
                 imageView.setADText(str);
             }
@@ -390,11 +402,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     /**
-     *
      * 获取纪念照
      * 如果没有纪念照则显示没有照片的页面
      * 如果有纪念照则保存一次照片数据，后续如果网络获取纪念照失败，则直接读取保存的数据
-     * */
+     */
     private void getSouvenirPhotos() {
         String userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
         API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode)
@@ -488,7 +499,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("currentposition---->" + currentPosition);
                 tabName = bundle.getString("tab");
                 PictureAirLog.out("tabName--->" + tabName);
-                if (tabName.equals("editStory")){//编辑PP照片页面
+                if (tabName.equals("editStory")) {//编辑PP照片页面
                     currentPPCode = bundle.getString("ppCode");
                     currentShootDate = bundle.getString("shootDate");
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
@@ -509,7 +520,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         PictureAirLog.out("photoinfo.photoid----->" + photolist.get(i).getPhotoId());
                         if (TextUtils.isEmpty(photolist.get(i).getPhotoId())) {//本地图片，没有PhotoId，需要过滤
 
-                        } else if (photolist.get(i).getPhotoId().equals(photoId)){
+                        } else if (photolist.get(i).getPhotoId().equals(photoId)) {
                             photolist.get(i).setIsPaid(1);
                             currentPosition = i;
                             break;
@@ -517,8 +528,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                 } else if (currentPosition == -2) {//绑定PP后返回
                     String ppsStr = bundle.getString("ppsStr");
-                    refreshPP(photolist,ppsStr);
-                    currentPosition = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition",0);
+                    refreshPP(photolist, ppsStr);
+                    currentPosition = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", 0);
                 } else {//其他情况，需要根据photoid找到应对的position位置，再显示
                     if (tabName.equals("all") ||
                             tabName.equals("photopass") ||
@@ -526,7 +537,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             tabName.equals("editStory")) {
                         String photoId = bundle.getString("photoId", "");
                         for (int i = 0; i < photolist.size(); i++) {
-                            if (photolist.get(i).getPhotoId().equals(photoId)){
+                            if (photolist.get(i).getPhotoId().equals(photoId)) {
                                 currentPosition = i;
                                 break;
                             }
@@ -581,9 +592,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 准备开始弹出对话框
+     *
      * @param type
      */
-    private void prepareShowSheetDialog(int type){
+    private void prepareShowSheetDialog(int type) {
         if (type == BUY_BLUR_PHOTO_SHEET_DIALOG && allGoodsList.size() == 0) {//需要获取shop数据, 需要重新获取商品数据
             showPWProgressDialog();
             getGoods(type);
@@ -594,6 +606,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 显示对话框
+     *
      * @param type
      */
     private void showSheetDialog(int type) {
@@ -676,20 +689,33 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 初始化数据
      */
     private void initSheetDialog() {
-        for (GoodsInfo good: allGoodsList) {
-            if (good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+        for (GoodsInfo good : allGoodsList) {
+//            if (good.getName().equals(Common.GOOD_NAME_PPP)) {//ppp
+//                pppGoodsInfo = good;
+//                buyPPPNameTV.setText(good.getNameAlias());
+//                PictureAirLog.d("----> " + good.getPrice());
+//                buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+//                buyPPPIntroTV.setText(good.getDescription());
+//
+//            } else if (good.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//数码照片
+//                buyPhotoNameTV.setText(good.getNameAlias());
+//                PictureAirLog.d("----> " + good.getPrice());
+//                buyPhotoPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
+//                buyPhotoIntroTV.setText(good.getDescription());
+//
+//            }
+            if (good.getSlot() == 1 && good.getLocationIds().contains(siteId)) {
                 pppGoodsInfo = good;
                 buyPPPNameTV.setText(good.getNameAlias());
                 PictureAirLog.d("----> " + good.getPrice());
                 buyPPPPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
                 buyPPPIntroTV.setText(good.getDescription());
-
-            } else if (good.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//数码照片
-                buyPhotoNameTV.setText(good.getNameAlias());
+            }
+            if (good.getSlot() == 0 && good.getEmbedPhotosCount() == 1) {
+                buyPhotoNameTV.setText(good.getName());
                 PictureAirLog.d("----> " + good.getPrice());
                 buyPhotoPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
                 buyPhotoIntroTV.setText(good.getDescription());
-
             }
         }
     }
@@ -899,7 +925,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         sheetDialog.dismiss();
                     }
                     return;
-                }else{
+                } else {
                     getPPPsByShootDate(photoInfo.getShootDate(), false);
                 }
                 break;
@@ -917,7 +943,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         sheetDialog.dismiss();
                     }
                     return;
-                }else{
+                } else {
                     getPPPsByShootDate(photoInfo.getShootDate(), true);
                 }
                 break;
@@ -929,6 +955,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 购买照片
+     *
      * @param photoId
      */
     private void buyPhoto(String photoId) {
@@ -983,12 +1010,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     private void getPPPsByShootDate(String shootDate, final boolean isDaily) {
-        API2.getPPPsByShootDate(shootDate, photoInfo.getLocationId())
+        API2.getPPPsByShootDate(shootDate, photoInfo.getSiteId())
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.json("使用已有的", jsonObject.toJSONString());
                         API2.PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
                         if (API2.PPPlist.size() > 0) {
                             //将 tabname 存入sp
@@ -1168,6 +1196,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         PictureAirLog.v(TAG, "----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
         if (photoInfo != null && photoInfo.getIsPaid() == 0 && photoInfo.getIsOnLine() == 1) {
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
@@ -1255,6 +1284,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 旋转手机
+     *
      * @param fullScreenMode
      */
     private void setFullScreenMode(boolean fullScreenMode) {
@@ -1266,7 +1296,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (i < 0) {
                     continue;
                 } else {
-                    UrlTouchImageView urlTouchImageView = (UrlTouchImageView)mViewPager.findViewById(i);
+                    UrlTouchImageView urlTouchImageView = (UrlTouchImageView) mViewPager.findViewById(i);
                     if (urlTouchImageView != null) {
                         PictureAirLog.d("set full screen mode---->");
                         urlTouchImageView.setFullScreenMode(fullScreenMode);
@@ -1295,7 +1325,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         Intent intent = new Intent(PreviewPhotoActivity.this, DownloadService.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("photos", list);
-        bundle.putInt("prepareDownloadCount",list.size());//该参数用于传递下载的图片数量
+        bundle.putInt("prepareDownloadCount", list.size());//该参数用于传递下载的图片数量
         intent.putExtras(bundle);
         startService(intent);
 
@@ -1355,6 +1385,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 更新同一组PP, PP 卡号相同，日期相同的更新。
+     *
      * @param photolist
      * @param ppsStr    //ppsStr:[{"bindDate":"2016-05-04","code":"SHDRF22A2PWFH4N6"}]
      */
@@ -1364,7 +1395,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (photolist != null) {
             for (int i = 0; i < photolist.size(); i++) {
                 if (photolist.get(i).getPhotoPassCode() != null) {
-                    if (photolist.get(i).getPhotoPassCode().replace(",","").equals(jsonObject.getString("code"))) {
+                    if (photolist.get(i).getPhotoPassCode().replace(",", "").equals(jsonObject.getString("code"))) {
                         if (photolist.get(i).getStrShootOn().contains(jsonObject.getString("bindDate"))) {
                             photolist.get(i).setIsPaid(1);
                         }
@@ -1421,6 +1452,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public void buyClick(int position) {
         PictureAirLog.d("buy---> " + position);
+        buyPosition = position;
         prepareShowSheetDialog(BUY_BLUR_PHOTO_SHEET_DIALOG);
     }
 
@@ -1486,4 +1518,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             }
         }
     }
+
+    //单张购买后，从新加载
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof BuySingleDigital) {
+            PictureAirLog.i("回到要购买的那一张", buyPosition + "");
+            photolist.get(buyPosition).setIsPaid(1);
+            pagerAdapter.notifyDataSetChanged();
+            mViewPager.setAdapter(pagerAdapter);
+            mViewPager.setCurrentItem(buyPosition);
+        }
+    }
+
 }

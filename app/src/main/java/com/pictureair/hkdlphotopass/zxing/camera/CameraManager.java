@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera;
+package com.pictureair.hkdlphotopass.zxing.camera;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -25,10 +25,10 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.google.zxing.PlanarYUVLuminanceSource;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.zxing.camera.open.OpenCamera;
-import com.pictureair.photopass.zxing.camera.open.OpenCameraInterface;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.zxing.camera.open.OpenCamera;
+import com.pictureair.hkdlphotopass.zxing.camera.open.OpenCameraInterface;
 
 import java.io.IOException;
 
@@ -189,7 +189,7 @@ public final class CameraManager {
     }
 
     /**
-     * Convenience method for {@link com.pictureair.photopass.activity.MipCaptureActivity}
+     * Convenience method for {@link com.pictureair.hkdlphotopass.activity.MipCaptureActivity}
      *
      * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
      */

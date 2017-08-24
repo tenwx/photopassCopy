@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package com.pictureair.photopass.widget.wheelview;
+package com.pictureair.hkdlphotopass.widget.wheelview;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -35,8 +35,8 @@ import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.widget.wheelview.adapter.WheelViewAdapter;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.widget.wheelview.adapter.WheelViewAdapter;
 
 import java.util.LinkedList;
 import java.util.List;

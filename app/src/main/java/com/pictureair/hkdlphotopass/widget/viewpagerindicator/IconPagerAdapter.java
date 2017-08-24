@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.viewpagerindicator;
+package com.pictureair.hkdlphotopass.widget.viewpagerindicator;
 
 public interface IconPagerAdapter {
     /**

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 import android.os.Handler;
@@ -7,12 +7,12 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.widget.PWProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.CartItemInfoJson;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.widget.PWProgressDialog;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.RxActivity;
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CouponInfo;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.CouponTool;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.CouponInfo;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.CouponTool;
 
 import java.util.List;
 

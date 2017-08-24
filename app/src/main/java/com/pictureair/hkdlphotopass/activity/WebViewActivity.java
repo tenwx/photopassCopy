@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +9,15 @@ import android.webkit.JavascriptInterface;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.CustomWebView;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.widget.CustomWebView;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
@@ -30,6 +31,8 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     private int key;
 
     private final Handler myHandler = new MyHandler(this);
+    private String orderId;
+    private String ccPayType;
 
 
     private static class MyHandler extends Handler {
@@ -83,7 +86,8 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         webView.setVisibility(View.GONE);
         if (key == 1) {
 //            webView.start(Common.POLICY_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
-            webView.start(String.format(Common.POLICY_AGREEMENT, (MyApplication.getInstance().getLanguageType().equals("en") ? "en/" : "")));
+//            webView.start(String.format(Common.POLICY_AGREEMENT, (MyApplication.getInstance().getLanguageType().equals("en") ? "en/" : "")));
+            webView.start(AppUtil.getPolicyUrl(MyApplication.getInstance().getLanguageType()));
             setTopTitleShow(R.string.policy); // 设置标题
         } else if (key == 2) {
             webView.start(Common.TERMS_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
@@ -109,6 +113,17 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         } else if (key == 6) {//常见问题
             webView.start(Common.HELP_FAQ + MyApplication.getInstance().getLanguageType());
             setTopTitleShow(R.string.mypage_help); // 设置标题
+        } else if (key == 7) {  //paydollar的链接。
+            orderId = getIntent().getStringExtra("orderId");
+            ccPayType = getIntent().getStringExtra("ccPayType");
+            PictureAirLog.out("ccPayType" + ccPayType);
+            PictureAirLog.out("======  orderId =====" + orderId);
+            int payType = 2;
+            String language = MyApplication.getInstance().getLanguageType();
+            webView.start(Common.BASE_URL_TEST + Common.PAY_DOLLAR + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&payType=" + payType + "&ccPayType=" + ccPayType);
+            PictureAirLog.out("url =====" + Common.BASE_URL_TEST + Common.PAY_DOLLAR + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&payType=" + payType + "&ccPayType=" + ccPayType);
+            setTopTitleShow(R.string.paydollar); // 设置标题
+            webView.addJavascriptInterface(this, "someThing");
         }
     }
 

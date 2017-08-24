@@ -1,4 +1,4 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
 /**
  * Created by bauer_bao on 16/1/6.

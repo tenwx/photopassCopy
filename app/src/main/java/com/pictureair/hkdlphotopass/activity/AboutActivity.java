@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,8 +14,8 @@ import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
 
 
 public class AboutActivity extends BaseActivity {

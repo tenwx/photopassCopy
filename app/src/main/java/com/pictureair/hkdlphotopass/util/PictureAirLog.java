@@ -1,9 +1,9 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.pictureair.photopass.BuildConfig;
+import com.pictureair.hkdlphotopass.BuildConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;

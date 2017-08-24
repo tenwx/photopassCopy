@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 
 public class EditTextWithClear extends EditText implements OnFocusChangeListener, TextWatcher {

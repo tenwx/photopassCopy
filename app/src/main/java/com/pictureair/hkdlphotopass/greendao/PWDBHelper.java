@@ -1,4 +1,4 @@
-package com.pictureair.photopass.greendao;
+package com.pictureair.hkdlphotopass.greendao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

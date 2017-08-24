@@ -1,15 +1,15 @@
-package com.pictureair.photopass.service;
+package com.pictureair.hkdlphotopass.service;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;

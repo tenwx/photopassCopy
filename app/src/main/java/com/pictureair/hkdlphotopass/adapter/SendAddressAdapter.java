@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.SendAddress;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.SendAddress;
 
 import java.util.List;
 

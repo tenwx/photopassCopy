@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -21,19 +21,19 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.CityModel;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.CountyModel;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ProvinceModel;
-import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.SendAddress;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.CityModel;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.CountyModel;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ProvinceModel;
+import com.pictureair.hkdlphotopass.widget.EditTextWithClear;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

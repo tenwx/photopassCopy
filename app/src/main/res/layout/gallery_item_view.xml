@@ -15,10 +15,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@color/pp_blue"
-            android:paddingBottom="@dimen/pp_dp_10"
+            android:paddingBottom="@dimen/pp_dp_15"
             android:paddingLeft="@dimen/pp_dp_20"
             android:paddingRight="@dimen/pp_dp_20"
-            android:paddingTop="@dimen/pp_dp_10"
+            android:paddingTop="@dimen/pp_dp_15"
             android:text="@string/buy_good"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
@@ -78,9 +78,9 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/gallery_item_ad_intro_tv"
             android:layout_below="@+id/gallery_item_time_tv"
-            android:layout_margin="@dimen/pp_dp_10">
+            android:layout_margin="@dimen/pp_dp_5">
 
-            <com.pictureair.photopass.GalleryWidget.TouchImageView
+            <com.pictureair.hkdlphotopass.GalleryWidget.TouchImageView
                 android:id="@+id/gallery_item_photo_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

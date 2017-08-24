@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 
@@ -79,7 +79,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
         hView.goodsName.setText(list.get(position).getProductName());
         hView.goodsCount.setText(list.get(position).getQty() + "");
         hView.currency.setText(currency);
-        hView.priceTextView.setText((int) list.get(position).getUnitPrice() + "");
+        hView.priceTextView.setText(list.get(position).getUnitPrice() + "");
 
         //初始化添加的图片信息
         if (list.get(position).getEmbedPhotos() == null || list.get(position).getEmbedPhotos().size() == 0) {

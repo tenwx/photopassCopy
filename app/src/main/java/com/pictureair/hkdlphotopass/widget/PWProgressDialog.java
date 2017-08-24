@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,13 +10,13 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 /**
  * 自定义的ProgressDialog
  *
- * 使用方法和PWDialog类似，具体请点击右侧link {@link com.pictureair.photopass.customDialog.PWDialog}
+ * 使用方法和PWDialog类似，具体请点击右侧link {@link com.pictureair.hkdlphotopass.customDialog.PWDialog}
  *
  * 具体使用，已写入baseActivity，并且重载多重常用的显示方法
  *

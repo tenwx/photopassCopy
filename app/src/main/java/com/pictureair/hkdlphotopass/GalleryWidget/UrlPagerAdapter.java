@@ -15,17 +15,17 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.pictureair.photopass.GalleryWidget;
+package com.pictureair.hkdlphotopass.GalleryWidget;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.io.File;
 import java.util.List;

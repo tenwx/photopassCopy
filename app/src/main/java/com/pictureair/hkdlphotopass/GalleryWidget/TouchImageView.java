@@ -15,7 +15,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.pictureair.photopass.GalleryWidget;
+package com.pictureair.hkdlphotopass.GalleryWidget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,7 +28,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 public class TouchImageView extends ImageView implements View.OnTouchListener, View.OnLongClickListener {
     // These matrices will be used to move and zoom image

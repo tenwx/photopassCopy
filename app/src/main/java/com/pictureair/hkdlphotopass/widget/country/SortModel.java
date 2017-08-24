@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.country;
+package com.pictureair.hkdlphotopass.widget.country;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.pulltozoomview;
+package com.pictureair.hkdlphotopass.widget.pulltozoomview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 
 /**

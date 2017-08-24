@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.videoPlayer.OnVideoPlayerViewEventListener;
-import com.pictureair.photopass.widget.videoPlayer.PWVideoPlayerManagerView;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.widget.videoPlayer.OnVideoPlayerViewEventListener;
+import com.pictureair.hkdlphotopass.widget.videoPlayer.PWVideoPlayerManagerView;
 
 import java.io.File;
 

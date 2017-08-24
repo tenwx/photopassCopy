@@ -1,4 +1,4 @@
-package com.pictureair.photopass.http.rxhttp;
+package com.pictureair.hkdlphotopass.http.rxhttp;
 
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera.open;
+package com.pictureair.hkdlphotopass.zxing.camera.open;
 
 public enum CameraFacing {
     BACK,  // must be value 0!

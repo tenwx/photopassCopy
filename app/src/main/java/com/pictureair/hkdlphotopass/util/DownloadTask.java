@@ -1,13 +1,13 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.entity.FileInfo;
-import com.pictureair.photopass.entity.ThreadInfo;
-import com.pictureair.photopass.service.BreakpointDownloadService;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.entity.FileInfo;
+import com.pictureair.hkdlphotopass.entity.ThreadInfo;
+import com.pictureair.hkdlphotopass.service.BreakpointDownloadService;
 
 import java.io.File;
 import java.io.IOException;

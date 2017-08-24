@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -7,8 +7,8 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.alipay.sdk.app.PayTask;
-import com.pictureair.photopass.activity.PaymentOrderActivity;
-import com.pictureair.photopass.alipay.PayResult;
+import com.pictureair.hkdlphotopass.activity.PaymentOrderActivity;
+import com.pictureair.hkdlphotopass.alipay.PayResult;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;

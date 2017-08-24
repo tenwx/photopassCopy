@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.decoding;
+package com.pictureair.hkdlphotopass.zxing.decoding;
 
 import android.content.Context;
 import android.os.Handler;

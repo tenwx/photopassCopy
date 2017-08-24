@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.pictureair.photopass.widget.wheelview.adapter;
+package com.pictureair.hkdlphotopass.widget.wheelview.adapter;
 
 import android.database.DataSetObserver;
 import android.view.View;

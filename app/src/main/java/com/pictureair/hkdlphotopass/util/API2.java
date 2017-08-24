@@ -1,21 +1,22 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
-import com.pictureair.photopass.http.rxhttp.ApiFactory;
-import com.pictureair.photopass.http.rxhttp.HttpCallback;
-import com.pictureair.photopass.http.rxhttp.PhotoPassAuthApi;
-import com.pictureair.photopass.http.rxhttp.RxHelper;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.entity.PPPinfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.entity.SendAddress;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.ProgressListener;
+import com.pictureair.hkdlphotopass.http.rxhttp.ApiFactory;
+import com.pictureair.hkdlphotopass.http.rxhttp.HttpCallback;
+import com.pictureair.hkdlphotopass.http.rxhttp.PhotoPassAuthApi;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,41 +30,33 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by pengwu on 16/11/9.
- *
+ * <p>
  * HttpCallBack中重写 onProgress(数据传输进度) doOnSubscribe(代替Observable 的 doOnSubscribe)
  * .subscribe方法中需要new一个RXsubScribe,RxSubScribe对返回失败进行了处理
- *
+ * <p>
  * 示例
  * API2.getSouvenirPhotos(MyApplication.getTokenId(), userPPCode, new HttpCallback() {
- *         @Override
- *       public void onProgress() {
- *          super.onProgress();
- *       }
  *
- *       @Override
- *       public void doOnSubscribe() {
- *          super.doOnSubscribe();
- *          showPWProgressDialog();
- *       }
- *   }).observeOn(AndroidSchedulers.mainThread())
- *       .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
- *       .subscribe(new RxSubscribe<JSONObject>() {
- *           @Override
- *           public void _onNext(JSONObject jsonObject) {
- *
- *           }
- *
- *           @Override
- *           public void _onError(int status) {
- *
- *           }
- *
- *           @Override
- *           public void onCompleted() {
- *
- *           }
- *   });
- *
+ * @Override public void onProgress() {
+ * super.onProgress();
+ * }
+ * @Override public void doOnSubscribe() {
+ * super.doOnSubscribe();
+ * showPWProgressDialog();
+ * }
+ * }).observeOn(AndroidSchedulers.mainThread())
+ * .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+ * .subscribe(new RxSubscribe<JSONObject>() {
+ * @Override public void _onNext(JSONObject jsonObject) {
+ * <p>
+ * }
+ * @Override public void _onError(int status) {
+ * <p>
+ * }
+ * @Override public void onCompleted() {
+ * <p>
+ * }
+ * });
  */
 
 public class API2 {
@@ -240,7 +233,7 @@ public class API2 {
         }
 
         if (!TextUtils.isEmpty(siteId)) {
-            params.put(Common.SITE, siteId);
+            params.put(Common.SITE_ID, siteId);
         }
 
         params.put(Common.LIMIT, limit);
@@ -1008,9 +1001,7 @@ public class API2 {
     }
 
     /**
-     *
      * 获取照片的最新数据,并后台统计图片的下载数量
-     *
      */
     public static Observable<JSONObject> getPhotosInfo(Map<String, Object> params) {
         return get(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, null);
@@ -1020,7 +1011,7 @@ public class API2 {
 
     /**
      * 断点下载
-     * */
+     */
     public static Observable<ResponseBody> continueDownload(long length, String url, HttpCallback callback) {
         PictureAirLog.out("downloadurl photo--->" + url);
         return downloadContinue(length, url, callback);
@@ -1080,6 +1071,36 @@ public class API2 {
         return get(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN, params, null);
     }
 
+    /**
+     * 香港銀聯支付信息
+     *
+     * @param orderCode
+     * @param payType
+     * @return
+     */
+    public static Observable<JSONObject> getPayecoInfo(String orderCode, int payType) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.ORDER_CODE, orderCode);
+        params.put(Common.PAY_TYPE, payType);
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
+        PictureAirLog.out("======tokenId" + MyApplication.getInstance().getLanguageType());
+
+        return get(Common.BASE_URL_TEST + Common.PAY_DOLLAR, params, null);
+    }
+
+    /**
+     * 銀聯支付后查詢訂單狀態
+     *
+     * @param orderCode
+     * @return
+     */
+    public static Observable<JSONObject> checkOrderStatus(String orderCode) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("orderCode", orderCode);
+        return get(Common.BASE_URL_TEST + Common.PAY_DOLLAR, params, null);
+    }
 
     /**
      * 根据商品查询所有可以使用的优惠卷
@@ -1138,7 +1159,7 @@ public class API2 {
         }
 
         if (locationId != null) {
-            params.put(Common.LOCATION_ID, locationId);
+            params.put(Common.SITE_ID, locationId);
         }
 
         return get(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, null);
@@ -1377,7 +1398,9 @@ public class API2 {
                 .compose(RxHelper.<JSONObject>handleResult());
     }
 
-    /**断点续传*/
+    /**
+     * 断点续传
+     */
     private static Observable<ResponseBody> downloadContinue(long length, String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         return request.download("bytes=" + length + "-", url, new ProgressListener() {
@@ -1395,7 +1418,9 @@ public class API2 {
                 });
     }
 
-    /**普通下载*/
+    /**
+     * 普通下载
+     */
     private static Observable<ResponseBody> download(String url, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         return request.download(url, new ProgressListener() {

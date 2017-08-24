@@ -1,28 +1,28 @@
-package com.pictureair.photopass.greendao;
+package com.pictureair.hkdlphotopass.greendao;
 
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.ADLocationInfo;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.FirstStartInfo;
-import com.pictureair.photopass.entity.FrameOrStikerInfo;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.PaymentOrderInfo;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.ThreadInfo;
-import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.entity.ADLocationInfo;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.DownloadFileStatus;
+import com.pictureair.hkdlphotopass.entity.FirstStartInfo;
+import com.pictureair.hkdlphotopass.entity.FrameOrStikerInfo;
+import com.pictureair.hkdlphotopass.entity.JsonInfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.entity.PaymentOrderInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.entity.ThreadInfo;
+import com.pictureair.hkdlphotopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import net.sqlcipher.SQLException;
 
@@ -250,7 +250,7 @@ public class PictureAirDbManager {
      * @param ppCode    pp码
      * @param shootDate 绑定时间
      */
-    public static void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, boolean isDelete) {
+    public static void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, String siteId, boolean isDelete) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> photos;
         if (isDelete) {//删除操作
@@ -262,7 +262,7 @@ public class PictureAirDbManager {
 
         } else {//同步
             photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate))
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate), PhotoInfoDao.Properties.SiteId.eq(siteId))
                     .build().forCurrentThread().list();
             if (photos == null && photos.size() == 0) {
                 return;

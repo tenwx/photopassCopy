@@ -17,12 +17,12 @@
                 AppSecret="38a4f8204cc784f81f9f0daaf31e02e3"
                 RedirectUrl="http://www.mob.com"
                 Enable="true" />
-    	其中的SortId是此平台在分享列表中的位置，由开发者自行定义，可以是任何整型数字，数值越大
+    	其中的SortId是此平台在分享列表中的位置，由 开发者自行定义，可以是任何整型数字，数值越大
     	越靠后AppKey、AppSecret和RedirectUrl是您在新浪微博上注册开发者信息和应用后得到的信息
     	Id是一个保留的识别符，整型，ShareSDK不使用此字段，供您在自己的项目中当作平台的识别符。
     	Enable字段表示此平台是否有效，布尔值，默认为true，如果Enable为false，即便平台的jar包
     	已经添加到应用中，平台实例依然不可获取。
-    	
+
     	各个平台注册应用信息的地址如下：
 			新浪微博        http://open.weibo.com
 			腾讯微博        http://dev.t.qq.com
@@ -35,7 +35,7 @@
 			搜狐微博        http://open.t.sohu.com
 			网易微博        http://open.t.163.com
 			豆瓣           http://developers.douban.com
-			
+
 			有道云笔记      http://note.youdao.com/open/developguide.html#app
 			印象笔记        https://dev.evernote.com/
 			Linkedin       https://developer.linkedin.com
@@ -55,37 +55,37 @@
 
     -->
 
-    <ShareSDK AppKey="d081a701ad18" />
- <!-- 修改成你在sharesdk后台注册的应用的appkey" -->
+    <ShareSDK AppKey="13636928aa5e8" />
+    <!-- 修改成你在sharesdk后台注册的应用的appkey" -->
 
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
     <SinaWeibo
-        AppKey="932683602"
-        AppSecret="08db92d679175c50a6bb75062fd14434"
+        AppKey="382578827"
+        AppSecret="cc46493c28d8392f6bf6e832dd0c6245"
         Enable="true"
         Id="1"
-        RedirectUrl="http://www.pictureair.com/"
+        RedirectUrl="https://www.hongkongdisneyland.cn/"
         ShareByAppClient="true"
         SortId="1" />
-
     <QZone
-        AppId="1105004402"
-        AppKey="i3UTWIdTzWncslRV"
+        AppId="1105308903"
+        AppKey="Y4yVVKmrXdCHooOZ"
         Enable="true"
         Id="2"
         ShareByAppClient="true"
         SortId="2" />
 
+
     <!--
     	Wechat微信和WechatMoments微信朋友圈的appid是一样的；
-    
+
                        注意：开发者不能用我们这两个平台的appid,否则分享不了
-    
+
        	  微信测试的时候，微信测试需要先签名打包出apk,
 		sample测试微信，要先签名打包，keystore在sample项目中，密码123456
-		
+
 		BypassApproval是绕过审核的标记，设置为true后AppId将被忽略，故不经过
 		审核的应用也可以执行分享，但是仅限于分享文字和图片，不能分享其他类型，
 		默认值为false。此外，微信收藏不支持此字段。
@@ -93,33 +93,33 @@
     -->
 
     <Wechat
-        AppId="wxc3d2d4d75042f800"
-        AppSecret="9f0875206d788474e7c496c24cd142b5"
+        AppId="wx56087d747f35c8d4"
+        AppSecret="cd611da51c63404371cac25855038f7b"
         BypassApproval="false"
         Enable="true"
         Id="3"
         SortId="3" />
 
     <WechatMoments
-        AppId="wxc3d2d4d75042f800"
-        AppSecret="9f0875206d788474e7c496c24cd142b5"
+        AppId="wx56087d747f35c8d4"
+        AppSecret="cd611da51c63404371cac25855038f7b"
         BypassApproval="false"
         Enable="true"
         Id="4"
         SortId="4" />
 
     <Facebook
-        ConsumerKey="1726999457532483"
-        ConsumerSecret="aedfa49634152bddd73976c269020ab0"
-        RedirectUrl="http://www.pictureair.com/"
+        ConsumerKey="1100615409997626"
+        ConsumerSecret="db35313b08814ba2da61b9aced726383"
+        RedirectUrl="https://www.hongkongdisneyland.cn/"
         Enable="true"
         Id="5"
         SortId="5" />
 
     <Twitter
-        CallbackUrl="http://www.pictureair.com/"
-        ConsumerKey="07uwuiAvci5vq8kkQTHOZO1a7"
-        ConsumerSecret="Me59J2BZPqX7VUxaHyAQI9SfuZN08LrYz0CQzP22W4mWeDeSAs"
+        CallbackUrl="http://www.sharesdk.cn"
+        ConsumerKey="q8ohyGFWdMfM22H9j0CECON2v"
+        ConsumerSecret="hYzGgCEareJvqF4bYLOlSr2V3t7gBSx2a774gkCAvODXbUthHD"
         Enable="true"
         Id="6"
         SortId="6" />
@@ -127,8 +127,8 @@
     <Instagram
         Id="8"
         SortId="8"
-        ClientId="09ce7dcc0c504ba8a3da3f71b3408d44"
-        ClientSecret="33cf09d0d13e4df3897aff25de6e3ccc"
+        ClientId="3ecfc78181ff4ee89e6284d76aa116a2"
+        ClientSecret="a326b9b2290b4948b8bd3a6e527b852b"
         RedirectUri="http://www.pictureair.com/"
         Enable="true" />
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget;
+package com.pictureair.hkdlphotopass.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -11,7 +11,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 public class PPPPop extends PopupWindow implements OnClickListener {
 	private LayoutInflater inflater;

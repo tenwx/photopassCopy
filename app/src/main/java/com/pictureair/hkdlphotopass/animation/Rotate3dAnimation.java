@@ -1,4 +1,4 @@
-package com.pictureair.photopass.animation;
+package com.pictureair.hkdlphotopass.animation;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

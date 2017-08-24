@@ -1,9 +1,9 @@
-package com.pictureair.photopass.editPhoto.filter;
+package com.pictureair.hkdlphotopass.editPhoto.filter;
 
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 
 /**

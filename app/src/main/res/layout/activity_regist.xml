@@ -97,7 +97,7 @@
                         android:layout_height="30dp"
                         android:layout_marginTop="@dimen/pp_dp_20">
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="bottom"
@@ -107,7 +107,7 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/tv_country"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -136,7 +136,7 @@
                             android:adjustViewBounds="true"
                             android:src="@drawable/login_phone" />
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/tv_country_num"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -154,7 +154,7 @@
                             android:layout_marginTop="2dp"
                             android:background="@color/white" />
 
-                        <com.pictureair.photopass.widget.EditTextWithClear
+                        <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                             android:id="@+id/et_write_phone"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -197,7 +197,7 @@
                                 android:adjustViewBounds="true"
                                 android:src="@drawable/login_code" />
 
-                            <com.pictureair.photopass.widget.EditTextWithClear
+                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                                 android:id="@+id/pwd"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -235,7 +235,7 @@
                                 android:adjustViewBounds="true"
                                 android:src="@drawable/login_code" />
 
-                            <com.pictureair.photopass.widget.EditTextWithClear
+                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                                 android:id="@+id/pwd_again"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -266,7 +266,7 @@
                         android:paddingBottom="@dimen/pp_dp_5"
                         android:paddingRight="@dimen/pp_dp_5">
 
-                        <com.pictureair.photopass.widget.EditTextWithClear
+                        <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                             android:id="@+id/et_put_identify"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -287,7 +287,7 @@
                             android:textColorHint="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
-                        <com.pictureair.photopass.widget.CustomButtonFont
+                        <com.pictureair.hkdlphotopass.widget.CustomButtonFont
                             android:id="@+id/btn_next"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -304,7 +304,7 @@
                             android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
-                    <com.pictureair.photopass.widget.CustomButtonFont
+                    <com.pictureair.hkdlphotopass.widget.CustomButtonFont
                         android:id="@+id/sure"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/pp_dp_40"
@@ -329,7 +329,7 @@
                             android:paddingTop="@dimen/pp_dp_13"
                             android:src="@drawable/login_check_unselect" />
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/tv_explain"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -347,7 +347,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1">
 
-                    <com.pictureair.photopass.widget.CustomTextView
+                    <com.pictureair.hkdlphotopass.widget.CustomTextView
                         android:id="@+id/tv_otherRegistered"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -396,7 +396,7 @@
                         android:layout_height="@dimen/pp_dp_30"
                         android:layout_marginTop="@dimen/pp_dp_20">
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="bottom"
@@ -406,7 +406,7 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/tv_forget_country"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -441,7 +441,7 @@
                                 android:adjustViewBounds="true"
                                 android:src="@drawable/login_phone" />
 
-                            <com.pictureair.photopass.widget.CustomTextView
+                            <com.pictureair.hkdlphotopass.widget.CustomTextView
                                 android:id="@+id/tv_forget_country_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
@@ -459,7 +459,7 @@
                                 android:layout_marginTop="2dp"
                                 android:background="@color/white" />
 
-                            <com.pictureair.photopass.widget.EditTextWithClear
+                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                                 android:id="@+id/et_forget_write_phone"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -497,7 +497,7 @@
                             android:paddingBottom="@dimen/pp_dp_5"
                             android:paddingRight="5dp">
 
-                            <com.pictureair.photopass.widget.EditTextWithClear
+                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                                 android:id="@+id/forget_pwd"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -529,7 +529,7 @@
                             android:paddingBottom="@dimen/pp_dp_5"
                             android:paddingRight="@dimen/pp_dp_5">
 
-                            <com.pictureair.photopass.widget.EditTextWithClear
+                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                                 android:id="@+id/forget_pwd_again"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -559,7 +559,7 @@
                         android:paddingBottom="@dimen/pp_dp_5"
                         android:paddingRight="@dimen/pp_dp_5">
 
-                        <com.pictureair.photopass.widget.EditTextWithClear
+                        <com.pictureair.hkdlphotopass.widget.EditTextWithClear
                             android:id="@+id/et_forget_put_identify"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -580,7 +580,7 @@
                             android:textColorHint="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
-                        <com.pictureair.photopass.widget.CustomButtonFont
+                        <com.pictureair.hkdlphotopass.widget.CustomButtonFont
                             android:id="@+id/btn_forget_next"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -597,7 +597,7 @@
                             android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
-                    <com.pictureair.photopass.widget.CustomButtonFont
+                    <com.pictureair.hkdlphotopass.widget.CustomButtonFont
                         android:id="@+id/forget_sure"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/pp_dp_40"

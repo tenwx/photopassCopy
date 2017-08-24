@@ -1,4 +1,4 @@
-package com.pictureair.photopass.fragment;
+package com.pictureair.hkdlphotopass.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,20 +22,20 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
-import com.pictureair.photopass.activity.LoadManageActivity;
-import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.BaseFragment;
+import com.pictureair.hkdlphotopass.activity.DownloadPhotoPreviewActivity;
+import com.pictureair.hkdlphotopass.activity.LoadManageActivity;
+import com.pictureair.hkdlphotopass.activity.MainTabActivity;
+import com.pictureair.hkdlphotopass.adapter.PhotoLoadSuccessAdapter;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

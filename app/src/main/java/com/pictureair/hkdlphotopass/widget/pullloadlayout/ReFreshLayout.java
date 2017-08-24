@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.pullloadlayout;
+package com.pictureair.hkdlphotopass.widget.pullloadlayout;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,8 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 /**
  * Created by pengwu on 16/6/16.

@@ -1,9 +1,9 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.io.File;

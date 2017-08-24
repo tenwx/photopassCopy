@@ -1,7 +1,7 @@
-package com.pictureair.photopass.http.retrofit_progress;
+package com.pictureair.hkdlphotopass.http.retrofit_progress;
 
-import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
-import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.io.IOException;
 

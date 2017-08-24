@@ -1,4 +1,4 @@
-package com.pictureair.photopass.service;
+package com.pictureair.hkdlphotopass.service;
 
 import android.Manifest;
 import android.app.Notification;
@@ -17,24 +17,24 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
-import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.http.rxhttp.HttpCallback;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.DownloadPhotoPreviewActivity;
+import com.pictureair.hkdlphotopass.entity.DownloadFileStatus;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.fragment.DownLoadingFragment;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.http.rxhttp.HttpCallback;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.io.File;
 import java.io.IOException;

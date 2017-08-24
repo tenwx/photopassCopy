@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pictureair.photopass.widget.viewpagerindicator;
+package com.pictureair.hkdlphotopass.widget.viewpagerindicator;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -29,9 +29,9 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomTextView;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.widget.CustomTextView;
 
 import java.util.ArrayList;
 import java.util.List;

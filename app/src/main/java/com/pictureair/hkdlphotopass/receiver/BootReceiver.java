@@ -1,4 +1,4 @@
-package com.pictureair.photopass.receiver;
+package com.pictureair.hkdlphotopass.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

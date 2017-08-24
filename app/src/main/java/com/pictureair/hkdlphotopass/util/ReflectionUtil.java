@@ -1,8 +1,8 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 /**
  * Created by bauer_bao on 15/12/10.

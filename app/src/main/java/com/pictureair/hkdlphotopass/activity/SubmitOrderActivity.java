@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,28 +24,29 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.AddressAdapter;
-import com.pictureair.photopass.adapter.SubmitOrderListViewAdapter;
-import com.pictureair.photopass.entity.Address;
-import com.pictureair.photopass.entity.AddressJson;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.InvoiceInfo;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.CouponTool;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.AddressAdapter;
+import com.pictureair.hkdlphotopass.adapter.SubmitOrderListViewAdapter;
+import com.pictureair.hkdlphotopass.entity.Address;
+import com.pictureair.hkdlphotopass.entity.AddressJson;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.InvoiceInfo;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.CouponTool;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +100,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int fromPanicBuy = 0;
     private String dealingKey;
     private JSONArray goods;
+    private String orderIdInBackend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         goods = new JSONArray();
         for (int i = 0; i < list.size(); i++) {
             //获取总价格
-            totalprice += list.get(i).getUnitPrice() * list.get(i).getQty();
+//            totalprice += list.get(i).getUnitPrice() * list.get(i).getQty();
+            totalprice += list.get(i).getPrice();
+//            BigDecimal bigTotalPrice = new BigDecimal(totalprice);
+//            BigDecimal bigPrice = new BigDecimal(list.get(i).getPrice());
+//            totalprice = bigTotalPrice.add(bigPrice).floatValue();
             //获取购物车商品数
             cartCount += list.get(i).getQty();
             if (fromPanicBuy == 0) {
@@ -175,6 +181,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         PictureAirLog.v(TAG, "discountPrice：" + disPrice);
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
         payPrice = totalprice - disPrice;//实际支付等于默认价格减去优惠立减价格
+//        BigDecimal bigTotalPrice = new BigDecimal(totalprice);
+//        BigDecimal bigDisPrice = new BigDecimal(disPrice);
+//        payPrice = bigTotalPrice.subtract(bigDisPrice).floatValue();
+
         //获取优惠码数量
         if (fromPanicBuy == 0) {
             getCoupons();
@@ -191,7 +201,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         updateShopPriceUI(true);
         invoicePriceUnitTv.setText(currency);
-        totalpriceTextView.setText(((int) payPrice + ""));
+        totalpriceTextView.setText( payPrice + "");
         currencyTextView.setText(currency);
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
@@ -448,11 +458,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
                 }
             } else {
-                couponCountTv.setText("-" + currency + (int) straightwayPreferentialPrice);
+                couponCountTv.setText("-" + currency + straightwayPreferentialPrice);
             }
 
             PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice);
-            if ((int) straightwayPreferentialPrice == 0) {
+            if (straightwayPreferentialPrice == 0) {
                 couponSubtractTv.setVisibility(View.GONE);
             } else {
                 couponSubtractTv.setVisibility(View.VISIBLE);
@@ -467,13 +477,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             discountSubtractTv.setVisibility(View.VISIBLE);
         }
         if (fromPanicBuy == 0) {
-            couponPriceTv.setText((int) straightwayPreferentialPrice + "");
+            couponPriceTv.setText(straightwayPreferentialPrice + "");
         }
-        shopPriceTv.setText((int) totalprice + "");
-        payPriceTv.setText(((int) payPrice + ""));
-        discountPriceTv.setText((int) disPrice + "");
+        shopPriceTv.setText(totalprice + "");
+        payPriceTv.setText( payPrice + "");
+        discountPriceTv.setText(disPrice + "");
 
-        totalpriceTextView.setText(((int) payPrice + ""));
+        totalpriceTextView.setText( payPrice + "");
     }
 
     /**
@@ -555,6 +565,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         intent2.putExtra("price", totalpriceTextView.getText().toString());
         intent2.putExtra("introduce", orderIntroduce);
         intent2.putExtra("orderId", orderId);
+        intent2.putExtra("orderIdInBackend", orderIdInBackend);
         intent2.putExtra("cartItemIds", cartItemIds.toString());
         intent2.putExtra("couponCodes", couponCodes != null ? couponCodes.toString() : "");
         intent2.putExtra("cartCount", cartCount);
@@ -666,6 +677,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
+                    intent2.putExtra("orderIdInBackend", orderIdInBackend);
                     intent2.putExtra("couponCodes", couponCodes == null ? "" : couponCodes.toString());
                     intent2.putExtra("invoice",invoice);
                     //传递商品类型，用于成功后返回订单
@@ -699,6 +711,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     public void _onNext(JSONObject jsonObject) {
                         PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + jsonObject);
                         orderId = jsonObject.getString("orderCode");
+                        orderIdInBackend = jsonObject.getString("orderId");
                         dismissPWProgressDialog();
                         if (orderId != null && !orderId.isEmpty()) {
                             goToPayActivity(true);
@@ -734,6 +747,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     public void _onNext(JSONObject jsonObject) {
                         PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + jsonObject);
                         orderId = jsonObject.getString("orderCode");
+                        orderIdInBackend = jsonObject.getString("orderIdInBackend");
                         dismissPWProgressDialog();
                         if (!TextUtils.isEmpty(orderId)) {
                             goToPayActivity(true);
@@ -786,7 +800,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if(jsonObject.containsKey("totalPrice"))
             payPrice = Float.valueOf(jsonObject.getString("totalPrice"));
         payPriceTv.setText(((int) payPrice + ""));
-        totalpriceTextView.setText(((int) payPrice + ""));
+        totalpriceTextView.setText(payPrice + "");
     }
 
     @Override

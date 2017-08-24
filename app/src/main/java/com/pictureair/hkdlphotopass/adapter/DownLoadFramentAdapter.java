@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.viewpagerindicator;
+package com.pictureair.hkdlphotopass.widget.viewpagerindicator;
 
 import android.content.Context;
 import android.content.res.TypedArray;

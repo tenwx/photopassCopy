@@ -1,10 +1,10 @@
-package com.pictureair.photopass.editPhoto.interf;
+package com.pictureair.hkdlphotopass.editPhoto.interf;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.editPhoto.widget.StickerView;
+import com.pictureair.hkdlphotopass.adapter.EditActivityAdapter;
+import com.pictureair.hkdlphotopass.editPhoto.widget.StickerView;
 import com.trello.rxlifecycle.components.RxActivity;
 
 /**

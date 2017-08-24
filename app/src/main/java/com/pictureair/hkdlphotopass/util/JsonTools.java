@@ -1,8 +1,8 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.entity.HttpBaseJson;
+import com.pictureair.hkdlphotopass.entity.HttpBaseJson;
 
 import java.util.List;
 

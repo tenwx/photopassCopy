@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 
 import android.content.Context;
@@ -9,24 +9,24 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.entity.ADLocationInfo;
-import com.pictureair.photopass.entity.BindPPInfo;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.CouponInfo;
-import com.pictureair.photopass.entity.DailyPPCardInfo;
-import com.pictureair.photopass.entity.DealingInfo;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.FrameOrStikerInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.service.SocketUtil;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.entity.ADLocationInfo;
+import com.pictureair.hkdlphotopass.entity.BindPPInfo;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.CouponInfo;
+import com.pictureair.hkdlphotopass.entity.DailyPPCardInfo;
+import com.pictureair.hkdlphotopass.entity.DealingInfo;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.FrameOrStikerInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.JsonInfo;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.entity.PPPinfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.entity.SendAddress;
+import com.pictureair.hkdlphotopass.service.SocketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,8 +284,8 @@ public class JsonUtil {
         String shootOn = null;
         String siteId = "";
 
-        if (location.containsKey("site")) {
-            siteId = location.getString("site");
+        if (location.containsKey("siteId")) {
+            siteId = location.getString("siteId");
             dailyPPCardInfo.setSiteId(siteId);
         }
 
@@ -646,14 +646,14 @@ public class JsonUtil {
             orderInfo.orderStatus = resumeJsonObject.getIntValue("status");//订单状态
             //priceInfo
             JSONObject priceJsonObject = orderJsonObject.getJSONObject("priceInfo");
-            orderInfo.deliveryShipping = priceJsonObject.getDouble("shipping");//运费
-            orderInfo.productPrice = priceJsonObject.getDouble("productPrice");//商品价格
-            orderInfo.orderTotalPrice = priceJsonObject.getDouble("totalPrice");//商品总价
-            orderInfo.straightwayPreferentialPrice = priceJsonObject.getDouble("straightwayPreferentialPrice");//优惠折扣
-            orderInfo.promotionPreferentialPrice = priceJsonObject.getDouble("promotionPreferentialPrice");//优惠立减
-            orderInfo.preferentialPrice = priceJsonObject.getDouble("preferentialPrice");//优惠减免总费用
-            orderInfo.resultPrice = priceJsonObject.getDouble("resultPrice");//初始总费用
-            orderInfo.actualotalPrice = priceJsonObject.getDouble("totalPrice");//实际支付总价
+            orderInfo.deliveryShipping = priceJsonObject.getFloat("shipping");//运费
+            orderInfo.productPrice = priceJsonObject.getFloat("productPrice");//商品价格
+            orderInfo.orderTotalPrice = priceJsonObject.getFloat("totalPrice");//商品总价
+            orderInfo.straightwayPreferentialPrice = priceJsonObject.getFloat("straightwayPreferentialPrice");//优惠折扣
+            orderInfo.promotionPreferentialPrice = priceJsonObject.getFloat("promotionPreferentialPrice");//优惠立减
+            orderInfo.preferentialPrice = priceJsonObject.getFloat("preferentialPrice");//优惠减免总费用
+            orderInfo.resultPrice = priceJsonObject.getFloat("resultPrice");//初始总费用
+            orderInfo.actualotalPrice = priceJsonObject.getFloat("totalPrice");//实际支付总价
 
             //deliveryInfo
             JSONObject deliveryJsonObject = orderJsonObject.getJSONObject("deliveryInfo");
@@ -795,9 +795,10 @@ public class JsonUtil {
                 cartItemInfo.setProductName(productJsonObject.getString("productNameAilas"));//商品名字
                 cartItemInfo.setCartProductImageUrl(productJsonObject.getString("productImage"));//商品预览图URL
                 cartItemInfo.setQty(productJsonObject.getIntValue("qty"));//商品数量
-                cartItemInfo.setUnitPrice(productJsonObject.getIntValue("unitPrice"));//商品单价
+                cartItemInfo.setUnitPrice(productJsonObject.getDouble("unitPrice"));//商品单价
                 cartItemInfo.setCartProductType(productJsonObject.getIntValue("productEntityType"));//商品虚拟／实体类型（0,1）
 
+                cartItemInfo.setPrice(productJsonObject.getDoubleValue("totalPrice"));//总价格
 
                 //获取添加照片的信息
                 usePhotosArray = productJsonObject.getJSONArray("usePhotos");//商品名字
@@ -1249,7 +1250,7 @@ public class JsonUtil {
      * @param orderId       当前提交的订单
      */
     public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId) {
-        PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr);
+        PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr + "orderId: "+ orderId);
         boolean isdonePayOrder = false;
         SocketUtil socketUtil = new SocketUtil(context, null);
         try {

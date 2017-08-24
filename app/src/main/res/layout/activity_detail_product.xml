@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.pictureair.photopass.widget.BannerView_Detail
+                <com.pictureair.hkdlphotopass.widget.BannerView_Detail
                     android:id="@+id/bannerview_product_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -128,14 +128,14 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/pp_dp_5">
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/detail_currency"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/pp_blue"
                             android:textSize="@dimen/text_size_14" />
 
-                        <com.pictureair.photopass.widget.CustomTextView
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:id="@+id/detail_promotion_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

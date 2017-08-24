@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,10 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.dropview;
+package com.pictureair.hkdlphotopass.widget.dropview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,7 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 
 /**

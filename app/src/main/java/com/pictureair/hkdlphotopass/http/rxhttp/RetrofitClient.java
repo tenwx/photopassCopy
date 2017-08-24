@@ -1,12 +1,12 @@
-package com.pictureair.photopass.http.rxhttp;
+package com.pictureair.hkdlphotopass.http.rxhttp;
 
 
 
-import com.pictureair.photopass.http.fastjson.FastjsonConverterFactory;
-import com.pictureair.photopass.http.retrofit_progress.ProgressConverterFactory;
-import com.pictureair.photopass.http.retrofit_progress.ProgressInterceptor;
-import com.pictureair.photopass.http.retrofit_progress.ProgressListenerPool;
-import com.pictureair.photopass.util.Common;
+import com.pictureair.hkdlphotopass.http.fastjson.FastjsonConverterFactory;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.ProgressConverterFactory;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.ProgressInterceptor;
+import com.pictureair.hkdlphotopass.http.retrofit_progress.ProgressListenerPool;
+import com.pictureair.hkdlphotopass.util.Common;
 
 import java.util.concurrent.TimeUnit;
 

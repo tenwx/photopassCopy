@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.videoPlayer;
+package com.pictureair.hkdlphotopass.widget.videoPlayer;
 
 /**
  * Created by bauer_bao on 16/9/7.

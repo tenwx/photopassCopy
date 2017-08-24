@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,22 +16,23 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.PaymentOrderActivity;
-import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.OrderProductInfo;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.PaymentOrderActivity;
+import com.pictureair.hkdlphotopass.customDialog.PWDialog;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.entity.OrderProductInfo;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,7 +141,9 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         //初始化group
         groupHolderView.orderTimeTextView.setText(grouplist.get(groupPosition).orderTime.substring(0, 19));
         groupHolderView.orderNumberTextView.setText(grouplist.get(groupPosition).orderNumber);
-        groupHolderView.totalPriceTextView.setText((int) grouplist.get(groupPosition).orderTotalPrice + "");
+        //价格
+        BigDecimal decimal = new BigDecimal(grouplist.get(groupPosition).orderTotalPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
+        groupHolderView.totalPriceTextView.setText(String.valueOf(decimal));
         switch (grouplist.get(groupPosition).orderStatus) {
             case -3:
                 groupHolderView.orderStatesTextView.setText(R.string.order_refund);
@@ -233,7 +236,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         hView.goodsName.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getProductName());
         hView.goodsCount.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getQty() + "");
         hView.currency.setText(currency);
-        hView.priceTextView.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getUnitPrice() + "");
+        BigDecimal decimal = new BigDecimal(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getUnitPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
+        hView.priceTextView.setText(String.valueOf(decimal));
         //初始化添加的图片信息
         if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos() == null || childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().size() <= 0) {
             hView.gridLayout.setVisibility(View.GONE);

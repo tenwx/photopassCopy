@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.dropview;
+package com.pictureair.hkdlphotopass.widget.dropview;
 
 import android.app.Activity;
 import android.content.Context;

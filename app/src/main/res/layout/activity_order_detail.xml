@@ -79,13 +79,13 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.pictureair.photopass.widget.DashedLineView
+                <com.pictureair.hkdlphotopass.widget.DashedLineView
                     android:paddingBottom="@dimen/pp_dp_8"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_dp_1"
                     android:background="@color/white" />
 
-                <com.pictureair.photopass.widget.NoScrollListView
+                <com.pictureair.hkdlphotopass.widget.NoScrollListView
                     android:id="@+id/product_detail_listview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                         android:textSize="@dimen/text_size_16" />
                 </RelativeLayout>
 
-                <com.pictureair.photopass.widget.DashedLineView
+                <com.pictureair.hkdlphotopass.widget.DashedLineView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_dp_1"
                     android:background="@color/white" />
@@ -350,7 +350,7 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <com.pictureair.photopass.widget.DashedLineView
+                <com.pictureair.hkdlphotopass.widget.DashedLineView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_dp_1"
                     android:background="@color/white" />

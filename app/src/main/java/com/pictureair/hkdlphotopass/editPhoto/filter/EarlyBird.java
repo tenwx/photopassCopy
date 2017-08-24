@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto.filter;
+package com.pictureair.hkdlphotopass.editPhoto.filter;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,7 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 
 /**

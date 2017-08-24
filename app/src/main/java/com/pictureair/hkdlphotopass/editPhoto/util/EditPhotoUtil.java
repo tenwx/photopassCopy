@@ -1,5 +1,5 @@
 
-package com.pictureair.photopass.editPhoto.util;
+package com.pictureair.hkdlphotopass.editPhoto.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 import java.io.File;
 import java.io.FileInputStream;

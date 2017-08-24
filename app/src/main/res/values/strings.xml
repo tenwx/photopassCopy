@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">乐拍通</string>
-    <string name="share_app_name">上海迪士尼乐拍通</string>
+    <string name="app_name">PhotoPass</string>
+    <string name="share_app_name">香港迪士尼处处拍</string>
     <!-- start activity start-->
     <string name="app_update">数据更新中</string>
     <!-- start activity end-->
@@ -122,9 +122,9 @@
     <string name="five_days_ago">5天前</string>
     <string name="six_days_ago">6天前</string>
     <string name="video_location">My Disney Story</string>
-    <string name="story_buy_ppp">购买迪士尼乐拍通一日通</string>
-    <string name="story_scan_ppp">激活您已购买的乐拍通一卡通</string>
-    <string name="story_scan_daily_ppp">激活您已购买的乐拍通一日通</string>
+    <string name="story_buy_ppp">购买迪士尼处处拍一日通</string>
+    <string name="story_scan_ppp">激活您已购买的处处拍一卡通</string>
+    <string name="story_scan_daily_ppp">激活您已购买的处处拍一日通</string>
     <string name="story_card">卡号：%1$s</string>
     <string name="story_blur_expire_time">（未付款照片有效期30天）</string>
     <string name="story_expire_time">（已付款照片有效期%1$d天）</string>
@@ -202,7 +202,7 @@
     <string name="mypage_ppp">迪士尼乐拍通一卡通</string>
     <string name="mypage_pp1">迪士尼\n乐拍通</string>
     <string name="mypage_ppp1">迪士尼乐拍通一卡通</string>
-    <string name="mypage_daily_ppp1">迪士尼乐拍通一日通</string>
+    <string name="mypage_daily_ppp1">卡包</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
@@ -245,11 +245,11 @@
     <string name="blur_intro">迪士尼乐拍通一卡通可让您下载已关联在此乐拍通卡内同一天的所有高清照片</string>
     <string name="up_ppp_money">我要购买迪士尼乐拍通一卡通</string>
     <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
-    <string name="use_daily_ppp">使用已有的迪士尼乐拍通一日通</string>
+    <string name="use_daily_ppp">使用已有的迪士尼乐拍通一日通/处处拍+</string>
     <string name="buythisphoto">我要购买单张数码照片</string>
     <string name="cancel1">取消</string>
     <string name="use_ppp_intro">只需激活已有的迪士尼乐拍通一卡通，即可下载同一天任意三张迪士尼乐拍通卡里的所有照片。</string>
-    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
+    <string name="use_ppp_daily_intro">只需激活已有的迪士尼乐拍通一日通/处处拍+，您即可下载一天内所使用的一张迪士尼乐拍通卡内的所有照片。</string>
     <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <string name="no_daily_ppp_tips">您没有可用的迪士尼乐拍通一日通哦！</string>
     <!-- blur end -->
@@ -421,8 +421,8 @@
     <string name="ppp_has_expired">已过期</string>
     <string name="expired_on">有效时间:</string>
     <string name="experiencephotopassplus">迪士尼乐拍通一卡通体验卡</string>
-    <string name="buy_ppp_text">购买迪士尼乐拍通一日通</string>
-    <string name="scan_ppp_text">激活您已购买的乐拍通一日通</string>
+    <string name="buy_ppp_text">购买迪士尼處處拍一日通</string>
+    <string name="scan_ppp_text">激活您已购买的處處拍一日通</string>
     <string name="ppp_deail_no_card">您还未激活任何迪士尼乐拍通卡号</string>
     <string name="ppp_load_all">没有更多数据</string>
     <string name="pull_to_refresh">上拉刷新显示更多</string>
@@ -626,7 +626,7 @@
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
-    <string name="smssdk_explain_briefly">我已阅读并同意接受<a href="5">使用条款</a>、<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
+    <string name="smssdk_explain_briefly">我已阅读并同意接受<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
     <string name="please_agree">请确认同意使用条款、补充条款及细则和隐私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
@@ -699,4 +699,49 @@
     <string name="opinions_online">在线客服</string>
     <string name="opinions_feedback">意见反馈</string>
     <!---->
+
+    <!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
+    <!-- login activity start-->
+    <string name="hongkong">香港</string>
+
+    <string name="story_other_tw">其他</string>
+
+    <!-- scan start -->
+
+    <string name="scan_coupon_tips">請掃描您的迪士尼優惠券上的QR Code</string>
+
+
+    <string name="paydollar">付款</string>
+    <string name="paydollar_type">其他方式</string>
+
+    <string name="visa">VISA</string>
+    <string name="mastercard">萬事達咭</string>
+    <string name="american_express">美國運通咭</string>
+    <string name="jcb">JCB</string>
+    <string name="payeco">銀聯</string>
+    <string name="aliPay">支付宝</string>
+
+
+
+    <string name="cancelled">交易取消</string>
+    <string name="pay_error">交易錯誤</string>
+    <string name="pending_refund">退款中</string>
+    <!-- order end -->
+
+
+
+    <string name="smssdk_personal_information_collection_statement">收取香港迪士尼樂園的最新資訊、推廣及優惠 - 本人承諾本人已閱讀及理解載於<a href = "6">個人資料收集聲明</a>之條款，並同意可使用本人的個人資料作直接推廣用途。</string>
+
+    <string name="personal_info_collect">個人資料收集聲明</string>
+    <!-- postcard start-->
+    <string name="customized_postcard">訂製制明信片(三聯套)</string>
+    <string name="postcard_type">款式</string>
+    <string name="preview_goods">預覽商品(%1$d/%2$d)</string>
+    <string name="preview_goods_null">預覽商品(0/3)</string>
+
+    <!--购物车不标准字段,确认之后移动至购物车分类-->
+    <string name="unable_add_to_cart">商品已經加入購物車，請去購物車中結算哦！</string>
+
+    <string name="photo_download_clear_tips">下載完成後才可以清除</string>
+    <string name="smssdk_write_identify_code">填寫驗證碼</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto.bean;
+package com.pictureair.hkdlphotopass.editPhoto.bean;
 
 
 import java.util.List;

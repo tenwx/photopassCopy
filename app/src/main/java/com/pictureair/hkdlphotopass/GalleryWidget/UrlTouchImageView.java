@@ -15,7 +15,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.pictureair.photopass.GalleryWidget;
+package com.pictureair.hkdlphotopass.GalleryWidget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,17 +40,17 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.AESKeyHelper;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.BlurUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.AESKeyHelper;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.BlurUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.ReflectionUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 import com.trello.rxlifecycle.components.RxActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -417,7 +417,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                             }
                             if (null != arg2) {
                                 BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inSampleSize = 2;
+                                options.inSampleSize = 1;
                                 oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
                             } else {//失败
                                 return Observable.just(false);
@@ -461,7 +461,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
                                                 is.close();
                                                 baos.close();
                                                 BitmapFactory.Options options = new BitmapFactory.Options();
-                                                options.inSampleSize = 2;
+                                                options.inSampleSize = 1;
                                                 oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
                                                 return oriClearBmp != null;
                                             } catch (Exception e1) {
@@ -537,7 +537,7 @@ public class UrlTouchImageView extends RelativeLayout implements TouchImageView.
         mImageView.setDrawingCacheEnabled(true);
         setProgressImageViewVisible(false);
 
-        touchClearRadius = ScreenUtil.dip2px(mContext, 45);
+        touchClearRadius = ScreenUtil.dip2px(mContext, 50);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -38,12 +38,12 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.widget.EditTextWithClear;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoItemInfo;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.widget.EditTextWithClear;
 
 import net.sqlcipher.Cursor;
 
@@ -1963,8 +1963,8 @@ public class AppUtil {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         //获取手机设置的语言
         String languageType = SPUtils.getString(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
-        PictureAirLog.d("apputil language --->" + languageType + ";locallanguage-->" + config.locale.getLanguage());
-        if (languageType.equals(config.locale.getLanguage())) {//语言一致，跳过
+        PictureAirLog.d("apputil language --->" + languageType + ";locallanguage-->" + config.locale.toString());
+        if (languageType.equals(config.locale.toString())) {//语言一致，跳过
             return;
         }
         if (!languageType.equals("")) {//语言不为空
@@ -1988,16 +1988,16 @@ public class AppUtil {
                 }
             }
         } else {//语言为空，说明第一次进入
-            PictureAirLog.out("apputil language is null---->" + config.locale.getLanguage());
+            PictureAirLog.out("apputil language is null---->" + config.locale.toString());
             PictureAirLog.out("apputil language is null---->" + config.locale);
-            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
+            if (config.locale.toString().equals(Common.SIMPLE_CHINESE)) {
                 languageType = Common.SIMPLE_CHINESE;
                 if (Build.VERSION.SDK_INT < 24) {
                     config.locale = Locale.SIMPLIFIED_CHINESE;
                 } else {
                     config.setLocale(Locale.SIMPLIFIED_CHINESE);
                 }
-            } else if (config.locale.getLanguage().contains("TW") || config.locale.getLanguage().contains("HK")) {
+            } else if (config.locale.toString().contains("TW") || config.locale.getLanguage().contains("HK")) {
                 languageType = Common.TRADITIONAL_CHINESE;
                 if (Build.VERSION.SDK_INT < 24) {
                     config.locale = Locale.TRADITIONAL_CHINESE;
@@ -2190,6 +2190,24 @@ public class AppUtil {
             throw e;
         }
 
+    }
+
+    /**
+     * 获取Policy的中文/繁体/英文
+     *
+     * @param lang
+     * @return
+     */
+    public static String getPolicyUrl(String lang) {
+        String url = "";
+        if (lang.equals(Locale.SIMPLIFIED_CHINESE.toString())) {
+            url = Common.POLICY_AGREEMENT_CN;
+        } else if (lang.equals(Locale.TRADITIONAL_CHINESE.toString())) {
+            url = Common.POLICY_AGREEMENT_HK;
+        } else {
+            url = Common.POLICY_AGREEMENT_EN;
+        }
+        return url;
     }
 
 }

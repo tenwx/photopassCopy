@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.pulltozoomview;
+package com.pictureair.hkdlphotopass.widget.pulltozoomview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,8 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.pulltozoomview;
+package com.pictureair.hkdlphotopass.widget.pulltozoomview;
 
 /**
  * Author:    ZhuWenWu

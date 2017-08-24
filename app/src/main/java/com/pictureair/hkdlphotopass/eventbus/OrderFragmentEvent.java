@@ -1,8 +1,8 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
 
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.OrderProductInfo;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.entity.OrderProductInfo;
 
 import java.util.ArrayList;
 

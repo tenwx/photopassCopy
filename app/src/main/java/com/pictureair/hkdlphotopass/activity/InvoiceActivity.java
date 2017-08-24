@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,19 +15,19 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.SendAddressAdapter;
-import com.pictureair.photopass.entity.InvoiceInfo;
-import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.NoScrollListView;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.SendAddressAdapter;
+import com.pictureair.hkdlphotopass.entity.InvoiceInfo;
+import com.pictureair.hkdlphotopass.entity.SendAddress;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.widget.EditTextWithClear;
+import com.pictureair.hkdlphotopass.widget.NoScrollListView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.util.ArrayList;
 import java.util.Collections;

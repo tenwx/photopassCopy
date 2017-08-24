@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.country;
+package com.pictureair.hkdlphotopass.widget.country;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 import java.util.List;
 

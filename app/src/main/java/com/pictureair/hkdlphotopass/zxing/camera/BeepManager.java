@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera;
+package com.pictureair.hkdlphotopass.zxing.camera;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -23,13 +23,13 @@ import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Manages beeps and vibrations for {@link com.pictureair.photopass.activity.MipCaptureActivity}.
+ * Manages beeps and vibrations for {@link com.pictureair.hkdlphotopass.activity.MipCaptureActivity}.
  */
 public final class BeepManager implements MediaPlayer.OnCompletionListener, Closeable {
 

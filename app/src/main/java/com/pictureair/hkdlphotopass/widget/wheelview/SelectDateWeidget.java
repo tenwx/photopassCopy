@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.wheelview;
+package com.pictureair.hkdlphotopass.widget.wheelview;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -13,10 +13,10 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.wheelview.adapter.NumericWheelAdapter;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.widget.wheelview.adapter.NumericWheelAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

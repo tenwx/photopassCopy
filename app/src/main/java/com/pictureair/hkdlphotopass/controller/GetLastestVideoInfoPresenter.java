@@ -1,9 +1,9 @@
-package com.pictureair.photopass.controller;
+package com.pictureair.hkdlphotopass.controller;
 
 import android.content.Context;
 
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 /**
  * Created by bauer_bao on 16/9/19.

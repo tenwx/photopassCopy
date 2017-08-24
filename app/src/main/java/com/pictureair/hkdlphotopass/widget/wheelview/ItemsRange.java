@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package com.pictureair.photopass.widget.wheelview;
+package com.pictureair.hkdlphotopass.widget.wheelview;
 
 /**
  * Range for visible items.

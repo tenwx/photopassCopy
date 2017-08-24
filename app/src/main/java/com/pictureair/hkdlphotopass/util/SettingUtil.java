@@ -1,6 +1,6 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
-import com.pictureair.photopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
 
 
 /**

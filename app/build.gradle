@@ -8,11 +8,11 @@ android {
     buildToolsVersion '25.0.2'
 
     defaultConfig {
-        applicationId "com.pictureair.photopass"
+        applicationId "com.pictureair.hkdlphotopass"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 14
-        versionName "3.0.3"
+        versionName "3.0.0"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过65536限制
         ndk {//so文件的过滤
             abiFilters "armeabi", "armeabi-v7a"
@@ -74,6 +74,11 @@ android {
 
     //微信支付请求网络的框架使用旧的httpclient，因此需要
     useLibrary 'org.apache.http.legacy'
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 repositories {
@@ -81,9 +86,9 @@ repositories {
 }
 
 greendao {
-    schemaVersion 4 //指定数据库版本号
+    schemaVersion 5 //指定数据库版本号
     targetGenDir 'src/main/java' //生成数据库文件的目录
-    daoPackage 'com.pictureair.photopass.greendao' //dao的包名
+    daoPackage 'com.pictureair.hkdlphotopass.greendao' //dao的包名
 }
 
 dependencies {
@@ -153,4 +158,7 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
     //分包
     compile 'com.android.support:multidex:1.0.1'
+    compile files('libs/payecoplugin_2.1.6.jar')
+    compile files('libs/org.apache.http.legacy.jar')
+    compile files('libs/locSDK_4.2.jar')
 }

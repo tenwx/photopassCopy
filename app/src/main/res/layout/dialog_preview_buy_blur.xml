@@ -50,6 +50,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/preview_blur_dialog_upgrade_photo_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

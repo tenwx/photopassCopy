@@ -1,6 +1,6 @@
-package com.pictureair.photopass.eventbus;
+package com.pictureair.hkdlphotopass.eventbus;
 
-import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.hkdlphotopass.entity.CouponInfo;
 
 /**
  * Created by bauer_bao on 15/12/28.

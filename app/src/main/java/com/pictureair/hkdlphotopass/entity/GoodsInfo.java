@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,7 +19,7 @@ public class GoodsInfo implements Serializable {
     private List<GoodInfoPictures> pictures = null;//商品图片信息
     private int entityType = 0; //int,商品虚拟／实体类型（0,1）
     private EmbedPhotoConfig ssConfig = null;//商品合成设置（单位：px）
-    private int price = 0;//int, 商品价格
+    private double price = 0;//int, 商品价格
     private int sequence = 0;//int,商品序号
     private String good_SVG_Info = "";//SVG信息
     private boolean isAllowBuy;//true：所有照片都可以选择（除了纪念照和视频）；false：只能选择未购买图片
@@ -28,7 +28,7 @@ public class GoodsInfo implements Serializable {
     private List<String> locationIds;
 
 
-    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info, boolean isAllowBuy, DealingInfo dealing) {
+    public GoodsInfo(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, double price, int sequence, String good_SVG_Info, boolean isAllowBuy, DealingInfo dealing) {
         this.goodsKey = goodsKey;
         this.productId = productId;
         this.storeId = storeId;
@@ -122,11 +122,11 @@ public class GoodsInfo implements Serializable {
         this.pictures = pictures;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

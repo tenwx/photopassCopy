@@ -1,4 +1,4 @@
-package com.pictureair.photopass.receiver;
+package com.pictureair.hkdlphotopass.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.service.NotificationService;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 /**
  * 网络连接的监听
@@ -31,7 +31,7 @@ public class NetBroadCastReciver extends BroadcastReceiver {
 					// 连接状态
 					PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
 					intent1 = new Intent(context,
-							com.pictureair.photopass.service.NotificationService.class);
+							com.pictureair.hkdlphotopass.service.NotificationService.class);
 					context.startService(intent1);
 				} else {
 					PictureAirLog.d(" ＝＝＝＝＝ ", "无网络连接");

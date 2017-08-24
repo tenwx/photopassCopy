@@ -1,4 +1,4 @@
-package com.pictureair.photopass.fragment;
+package com.pictureair.hkdlphotopass.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,26 +18,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.CartActivity;
-import com.pictureair.photopass.activity.DetailProductActivity;
-import com.pictureair.photopass.activity.PPPDetailProductActivity;
-import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
-import com.pictureair.photopass.entity.AddressJson;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.BaseFragment;
+import com.pictureair.hkdlphotopass.activity.CartActivity;
+import com.pictureair.hkdlphotopass.activity.DetailProductActivity;
+import com.pictureair.hkdlphotopass.activity.PPPDetailProductActivity;
+import com.pictureair.hkdlphotopass.adapter.ShopGoodListViewAdapter;
+import com.pictureair.hkdlphotopass.entity.AddressJson;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfoJson;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.ACache;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -234,6 +234,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     .map(new Func1<JSONObject, GoodsInfoJson>() {
                         @Override
                         public GoodsInfoJson call(JSONObject jsonObject) {
+                            PictureAirLog.i("goods", jsonObject.toJSONString());
+                            PictureAirLog.json("goods", jsonObject.toJSONString());
                             return JsonTools.parseObject(jsonObject, GoodsInfoJson.class);//GoodsInfoJson.getString()
                         }
                     })

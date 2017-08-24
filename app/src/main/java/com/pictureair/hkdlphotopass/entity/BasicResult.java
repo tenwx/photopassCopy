@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 /**
  * Created by pengwu on 16/8/8.

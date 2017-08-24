@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.PWProgressDialog;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.PWProgressDialog;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;

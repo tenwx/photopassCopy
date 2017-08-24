@@ -1,4 +1,4 @@
-package com.pictureair.photopass;
+package com.pictureair.hkdlphotopass;
 
 import android.annotation.TargetApi;
 import android.app.Application;
@@ -17,19 +17,19 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.pictureair.jni.ciphermanager.PWJniUtil;
-import com.pictureair.photopass.greendao.DaoMaster;
-import com.pictureair.photopass.greendao.DaoSession;
-import com.pictureair.photopass.receiver.NetBroadCastReciver;
-import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.util.AESKeyHelper;
-import com.pictureair.photopass.util.BaiduMobUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.CrashHandler;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.CustomFontManager;
-import com.pictureair.photopass.widget.FontResource;
+import com.pictureair.hkdlphotopass.greendao.DaoMaster;
+import com.pictureair.hkdlphotopass.greendao.DaoSession;
+import com.pictureair.hkdlphotopass.receiver.NetBroadCastReciver;
+import com.pictureair.hkdlphotopass.service.NotificationService;
+import com.pictureair.hkdlphotopass.util.AESKeyHelper;
+import com.pictureair.hkdlphotopass.util.BaiduMobUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.CrashHandler;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.UmengUtil;
+import com.pictureair.hkdlphotopass.widget.CustomFontManager;
+import com.pictureair.hkdlphotopass.widget.FontResource;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.database.Database;
@@ -460,7 +460,7 @@ public class MyApplication extends Application {
                 super.onAvailable(network);
                 PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
                 Intent intent = new Intent(MyApplication.getInstance(),
-                        com.pictureair.photopass.service.NotificationService.class);
+                        com.pictureair.hkdlphotopass.service.NotificationService.class);
                 MyApplication.getInstance().startService(intent);
             }
 

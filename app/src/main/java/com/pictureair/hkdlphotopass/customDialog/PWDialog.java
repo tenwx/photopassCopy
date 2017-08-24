@@ -1,4 +1,4 @@
-package com.pictureair.photopass.customDialog;
+package com.pictureair.hkdlphotopass.customDialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,8 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 /**
  * 自定义的dialog

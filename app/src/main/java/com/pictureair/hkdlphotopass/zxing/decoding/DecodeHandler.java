@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.decoding;
+package com.pictureair.hkdlphotopass.zxing.decoding;
 
 import android.content.Context;
 import android.os.Handler;
@@ -27,9 +27,9 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.zxing.camera.CameraManager;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.zxing.camera.CameraManager;
 
 import java.util.Map;
 

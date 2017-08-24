@@ -9,7 +9,7 @@
  *  3.点击“查询合作者身份(pid)”、“查询安全校验码(key)”
  */
 
-package com.pictureair.photopass.alipay;
+package com.pictureair.hkdlphotopass.alipay;
 
 //
 // 请参考 Android平台安全支付服务(msp)应用开发接口(4.2 RSA算法签名)部分，并使用压缩包中的openssl RSA密钥生成工具，生成一套RSA公私钥。
@@ -19,26 +19,13 @@ public final class Keys {
 
 	//pp参数
 	//合作身份者id，以2088开头的16位纯数字
-	public static final String DEFAULT_PARTNER = "2088121658521542";
+	public static final String DEFAULT_PARTNER = "2088621237128219";
 
 	//收款支付宝账号
-	public static final String DEFAULT_SELLER = "online.shdr@pictureworks.biz";
+	public static final String DEFAULT_SELLER = "HKDL.Cash.Payment03@disney.com";
 
 	//商户私钥，自助生成
-	public static final String PRIVATE = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAM4aMbrHbIakLyu7" +
-			"KD6lhco7uhYeEtbA+sTJg5j7NVgL/c7gs448lSeQQgmslAg8u5Unw2dGU9bDvigs" +
-			"7pBSSGjVP8ffN/Fhbibru+o43GnPrmN/VaZMJeZ4L6Yq7DOPwefB1qquH0JmSkwA" +
-			"jDLuXBCW7SAhWaxvAhQw0TA7onF/AgMBAAECgYBdaFW9dwBijSqrwSjeK5pVK3iM" +
-			"6ZhUKCX+5e10efWVL+oZxpDaF+7pfWHQjJySlyPU166hsafxn8kg4CxG0GPr/r5l" +
-			"TI/iTNXTl5kMs7pBkNSMfqwiaFw2y86+FQxA6vWAYct58h0TfJIbQxew3FNKm9L3" +
-			"mkP39QabHS0IZZPLAQJBAPBN0ccA2U0nFejnxxPFb9X/ZigM2yz0mN2RSumxjeK8" +
-			"j6zQ9q8YGiT5KN/SlsKKwmZjn3SGhOBG5szYRdR2sz8CQQDbkHsKz6jElfGBUJeh" +
-			"w2D2X3Wz4YMLwpdmM72zxaL57skMUYAYr7Z88kLjDo8NkFPnKLd/i2iSAGLhr+Hh" +
-			"2fHBAkEAwS/euRzelZ8Zhx9mtWdhzGnB5+rF/XM6vc3DqvJ6PdEXtHheCU/YHOdO" +
-			"S/pSB15kgMoQdC58/o0hmYc5RGCVIwJAH6/AMhU58/T3v4PT/kJmEehA4k7fTKku" +
-			"lE9PR0x0csFlPmPcqrNhELMduAr31itIEIotwThrRPbNTmjFnoSHgQJAbOZSeGCq" +
-			"hlh24Mn+k6bgUFYKqiZZBhcSvIq8SfMFuBCFzDZ8XG9cRKnY54raYVxve9pLtR8x" +
-			"TAsHocRTAzvJ2g==";
+	public static final String PRIVATE = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALCtq2rXoqoaFRgqpjcdT5jZYkS3g5eIMLm05tDq7W6IjKxWwCvrNEzkBuW6wblhTMdQZ7W7+x2vN/xvDoR0RvPRZlJJ4SyDU93WKrNz8a8tzipb0xkyvgklG3XgAWAhPCKeTXw3903/2rD6fqNLu+NxmVzCdE8W08e0BTHBB79/AgMBAAECgYEAm14eADbgtPV612WqBY2hEakY4ZUAA6GgN679y3rMkQdDrcob9INB2twrtJonAf6uphfvG8HTcqdDdJm1CoW2XfyZsDKvTr6dbb0qKEYzvvTJTrbO0NvA/9VnujWZBczSPd8ubRg5GhUp6FBKs0tebIgRMrisVt9+lxJlUmfciQECQQDgBvPXTRrEFHyc441CNl7Y+FEaCcxc0/LWxaidaJeTUvEtPmwX2jnwqCCxe8yulcBJBQ5wmeQ2BIn5Zlk/gXPlAkEAyeTI25/cYanKSqfITpq9daI8MCvp22DwQRUOqG2XoY/hMgjlc/NZXKXaXhsg/7e6Xr742QkdEr+ls9BKTdw3kwJBAK0n0otEVn7eEt805rcZzT/I1u7YSfQqAlXM2yIneJjvj+hXijb5frUrTnHAbZk3uDL4TIvt9r1lzrtNR4hVZ50CQFdn8kGLKykpDghWLVVCjuWfsDkWue8dP8adbDQlBjGPDerQiS4y26xNrYVyb03maAxe13N3C5wzVnTLp2+f+HsCQBv8YZnZYgeewyRH+evCGA4MEqDrIF9xU1EF/MxM4fJiWdK0eaP0SWWg0D0Ed7OsnnVpUCJCBzfDVFK45XLM9vU=";
 
 	//支付宝公钥
 	public static final String PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQE" +

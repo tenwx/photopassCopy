@@ -1,4 +1,4 @@
-package com.pictureair.photopass.widget.country;
+package com.pictureair.hkdlphotopass.widget.country;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,8 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
 
 
 /**

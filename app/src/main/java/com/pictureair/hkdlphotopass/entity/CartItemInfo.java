@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -17,9 +17,9 @@ public class CartItemInfo implements Serializable {
     private String description = ""; //string,商品描述
     private int entityType;//int 商品虚拟／实体类型（0,1）
     private int embedPhotosCount = 0; //number,商品合成所需照片数
-    private int unitPrice = 0; //number,商品单价
+    private double unitPrice = 0; //number,商品单价
     private int qty = 0; //number,商品数量
-    private int price = 0; //number,商品项价格
+    private double price = 0; //number,商品项价格
     private String[] pictures = null; //array<string>商品宣传图地址数组
     private List<CartPhotosInfo> embedPhotos = null;//购物项内配备的照片数据
     private boolean isSelect = false;//商品是否应该被选中
@@ -36,7 +36,7 @@ public class CartItemInfo implements Serializable {
 
     public CartItemInfo(String cartId, String storeId, String goodsKey, String productName,
                         String productNameAlias, String description, int entityType, int embedPhotosCount,
-                        int unitPrice, int qty, int price, String[] pictures, List<CartPhotosInfo> embedPhotos,
+                        double unitPrice, int qty, double price, String[] pictures, List<CartPhotosInfo> embedPhotos,
                         boolean isSelect, boolean hasPhoto, int showEdit, int showPhotos, boolean isFullPhotos,
                         int cartProductType, String cartProductImageUrl, boolean isAllowBuy) {
         this.cartId = cartId;
@@ -118,11 +118,11 @@ public class CartItemInfo implements Serializable {
         this.embedPhotosCount = embedPhotosCount;
     }
 
-    public int getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(int unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -134,11 +134,11 @@ public class CartItemInfo implements Serializable {
         this.qty = qty;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

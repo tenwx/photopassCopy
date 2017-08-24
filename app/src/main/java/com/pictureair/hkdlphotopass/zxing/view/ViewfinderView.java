@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.view;
+package com.pictureair.hkdlphotopass.zxing.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -27,9 +27,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.google.zxing.ResultPoint;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.zxing.camera.CameraManager;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.zxing.camera.CameraManager;
 
 import java.util.ArrayList;
 import java.util.List;

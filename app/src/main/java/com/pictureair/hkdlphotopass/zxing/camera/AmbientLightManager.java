@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera;
+package com.pictureair.hkdlphotopass.zxing.camera;
 
 import android.content.Context;
 import android.hardware.Sensor;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.GalleryWidget;
+package com.pictureair.hkdlphotopass.GalleryWidget;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,21 +20,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
-import com.pictureair.photopass.GalleryWidget.PhotoEventListener;
-import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.SharePop;
+import com.pictureair.hkdlphotopass.GalleryWidget.GalleryViewPager;
+import com.pictureair.hkdlphotopass.GalleryWidget.PhotoEventListener;
+import com.pictureair.hkdlphotopass.GalleryWidget.UrlPagerAdapter;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.widget.SharePop;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

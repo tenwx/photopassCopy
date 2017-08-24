@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.pictureair.photopass.widget.wheelview.adapter;
+package com.pictureair.hkdlphotopass.widget.wheelview.adapter;
 
 
 import android.content.Context;
@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 /**
  * Numeric Wheel adapter.

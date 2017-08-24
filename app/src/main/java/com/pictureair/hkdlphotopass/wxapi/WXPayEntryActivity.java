@@ -1,13 +1,13 @@
-package com.pictureair.photopass.wxapi;
+package com.pictureair.hkdlphotopass.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;

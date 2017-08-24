@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,24 +15,24 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.CartInfoAdapter;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.http.rxhttp.RxSubscribe;
-import com.pictureair.photopass.util.API2;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.CartInfoAdapter;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.CartItemInfoJson;
+import com.pictureair.hkdlphotopass.entity.CartPhotosInfo;
+import com.pictureair.hkdlphotopass.entity.GoodsInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
+import com.pictureair.hkdlphotopass.util.API2;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.JsonTools;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.hkdlphotopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -62,8 +62,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     private ArrayList<PhotoInfo> updatephotolist;
 
-    private float totalPrice = 0;//总价格
-    private float discountPrice = 0;//优惠费用
+    private double totalPrice = 0;//总价格
+    private double discountPrice = 0;//优惠费用
     private boolean isEdit = false;
     private boolean isDelete = false;
     private int disSelectedCount = 0;//记录已经取消选中的个数
@@ -128,14 +128,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 if (msg.arg1 == 1) {
                     totalPrice = Float.parseFloat(totalTextView.getText().toString());
                     totalPrice -= Float.parseFloat(msg.obj.toString());
-                    totalTextView.setText((int) totalPrice + "");
+                    totalTextView.setText(totalPrice + "");
                 }
                 //更新单个item数据
-                float price = cartInfoList.get(msg.arg2).getPrice() - Float.parseFloat(msg.obj.toString());
-                cartInfoList.get(msg.arg2).setPrice((int) price);
+                double price = cartInfoList.get(msg.arg2).getPrice() - Float.parseFloat(msg.obj.toString());
+                cartInfoList.get(msg.arg2).setPrice(price);
                 //更新总数量、总价格
                 cartItemInfoJson.setTotalCount(cartItemInfoJson.getTotalCount() - 1);
-                cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (int) msg.obj);
+                cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (double) msg.obj);
 
                 currentCartCounts = SPUtils.getInt(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                 SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCounts - 1);
@@ -145,15 +145,15 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 if (msg.arg1 == 1) {
                     totalPrice = Float.parseFloat(totalTextView.getText().toString());
                     totalPrice += Float.parseFloat(msg.obj.toString());
-                    totalTextView.setText((int) totalPrice + "");
+                    totalTextView.setText(totalPrice + "");
 
                 }
                 //更新单个item数据
                 price = cartInfoList.get(msg.arg2).getPrice() + Float.parseFloat(msg.obj.toString());
-                cartInfoList.get(msg.arg2).setPrice((int) price);
+                cartInfoList.get(msg.arg2).setPrice((double) price);
                 //更新总数量、总价格
                 cartItemInfoJson.setTotalCount(cartItemInfoJson.getTotalCount() + 1);
-                cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (int) msg.obj);
+                cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (double) msg.obj);
 
                 currentCartCounts = SPUtils.getInt(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                 SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCounts + 1);
@@ -219,7 +219,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         discountCurrencyTv.setText("-" + currency);
         showPWProgressDialog();
         getCarts(null);
-        totalTextView.setText((int) totalPrice + "");
+        totalTextView.setText(totalPrice + "");
         listView = (ListView) findViewById(R.id.cartListView);
         cartAdapter = new CartInfoAdapter(this, currency, cartInfoList, userId, cartHandler);
         listView.setAdapter(cartAdapter);
@@ -438,7 +438,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     disSelectedCount = cartItemInfoJson.getItems().size();
                     cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
                     totalPrice = 0;
-                    totalTextView.setText((int) totalPrice + "");
+                    totalTextView.setText(totalPrice + "");
                     discountPriceLinearLayout.setVisibility(View.GONE);
                     if (isEdit) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
@@ -494,9 +494,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     /**
      * 删除购物车
+     *
      * @param jsonArray
      */
-    private void removeCartItems(JSONArray jsonArray){
+    private void removeCartItems(JSONArray jsonArray) {
         API2.removeCartItems(jsonArray)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<JSONObject>bindToLifecycle())
@@ -548,6 +549,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     /**
      * 获取购物车
+     *
      * @param jsonArray
      */
     private void getCarts(final JSONArray jsonArray) {
@@ -587,7 +589,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                                 cartItemInfoJson.setTotalPrice(cartItemInfo.getTotalPrice());
                             }
                             discountPrice = cartItemInfoJson.getPreferentialPrice();
-                            discountPriceTv.setText((int) discountPrice + "");
+                            discountPriceTv.setText(discountPrice + "");
 
                             paymentButton.setVisibility(View.VISIBLE);
                             cartPriceLinearLayout.setVisibility(View.VISIBLE);
@@ -638,6 +640,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
                 });
     }
+
     /**
      * 取消编辑
      */
@@ -702,6 +705,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     /**
      * 修改购物项中的照片
+     *
      * @param position
      * @param jsonArray
      */

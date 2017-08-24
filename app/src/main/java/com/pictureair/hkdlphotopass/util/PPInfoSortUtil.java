@@ -1,8 +1,8 @@
-package com.pictureair.photopass.util;
+package com.pictureair.hkdlphotopass.util;
 
 import android.text.TextUtils;
 
-import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.hkdlphotopass.entity.PPinfo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

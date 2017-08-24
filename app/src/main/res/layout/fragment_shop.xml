@@ -18,7 +18,7 @@
         android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/white">
 
-        <com.pictureair.photopass.widget.CustomTextView
+        <com.pictureair.hkdlphotopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -82,7 +82,7 @@
                 android:scrollbars="none" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        <com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView
             android:id="@+id/shopNoNetWorkView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

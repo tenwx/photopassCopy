@@ -1,4 +1,4 @@
-package com.pictureair.photopass.customDialog;
+package com.pictureair.hkdlphotopass.customDialog;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
+import com.pictureair.hkdlphotopass.R;
 
 /**
  * 自定义对话框的确认按钮和取消按钮封装类

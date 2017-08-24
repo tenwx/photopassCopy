@@ -1,4 +1,4 @@
-package com.pictureair.photopass.http.retrofit_progress;
+package com.pictureair.hkdlphotopass.http.retrofit_progress;
 
 public interface ProgressListener {
 

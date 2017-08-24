@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,13 +13,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.country.CharacterParser;
-import com.pictureair.photopass.widget.country.PinyinComparator;
-import com.pictureair.photopass.widget.country.SideBar;
-import com.pictureair.photopass.widget.country.SortAdapter;
-import com.pictureair.photopass.widget.country.SortModel;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.widget.country.CharacterParser;
+import com.pictureair.hkdlphotopass.widget.country.PinyinComparator;
+import com.pictureair.hkdlphotopass.widget.country.SideBar;
+import com.pictureair.hkdlphotopass.widget.country.SortAdapter;
+import com.pictureair.hkdlphotopass.widget.country.SortModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import android.widget.ImageView;
 import android.widget.RelativeLayout;

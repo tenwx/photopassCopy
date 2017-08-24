@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,16 +12,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.networkbench.agent.impl.NBSAppAgent;
-import com.pictureair.photopass.BuildConfig;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.util.AppExitUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PhotoDownLoadInfoSortUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.BuildConfig;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.PhotoDownLoadInfo;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.util.AppExitUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PhotoDownLoadInfoSortUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 
 import java.util.Collections;
 import java.util.List;

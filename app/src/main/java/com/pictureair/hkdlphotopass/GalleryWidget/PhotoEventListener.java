@@ -1,4 +1,4 @@
-package com.pictureair.photopass.GalleryWidget;
+package com.pictureair.hkdlphotopass.GalleryWidget;
 
 /**
  * Created by bauer_bao on 16/9/12.

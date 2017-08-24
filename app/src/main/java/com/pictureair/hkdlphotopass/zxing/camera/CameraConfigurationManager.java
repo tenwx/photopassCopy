@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pictureair.photopass.zxing.camera;
+package com.pictureair.hkdlphotopass.zxing.camera;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -25,8 +25,8 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.google.zxing.client.android.camera.CameraConfigurationUtils;
-import com.pictureair.photopass.zxing.camera.open.CameraFacing;
-import com.pictureair.photopass.zxing.camera.open.OpenCamera;
+import com.pictureair.hkdlphotopass.zxing.camera.open.CameraFacing;
+import com.pictureair.hkdlphotopass.zxing.camera.open.OpenCamera;
 
 final class CameraConfigurationManager {
 

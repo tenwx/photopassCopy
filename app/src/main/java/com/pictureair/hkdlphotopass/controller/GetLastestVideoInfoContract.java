@@ -1,6 +1,6 @@
-package com.pictureair.photopass.controller;
+package com.pictureair.hkdlphotopass.controller;
 
-import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.hkdlphotopass.entity.PhotoInfo;
 
 /**
  * 获取最新视频照片的mvp的合并类

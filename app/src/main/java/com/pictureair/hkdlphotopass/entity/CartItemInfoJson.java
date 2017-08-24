@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.hkdlphotopass.entity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.List;
 public class CartItemInfoJson implements Serializable {
     private List<CartItemInfo> items = null;
     private int totalCount = 0; //number,购物车内总商品数
-    private int totalPrice = 0; //number,购物车内商品总价
-    private int preferentialPrice = 0; //number 优惠费用
+    private double totalPrice = 0; //number,购物车内商品总价
+    private double preferentialPrice = 0; //number 优惠费用
 
     public CartItemInfoJson(List<CartItemInfo> items, int totalCount, int totalPrice, int preferentialPrice) {
         this.items = items;
@@ -39,19 +39,19 @@ public class CartItemInfoJson implements Serializable {
         this.totalCount = totalCount;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public int getPreferentialPrice() {
+    public double getPreferentialPrice() {
         return preferentialPrice;
     }
 
-    public void setPreferentialPrice(int preferentialPrice) {
+    public void setPreferentialPrice(double preferentialPrice) {
         this.preferentialPrice = preferentialPrice;
     }
 }

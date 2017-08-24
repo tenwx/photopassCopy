@@ -1,4 +1,4 @@
-package com.pictureair.photopass.fragment;
+package com.pictureair.hkdlphotopass.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,24 +11,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.CouponActivity;
-import com.pictureair.photopass.activity.LoadManageActivity;
-import com.pictureair.photopass.activity.MyPPPActivity;
-import com.pictureair.photopass.activity.OrderActivity;
-import com.pictureair.photopass.activity.ProfileActivity;
-import com.pictureair.photopass.activity.SettingActivity;
-import com.pictureair.photopass.activity.WebViewActivity;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.CouponTool;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomTextView;
-import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.BaseFragment;
+import com.pictureair.hkdlphotopass.activity.CouponActivity;
+import com.pictureair.hkdlphotopass.activity.LoadManageActivity;
+import com.pictureair.hkdlphotopass.activity.MyPPPActivity;
+import com.pictureair.hkdlphotopass.activity.OrderActivity;
+import com.pictureair.hkdlphotopass.activity.ProfileActivity;
+import com.pictureair.hkdlphotopass.activity.SettingActivity;
+import com.pictureair.hkdlphotopass.activity.WebViewActivity;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.CouponTool;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.util.ScreenUtil;
+import com.pictureair.hkdlphotopass.widget.CustomTextView;
+import com.pictureair.hkdlphotopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
 /**
  * 我的界面

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.service;
+package com.pictureair.hkdlphotopass.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,19 +10,19 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.entity.JsonInfo;
-import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
-import com.pictureair.photopass.eventbus.RedPointControlEvent;
-import com.pictureair.photopass.eventbus.SocketEvent;
-import com.pictureair.photopass.greendao.PictureAirDbManager;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.hkdlphotopass.MyApplication;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.activity.MainTabActivity;
+import com.pictureair.hkdlphotopass.entity.JsonInfo;
+import com.pictureair.hkdlphotopass.eventbus.AsyncPayResultEvent;
+import com.pictureair.hkdlphotopass.eventbus.RedPointControlEvent;
+import com.pictureair.hkdlphotopass.eventbus.SocketEvent;
+import com.pictureair.hkdlphotopass.greendao.PictureAirDbManager;
+import com.pictureair.hkdlphotopass.util.AppManager;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.SPUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,7 +93,7 @@ public class SocketUtil {
     private void eventUpgradedPhotos(JSONObject updateJsonObject, boolean isDelete) {
         PictureAirLog.out("upgrade photo---->" + updateJsonObject.toString());
         int socketType = -1;
-        String ppCode = null, shootDate = null, photoId = null;
+        String ppCode = null, shootDate = null, photoId = null, siteId = null;
         //1.更新数据库
         try {
             if (syncMessageList.contains(updateJsonObject.toString() + (isDelete ? "del" : "sync"))) {//和上次的数据相同，直接返回
@@ -107,7 +107,8 @@ public class SocketUtil {
                 socketType = SocketEvent.SOCKET_PHOTOPASS;
                 ppCode = updateJsonObject.getString("customerId");
                 shootDate = updateJsonObject.optString("shootDate");
-                PictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, isDelete);
+                siteId = updateJsonObject.getString("locationIds");
+                PictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, siteId, isDelete);
                 if (isDelete) {//清空刷新标记
                     PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
                 }
@@ -118,6 +119,8 @@ public class SocketUtil {
                 if (isDelete) {
                     SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 }
+            } else if (updateJsonObject.has("")) {
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -246,6 +249,7 @@ public class SocketUtil {
                 message = (JSONObject) message.get("c");
             }
             eventDoneOrderPay(message);
+//            eventUpgradedPhotos(message, false);
             if (isSocketReceive) {
                 handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
             }

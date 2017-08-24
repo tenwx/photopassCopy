@@ -1,10 +1,10 @@
-package com.pictureair.photopass.service;
+package com.pictureair.hkdlphotopass.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 
 /**
  * 推送的服务。

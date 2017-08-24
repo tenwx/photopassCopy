@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto.util;
+package com.pictureair.hkdlphotopass.editPhoto.util;
 
 /**
  * Created by talon on 16/5/21.

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.adapter;
+package com.pictureair.hkdlphotopass.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,11 +9,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.GlideUtil;
-import com.pictureair.photopass.widget.CircleProgressImage;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.entity.DownloadFileStatus;
+import com.pictureair.hkdlphotopass.util.AppUtil;
+import com.pictureair.hkdlphotopass.util.GlideUtil;
+import com.pictureair.hkdlphotopass.widget.CircleProgressImage;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.alipay;
+package com.pictureair.hkdlphotopass.alipay;
 
 public final class Base64 {
 

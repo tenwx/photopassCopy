@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +8,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.OrderProductDetailAdapter;
-import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.NoScrollListView;
+import com.pictureair.hkdlphotopass.R;
+import com.pictureair.hkdlphotopass.adapter.OrderProductDetailAdapter;
+import com.pictureair.hkdlphotopass.entity.CartItemInfo;
+import com.pictureair.hkdlphotopass.entity.OrderInfo;
+import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.widget.NoScrollListView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 
@@ -144,11 +145,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
         orderStatus.setText(orderstatus);
 
-        productPrice.setText(currency + (int) orderInfo.productPrice + "");
-        payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
-        preferentialPrice.setText(currency + (int)orderInfo.promotionPreferentialPrice);
-        straightwayPreferentialPrice.setText(currency + (int)orderInfo.straightwayPreferentialPrice);
-        invoiceShippingPriceTV.setText(currency + (int)orderInfo.deliveryShipping);
+        BigDecimal productDecimal = new BigDecimal(orderInfo.productPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal totalDecimal = new BigDecimal(orderInfo.orderTotalPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
+        productPrice.setText(currency + String.valueOf(productDecimal));
+        payTotalPrice.setText(currency + String.valueOf(totalDecimal));
+        preferentialPrice.setText(currency + orderInfo.promotionPreferentialPrice);
+        straightwayPreferentialPrice.setText(currency + orderInfo.straightwayPreferentialPrice);
+        invoiceShippingPriceTV.setText(currency + orderInfo.deliveryShipping);
 
 
         switch (orderInfo.deliveryMethod) {

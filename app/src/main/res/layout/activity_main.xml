@@ -53,7 +53,7 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/icon_photos_nor" />
 
-                    <com.pictureair.photopass.widget.dropview.WaterDrop
+                    <com.pictureair.hkdlphotopass.widget.dropview.WaterDrop
                         android:id="@+id/waterdrop"
                         android:layout_width="@dimen/pp_dp_10"
                         android:layout_height="@dimen/pp_dp_10"
@@ -182,7 +182,7 @@
                 android:layout_marginRight="@dimen/pp_dp_3"
                 android:layout_marginTop="@dimen/pp_dp_4"
                 android:adjustViewBounds="true"
-                android:src="@drawable/story_lead_zh" />
+                android:src="@drawable/story_lead_cn" />
 
         </RelativeLayout>
     </RelativeLayout>
