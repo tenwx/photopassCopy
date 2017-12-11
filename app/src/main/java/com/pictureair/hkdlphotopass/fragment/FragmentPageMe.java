@@ -39,8 +39,8 @@ import com.pictureair.hkdlphotopass.widget.pulltozoomview.PullToZoomScrollViewEx
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
     private CustomTextView orderTV,  pppTV, couponTV, customerTV, downloadTV, dailyPPPTV, connectUsTV, helpTV;
-    private ImageView headPhoto, headSet;
-    private TextView name;// hint是条目右边的小标签，根据需要添加信息
+    private ImageView headPhoto;
+    private TextView name, headSet;// hint是条目右边的小标签，根据需要添加信息
     private String avatarUrl = "";//用户头像url
 
     private boolean hasHidden = false;
@@ -64,9 +64,9 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
         headPhoto = (ImageView) scrollView.getHeaderView().findViewById(R.id.user_photo);
         name = (TextView) scrollView.getHeaderView().findViewById(R.id.user_name);
-        headSet = (ImageView) scrollView.getHeaderView().findViewById(R.id.user_set);
         scrollView.getHeaderView().findViewById(R.id.user_head_layout).setOnClickListener(this);
 
+        headSet = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_settings);
         orderTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_order);
         pppTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_ppp);
         couponTV = (CustomTextView) scrollView.getPullRootView().findViewById(R.id.me_show_coupon);
@@ -200,7 +200,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //                startActivity(i);
 //                break;
 
-            case R.id.user_set:
+            case R.id.me_show_settings:
                 i.setClass(MyApplication.getInstance(), SettingActivity.class);
                 startActivity(i);
                 break;

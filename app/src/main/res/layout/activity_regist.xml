@@ -78,7 +78,7 @@
                         android:id="@+id/regist_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:gravity="top|center"
                         android:text="@string/smssdk_regist"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_20" />
@@ -86,7 +86,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="420dp"
+                    android:layout_height="440dp"
                     android:layout_marginLeft="@dimen/pp_dp_20"
                     android:layout_marginRight="@dimen/pp_dp_16"
                     android:orientation="vertical">
@@ -94,8 +94,7 @@
                     <LinearLayout
                         android:id="@+id/rl_country"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="@dimen/pp_dp_20">
+                        android:layout_height="wrap_content">
 
                         <com.pictureair.hkdlphotopass.widget.CustomTextView
                             android:layout_width="wrap_content"
@@ -114,7 +113,7 @@
                             android:layout_marginRight="@dimen/pp_dp_10"
                             android:layout_weight="1"
                             android:gravity="right|bottom"
-                            android:text="@string/china"
+                            android:text="@string/hongkong"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_14" />
                     </LinearLayout>
@@ -123,13 +122,14 @@
                         android:id="@+id/ll_mobile_centen"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/pp_dp_30"
-                        android:layout_marginTop="@dimen/pp_dp_40"
+                        android:layout_marginTop="@dimen/pp_dp_20"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/pp_dp_5"
                         android:paddingRight="@dimen/pp_dp_5">
 
                         <ImageView
+                            android:id="@+id/phone_img"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="@dimen/pp_dp_10"
@@ -143,7 +143,7 @@
                             android:layout_marginLeft="@dimen/pp_dp_10"
                             android:gravity="center_vertical|right"
                             android:paddingRight="@dimen/pp_dp_5"
-                            android:text="+86"
+                            android:text="+852"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
@@ -340,6 +340,31 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_14" />
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_agreement_personal"
+                            android:layout_width="20dp"
+                            android:layout_height="41dp"
+                            android:paddingBottom="@dimen/pp_dp_13"
+                            android:paddingRight="5dp"
+                            android:paddingTop="@dimen/pp_dp_13"
+                            android:src="@drawable/login_check_unselect" />
+
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
+                            android:id="@+id/tv_explain_personal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="13dp"
+                            android:layout_toRightOf="@+id/iv_agreement_personal"
+                            android:gravity="center"
+                            android:text="@string/smssdk_personal_information_collection_statement"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_14" />
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <RelativeLayout
@@ -350,10 +375,9 @@
                     <com.pictureair.hkdlphotopass.widget.CustomTextView
                         android:id="@+id/tv_otherRegistered"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:layout_marginTop="@dimen/pp_dp_20"
-                        android:padding="@dimen/pp_dp_10"
+                        android:gravity="center"
                         android:text="@string/smssdk_other_sign_up"
                         android:textColor="@drawable/login_text_color"
                         android:textSize="@dimen/text_size_14" />
@@ -413,7 +437,7 @@
                             android:layout_marginRight="@dimen/pp_dp_10"
                             android:layout_weight="1"
                             android:gravity="right|bottom"
-                            android:text="@string/china"
+                            android:text="@string/hongkong"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_14" />
                     </LinearLayout>
@@ -435,6 +459,7 @@
                             android:paddingRight="@dimen/pp_dp_5">
 
                             <ImageView
+                                android:id="@+id/forget_phone_img"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="@dimen/pp_dp_10"
@@ -448,7 +473,7 @@
                                 android:layout_marginLeft="@dimen/pp_dp_10"
                                 android:gravity="center_vertical|right"
                                 android:paddingRight="5dp"
-                                android:text="+86"
+                                android:text="+852"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/text_size_16" />
 

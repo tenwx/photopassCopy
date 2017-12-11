@@ -76,11 +76,23 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_px_1"
+        android:layout_above="@id/bottom_rl"
+        android:background="@color/gray1" />
+
     <RelativeLayout
         android:id="@+id/bottom_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_px_1"
+            android:background="@color/gray1" />
 
         <RelativeLayout
             android:id="@+id/buy_ppp_rl"
@@ -260,7 +272,10 @@
     <RelativeLayout
         android:id="@+id/tip_rl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/no_photo_relativelayout"
+        android:layout_toEndOf="@+id/no_photo_relativelayout">
 
         <ImageView
             android:id="@+id/pp_photos_edit_iv"

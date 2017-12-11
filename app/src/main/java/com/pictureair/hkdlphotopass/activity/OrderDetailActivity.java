@@ -13,6 +13,7 @@ import com.pictureair.hkdlphotopass.adapter.OrderProductDetailAdapter;
 import com.pictureair.hkdlphotopass.entity.CartItemInfo;
 import com.pictureair.hkdlphotopass.entity.OrderInfo;
 import com.pictureair.hkdlphotopass.util.Common;
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
 import com.pictureair.hkdlphotopass.widget.NoScrollListView;
 
 import java.math.BigDecimal;
@@ -72,9 +73,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         orderNumber.setText(orderInfo.orderNumber);
         orderTime.setText(orderInfo.orderTime.substring(0, 19));
+        PictureAirLog.i("orderPaymentMethod--->", orderInfo.orderPayMentMethod + "");
         switch (orderInfo.orderPayMentMethod) {
             //订单支付方式  支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
             case 0:
+            case -1:
                 paymethod = getResources().getString(R.string.zfbzf);
                 break;
 
@@ -88,7 +91,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
             case 7:
                 paymethod = getResources().getString(R.string.wxzf);
-
+                break;
+            case 10:
+                paymethod = getResources().getString(R.string.payment_method_pay_dollar);
+                break;
+            case 11:
+                paymethod = getResources().getString(R.string.payeco);
+                break;
             default:
                 break;
         }
@@ -181,7 +190,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         orderInfo = bundle.getParcelable("groupitem");
         orderDetailArrayList = (ArrayList<CartItemInfo>) bundle.getSerializable("childitemlist");
 
-        currency =  Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency = Common.DEFAULT_CURRENCY;//SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
     }
 
     @Override
@@ -197,7 +206,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 intent.putExtra("deliveryInfo", orderInfo);
                 String orderName;
                 String orderIntroduce = null;
-                if (orderDetailArrayList.size() > 1){//>1
+                if (orderDetailArrayList.size() > 1) {//>1
                     orderName = getString(R.string.multi_goods);
                     for (int i = 0; i < orderDetailArrayList.size(); i++) {
                         if (i == 0) {

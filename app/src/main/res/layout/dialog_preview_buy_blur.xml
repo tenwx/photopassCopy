@@ -18,39 +18,6 @@
         android:textSize="@dimen/text_size_16" />
 
     <RelativeLayout
-        android:id="@+id/preview_blur_dialog_upgrade_daily_photo_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_8"
-        android:layout_marginTop="@dimen/pp_dp_8"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/pp_dp_20"
-        android:paddingRight="@dimen/pp_dp_20">
-
-        <TextView
-            android:id="@+id/preview_blur_dialog_upgrade_daily_photo_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pp_dp_5"
-            android:text="@string/use_daily_ppp"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <TextView
-            android:id="@+id/preview_blur_dialog_upgrade_daily_photo_intro_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/preview_blur_dialog_upgrade_daily_photo_tv"
-            android:layout_marginLeft="@dimen/pp_dp_5"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:layout_marginTop="@dimen/pp_dp_5"
-            android:text="@string/use_ppp_daily_intro"
-            android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_14" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/preview_blur_dialog_upgrade_photo_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +25,8 @@
         android:layout_marginTop="@dimen/pp_dp_8"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/pp_dp_20"
-        android:paddingRight="@dimen/pp_dp_20">
+        android:paddingRight="@dimen/pp_dp_20"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/preview_blur_dialog_upgrade_photo_tv"
@@ -78,45 +46,6 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_marginTop="@dimen/pp_dp_5"
             android:text="@string/use_ppp_intro"
-            android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_14" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/preview_blur_dialog_buy_ppp_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/pp_dp_8"
-        android:layout_marginTop="@dimen/pp_dp_8"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/pp_dp_20"
-        android:paddingRight="@dimen/pp_dp_20">
-
-        <TextView
-            android:id="@+id/preview_blur_dialog_buy_ppp_price_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/pp_red"
-            android:textSize="@dimen/text_size_16" />
-
-        <TextView
-            android:id="@+id/preview_blur_dialog_buy_ppp_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pp_dp_5"
-            android:layout_toLeftOf="@+id/preview_blur_dialog_buy_ppp_price_tv"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <TextView
-            android:id="@+id/preview_blur_dialog_buy_ppp_intro_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/preview_blur_dialog_buy_ppp_tv"
-            android:layout_marginLeft="@dimen/pp_dp_5"
-            android:layout_marginRight="@dimen/pp_dp_20"
-            android:layout_marginTop="@dimen/pp_dp_5"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
@@ -146,7 +75,7 @@
             android:layout_marginLeft="@dimen/pp_dp_5"
             android:layout_toLeftOf="@+id/preview_blur_dialog_buy_photo_price_tv"
             android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/preview_blur_dialog_buy_photo_intro_tv"
@@ -157,6 +86,77 @@
             android:layout_marginRight="@dimen/pp_dp_20"
             android:layout_marginTop="@dimen/pp_dp_5"
             android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/preview_blur_dialog_buy_ppp_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_20">
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_ppp_price_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/pp_red"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_ppp_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_toLeftOf="@+id/preview_blur_dialog_buy_ppp_price_tv"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_buy_ppp_intro_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/preview_blur_dialog_buy_ppp_tv"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_marginTop="@dimen/pp_dp_5"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/preview_blur_dialog_upgrade_daily_photo_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pp_dp_8"
+        android:layout_marginTop="@dimen/pp_dp_8"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/pp_dp_20"
+        android:paddingRight="@dimen/pp_dp_20">
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_upgrade_daily_photo_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:text="@string/use_daily_ppp"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/preview_blur_dialog_upgrade_daily_photo_intro_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/preview_blur_dialog_upgrade_daily_photo_tv"
+            android:layout_marginLeft="@dimen/pp_dp_5"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:layout_marginTop="@dimen/pp_dp_5"
+            android:text="@string/use_ppp_daily_intro"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 </LinearLayout>

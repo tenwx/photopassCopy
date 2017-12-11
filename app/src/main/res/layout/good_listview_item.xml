@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="@dimen/pp_dp_8">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/pp_dp_10"
@@ -15,32 +15,29 @@
 
         <com.pictureair.hkdlphotopass.widget.CustomTextView
             android:id="@+id/good_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/pp_dp_20"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
-
-        <com.pictureair.hkdlphotopass.widget.CustomTextView
-            android:id="@+id/good_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="bold" />
 
         <com.pictureair.hkdlphotopass.widget.CustomTextView
             android:id="@+id/good_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/good_price"
-            android:layout_marginRight="@dimen/pp_dp_2"
-            android:layout_toLeftOf="@id/good_price"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
-    </RelativeLayout>
+
+        <com.pictureair.hkdlphotopass.widget.CustomTextView
+            android:id="@+id/good_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/goodDetailIntroduce"
@@ -54,8 +51,8 @@
 
     <ImageView
         android:id="@+id/goodImageView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+         />
 </LinearLayout>

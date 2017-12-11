@@ -48,6 +48,7 @@
         android:textSize="@dimen/text_size_16" />
 
     <ImageView
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_px_1"
         android:layout_marginBottom="@dimen/pp_dp_10"
@@ -57,6 +58,7 @@
         android:background="@color/gray_light4" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/input_tv"
         android:layout_width="match_parent"
         android:layout_height="0dp"

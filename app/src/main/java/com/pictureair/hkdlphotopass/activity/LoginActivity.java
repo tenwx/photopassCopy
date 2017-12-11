@@ -14,6 +14,7 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -57,7 +58,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     // 申明其他类
     private PWToast myToast;
     // 区号,国家
-    private String countryCode = "86";
+    private String countryCode = "852";
     private String country = "";
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
     private String forGetphoto;
@@ -70,6 +71,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private SignAndLoginUtil signAndLoginUtil;
 
     private final Handler loginHandler = new LoginHandler(this);
+    private ImageView phoneImg;
 
     private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
@@ -190,6 +192,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin = (TextView) findViewById(R.id.otherLogin);// 其他方式登录
         shorMsgLogin = (TextView) findViewById(R.id.msgLogin);
         rl_country = (LinearLayout) findViewById(R.id.rl_country);// 国家
+        phoneImg = (ImageView) findViewById(R.id.phone_img);// 国家
         tv_country = (TextView) findViewById(R.id.tv_country);
         tv_country_num = (TextView) findViewById(R.id.tv_country_num);
 
@@ -199,6 +202,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         forgot.setOnClickListener(this);
         otherLogin.setOnClickListener(this);
         shorMsgLogin.setOnClickListener(this);
+        phoneImg.setOnClickListener(this);
+        tv_country_num.setOnClickListener(this);
 
         addAccountToView();
 
@@ -281,7 +286,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
                 break;
             case R.id.rl_country:
-
+            case R.id.phone_img:
+            case R.id.tv_country_num:
                 Intent intent = new Intent();
                 intent.setClass(LoginActivity.this, SelectCountryActivity.class);
                 startActivityForResult(intent, SelectCountryActivity.requestCountry);
@@ -306,7 +312,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                     case AppUtil.PWD_AVAILABLE:// 密码可用
 
                         signAndLoginUtil.start(countryCode + "," + userName.getText().toString().trim(),
-                                password.getText().toString(), false, false, null, null, null, null, null, null);// 登录
+                                password.getText().toString(), false, false, null, null, null, null, null, null, 0);// 登录
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空

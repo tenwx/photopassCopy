@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.http.rxhttp.RxSubscribe;
@@ -44,7 +45,7 @@ public class NotificationServiceHelp {
                             .subscribe(new RxSubscribe<com.alibaba.fastjson.JSONObject>() {
                                 @Override
                                 public void _onNext(com.alibaba.fastjson.JSONObject jsonObject) {
-
+                                    PictureAirLog.i("SOCKET_CONNECT_SUCCESS", jsonObject.toJSONString());
                                 }
 
                                 @Override
@@ -67,7 +68,7 @@ public class NotificationServiceHelp {
                                 .subscribe(new RxSubscribe<com.alibaba.fastjson.JSONObject>() {
                                     @Override
                                     public void _onNext(com.alibaba.fastjson.JSONObject jsonObject) {
-
+                                        PictureAirLog.i("SOCKET_RECEIVE_DATA", jsonObject.toJSONString());
                                     }
 
                                     @Override
@@ -200,8 +201,8 @@ public class NotificationServiceHelp {
                         @Override
                         public void on(String event, IOAcknowledge arg1, Object... arg2) {
                             // TODO Auto-generated method stub
-//                            PictureAirLog.d("  ====  arg2", " :" + arg2.toString());
-//                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
+                            PictureAirLog.d("  ====  arg2", " :" + arg2.toString());
+                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
                             try {
                                 socketUtil.socketOn(event, (JSONObject) arg2[0], true);
                             } catch (JSONException e) {

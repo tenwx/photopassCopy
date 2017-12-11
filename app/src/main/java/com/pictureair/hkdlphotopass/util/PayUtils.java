@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.alipay.sdk.app.PayTask;
 import com.pictureair.hkdlphotopass.activity.PaymentOrderActivity;
+import com.pictureair.hkdlphotopass.alipay.AESOperator;
 import com.pictureair.hkdlphotopass.alipay.PayResult;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -16,6 +17,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import net.sourceforge.simcpux.Util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -52,22 +54,28 @@ public class PayUtils {
      *
      * @throws UnsupportedEncodingException
      */
-    public void aliPay() throws UnsupportedEncodingException {
-        PictureAirLog.v(TAG, "start aliPay" + "id: " + orderId);
-        PictureAirLog.v(TAG, "id: " + orderId);
-        PictureAirLog.v(TAG, "name : " + nameString);
-        PictureAirLog.v(TAG, "introductString: " + introductString);
-
-        String info = AliPayUtil.getOrderInfo(orderId, nameString,
-                introductString, priceString);
-        PictureAirLog.v(TAG, "info:" + info);
-        // 对订单做RSA 签名
-        String sign = AliPayUtil.sign(info);
-        PictureAirLog.v(TAG, "sign:" + sign);
+    public void aliPay(String signed, String unSigned) throws UnsupportedEncodingException {
+        try {
+            String origin = AESOperator.getInstance().decrypt(unSigned, "pictureairapidsn", "1233210988906757");
+            PictureAirLog.i("origin", origin);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        PictureAirLog.v(TAG, "start aliPay" + "id: " + orderId);
+//        PictureAirLog.v(TAG, "id: " + orderId);
+//        PictureAirLog.v(TAG, "name : " + nameString);
+//        PictureAirLog.v(TAG, "introductString: " + introductString);
+//
+//        String info = AliPayUtil.getOrderInfo(orderId, nameString,
+//                introductString, priceString);
+//        PictureAirLog.v(TAG, "info:" + info);
+//        // 对订单做RSA 签名
+//        String sign = AliPayUtil.sign(info);
+//        PictureAirLog.v(TAG, "sign:" + sign);
         // 仅需对sign 做URL编码
-        sign = URLEncoder.encode(sign, "UTF-8");
+//       String sign = URLEncoder.encode(signed, "UTF-8");
         // 完整的符合支付宝参数规范的订单信息
-        final String payInfo = info + "&sign=\"" + sign + "\"&"
+        final String payInfo = unSigned + "&sign=\"" + signed + "\"&"
                 + AliPayUtil.getSignType();
         PictureAirLog.d("ExternalPartner", "start pay");
         // start the pay.
@@ -105,6 +113,7 @@ public class PayUtils {
 
     /**
      * 检查微信是否已经安装
+     *
      * @return
      */
     public boolean isWechatInstalled() {

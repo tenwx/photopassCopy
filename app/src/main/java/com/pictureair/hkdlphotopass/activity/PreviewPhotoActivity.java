@@ -660,7 +660,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 makeGiftTV.setVisibility(View.GONE);
             } else {
                 editTV.setVisibility(View.VISIBLE);
-                makeGiftTV.setVisibility(View.VISIBLE);
+                makeGiftTV.setVisibility(View.GONE);
             }
         }
         if (bottomSheetBehavior == null) {
@@ -712,7 +712,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 buyPPPIntroTV.setText(good.getDescription());
             }
             if (good.getSlot() == 0 && good.getEmbedPhotosCount() == 1) {
-                buyPhotoNameTV.setText(good.getName());
+                buyPhotoNameTV.setText(good.getNameAlias());
                 PictureAirLog.d("----> " + good.getPrice());
                 buyPhotoPriceTV.setText(Common.DEFAULT_CURRENCY + good.getPrice());
                 buyPhotoIntroTV.setText(good.getDescription());
@@ -1131,7 +1131,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     @Override
                     public Observable<JSONObject> call(String s) {
                         if (!TextUtils.isEmpty(s)) {
-                            PictureAirLog.d("goods is not null  " + s);
+                            PictureAirLog.json("goods is not null  " + s);
                             return Observable.just(JSONObject.parseObject(s));
                         } else {
                             PictureAirLog.d("goods is null");
@@ -1151,7 +1151,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 .map(new Func1<JSONObject, GoodsInfoJson>() {
                     @Override
                     public GoodsInfoJson call(JSONObject jsonObject) {
-                        PictureAirLog.d("parse goods json");
+                        PictureAirLog.json("parse goods json", jsonObject.toJSONString());
                         return JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                     }
                 })

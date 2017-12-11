@@ -77,11 +77,11 @@
 
     <!-- maintab start -->
     <string name="exit">再按一次退出迪士尼處處拍</string>
-    <string name="tab_story">照片</string>
+    <string name="tab_story">故事</string>
     <string name="tab_discover">探索</string>
     <string name="tab_camera">相機</string>
     <string name="tab_shops">商店</string>
-    <string name="tab_me">關於我</string>
+    <string name="tab_me">我的</string>
     <string name="please_relogin">請重新登入</string>
     <!-- maintab end -->
 
@@ -106,7 +106,7 @@
     <string name="no_network">加載失敗，請檢查您當前的網絡環境</string>
     <string name="click_button_reload">您可以點擊按鈕重新加載</string>
     <string name="reload">刷新</string>
-    <string name="nomore">沒有更多數據!</string>
+    <string name="nomore">沒有更多照片!</string>
     <string name="failed_click_load">加載失敗，請點擊重新加載！</string>
     <string name="click_load_more">點擊加載更多！</string>
     <string name="today">今天</string>
@@ -123,7 +123,7 @@
     <string name="auto">掃描</string>
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">迪士尼處處拍+</string>
-    <string name="scan_intro">請掃描您的迪士尼處處拍咭上的QR Code，更快獲得您的遊玩照片。</string>
+    <string name="scan_intro">請掃描您的迪士尼處處拍咭背的二維碼</string>
     <string name="re_scan">重新掃描</string>
     <string name="textview_center_hint">請將迪士尼處處拍+咭背面置於此區域，嘗試對齊邊緣</string>
     <string name="camera_closed">請先在設置中打開相機權限</string>
@@ -135,7 +135,7 @@
     <!-- manual input start -->
     <string name="manual">手動輸入</string>
     <string name="ok">確定</string>
-    <string name="manul_input_intro">請輸入您的迪士尼處處拍咭或迪士尼處處拍+咭背後的16位編碼</string>
+    <string name="manul_input_intro">請輸入您的迪士尼處處拍咭背的16位編碼</string>
     <string name="nocontext">輸入您的編碼</string>
     <string name="wrong_length">請檢查您的迪士尼處處拍咭</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
@@ -180,7 +180,7 @@
     <string name="mypage_ppp1">迪士尼\n處處拍+</string>
     <string name="mypage_help">幫助</string>
     <string name="mypage_setting">設置</string>
-    <string name="mypage_download">下載管理</string>
+    <string name="mypage_download">下載</string>
     <string name="mypage_about">關於</string>
     <string name="mypage_opinions">聯繫我們</string>
     <string name="code_tips">請向迪士尼處處拍攝影師出示此QR Code關聯您的照片，即可輕鬆預覽照片。</string>
@@ -316,6 +316,7 @@
     <string name="submit_order">訂單已提交</string>
     <string name="no_pay_tips">您不用額外支付任何費用</string>
     <string name="no_pay_success">確定</string>
+    <string name="payment_method_pay_dollar">PayDollar</string>
     <!-- payment end -->
 
     <!-- set header start -->
@@ -371,21 +372,22 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">只需要購買迪士尼處處拍+，即可預覽下載所有當日通過處處拍服務捕捉的高清數碼照片。最多可激活當天三張迪士尼處處拍咭</string>
+    <string name="no_one_day_pass">未綁定迪士尼處處拍+/全日通 \n (請先購買並綁定)</string>
+    <string name="instruction">購買當日已連結在1張迪士尼處處拍咭內所有在園區拍攝的數碼照片</string>
     <string name="select_pp_hasUpgraded">該迪士尼處處拍已經被綁定</string>
     <string name="not_ppp_card">這張不是迪士尼處處拍+</string>
     <string name="bind_pp_now">您有一張迪士尼處處拍，是否現在就去綁定？</string>
     <string name="dialog_cancel">不用了，謝謝</string>
     <string name="dialog_ok">好的</string>
     <string name="dialog_ok1">我知道了</string>
-    <string name="no_activated">未激活</string>
+    <string name="no_activated">未啟動</string>
     <string name="activated">已激活</string>
     <string name="ppp_has_used">已用完</string>
     <string name="ppp_has_expired">已過期</string>
     <string name="expired_on">有效期:</string>
     <string name="experiencephotopassplus">體驗迪士尼處處拍+咭</string>
-    <string name="buy_ppp_text">購買迪士尼處處拍一日通</string>
-    <string name="scan_ppp_text">激活已有的迪士尼處處拍一日通</string>
+    <string name="buy_ppp_text">購買迪士尼處處拍全日通</string>
+    <string name="scan_ppp_text">激活已有的迪士尼處處拍全日通</string>
     <string name="use_ppp_upgrade_read_video">以下迪士尼门票／處處拍卡包含魔法动画照片。\n%1$s\n\n您可激活此卡查看您的魔法动画照片！</string>
     <string name="use_ppp_upgrade_read_photo">以下迪士尼门票／處處拍卡包含清晰照片。\n%1$s\n\n您可激活此卡查看您的清晰照片！</string>
     <string name="use_ppp_upgrade_pp_code">\n%1$s: %2$s</string>
@@ -405,7 +407,7 @@
     <!-- select pp end -->
 
     <!-- select ppp start -->
-    <string name="select_your_ppp">請選擇你的迪士尼處處拍+</string>
+    <string name="select_your_ppp">請選擇你的迪士尼處處拍咭</string>
     <string name="select_ppp_title">選擇</string>
     <string name="update_ppp_msg">您將使用迪士尼處處拍+升級您此張迪士尼處處拍咭內包含的照片</string>
     <string name="update_ppp_cancel">取消</string>
@@ -469,7 +471,7 @@
     <string name="first_tips_syns_msg2">親，您需要同步自動更新下載已購買的迪士尼處處拍照片嗎？</string>
     <string name="first_tips_syns_no_msg2">取消</string>
     <string name="first_tips_syns_yes_msg2">同步更新</string>
-    <!--   网络下载模式流程  -->
+    <!--   网络下載模式流程  -->
     <string name="one_photo_download_msg1">親，您設置了僅WIFI狀態下載，當前為非WIFI網絡，是否需要更改？</string>
     <string name="one_photo_download_no_msg1">考虑下</string>
     <string name="one_photo_download_yes_msg1">去更改</string>
@@ -494,7 +496,7 @@
     <string name="delete_percent">正在刪除%1$d/%2$d</string>
     <string name="start_delete">刪除照片後您的帳戶中將不再顯示此照片，確定刪除？</string>
     <string name="edit_story_album">編輯</string>
-    <string name="edit_story_confirm_download">确认下载</string>
+    <string name="edit_story_confirm_download">确认下載</string>
     <string name="edit_story_reselect">重新选择</string>
     <string name="edit_story_unpay_tips">選項中含有未付費的照片不能下載喔，您可繼續下載已付費的照片！</string>
     <string name="edit_story_all_unpay_tips">當前選中的照片未付費，不可下載</string>
@@ -532,7 +534,7 @@
     <string name="smssdk_send_verification_code">發送驗證碼</string>
     <string name="smssdk_other_sign_up">電子郵箱帳戶註冊</string>
     <string name="smssdk_explain_briefly">我已閱讀並接受<a href="2">補充條款及細則</a>和<a href="1">隱私政策</a>。</string>
-    <string name="smssdk_personal_information_collection_statement">收取香港迪士尼樂園的最新資訊、推廣及優惠 - 本人承諾本人已閱讀及理解載於<a href = "6">個人資料收集聲明</a>之條款，並同意可使用本人的個人資料作直接推廣用途。</string>
+    <string name="smssdk_personal_information_collection_statement">收取香港迪士尼樂園的最新資訊、推廣及優惠 - 本人承諾本人已閱讀及理解載於<a href="6">個人資料收集聲明</a>之條款，並同意可使用本人的個人資料作直接推廣用途。</string>
     <string name="please_agree">請確定同意補充條款及細則和隱私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
@@ -561,7 +563,7 @@
 
     <!--购物车不标准字段,确认之后移动至购物车分类-->
     <string name="unable_add_to_cart">商品已經加入購物車，請去購物車中結算哦！</string>
-     <!-- photo download manage start -->
+    <!-- photo download manage start -->
     <string name="photo_download_success">已下載</string>
     <string name="photo_downloading">正在下載</string>
     <string name="photo_download_waiting">等待</string>
@@ -626,29 +628,31 @@
 
     <!-- story start -->
 
-    <string name="story_buy_ppp">购买迪士尼處處拍一日通</string>
+    <string name="story_buy_ppp">購買迪士尼處處拍+</string>
+    <string name="story_active_ppp">激活迪士尼處處拍+</string>
     <string name="story_scan_ppp">激活您已购买的處處拍一卡通</string>
-    <string name="story_scan_daily_ppp">激活您已购买的處處拍一日通</string>
-    <string name="story_card">卡号：%1$s</string>
-    <string name="story_blur_expire_time">（未付款照片有效期30天）</string>
-    <string name="story_expire_time">（已付款照片有效期%1$d天）</string>
-    <string name="story_want_to_buy">我想购买</string>
-    <string name="story_buy_dialog">购买迪士尼處處拍一日通，您即可下载一天内所使用的一张迪士尼處處拍卡内的所有照片。</string>
+    <string name="story_scan_daily_ppp">激活您已购买的處處拍全日通</string>
+    <string name="story_card">卡號：%1$s</string>
+    <string name="story_blur_expire_time">(拍攝日起30天內請購買照片)</string>
+    <string name="story_expire_time">(購買日起30天內請下載照片)</string>
+    <string name="story_want_to_buy">我想購買</string>
+    <string name="story_buy_dialog">購買當日已連結在1張迪士尼進餐處處拍咭內所有與迪士尼朋友進餐的數碼照片</string>
+    <string name="story_buy_dialog1">購買當日已連結在1張迪士尼處處拍咭內所有在園區拍攝的數碼照片</string>
     <!-- story end -->
 
     <!-- scan start -->
     <string name="auto_scan">自动扫描</string>
-    <string name="scan_coupon_intro">请扫描您的抵用券二维码，更快获得您的抵用券</string>
-    <string name="scan_coupon_intro2">请输入您的抵用券数字码</string>
+    <string name="scan_coupon_intro">請掃描以綁定你的優惠券</string>
+    <string name="scan_coupon_intro2">請輸入優惠券號碼以綁定你的優惠券</string>
     <!-- scan end -->
 
     <!-- manual input start -->
     <string name="active">激活</string>
     <string name="active_ppp">激活迪士尼\n處處拍一卡通</string>
-    <string name="active_oneday_ppp">激活迪士尼\n處處拍一日通</string>
-    <string name="manul_input_intro2">请输入您的迪士尼處處拍一卡通卡背后的编码</string>
-    <string name="manul_input_intro3">请输入您的迪士尼處處拍一日通卡背后的编码</string>
-    <string name="input_code">手动输入卡号</string>
+    <string name="active_oneday_ppp">激活</string>
+    <string name="manul_input_intro2">請輸入迪士尼處處拍+咭背的16位編碼</string>
+    <string name="manul_input_intro3">请输入您的迪士尼處處拍全日通卡背后的编码</string>
+    <string name="input_code">手动输入卡號</string>
     <!-- manual input end -->
 
     <!-- discover start -->
@@ -662,7 +666,7 @@
 
     <!-- me start -->
 
-    <string name="mypage_daily_ppp1">卡包</string>
+    <string name="mypage_daily_ppp1">我的迪士尼處處拍+</string>
 
     <string name="mypage_customer">處處拍客服</string>
     <!-- me end -->
@@ -674,16 +678,16 @@
     <string name="local_photo_cannot_edit_content">对不起，您的此张照片暂不支持编辑！</string>
     <string name="gallery_buy_blur_photo">立即拥有此数码高清照片!</string>
     <string name="gallery_expire_time">（有效期至%1$s）</string>
-    <string name="souvenir_not_exist">您还没纪念照哦！</string>
-    <string name="souvenir_photo">纪念照</string>
+    <string name="souvenir_not_exist">您还没紀念照哦！</string>
+    <string name="souvenir_photo">紀念照</string>
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="preview_blur_dialog_select_goods">选择商品</string>
-    <string name="use_daily_ppp">使用已有的迪士尼處處拍一日通/處處拍+</string>
-    <string name="use_ppp_intro">只需激活已有的迪士尼處處拍一卡通，即可下载同一天任意三张迪士尼處處拍卡里的所有照片。</string>
-    <string name="use_ppp_daily_intro">只需激活已有的迪士尼處處拍一日通/處處拍+，您即可下载一天内所使用的一张迪士尼處處拍卡内的所有照片。</string>
-    <string name="no_daily_ppp_tips">您没有可用的迪士尼處處拍一日通哦！</string>
+    <string name="preview_blur_dialog_select_goods">選擇商品</string>
+    <string name="use_daily_ppp">使用已有的迪士尼處處拍+</string>
+    <string name="use_ppp_intro">只需激活已有的迪士尼處處拍一卡通，即可下載同一天任意三张迪士尼處處拍卡里的所有照片。</string>
+    <string name="use_ppp_daily_intro">如果已綁定迪士尼處處拍+，可以在此選擇後解鎖並下載該處處拍咭內的全部照片</string>
+    <string name="no_daily_ppp_tips">您没有可用的迪士尼處處拍全日通哦！</string>
     <!-- blur end -->
 
     <!-- download start -->
@@ -715,7 +719,7 @@
     <string name="paymc">MasterCard</string>
     <string name="payjcb">JCB</string>
 
-    <string name="install_wechat_first">您的手机没有安装微信客户端，请先下载安装后再支付！</string>
+    <string name="install_wechat_first">您的手机没有安装微信客户端，请先下載安装后再支付！</string>
     <string name="other_ways">其他方式</string>
     <!-- payment end -->
 
@@ -732,7 +736,7 @@
 
     <string name="order_delete_msg">您将要删除此订单吗？</string>
     <string name="order_cancled">已取消</string>
-    <string name="order_error">此订单号已删除或已付款</string>
+    <string name="order_error">此订单號已删除或已付款</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -740,13 +744,13 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction_daily_ppp">购买迪士尼處處拍一日通，您即可下载一天内所使用的一张迪士尼處處拍卡内的所有照片。</string>
-    <string name="ppp_deail_no_card">您还未激活任何迪士尼處處拍卡号</string>
+    <string name="instruction_daily_ppp">购买迪士尼處處拍全日通，您即可下載一天内所使用的一张迪士尼處處拍卡内的所有照片。</string>
+    <string name="ppp_deail_no_card">請選擇要激活的迪士尼處處拍咭</string>
     <string name="ppp_load_all">没有更多数据</string>
     <string name="pull_to_refresh">上拉刷新显示更多</string>
-    <string name="release_to_refresh">松开立即加载更多</string>
-    <string name="refreshing">正在加载更多数据&#8230;</string>
-    <string name="activated_card">已激活的迪士尼處處拍卡号：</string>
+    <string name="release_to_refresh">松开立即加載更多</string>
+    <string name="refreshing">正在加載更多数据&#8230;</string>
+    <string name="activated_card">已激活的迪士尼處處拍卡號：</string>
     <string name="scan_ppp_upgrade">立即去激活迪士尼處處拍卡！</string>
     <string name="ppp_tips">温馨提示：请选择一张迪士尼處處拍一卡通，高清您的照片哦！</string>
     <!-- ppp end -->
@@ -756,16 +760,16 @@
     <!-- pp end -->
 
     <!-- select pp start -->
-    <string name="select_pp_right_date">您选择激活以下迪士尼處處拍卡号：\n%1$s\n迪士尼處處拍一卡通能让您激活同一天三张處處拍卡，或者连续三天的同一张處處拍卡。\n\n是否确认继续选择激活此處處拍卡？</string>
-    <string name="select_pp_right_date2">您选择激活以下迪士尼處處拍卡号：\n%1$s\n迪士尼處處拍一日通能让您激活同一天一张處處拍卡。\n\n是否确认继续选择激活此處處拍卡？</string>
+    <string name="select_pp_right_date">您选择激活以下迪士尼處處拍卡號：\n%1$s\n迪士尼處處拍一卡通能让您激活同一天三张處處拍卡。\n\n是否确认继续选择激活此處處拍卡？</string>
+    <string name="select_pp_right_date2">您选择激活以下迪士尼處處拍卡號：\n%1$s\n迪士尼處處拍+(照片全日通)能让您激活同一天任意一張迪士尼處處拍裡的所有數碼照片。\n\n是否确认继续选择激活此處處拍卡？</string>
     <string name="pp_tip">以下是您未激活的迪士尼處處拍卡。在激活前，请注意卡的日期。</string>
     <string name="select_pp">%1$s在%2$s的照片\n</string>
-    <string name="pp_cardcode_tip">卡号：</string>
+    <string name="pp_cardcode_tip">卡號：</string>
     <string name="pp_clear_card">选择高清此卡</string>
     <!-- select pp end -->
 
     <!-- select ppp start -->
-    <string name="update_daily_ppp_msg">你将使用迪士尼處處拍一日通升级此處處拍卡内的照片。\n请确认继续。</string>
+    <string name="update_daily_ppp_msg">你将使用迪士尼處處拍全日通升级此處處拍卡内的照片。\n请确认继续。</string>
     <!-- select ppp end -->
 
     <!-- settings start -->
@@ -788,7 +792,7 @@
     <!--   推广PhotoPass＋流程  -->
     <!-- 使用流量提示-->
     <!--   同步更新照片流程  -->
-    <!--   网络下载模式流程  -->
+    <!--   网络下載模式流程  -->
 
     <!-- 删除pp的提示-->
 
@@ -798,7 +802,7 @@
 
     <string name="edit_story_all_unpay_share_tips">当前选中的照片未付费，不可分享</string>
     <string name="edit_story_photo_title">故事 (%1$d)</string>
-    <string name="edit_story_edit_tip">点击编辑可批量下载\n删除照片哦！</string>
+    <string name="edit_story_edit_tip">点击编辑可批量下載\n删除照片哦！</string>
     <!-- edit story end -->
 
     <!-- 发票-->
@@ -819,11 +823,11 @@
     <string name="invoice_input_company">请输入您的单位名称</string>
     <string name="invoice_input_company_id">请输入纳税人识别码</string>
     <string name="invoice_input_personal_name">请输入姓名</string>
-    <string name="invoice_input_personal_id">请输入身份证号</string>
+    <string name="invoice_input_personal_id">请输入身份证號</string>
     <string name="invoice_new_address">新增地址</string>
     <string name="invoice_edit_address">修改地址</string>
     <string name="invoice_receiver_name">收货人姓名:</string>
-    <string name="invoice_mobile">手机号码:</string>
+    <string name="invoice_mobile">手机號码:</string>
     <string name="invoice_province">选择省份:</string>
     <string name="invoice_city">选择城市:</string>
     <string name="invoice_country">选择县区:</string>
@@ -832,8 +836,8 @@
     <string name="invoice_tips_address">您没有收货地址，请添加地址</string>
     <string name="invoice_tips_input_address">请输入您的收货地址</string>
     <string name="invoice_tips_input_info">请填写收货人信息</string>
-    <string name="invoice_tips_phone">请填写手机号码</string>
-    <string name="invoice_tips_phone_error">请填写正确的手机号码</string>
+    <string name="invoice_tips_phone">请填写手机號码</string>
+    <string name="invoice_tips_phone_error">请填写正确的手机號码</string>
     <string name="invoice_tips_province">请填写省份</string>
     <string name="invoice_tips_city">请填写城市</string>
     <string name="invoice_tips_province_or_city">请填写省份/城市</string>
@@ -854,8 +858,8 @@
 
 
     <!--animated photo-->
-    <string name="animated_photo_upgrade_exist_daily_ppp">使用已有的迪士尼處處拍一日通</string>
-    <string name="animated_photo_buy_tip">立即购买迪士尼處處拍一日通拥有此魔法动画照片！</string>
+    <string name="animated_photo_upgrade_exist_daily_ppp">使用已有的迪士尼處處拍全日通</string>
+    <string name="animated_photo_buy_tip">立即购买迪士尼處處拍全日通拥有此魔法动画照片！</string>
     <!--animated photo end-->
 
     <!--special deal-->
@@ -878,4 +882,5 @@
     <string name="opinions_questions">常見問題</string>
     <string name="opinions_online">在線客服</string>
     <string name="opinions_feedback">意見反饋</string>
+    <string name="upgrade_success">激活成功</string>
 </resources>

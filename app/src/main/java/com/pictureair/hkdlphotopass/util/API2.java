@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.hkdlphotopass.http.fastjson.FastjsonRequestBodyConverter;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.entity.PPPinfo;
@@ -143,14 +144,14 @@ public class API2 {
      * @param userName name
      * @param password pwd
      */
-    public static Observable<JSONObject> Register(final String userName, final String password) {
+    public static Observable<JSONObject> Register(final String userName, final String password, int allowCollect) {
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         if (userName != null) {
             params.put(Common.USERINFO_USERNAME, userName);
         }
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-
+        params.put("allowCollect", allowCollect);
         return post(Common.BASE_URL_TEST + Common.REGISTER, params, null);
     }
 
@@ -487,8 +488,11 @@ public class API2 {
         PictureAirLog.v(TAG, "getGoods");
         Map<String, Object> params = new HashMap<>();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-
+        if (MyApplication.getInstance().getLanguageType().equals("zh_CN")) {
+            params.put(Common.LANGUAGE, "zh");
+        } else {
+            params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
+        }
         return get(Common.BASE_URL_TEST + Common.GET_GOODS, params, null);
     }
 
@@ -843,7 +847,7 @@ public class API2 {
      * Shop模块 end
      **************************************/
 
-    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
+    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureair',"
             + "'version': '5.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
             + " 'mandatory': 'true',  '__v': 0, "
             + " 'versionOS': ['android'], "
@@ -1303,6 +1307,7 @@ public class API2 {
      * @return
      */
     private static Observable<JSONObject> get(String requestUrl, Map<String, Object> params, final HttpCallback progressCallback) {
+        PictureAirLog.i(requestUrl, params.toString());
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         return request.get(requestUrl, params, new ProgressListener() {
             @Override
@@ -1329,6 +1334,7 @@ public class API2 {
      * @return
      */
     private static Observable<JSONObject> post(String url, Map<String, Object> params, final HttpCallback progressCallback) {
+        PictureAirLog.i(url, params.toString());
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
         return request.post(url, params, new ProgressListener() {
             @Override
@@ -1472,5 +1478,38 @@ public class API2 {
                 })
                 .compose(RxHelper.<JSONObject>handleResult());
 
+    }
+
+    public static Observable<JSONObject> getAlipaySign(JSONObject params) {
+        PictureAirLog.i("alipay strings", params.toString());
+        return postAlipay(Common.BASE_URL_TEST + Common.GET_ALIPAY_SIGN, params, null);
+//        return postAlipay("http://172.16.30.95:3006/api/getparam", params, null);
+    }
+
+    /**
+     * 有参数post
+     *
+     * @param url
+     * @param params
+     * @param progressCallback
+     * @return
+     */
+    private static Observable<JSONObject> postAlipay(String url, JSONObject params, final HttpCallback progressCallback) {
+        PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
+        RequestBody body = RequestBody.create(FastjsonRequestBodyConverter.MEDIA_TYPE, params.toJSONString());
+        return request.post(url, body, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                if (progressCallback != null) progressCallback.onProgress(bytesRead, contentLength);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (progressCallback != null) progressCallback.doOnSubscribe();
+                    }
+                })
+                .compose(RxHelper.<JSONObject>handleResult());
     }
 }

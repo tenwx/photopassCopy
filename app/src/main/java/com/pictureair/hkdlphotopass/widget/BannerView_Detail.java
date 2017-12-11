@@ -59,7 +59,7 @@ public class BannerView_Detail extends LinearLayout {
             imageView = new ImageView(getContext());//新建一个新的imageview
             android.view.ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ScaleType.CENTER_CROP);
+//            imageView.setScaleType(ScaleType.CENTER_CROP);
             GlideUtil.load(getContext(), Common.PHOTO_URL + list.get(i).getUrl(), imageView);
             bannerViewList.add(imageView);
             adapter.notifyDataSetChanged();//图片改了之后，要通知适配器改变数据

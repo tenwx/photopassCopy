@@ -56,6 +56,12 @@ android {
 
     productFlavors {
         pw_test {}
+        baidu {}
+        qh360 {}
+        tencent {}
+        xiaomi {}
+        huawei {}
+        googleplay {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]

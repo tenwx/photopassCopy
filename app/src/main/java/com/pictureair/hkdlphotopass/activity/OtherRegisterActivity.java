@@ -1,6 +1,7 @@
 package com.pictureair.hkdlphotopass.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +25,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.util.AppManager;
 import com.pictureair.hkdlphotopass.util.AppUtil;
@@ -66,6 +68,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
     private ImageView agreeIv;
     private boolean isAgree = false;
+    private int isAgree2 = 0;
 
     private SignAndLoginUtil signAndLoginUtil;
 
@@ -86,6 +89,8 @@ public class OtherRegisterActivity extends BaseActivity implements
 
 
     private final Handler otherRegisterHandler = new OtherRegisterHandler(this);
+    private ImageView agreeIv2;
+    private TextView tvAgreement2;
 
 
     private static class OtherRegisterHandler extends Handler{
@@ -168,6 +173,24 @@ public class OtherRegisterActivity extends BaseActivity implements
             tvAgreement.setText(style);
         }
 
+        agreeIv2 = (ImageView)findViewById(R.id.iv_agreement_personal);
+        tvAgreement2 = (TextView) findViewById(R.id.tv_explain_personal);
+        tvAgreement2.setMovementMethod(LinkMovementMethod.getInstance());
+        CharSequence text2 = tvAgreement2.getText();
+        //新增个人资料收集声明
+        if (text2 instanceof Spannable) {
+            int end = text2.length();
+            Spannable sp = (Spannable) tvAgreement2.getText();
+            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(text2);
+            style.clearSpans();// should clear old spans
+            for (URLSpan url : urls) {
+                MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tvAgreement2.setText(style);
+        }
+
         myToast = new PWToast(OtherRegisterActivity.this);
         signAndLoginUtil = new SignAndLoginUtil(this, this);
 //		getDateYMD();
@@ -195,6 +218,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         ll_brith = (LinearLayout) findViewById(R.id.ll_birth);
 
         agreeIv.setOnClickListener(this);
+        agreeIv2.setOnClickListener(this);
         ll_brith.setOnClickListener(this);
         btn_submit_sign.setOnClickListener(this);
         etCounry.setOnClickListener(this);
@@ -271,6 +295,15 @@ public class OtherRegisterActivity extends BaseActivity implements
                     agreeIv.setImageResource(R.drawable.login_check_select);
                 }
                 break;
+            case R.id.iv_agreement_personal:
+                if (isAgree2 == 1) {
+                    isAgree2 = 0;
+                    agreeIv2.setImageResource(R.drawable.login_check_unselect);
+                } else {
+                    isAgree2 = 1;
+                    agreeIv2.setImageResource(R.drawable.login_check_select);
+                }
+                break;
 
             case R.id.btn_other_sign_submit:
 			/*
@@ -301,7 +334,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                                 myToast.setTextAndShow(R.string.name_is_empty,
                                         Common.TOAST_SHORT_TIME);
                             } else if (isAgree) {
-                                signAndLoginUtil.start(email, pwd, true, true, name, birthday, sex, countryCode,null, null);
+                                signAndLoginUtil.start(email, pwd, true, true, name, birthday, sex, countryCode,null, null, isAgree2);
                             } else {
                                 myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
                             }
@@ -404,10 +437,17 @@ public class OtherRegisterActivity extends BaseActivity implements
 
         @Override
         public void onClick(View widget) {
-            Intent intent=new Intent();
-            intent.putExtra("key", Integer.valueOf(mUrl));
-            intent.setClass(OtherRegisterActivity.this, WebViewActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            if (Integer.valueOf(mUrl) == 6) {
+                intent.setAction("android.intent.action.VIEW");
+                Uri target = Uri.parse(getCmrUrl());
+                intent.setData(target);
+                startActivity(intent);
+            } else {
+                intent.putExtra("key", Integer.valueOf(mUrl));
+                intent.setClass(OtherRegisterActivity.this, WebViewActivity.class);
+                startActivity(intent);
+            }
         }
 
         @Override
@@ -416,4 +456,17 @@ public class OtherRegisterActivity extends BaseActivity implements
         }
     }
 
+    //个人资料收集声明
+    public String getCmrUrl() {
+        String language = MyApplication.getInstance().getLanguageType();
+        String url;
+        if (language.equals(Common.TRADITIONAL_CHINESE)) {
+            url = Common.PERSONAL_INFORMATION_COLLECT_HK;
+        } else if (language.equals(Common.SIMPLE_CHINESE)) {
+            url = Common.PERSONAL_INFORMATION_COLLECT_CN;
+        } else {
+            url = Common.PERSONAL_INFORMATION_COLLECT_EN;
+        }
+        return url;
+    }
 }

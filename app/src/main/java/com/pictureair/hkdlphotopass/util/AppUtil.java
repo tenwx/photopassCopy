@@ -1990,7 +1990,7 @@ public class AppUtil {
         } else {//语言为空，说明第一次进入
             PictureAirLog.out("apputil language is null---->" + config.locale.toString());
             PictureAirLog.out("apputil language is null---->" + config.locale);
-            if (config.locale.toString().equals(Common.SIMPLE_CHINESE)) {
+            if (config.locale.toString().contains(Common.SIMPLE_CHINESE)) {
                 languageType = Common.SIMPLE_CHINESE;
                 if (Build.VERSION.SDK_INT < 24) {
                     config.locale = Locale.SIMPLIFIED_CHINESE;
@@ -2200,9 +2200,9 @@ public class AppUtil {
      */
     public static String getPolicyUrl(String lang) {
         String url = "";
-        if (lang.equals(Locale.SIMPLIFIED_CHINESE.toString())) {
+        if (lang.equals(Common.SIMPLE_CHINESE)) {
             url = Common.POLICY_AGREEMENT_CN;
-        } else if (lang.equals(Locale.TRADITIONAL_CHINESE.toString())) {
+        } else if (lang.equals(Common.TRADITIONAL_CHINESE)) {
             url = Common.POLICY_AGREEMENT_HK;
         } else {
             url = Common.POLICY_AGREEMENT_EN;
@@ -2210,4 +2210,14 @@ public class AppUtil {
         return url;
     }
 
+    public static String getLanguageY(String lang) {
+        if (lang.equals(Common.SIMPLE_CHINESE)) {
+            lang = "cn";
+        } else if (lang.equals(Common.TRADITIONAL_CHINESE)) {
+            lang = "zh-hk";
+        } else {
+            lang = "en";
+        }
+        return lang;
+    }
 }

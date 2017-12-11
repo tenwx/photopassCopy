@@ -31,6 +31,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     private String whatActivity = "";
     private SignAndLoginUtil signAndLoginUtil;
     private RegisterCountDownTimer timer;
+    private int allowCollect;
 
     public void setWhatActivity(String whatActivity) {
         this.whatActivity = whatActivity;
@@ -47,9 +48,9 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
     private void validateSuccess() {
         if (whatActivity.equals(SIGN_ACTIVITY))
-            signAndLoginUtil.start(phone, pwd, true, false, null, null, null, null, null, null);
+            signAndLoginUtil.start(phone, pwd, true, false, null, null, null, null, null, null, allowCollect);
         else if (whatActivity.equals(FORGET_ACTIVITY))
-            signAndLoginUtil.start(phone, pwd, false, false, null, null, null, null, null, null);// 登录
+            signAndLoginUtil.start(phone, pwd, false, false, null, null, null, null, null, null, allowCollect);// 登录
     }
 
     public RegisterTool(String tokenId, Context context, RegisterOrForgetCallback registerView, String languageType) {
@@ -60,10 +61,11 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
         signAndLoginUtil = new SignAndLoginUtil(context, this);
     }
 
-    public void submit(String validateCode, String phone, String pwd) {
+    public void submit(String validateCode, String phone, String pwd, int isAgreePersonal) {
         registerOrForgetView.showDialog();
         this.phone = phone;
         this.pwd = pwd;
+        this.allowCollect = isAgreePersonal;
         validateCode(validateCode);
     }
 

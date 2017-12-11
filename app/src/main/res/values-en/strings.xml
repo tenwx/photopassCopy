@@ -99,7 +99,7 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">Please scan the QR code on your Disney PhotoPass card or Seasonal PhotoPass+ card to preview your photos!</string>
+    <string name="story_no_pp">Please scan the QR code on your Disney PhotoPass card to start associating your photos!</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
@@ -122,14 +122,16 @@
     <string name="five_days_ago">5 days ago</string>
     <string name="six_days_ago">6 days ago</string>
     <string name="video_location">My Disney Story</string>
-    <string name="story_buy_ppp">Buy Disney PhotoPass One Day Pass</string>
-    <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
+    <string name="story_buy_ppp">Buy Disney PhotoPass+</string>
+    <string name="story_active_ppp">Active Disney PhotoPass+</string>
+    <string name="story_scan_ppp">Activate Disney PhotoPass+</string>
     <string name="story_scan_daily_ppp">Activate your PhotoPass One Day Pass</string>
     <string name="story_card">Card No.:%1$s</string>
-    <string name="story_blur_expire_time">(Non-purchased photos valid for 30 days)</string>
-    <string name="story_expire_time">(Purchased photos valid for %1$d days)</string>
+    <string name="story_blur_expire_time">(Please purchase photos within 30 days since captured)</string>
+    <string name="story_expire_time">(Please download photos within 30 days since purchased)</string>
     <string name="story_want_to_buy">Buy</string>
-    <string name="story_buy_dialog">Purchase Disney PhotoPass One Day Pass to get all the digital downloads from one (1) Disney PhotoPass card used in a single day</string>
+    <string name="story_buy_dialog">Buy all your Character Dining digital photos linked to 1 Disney Character Dining PhotoPass Card taken during 1 day of visit</string>
+    <string name="story_buy_dialog1">Buy all your digital photos linked to 1 Disney PhotoPass Card taken during 1 day of visit at the park</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -137,24 +139,24 @@
     <string name="auto_scan">Auto-scan</string>
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">Disney PhotoPass+</string>
-    <string name="scan_intro">Please scan the QR code on your Disney PhotoPass card or Seasonal PhotoPass+ card to preview your photos!</string>
+    <string name="scan_intro">Please scan the QR code at the back of your Disney PhotoPass card</string>
     <string name="re_scan">Retake</string>
     <string name="textview_center_hint">Please align the back of your Disney PhotoPass+ in this area</string>
     <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
     <string name="confirm_ppp_code_text_hint">Please check your PhotoPass+ password \n If the password is incorrect, please key in manually</string>
-    <string name="scan_coupon_intro">Please scan your coupon QR code</string>
-    <string name="scan_coupon_intro2">Please input your coupon code</string>
+    <string name="scan_coupon_intro">Plan scan to associate your coupon</string>
+    <string name="scan_coupon_intro2">Plan enter coupon code to associate your coupon</string>
     <!-- scan end -->
 
     <!-- manual input start -->
     <string name="manual">Manual</string>
     <string name="active">Activate</string>
     <string name="active_ppp">Activate Disney\nPhotoPass+</string>
-    <string name="active_oneday_ppp">Activate Disney\nPhotoPass One\nDay Pass</string>
+    <string name="active_oneday_ppp">Activate</string>
     <string name="ok">OK</string>
-    <string name="manul_input_intro">Please input the code on the back of your Disney PhotoPass card or PhotoPass One Day Pass card or Seasonal PhotoPass+ card</string>
-    <string name="manul_input_intro2">Please input the code on the back of your Disney PhotoPass+ card</string>
+    <string name="manul_input_intro">Please input the 16 digits on the back of your Disney PhotoPass Card</string>
+    <string name="manul_input_intro2">Please input the 16 digits on the back of your Disney PhotoPass+</string>
     <string name="manul_input_intro3">Please input the code on the back of your PhotoPass One Day Pass card</string>
     <string name="nocontext">Input your code</string>
     <string name="input_code">Manual Input</string>
@@ -202,7 +204,7 @@
     <string name="mypage_ppp">Disney PhotoPass+</string>
     <string name="mypage_pp1">Disney\nPhotoPass</string>
     <string name="mypage_ppp1">Disney PhotoPass+</string>
-    <string name="mypage_daily_ppp1">Cards</string>
+    <string name="mypage_daily_ppp1">My Disney PhotoPass+</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
@@ -245,11 +247,11 @@
     <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card within the day</string>
     <string name="up_ppp_money">Yes, I want to Buy PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
-    <string name="use_daily_ppp">Use existing Disney PhotoPass One Day Pass/PhotoPass+</string>
+    <string name="use_daily_ppp">Redeem by your purchased Disney PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
     <string name="use_ppp_intro">Simply activate existing Disney PhotoPass+ to get all your digital photos from three (3) Disney PhotoPass cards used in a single day</string>
-    <string name="use_ppp_daily_intro">Simply activate existing Disney PhotoPass One Day Pass/PhotoPass+ to get all your digital photos from one (1) Disney PhotoPass card used in a single day</string>
+    <string name="use_ppp_daily_intro">If you have already assoicated any Disney PhotoPass+, you can click here to unlock and download all the digital photos in this PhotoPass card</string>
     <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
     <string name="no_daily_ppp_tips">You do not have any valid PhotoPass One Day Pass</string>
     <!-- blur end -->
@@ -352,6 +354,7 @@
     <string name="no_pay_success">OK</string>
     <string name="install_wechat_first">Your mobile has not install WeChat. Please download to continue your payment.</string>
     <string name="other_ways">Others</string>
+    <string name="payment_method_pay_dollar">PayDollar</string>
     <!-- payment end -->
 
     <!-- set header start -->
@@ -407,7 +410,8 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">With the use of Disney PhotoPass+, you will be able to download all photos and other digital content taken on selected attractions at the Resort from up to three (3) Disney PhotoPass cards in one (1) day or one (1) Disney PhotoPass card used during three (3) consecutive days</string>
+    <string name="no_one_day_pass">No available Disney PhotoPass+/ \n One Day Pass (Please purchase and associate)</string>
+    <string name="instruction">Purchase Disney PhotoPass+ (Photo One Day Pass) to get all the digital photos linked to 1 Disney PhotoPass Card taken during 1 day of visit at the park</string>
     <string name="instruction_daily_ppp">With the purchase of Disney PhotoPass One Day Pass, you will be able to download all your high-resolution photos from one(1) Disney PhotoPass card used in a single day.</string>
     <string name="select_pp_hasUpgraded">You have associated this Disney PhotoPass card</string>
     <string name="not_ppp_card">Invalid Disney PhotoPass One Day Pass / PhotoPass+</string>
@@ -423,7 +427,7 @@
     <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
     <string name="buy_ppp_text">Buy Disney PhotoPass One Day Pass</string>
     <string name="scan_ppp_text">Activate your PhotoPass One Day Pass</string>
-    <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass card.</string>
+    <string name="ppp_deail_no_card">Please choose a Disney PhotoPass+ to activate</string>
     <string name="ppp_load_all">No more data to load!</string>
     <string name="pull_to_refresh">Swipe Upwards</string>
     <string name="release_to_refresh">Release loading&#8230;</string>
@@ -447,8 +451,8 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
-    <string name="select_pp_right_date">You have chosen to activate this Disney PhotoPass card:\n%1$s\nDisney PhotoPass+ allows you to activate 3 PhotoPass cards in one single day, OR 1 PhotoPass card on 3 consecutive days.\n\nPlease confirm to continue the activation of the above PhotoPass card.</string>
-    <string name="select_pp_right_date2">You have chosen to activate this Disney PhotoPass card:\n%1$s\nDisney PhotoPass One Day Pass allows you to activate 1 PhotoPass card in one single day.\n\nPlease confirm to continue the activation of the above PhotoPass card.</string>
+    <string name="select_pp_right_date">You have chosen to activate this Disney PhotoPass card:\n%1$s\nDisney PhotoPass+ allows you to activate 3 PhotoPass cards within one day.\n\nPlease confirm to continue the activation of the above PhotoPass card.</string>
+    <string name="select_pp_right_date2">You have chosen to activate this Disney PhotoPass card:\n%1$s\nDisney PhotoPass+ (Photo One Day Pass) allows you to activate the same day any one Disney PhotoPass Card.\n\nPlease confirm to continue the activation of the above PhotoPass card.</string>
     <string name="pp_tip">Below are your Disney PhotoPass cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
@@ -457,7 +461,7 @@
     <!-- select pp end -->
 
     <!-- select ppp start -->
-    <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
+    <string name="select_your_ppp">Please select your Disney PhotoPass Card</string>
     <string name="select_ppp_title">Select</string>
     <string name="update_ppp_msg">You have chosen to activate the digital photos in this PhotoPass card with your PhotoPass+.\nPlease confirm to continue.</string>
     <string name="update_daily_ppp_msg">You have chosen to activate the digital photos in this PhotoPass card with your PhotoPass One Day Pass.\nPlease confirm to continue.</string>
@@ -703,7 +707,7 @@
     <!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
 
     <!-- login activity start-->
-    <string name="hongkong">香港</string>
+    <string name="hongkong">HongKong</string>
 
     <string name="story_other_tw">其他</string>
 
@@ -731,7 +735,7 @@
 
 
 
-    <string name="smssdk_personal_information_collection_statement">收取香港迪士尼樂園的最新資訊、推廣及優惠 - 本人承諾本人已閱讀及理解載於<a href = "6">個人資料收集聲明</a>之條款，並同意可使用本人的個人資料作直接推廣用途。</string>
+    <string name="smssdk_personal_information_collection_statement">Receiving Hong Kong Disneyland latest news, promotions and offers - I acknowledge that I have read and understand and I agree to the use of my personal data for direct marketing purposes in the manner set out in the <a href = "6">Personal Information Collection Statement</a>. </string>
 
     <string name="personal_info_collect">個人資料收集聲明</string>
     <!-- postcard start-->
@@ -745,4 +749,5 @@
 
     <string name="photo_download_clear_tips">下載完成後才可以清除</string>
     <string name="smssdk_write_identify_code">填寫驗證碼</string>
+    <string name="upgrade_success">Active Success</string>
 </resources>

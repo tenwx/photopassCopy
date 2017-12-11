@@ -33,6 +33,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     private final Handler myHandler = new MyHandler(this);
     private String orderId;
     private String ccPayType;
+    private String language;
 
 
     private static class MyHandler extends Handler {
@@ -84,24 +85,23 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
 
     private void getData() {
         webView.setVisibility(View.GONE);
+            language = MyApplication.getInstance().getLanguageType();
+
         if (key == 1) {
-//            webView.start(Common.POLICY_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
-//            webView.start(String.format(Common.POLICY_AGREEMENT, (MyApplication.getInstance().getLanguageType().equals("en") ? "en/" : "")));
-            webView.start(AppUtil.getPolicyUrl(MyApplication.getInstance().getLanguageType()));
+            webView.start(AppUtil.getPolicyUrl(language));
             setTopTitleShow(R.string.policy); // 设置标题
         } else if (key == 2) {
-            webView.start(Common.TERMS_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
+            webView.start(Common.TERMS_AGREEMENT + "&lang=" + AppUtil.getLanguageY(language));
             setTopTitleShow(R.string.terms); // 设置标题
         } else if (key == 3) {
-//            webView.start(Common.CONTACT_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
-            webView.start(String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), MyApplication.getInstance().getLanguageType()));
+            webView.start(String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), AppUtil.getLanguageY(language)));
             setTopTitleShow(R.string.mypage_opinions); // 设置标题
         } else if (key == 4) {  //海外支付的链接。
             String orderId = getIntent().getStringExtra("orderId");
-            String currency = "CNY";
+            String currency = "HKD";
             String appID = AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP));
             String language = MyApplication.getInstance().getLanguageType();
-            if (MyApplication.getInstance().getLanguageType().equals("zh")) {
+            if (language.equals(Common.SIMPLE_CHINESE)) {
                 language = "cn";
             }
             webView.start(Common.BASE_URL_TEST + Common.IPAY_LINK + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&currency=" + currency + "&appID=" + appID);
@@ -111,7 +111,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
             webView.start(Common.TERMS_OF_USE + (MyApplication.getInstance().getLanguageType().equals("en") ? "english/" : "chinese-simplified/"));
             setTopTitleShow(R.string.terms_of_use); // 设置标题
         } else if (key == 6) {//常见问题
-            webView.start(Common.HELP_FAQ + MyApplication.getInstance().getLanguageType());
+            webView.start(Common.FAQ + AppUtil.getLanguageY(language));
             setTopTitleShow(R.string.mypage_help); // 设置标题
         } else if (key == 7) {  //paydollar的链接。
             orderId = getIntent().getStringExtra("orderId");
@@ -119,7 +119,6 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
             PictureAirLog.out("ccPayType" + ccPayType);
             PictureAirLog.out("======  orderId =====" + orderId);
             int payType = 2;
-            String language = MyApplication.getInstance().getLanguageType();
             webView.start(Common.BASE_URL_TEST + Common.PAY_DOLLAR + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&payType=" + payType + "&ccPayType=" + ccPayType);
             PictureAirLog.out("url =====" + Common.BASE_URL_TEST + Common.PAY_DOLLAR + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&payType=" + payType + "&ccPayType=" + ccPayType);
             setTopTitleShow(R.string.paydollar); // 设置标题
@@ -132,7 +131,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         super.TopViewClick(view);
         switch (view.getId()) {
             case R.id.topLeftView:
-                if (key == 4) {
+                if (key == 7) {
                     sendActivityResult(-1);
                 }
                 finish();
@@ -145,22 +144,24 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     @JavascriptInterface
     public void setSmething(String some) {
         JSONObject obj = (JSONObject) JSONArray.parse(some);
+        PictureAirLog.json("paydollar", obj.toJSONString());
         if (obj.containsKey("status")) {
             int code = obj.getIntValue("status");
-            if (code == 200) {
-                sendActivityResult(0); // 支付成功
-            } else {
-                sendActivityResult(-2);
-            }
+//            if (code == 200) {
+//                sendActivityResult(0); // 支付成功
+//            } else {
+//                sendActivityResult(-2);
+//            }
+            sendActivityResult(code);
         }
         this.finish();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         //返回键
-        if (key == 4) {
+        if (key == 7) {
             sendActivityResult(-1);
         }
         finish();

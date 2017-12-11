@@ -143,6 +143,7 @@
             </RelativeLayout>
 
             <View
+                android:visibility="gone"
                 android:id="@+id/line_below_coupon"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -150,6 +151,7 @@
                 android:background="@color/pp_light_gray_normal" />
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/invoice_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

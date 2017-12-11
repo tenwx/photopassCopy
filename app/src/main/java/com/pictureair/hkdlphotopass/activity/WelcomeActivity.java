@@ -83,16 +83,20 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		view3 = (ImageView) flater.inflate(R.layout.loading_start, null);
 		view4 = (ImageView) flater.inflate(R.layout.loading_start, null);
 
-		if (currentLanguage.equals("zh")){
+		if (currentLanguage.equals(Common.SIMPLE_CHINESE)){
 			//中文
 			view2.setImageResource(R.drawable.loading_zh_1);
 			view3.setImageResource(R.drawable.loading_zh_2);
 			view4.setImageResource(R.drawable.loading_zh_3);
-		}else {
+		}else if (currentLanguage.equals(Common.ENGLISH)){
 			//英文
 			view2.setImageResource(R.drawable.loading_en_1);
 			view3.setImageResource(R.drawable.loading_en_2);
 			view4.setImageResource(R.drawable.loading_en_3);
+		} else {
+			view2.setImageResource(R.drawable.loading_tw_1);
+			view3.setImageResource(R.drawable.loading_tw_2);
+			view4.setImageResource(R.drawable.loading_tw_3);
 		}
 
 //		startNow = (TextView)view4.findViewById(R.id.startNow);

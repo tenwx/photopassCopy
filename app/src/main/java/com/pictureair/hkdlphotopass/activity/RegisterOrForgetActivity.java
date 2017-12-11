@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -54,20 +55,22 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private PWToast myToast;
     private Context context;
     private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_forget_put_identify_centen, forget_layout, regist_layout;
-    private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain;
+    private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain, tv_explain2;
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
     private CustomButtonFont btn_next, sure;
-    private String currentCode = "86"; //国家区号
+    private String currentCode = "852"; //国家区号
     private String phoneStr = "", pwdStr = "", pwdAgainStr = "", identifyStr = "";
     private Typeface typeface;
     private boolean countDownFinish = true;
     private String whatActivity;
     private final String signActivity = "sign", forgetActivity = "forget";
     private boolean isNext = false;
-    private ImageView agreeIv;
+    private ImageView agreeIv, agreeIv2;
     private boolean isAgree = false;
+    private int isAgree2 = 0;
     private PWDialog pictureWorksDialog;
     private TextView title;
+    private ImageView phoneImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         }
 
         rlCountry.setOnClickListener(this);
+        phoneImg.setOnClickListener(this);
+        tvCountryNum.setOnClickListener(this);
         btn_next.setOnClickListener(this);
         sure.setOnClickListener(this);
         et_write_phone.addTextChangedListener(this);
@@ -135,6 +140,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         forget_layout.setVisibility(View.GONE);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         rlCountry = (LinearLayout) findViewById(R.id.rl_country);
+        phoneImg = (ImageView) findViewById(R.id.phone_img);
         tvCountry = (CustomTextView) findViewById(R.id.tv_country);
         tvCountryNum = (CustomTextView) findViewById(R.id.tv_country_num);
         et_write_phone = (EditTextWithClear) findViewById(R.id.et_write_phone);
@@ -150,6 +156,11 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         title = (TextView) findViewById(R.id.regist_title);
 
         tv_otherRegistered.setOnClickListener(this);
+
+        //个人资料收集申明
+        agreeIv2 = (ImageView) findViewById(R.id.iv_agreement_personal);//新增"个人资料收集声明"
+        tv_explain2 = (CustomTextView) findViewById(R.id.tv_explain_personal);
+        agreeIv2.setOnClickListener(this);
 
         tv_explain.setMovementMethod(LinkMovementMethod.getInstance());
         CharSequence text = tv_explain.getText();
@@ -169,6 +180,22 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         agreeIv = (ImageView) findViewById(R.id.iv_agreement);
         agreeIv.setOnClickListener(this);
         title.setText(R.string.smssdk_regist);
+
+        tv_explain2.setMovementMethod(LinkMovementMethod.getInstance());
+        CharSequence text2 = tv_explain2.getText();
+        //新增"个人资料收集声明"
+        if (text2 instanceof Spannable) {
+            int end = text2.length();
+            Spannable sp = (Spannable) tv_explain2.getText();
+            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(text2);
+            style.clearSpans();// should clear old spans
+            for (URLSpan url : urls) {
+                MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tv_explain2.setText(style);
+        }
     }
 
     /**
@@ -179,6 +206,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         forget_layout.setVisibility(View.VISIBLE);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         rlCountry = (LinearLayout) findViewById(R.id.rl_forget_country);
+        phoneImg = (ImageView) findViewById(R.id.forget_phone_img);
         tvCountry = (CustomTextView) findViewById(R.id.tv_forget_country);
         tvCountryNum = (CustomTextView) findViewById(R.id.tv_forget_country_num);
         et_write_phone = (EditTextWithClear) findViewById(R.id.et_forget_write_phone);
@@ -199,7 +227,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
     private void initData() {
         myToast = new PWToast(context);// 获取toast
-        tvCountry.setText(R.string.china);
+        tvCountry.setText(R.string.hongkong);
     }
 
     @Override
@@ -322,8 +350,22 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                 }
                 break;
 
+            case R.id.iv_agreement_personal:
+                if (isAgree2 == 1) {
+                    isAgree2 = 0;
+                    agreeIv2.setImageResource(R.drawable.login_check_unselect);
+                } else {
+                    isAgree2 = 1;
+                    agreeIv2.setImageResource(R.drawable.login_check_select);
+                }
+                break;
+
             case R.id.rl_forget_country:
             case R.id.rl_country:
+            case R.id.phone_img:
+            case R.id.forget_phone_img:
+            case R.id.tv_country_num:
+            case R.id.tv_forget_country_num:
                 Intent intent = new Intent();
                 intent.setClass(context, SelectCountryActivity.class);
                 startActivityForResult(intent, SelectCountryActivity.requestCountry);
@@ -394,7 +436,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                 return;
             }
         }
-        registerTool.submit(identifyStr, currentCode + "," + phoneStr, pwdStr);
+        registerTool.submit(identifyStr, currentCode + "," + phoneStr, pwdStr, isAgree2);
     }
 
     /**
@@ -508,15 +550,35 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         @Override
         public void onClick(View widget) {
             Intent intent = new Intent();
-            intent.putExtra("key", Integer.valueOf(mUrl));
-            intent.setClass(context, WebViewActivity.class);
-            startActivity(intent);
+            if (Integer.valueOf(mUrl) == 6) {
+                intent.setAction("android.intent.action.VIEW");
+                Uri target = Uri.parse(getCmrUrl());
+                intent.setData(target);
+                startActivity(intent);
+            } else {
+                intent.putExtra("key", Integer.valueOf(mUrl));
+                intent.setClass(context, WebViewActivity.class);
+                startActivity(intent);
+            }
         }
 
         @Override
         public void updateDrawState(TextPaint ds) {
             ds.setColor(ContextCompat.getColor(RegisterOrForgetActivity.this, R.color.pp_red));
         }
+    }
+
+    //个人资料收集声明
+    public String getCmrUrl() {
+        String url;
+        if (languageType.equals(Common.TRADITIONAL_CHINESE)) {
+            url = Common.PERSONAL_INFORMATION_COLLECT_HK;
+        } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
+            url = Common.PERSONAL_INFORMATION_COLLECT_CN;
+        } else {
+            url = Common.PERSONAL_INFORMATION_COLLECT_EN;
+        }
+        return url;
     }
 
     private void showPwDialog() {

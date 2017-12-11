@@ -266,7 +266,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                     case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
                         signAndLoginUtil.start(userName.getText().toString().trim(), password
-                                .getText().toString(), false, false, null, null, null, null, null, null);
+                                .getText().toString(), false, false, null, null, null, null, null, null, 0);
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
@@ -293,7 +293,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 } else if (!checkMsg()) {
                     return;
                 }
-                signAndLoginUtil.start(countryCode + "," +phoneStr, null, false, false, null, null, null, null,Common.LOGINTYPE, smsStr);
+                signAndLoginUtil.start(countryCode + "," +phoneStr, null, false, false, null, null, null, null,Common.LOGINTYPE, smsStr, 0);
 
                 break;
 

@@ -145,10 +145,15 @@ public class AddPPPCodeActivity extends BaseActivity implements OnClickListener,
 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_blue, true);
-        tipsTv.setText(isOneDayPass ? R.string.manul_input_intro3 : R.string.manul_input_intro2);
-        cardTopIv.setImageResource(isOneDayPass ? R.drawable.input_card_top_odp : R.drawable.input_card_top);
-        cardBottomIv.setImageResource(isOneDayPass ? R.drawable.input_card_bottom_odp : R.drawable.input_card_bottom);
-        cardRightIv.setVisibility(isOneDayPass ? View.VISIBLE : View.GONE);
+
+        tipsTv.setText(R.string.manul_input_intro2);
+        cardTopIv.setVisibility(View.GONE);
+        cardRightIv.setVisibility(View.GONE);
+        cardBottomIv.setVisibility(View.GONE);
+//        tipsTv.setText(isOneDayPass ? R.string.manul_input_intro2 : R.string.manul_input_intro3);
+//        cardTopIv.setImageResource(isOneDayPass ? R.drawable.input_card_top_odp : R.drawable.oneday_pass_hk1);
+//        cardBottomIv.setImageResource(isOneDayPass ? R.drawable.input_card_bottom_odp : R.drawable.oneday_pass_hk2);
+//        cardRightIv.setVisibility(isOneDayPass ? View.VISIBLE : View.GONE);
 
         setTopTitleShow(R.string.active);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);

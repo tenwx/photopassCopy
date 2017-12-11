@@ -225,13 +225,15 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void bindPPsDateToPPP(JSONArray jsonArray, String pppCode) {
+    private void bindPPsDateToPPP(final JSONArray jsonArray, String pppCode) {
         API2.bindPPsDateToPPP(jsonArray, pppCode)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
+                        PictureAirLog.i("选择激活成功", jsonObject.toJSONString());
+                        PWToast.getInstance(SelectPPActivity.this).setTextAndShow(R.string.upgrade_success);
                         SPUtils.put(SelectPPActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                         PictureAirDbManager.insertRefreshPPFlag(pps, JsonInfo.DAILY_PP_REFRESH_ALL_TYPE);
                     }

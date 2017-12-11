@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -28,6 +29,7 @@ import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.activity.AddPPPCodeActivity;
 import com.pictureair.hkdlphotopass.activity.BaseFragment;
 import com.pictureair.hkdlphotopass.activity.EditStoryAlbumActivity;
+import com.pictureair.hkdlphotopass.activity.MainTabActivity;
 import com.pictureair.hkdlphotopass.activity.MipCaptureActivity;
 import com.pictureair.hkdlphotopass.activity.OpinionsActivity;
 import com.pictureair.hkdlphotopass.activity.PanicBuyActivity;
@@ -147,6 +149,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     //申明handler消息回调机制
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
+    private String siteId;
 
     private static class FragmentPageStoryHandler extends Handler {
         private final WeakReference<FragmentPageStory> mActivity;
@@ -200,7 +203,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case PPPPop.POP_INPUT_ONE_DAY_PASS://进入手动输入页面
                 Intent intent3 = new Intent(context, AddPPPCodeActivity.class);
                 intent3.putExtra("type", "ppp");//只扫描ppp
-                intent3.putExtra("daily", true);//一日通
+                intent3.putExtra("daily", false);//一日通
                 startActivity(intent3);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
@@ -211,7 +214,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!hasHidden) {
                     showPWProgressDialog();
                     getPPList(false, true);
-
+                    PWToast.getInstance(context).setTextAndShow(R.string.upgrade_success);
                 } else {
                     fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
                 }
@@ -310,7 +313,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      */
     private void getPPList(final boolean needGetLocationData, final boolean refresh) {
         PictureAirLog.d("get pp list ----> " + needGetLocationData);
-        API2.getPPSByUserId().compose(this.<JSONObject>bindToLifecycle())
+        API2.getPPSByUserId()
+                .compose(this.<JSONObject>bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
@@ -577,8 +581,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             swipeRefreshLayout.setRefreshing(false);
         }
         if (setVisibile) {
-            storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+//            storyNoPpToScanLinearLayout.setVisibility(View.GONE);
+//            noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
             if (sharedNeedFresh) {
                 needfresh = sharedNeedFresh;
             }
@@ -691,7 +695,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         super.onResume();
         if (hasHidden) {
             PictureAirLog.out("bu ke jian");
-            return;
+//            return;
         }
         PictureAirLog.out(TAG + "truely onresume---->story");
 
@@ -786,7 +790,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case R.id.story_buy_ppp:
-                buyClick(0);
+//                buyClick(0);
+                ((MainTabActivity)getActivity()).setTabSelection(3, true);
                 break;
 
             case R.id.special_deal_ll:
@@ -820,20 +825,31 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public void buyClick(int position) {
+        //generic eg
+        siteId = dailyPPCardInfoArrayList.get(position).getSiteId();
+        PictureAirLog.i("current siteId------------>", siteId);
+        int buyTips = 0;
+        if (siteId.equals("eg")) {
+            buyTips = R.string.story_buy_dialog;
+        } else {
+            buyTips = R.string.story_buy_dialog1;
+        }
         PictureAirLog.d("buy click---> " + position);
         if (pwDialog == null) {
             pwDialog = new PWDialog(context)
                     .setOnPWDialogClickListener(this)
-                    .setPWDialogMessage(R.string.story_buy_dialog)
+                    .setPWDialogMessage(buyTips)
                     .setPWDialogNegativeButton(R.string.update_ppp_cancel)
                     .setPWDialogPositiveButton(R.string.update_ppp_ok)
                     .pwDialogCreate();
         }
+        pwDialog.setPWDialogMessage(buyTips);
         pwDialog.pwDilogShow();
     }
 
     @Override
     public void itemClick(int position) {
+        siteId = dailyPPCardInfoArrayList.get(position).getSiteId();
         PictureAirLog.d("item click-->" + dailyPPCardInfoArrayList.get(position).getPpCode() +"<---siteId--->"+dailyPPCardInfoArrayList.get(position).getSiteId());
         if (dailyPPCardInfoArrayList.get(position).getPhotoCount() == 0) {//空卡，不可点击
             return;
@@ -907,7 +923,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             } else if (!syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
                 syncingBoughtPhotos = true;
                 PictureAirLog.out("start sync------->");
-                fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 2000);
+                fragmentPageStoryHandler.sendEmptyMessageDelayed(REFRESH_ALL_PHOTOS, 500);
 
             } else {
                 PictureAirLog.out("still waiting sync");
@@ -1027,7 +1043,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         }
                         //获取PP+
                         for (GoodsInfo goodsInfo : allGoodsList1) {
-                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+//                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                            if (goodsInfo.getSlot() == 1 && goodsInfo.getLocationIds().contains(siteId)) {
                                 pppGoodsInfo = goodsInfo;
                                 break;
                             }

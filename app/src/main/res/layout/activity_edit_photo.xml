@@ -133,7 +133,7 @@
         android:layout_below="@id/head2"
         android:background="@color/transparent">
 
-        <!--  <com.pictureAir.editPhoto.ImageViewTouch
+        <!--  <com.pictureair.editPhoto.ImageViewTouch
              android:id="@+id/main_image"
              android:layout_width="fill_parent"
              android:layout_height="fill_parent"

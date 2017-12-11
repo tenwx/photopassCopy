@@ -139,6 +139,7 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_expired"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -154,11 +155,10 @@
                         android:id="@+id/ppp_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/pp_dp_20"
                         android:layout_toRightOf="@id/tv_expired"
-                        android:gravity="right|center_vertical"
+                        android:gravity="left|center_vertical"
                         android:text="fadsfd"
                         android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_size_14" />

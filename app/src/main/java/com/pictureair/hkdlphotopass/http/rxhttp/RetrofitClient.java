@@ -34,10 +34,10 @@ public enum  RetrofitClient {
         pool = new ProgressListenerPool();
         client = new OkHttpClient.Builder()
                 .addInterceptor(new ProgressInterceptor(pool))
-                .connectTimeout(60, TimeUnit.SECONDS)// 连接超时时间设置
-                .readTimeout(60, TimeUnit.SECONDS)// 读取超时时间设置
+                .connectTimeout(30, TimeUnit.SECONDS)// 连接超时时间设置
+                .readTimeout(30, TimeUnit.SECONDS)// 读取超时时间设置
                 .retryOnConnectionFailure(true)// 失败重试
-                .connectionPool(new ConnectionPool(10, 60,TimeUnit.SECONDS))
+                .connectionPool(new ConnectionPool(10, 30,TimeUnit.SECONDS))
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(Common.BASE_URL_TEST + "/")

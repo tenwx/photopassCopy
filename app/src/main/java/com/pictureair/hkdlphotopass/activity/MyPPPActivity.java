@@ -76,7 +76,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp, button_scan_ppp_3slot; // 无PP＋时 底部的两个按钮。
     private LinearLayout ll_button_area, ll_guide_layout;//无PP＋时 底部的两个按钮的区域。
-    private ScrollView nopppLayout;
+    private RelativeLayout nopppLayout;
 
     private PWToast newToast;
 
@@ -188,6 +188,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 break;
 
             case 2:
+                int pos = (int) msg.obj;
+                if (pos >= list1.size()) {
+                    return;
+                }
+               isDailyPPP = list1.get(pos).capacity == 1;
                 ok.setText(formaStringPPP(listPPPAdapter.getMap().size(), 1));
                 if (listPPPAdapter.getMap().size() >= 1) {
                     ok.setEnabled(true);
@@ -196,6 +201,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     ok.setEnabled(false);
                     ok.setTextColor(ContextCompat.getColor(MyPPPActivity.this, R.color.gray_light5));
                 }
+
                 break;
             case 3:
                 if (status == normal) {
@@ -223,6 +229,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 if (position >= list1.size()) {
                     return;
                 }
+                PictureAirLog.i("slot---->:", list1.get(position).capacity+"");
                 if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
                     if (list1.get(position).expericePPP == 1) {//体验卡
                         Intent intent3 = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
@@ -231,6 +238,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                         intent3.putExtra("photoCount", 1);
                         startActivity(intent3);
                     } else {
+                        isDailyPPP = list1.get(position).capacity == 1;
                         PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
                         ppp = list1.get(position);
                         getPPsByPPPAndDate(ppp.PPPCode);
@@ -337,7 +345,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         mTitle = (TextView) findViewById(R.id.myppp);
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
-        nopppLayout = (ScrollView) findViewById(R.id.nopppinfo);
+        nopppLayout = (RelativeLayout) findViewById(R.id.nopppinfo);
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
@@ -413,7 +421,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         } else {
             if (languageType.equals(Common.SIMPLE_CHINESE)) {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_cn);
-            } else if (languageType.equals(Common.TRADITIONAL_CHINESE)){
+            } else if (languageType.equals(Common.TRADITIONAL_CHINESE)) {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_tw);
             } else {
                 ppp_guideView.setImageResource(R.drawable.ppp_guide_en);
@@ -881,7 +889,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private void getPPPListSuccess() {
         SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API2.PPPlist.size());
         list1.clear();
-        for (int i = API2.PPPlist.size()-1; i >= 0 ; i--) {
+        for (int i = API2.PPPlist.size() - 1; i >= 0; i--) {
             PPPinfo ppPinfo = API2.PPPlist.get(i);
 //            if (isDailyPPP) {//一日通
 //                if (ppPinfo.capacity != 1) {
@@ -911,13 +919,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         if (list1.size() == 0) {
             refreshLayout.setVisibility(View.GONE);
             nopppLayout.setVisibility(View.VISIBLE);
-            ll_button_area.setVisibility(View.VISIBLE);
-            if (isDailyPPP) {
-                pppImgIv.setImageResource(R.drawable.daily_ppp_introduce1);
-            } else {
-                pppImgIv.setImageResource(R.drawable.ppp_introduce1);
-
-            }
+            ll_button_area.setVisibility(View.GONE);
 
         } else {
             Collections.sort(list1);
@@ -1050,14 +1052,14 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 });
     }
 
-    private void bindPPsDateToPPP(JSONArray jsonArray, String pppCode) {
+    private void bindPPsDateToPPP(final JSONArray jsonArray, String pppCode) {
         API2.bindPPsDateToPPP(jsonArray, pppCode)
                 .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {
                     @Override
                     public void _onNext(JSONObject jsonObject) {
-
+                        PictureAirLog.i("激活成功", jsonObject.toJSONString());
                         dismissPWProgressDialog();
                         if (API2.PPPlist.size() != 0) {
                             API2.PPPlist.clear(); // 绑定成功 之后 清空API中的数据。
@@ -1076,7 +1078,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
                         if (AppManager.getInstance().checkActivity(ADVideoDetailProductActivity.class)) {//存在，是视频通过已有的ppp升级流程
                             AppManager.getInstance().killActivity(ADVideoDetailProductActivity.class);
-
+                            AppManager.getInstance().killActivity(EditStoryAlbumActivity.class);
                         } else {//照片通过ppp升级的流程
                             if (AppManager.getInstance().checkActivity(EditStoryAlbumActivity.class)) {
                                 AppManager.getInstance().killActivity(EditStoryAlbumActivity.class);

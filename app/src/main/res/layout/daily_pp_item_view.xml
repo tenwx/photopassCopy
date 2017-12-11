@@ -12,36 +12,24 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/daily_pp_header_logo_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/hk_item_back" />
 
         <TextView
             android:id="@+id/daily_pp_header_date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/daily_pp_header_card_no_tv"
             android:layout_marginLeft="@dimen/pp_dp_10"
-            android:layout_marginTop="@dimen/pp_dp_10"
             android:text="date"
             android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_12" />
-
-        <ImageView
-            android:id="@+id/daily_pp_header_logo_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/daily_pp_header_date_tv"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/daily_pp_header_card_no_tv2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/daily_pp_header_logo_iv"
-            android:layout_marginBottom="@dimen/pp_dp_10"
-            android:layout_marginLeft="@dimen/pp_dp_10"
-            android:text="card no"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_14"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/daily_pp_header_card_no_tv"
@@ -58,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/daily_pp_header_download_rl"
-            android:layout_marginBottom="@dimen/pp_dp_5"
             android:layout_marginLeft="@dimen/pp_dp_10"
             android:text="tip"
             android:textColor="@color/pp_dark_blue"
@@ -68,7 +55,7 @@
             android:id="@+id/daily_pp_header_buy_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/daily_pp_header_bottom_tip_tv"
+            android:layout_above="@+id/daily_pp_header_bottom_tip_tv"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/pp_dp_10"
             android:drawableTop="@drawable/story_buy"
@@ -81,7 +68,7 @@
             android:id="@+id/daily_pp_header_download_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/daily_pp_header_bottom_tip_tv"
+            android:layout_above="@+id/daily_pp_header_bottom_tip_tv"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/pp_dp_10"
             android:drawableTop="@drawable/download_white"

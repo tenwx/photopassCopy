@@ -517,7 +517,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 //							map.put(position,true);
 						}
 						notifyDataSetChanged();
-						handler.sendEmptyMessage(2);
+						handler.obtainMessage(2,position).sendToTarget();
 						break;
 					case R.id.ppp_card_head:
 						handler.obtainMessage(HEAD_CLICK,position).sendToTarget();

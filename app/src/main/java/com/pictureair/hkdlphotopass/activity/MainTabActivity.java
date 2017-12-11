@@ -588,7 +588,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
     }
 
-    private void setTabSelection(int index, boolean needHide) {
+    public void setTabSelection(int index, boolean needHide) {
 
         if (checkCurrentSelection(index)) {//如果正在显示，不需要做任何处理
             PictureAirLog.out("current showing tab is ---> " + index);

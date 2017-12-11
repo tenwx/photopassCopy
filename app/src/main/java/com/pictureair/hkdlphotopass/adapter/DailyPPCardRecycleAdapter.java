@@ -54,7 +54,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
         if (viewHolder instanceof RecyclerItemViewHolder) {
             final int pos = viewHolder.getAdapterPosition();
             final RecyclerItemViewHolder recyclerViewHolder = (RecyclerItemViewHolder) viewHolder;
-            ViewGroup.LayoutParams layoutParams = recyclerViewHolder.itemView.getLayoutParams();
             recyclerViewHolder.ppCodeTV.setText(dailyPPCardInfoArrayList.get(position).getPpCode());
             recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,29 +80,25 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
             if (dailyPPCardInfoArrayList.get(position).getPhotoCount() == 0) {//空卡
                 recyclerViewHolder.dateTV.setVisibility(View.GONE);
-
+//
                 recyclerViewHolder.expireTV.setVisibility(View.GONE);
                 recyclerViewHolder.downloadTV.setVisibility(View.GONE);
                 recyclerViewHolder.buyTV.setVisibility(View.GONE);
 
-                recyclerViewHolder.leftPhotoIV.setVisibility(View.GONE);
+//                recyclerViewHolder.leftPhotoIV.setVisibility(View.GONE);
                 recyclerViewHolder.leftLocationTV.setVisibility(View.GONE);
                 recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
-                recyclerViewHolder.rightPhotoIV.setVisibility(View.GONE);
+//                recyclerViewHolder.rightPhotoIV.setVisibility(View.GONE);
 
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                recyclerViewHolder.ppCodeTV2.setText(dailyPPCardInfoArrayList.get(position).getPpCode());
-                recyclerViewHolder.ppCodeTV2.setVisibility(View.VISIBLE);
             } else {
-                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                recyclerViewHolder.ppCodeTV2.setVisibility(View.GONE);
                 recyclerViewHolder.dateTV.setVisibility(View.VISIBLE);
                 recyclerViewHolder.dateTV.setText(dailyPPCardInfoArrayList.get(position).getShootDate().replace("-", "."));
 
                 recyclerViewHolder.expireTV.setVisibility(View.VISIBLE);
                 if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {//已升级PP
-                    recyclerViewHolder.expireTV.setText(String.format(context.getString(R.string.story_expire_time),
-                            dailyPPCardInfoArrayList.get(position).getExpiredDays() == 0 ? 60 : dailyPPCardInfoArrayList.get(position).getExpiredDays()));
+                    recyclerViewHolder.expireTV.setText(context.getString(R.string.story_expire_time));
+//                    recyclerViewHolder.expireTV.setText(String.format(context.getString(R.string.story_expire_time),
+//                            dailyPPCardInfoArrayList.get(position).getExpiredDays() == 0 ? 60 : dailyPPCardInfoArrayList.get(position).getExpiredDays()));
                     recyclerViewHolder.downloadTV.setVisibility(View.VISIBLE);
                     recyclerViewHolder.buyTV.setVisibility(View.INVISIBLE);
 
@@ -112,55 +107,60 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                     recyclerViewHolder.downloadTV.setVisibility(View.INVISIBLE);
                     recyclerViewHolder.buyTV.setVisibility(View.VISIBLE);
                 }
+            }
 
-                PhotoInfo leftPhoto = dailyPPCardInfoArrayList.get(position).getLeftPhoto();
-                PhotoInfo rightPhoto = dailyPPCardInfoArrayList.get(position).getRightPhoto();
-                if (leftPhoto != null) {
-                    String photoUrl;
-                    if (leftPhoto.getIsPaid() == 1) {
-                        photoUrl = Common.PHOTO_URL + leftPhoto.getPhotoThumbnail_512();
-
-                    } else {
-                        photoUrl = leftPhoto.getPhotoThumbnail_128();
-
-                    }
-                    recyclerViewHolder.leftPhotoIV.setVisibility(View.VISIBLE);
-                    if (recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
-                        GlideUtil.load(context, photoUrl, leftPhoto.getIsEnImage() == 1, recyclerViewHolder.leftPhotoIV);
-                        recyclerViewHolder.leftPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
-                    }
-                    recyclerViewHolder.leftLocationTV.setText(leftPhoto.getLocationName());
-                    recyclerViewHolder.leftLocationTV.setVisibility(View.VISIBLE);
-
-                }
-
-                if (rightPhoto != null) {
-                    String photoUrl;
-                    if (rightPhoto.getIsPaid() == 1) {
-                        photoUrl = Common.PHOTO_URL + rightPhoto.getPhotoThumbnail_512();
-
-                    } else {
-                        photoUrl = rightPhoto.getPhotoThumbnail_128();
-
-                    }
-                    recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
-                    recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    if (recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
-                        GlideUtil.load(context, photoUrl, rightPhoto.getIsEnImage() == 1, recyclerViewHolder.rightPhotoIV);
-                        recyclerViewHolder.rightPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
-                    }
-                    recyclerViewHolder.rightLocationTV.setText(rightPhoto.getLocationName());
-                    recyclerViewHolder.rightLocationTV.setVisibility(View.VISIBLE);
+            PhotoInfo leftPhoto = dailyPPCardInfoArrayList.get(position).getLeftPhoto();
+            PhotoInfo rightPhoto = dailyPPCardInfoArrayList.get(position).getRightPhoto();
+            if (leftPhoto != null) {
+                String photoUrl;
+                if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {
+                    photoUrl = Common.PHOTO_URL + leftPhoto.getPhotoThumbnail_512();
 
                 } else {
-                    recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
-                    recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_pholder), recyclerViewHolder.rightPhotoIV);
-                    recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
+                    photoUrl = leftPhoto.getPhotoThumbnail_128();
 
                 }
+                recyclerViewHolder.leftPhotoIV.setVisibility(View.VISIBLE);
+                if (recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.leftPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
+                    GlideUtil.load(context, photoUrl, leftPhoto.getIsEnImage() == 1, recyclerViewHolder.leftPhotoIV);
+                    recyclerViewHolder.leftPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
+                }
+                recyclerViewHolder.leftLocationTV.setText(leftPhoto.getLocationName());
+                recyclerViewHolder.leftLocationTV.setVisibility(View.VISIBLE);
+
+            } else {
+                recyclerViewHolder.leftPhotoIV.setVisibility(View.VISIBLE);
+                recyclerViewHolder.leftPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_pholder), recyclerViewHolder.leftPhotoIV);
+                recyclerViewHolder.leftPhotoIV.setTag(R.id.glide_image_tag, null);
+                recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
             }
-            recyclerViewHolder.itemView.setLayoutParams(layoutParams);
+
+            if (rightPhoto != null) {
+                String photoUrl;
+                if (dailyPPCardInfoArrayList.get(position).getActivated() == 1) {
+                    photoUrl = Common.PHOTO_URL + rightPhoto.getPhotoThumbnail_512();
+
+                } else {
+                    photoUrl = rightPhoto.getPhotoThumbnail_128();
+
+                }
+                recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
+                recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                if (recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.rightPhotoIV.getTag(R.id.glide_image_tag).equals(photoUrl)) {
+                    GlideUtil.load(context, photoUrl, rightPhoto.getIsEnImage() == 1, recyclerViewHolder.rightPhotoIV);
+                    recyclerViewHolder.rightPhotoIV.setTag(R.id.glide_image_tag, photoUrl);
+                }
+                recyclerViewHolder.rightLocationTV.setText(rightPhoto.getLocationName());
+                recyclerViewHolder.rightLocationTV.setVisibility(View.VISIBLE);
+
+            } else {
+                recyclerViewHolder.rightPhotoIV.setVisibility(View.VISIBLE);
+                recyclerViewHolder.rightPhotoIV.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                GlideUtil.load(context, GlideUtil.getDrawableUrl(context, R.drawable.story_no_photo_pholder), recyclerViewHolder.rightPhotoIV);
+                recyclerViewHolder.rightPhotoIV.setTag(R.id.glide_image_tag, null);
+                recyclerViewHolder.rightLocationTV.setVisibility(View.GONE);
+            }
             //设置卡片颜色
             recyclerViewHolder.cardView.setCardBackgroundColor(Color.rgb(dailyPPCardInfoArrayList.get(position).getColorR(),
                     dailyPPCardInfoArrayList.get(position).getColorG(), dailyPPCardInfoArrayList.get(position).getColorB()));
@@ -171,6 +171,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
                 logoUrl = GlideUtil.getDrawableUrl(context, R.drawable.photopass_logo_default);
             } else {
                 logoUrl = Common.PHOTO_URL + dailyPPCardInfoArrayList.get(position).getLogoUrl();
+//                logoUrl = GlideUtil.getDrawableUrl(context, R.drawable.hk_item_back);
             }
             if (recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag) == null || !recyclerViewHolder.logoIV.getTag(R.id.glide_image_tag).equals(logoUrl)) {
                 GlideUtil.load(context, logoUrl, recyclerViewHolder.logoIV);
@@ -196,7 +197,7 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
     public class RecyclerItemViewHolder extends RecyclerView.ViewHolder {
         private ImageView leftPhotoIV, rightPhotoIV, logoIV;
         private TextView leftLocationTV, rightLocationTV;
-        private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV, ppCodeTV2;
+        private TextView dateTV, ppCodeTV, buyTV, expireTV, downloadTV;
         private CardView cardView;
 
         public RecyclerItemViewHolder(View convertView) {
@@ -212,7 +213,6 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
             rightLocationTV = (TextView) itemView.findViewById(R.id.daily_pp_header_right_tv);
             cardView = (CardView) itemView.findViewById(R.id.daily_pp_item_cardv);
             logoIV = (ImageView) itemView.findViewById(R.id.daily_pp_header_logo_iv);
-            ppCodeTV2 = (TextView) itemView.findViewById(R.id.daily_pp_header_card_no_tv2);
 
             ViewGroup.LayoutParams params1 = leftPhotoIV.getLayoutParams();
             params1.height = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 54)) / COLUMN_COUNT;
@@ -224,7 +224,9 @@ public class DailyPPCardRecycleAdapter extends RecyclerView.Adapter<RecyclerView
 
     public interface OnRecyclerViewItemClickListener {
         void downloadClick(int position);
+
         void buyClick(int position);
+
         void itemClick(int position);
     }
 }

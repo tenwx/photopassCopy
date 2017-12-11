@@ -93,7 +93,7 @@
 #保持R文件不被混淆，否则，你的反射是获取不到资源id的
 -keep class **.R$* {*;}
 
-#-keep public class com.pictureAir.R$*{
+#-keep public class com.pictureair.R$*{
 #	public static final int *;
 #}
 

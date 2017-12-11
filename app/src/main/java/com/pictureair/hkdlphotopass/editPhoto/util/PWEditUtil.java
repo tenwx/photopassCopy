@@ -61,7 +61,7 @@ public class PWEditUtil implements IPWEditModel{
     public static final String FILTERPATH = "retlif";
     public static final String FRAMEPATH = "emarf";
 
-    public static final int FRAMECOUNT = 7+1;//正常frame的数量+1个frame_none
+    public static final int FRAMECOUNT = 2+1;//正常frame的数量+1个frame_none
     private ArrayList<FrameOrStikerInfo> frameInfos; //保存边框的集合。
     private List<String> filterPathList; // 保存滤镜图片路径的集合
     private ArrayList<FrameOrStikerInfo> stikerInfos;// 饰品图片路径列表

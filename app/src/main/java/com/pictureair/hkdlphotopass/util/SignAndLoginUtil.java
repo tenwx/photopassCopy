@@ -36,6 +36,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     private PWProgressDialog pwProgressDialog;
     private OnLoginSuccessListener onLoginSuccessListener;
     private Handler handler;
+    private int allowCollect;
     /**
      * 注册
      */
@@ -68,7 +69,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     }
 
     public void start(String account, String pwdStr, boolean isSign, boolean needModifyInfo,
-                            String name, String birthday, String gender, String country, String loginType, String verificationCode) {
+                            String name, String birthday, String gender, String country, String loginType, String verificationCode, int allowCollect) {
         this.account = account;
         this.pwd = pwdStr;
         this.isSign = isSign;
@@ -79,6 +80,7 @@ public class SignAndLoginUtil implements Handler.Callback {
         this.needModifyInfo = needModifyInfo;
         this.loginType = loginType;
         this.verificationCode = verificationCode;
+        this.allowCollect = allowCollect;
         if (loginType == null) {
             PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
         }
@@ -147,7 +149,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     private void register() {
         PictureAirLog.out("register start");
         String userAccount = AppUtil.getCorrectAccount(account);
-        API2.Register(userAccount, pwd)
+        API2.Register(userAccount, pwd, allowCollect)
                 .compose(((RxActivity)context).<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RxSubscribe<JSONObject>() {

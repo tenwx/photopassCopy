@@ -42,6 +42,7 @@
         android:textSize="@dimen/text_size_14" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/preview_makegift"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

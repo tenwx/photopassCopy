@@ -66,7 +66,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private ListView infoListView;
     private SubmitOrderListViewAdapter submitorderAdapter;
 
-    private float totalprice = 0;
+    private double totalprice = 0;
     private int cartCount = 0;
 
     private PWToast newToast;
@@ -75,7 +75,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private String orderId = "";
     private String currency;
     private String deliveryType = "3";//物流方式 (1和3拼接在一起的)
-    private float disPrice = 0;
+    private double disPrice = 0;
     private List<Address> addressList;
     private ListView transportListView;
     private AddressAdapter addressAdapter;
@@ -88,9 +88,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv, couponSubtractTv, discountSubtractTv;
 
     private int couponCount = 0;//优惠券数量
-    private float payPrice = 0;//优惠后总费
-    private float straightwayPreferentialPrice = 0;//优惠立减
-    private float invoicePay=0;//快递费用
+    private double payPrice = 0;//优惠后总费
+    private double straightwayPreferentialPrice = 0;//优惠立减
+    private double invoicePay=0;//快递费用
 
     private JSONArray couponCodes;//优惠券
 
@@ -176,7 +176,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             }
         }
         Intent intent = getIntent();
-        disPrice = intent.getFloatExtra("discountPrice", disPrice);
+        disPrice = intent.getDoubleExtra("discountPrice", disPrice);
 
         PictureAirLog.v(TAG, "discountPrice：" + disPrice);
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);

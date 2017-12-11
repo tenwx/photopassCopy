@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.payeco.android.plugin.PayecoPluginLoadingActivity;
+import com.pictureair.hkdlphotopass.alipay.AESOperator;
 import com.pictureair.hkdlphotopass.eventbus.BuySingleDigital;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.hkdlphotopass.MyApplication;
@@ -46,9 +47,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -162,7 +167,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                                 PictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
                             }
                             SuccessAfterPayment();
-                            finish();
+//                            finish();
                         }
                     }
 
@@ -262,7 +267,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
         showPWProgressDialog();
         paySyncResult = true;
-        paymentOrderHandler.postDelayed(runnable, 5000);
+//        paymentOrderHandler.postDelayed(runnable, 3000);
     }
 
     @Override
@@ -361,6 +366,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         productType = getIntent().getIntExtra("productType", 0);
         isBack = getIntent().getStringExtra("isBack");
         nameString = AppUtil.ReplaceString(nameString);
+        BigDecimal priceDecimal = new BigDecimal(priceString).setScale(2, BigDecimal.ROUND_HALF_UP);
+        priceString = String.valueOf(priceDecimal);
         PictureAirLog.v(TAG, "name: " + nameString + " orderid： " + orderid + "priceString: " + priceString);
 //		needAddress = getIntent().getBooleanExtra("addressType", false);
 //		if (!needAddress) {// 不需要地址
@@ -440,6 +447,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 sbmtButton.setEnabled(false);
+                sbmtButton.setBackgroundColor(getResources().getColor(R.color.gray_cover));
                 PictureAirLog.v(TAG, "-------------pay on click");
 
                 if (isNeedPay) {
@@ -535,8 +543,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
         if (0 == payType) {// 支付宝支付方式
             try {
-                payUtils.aliPay();
-
+                getAliPaySignKey(orderId);
+//                payUtils.aliPay("", "");
             } catch (Exception ex) {
                 ex.printStackTrace();
                 newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
@@ -594,6 +602,55 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         } else {
             PictureAirLog.v(TAG, "other");
         }
+    }
+
+    private void getAliPaySignKey(String orderId) {
+        showPWProgressDialog();
+        JSONObject params = new JSONObject();
+        params.put("tokenId", MyApplication.getTokenId());
+        params.put("out_trade_no", orderId);
+        params.put("subject", nameString);
+        params.put("body", introductString);
+        params.put("total_fee", priceString);
+        params.put("service", "mobile.securitypay.pay");
+        params.put("payment_type", "1");
+        params.put("_input_charset", "utf-8");
+        params.put("it_b_pay", "30m");
+        params.put("return_url", "m.alipay.com");
+        params.put("currency", "HKD");
+        params.put("forex_biz", "FP");
+        params.put("product_code", "NEW_WAP_OVERSEAS_SELLER");
+        params.put("type", "0");
+        API2.getAlipaySign(params)
+                .compose(this.<JSONObject>bindUntilEvent(ActivityEvent.DESTROY))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RxSubscribe<JSONObject>() {
+                    @Override
+                    public void _onNext(JSONObject jsonObject) {
+                        dismissPWProgressDialog();
+                        PictureAirLog.json("signed alipay", jsonObject.toJSONString());
+                        PictureAirLog.i("unSign", jsonObject.getString("unSign"));
+                        try {
+                            String origin = AESOperator.getInstance().decrypt(jsonObject.getString("unSign"), "pictureairapidsn", "1233210988906757");
+                            payUtils.aliPay(jsonObject.getString("sign"), origin);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void _onError(int status) {
+                        PWToast.getInstance(PaymentOrderActivity.this).setTextAndShow("error");
+                        dismissPWProgressDialog();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
     }
 
     private void getPayecoInfo(String orderId) {
@@ -800,7 +857,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        PictureAirLog.e(TAG, "requestCode" + requestCode);
+        PictureAirLog.e(TAG, "requestCode" + requestCode + "resultCode"+ resultCode);
 //        if (requestCode == 10) {
 //            //银联返回值处理
 //            payUtils.unDealResult();
@@ -809,9 +866,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (data == null) {
             return;
         }
-
+        PictureAirLog.e(TAG, "type" + data.getIntExtra("payType", -2));
         // ipaylink 支付回调。
-        if (requestCode == 3333 && resultCode == 111) {
+        if (requestCode == 4444 && resultCode == 111) {
             int payType = data.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
             switch (payType) {
                 case 0:
@@ -993,9 +1050,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "onUserEvent（）");
         if (baseBusEvent instanceof AsyncPayResultEvent) {
             AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
-            PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());
+            PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult() +"--asyncTimeOut--"+ asyncTimeOut);
 
-            if (asyncTimeOut) {//如果没有超时，需要处理
+            if (!asyncTimeOut) {//如果没有超时，需要处理
                 payAsyncResultJsonObject = asyncPayResultEvent.getAsyncPayResult();
                 //接受到推送之后，先将handler清空，然后再执行新的任务
                 paymentOrderHandler.removeCallbacks(runnable);
@@ -1053,7 +1110,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 final String notifyParams = result;
 
                 //查詢訂單狀態
-                getOrderStatus();
+//                getOrderStatus();
 
                 String mPayResult = result;
 
@@ -1071,7 +1128,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
                         if (!"0000".equals(respCode)) { //非0000，订单支付响应异常
                             String respDesc = json.getString("respDesc");
-//                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+                            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
                         }
                     }
 

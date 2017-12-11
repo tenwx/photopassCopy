@@ -84,39 +84,31 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <ScrollView
+    <RelativeLayout
         android:id="@+id/nopppinfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ll_button_area"
+        android:layout_height="match_parent"
         android:layout_below="@id/head2"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:background="@color/pp_light_gray_background">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ppp_img_iv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/pp_light_gray_background"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_above="@+id/ppp_intro_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/pp_dp_10"
+            android:src="@drawable/no_one_day_pass" />
 
-            <ImageView
-                android:id="@+id/ppp_img_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="5"
-                android:src="@drawable/ppp_introduce1" />
-
-            <TextView
-                android:id="@+id/ppp_intro_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_margin="20dp"
-                android:layout_weight="2"
-                android:text="@string/instruction"
-                android:textColor="@color/pp_dark_blue" />
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:gravity="center"
+            android:id="@+id/ppp_intro_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/no_one_day_pass"
+            android:textColor="@color/pp_dark_blue" />
+    </RelativeLayout>
 
     <com.pictureair.hkdlphotopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"
@@ -132,7 +124,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="@dimen/pp_dp_16">
+        android:padding="@dimen/pp_dp_16"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/button_buy_ppp"

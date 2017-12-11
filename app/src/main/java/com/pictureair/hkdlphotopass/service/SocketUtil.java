@@ -133,7 +133,7 @@ public class SocketUtil {
 
             EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
         } else {//如果不是处于story页面
-
+//            EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
         }
     }
 

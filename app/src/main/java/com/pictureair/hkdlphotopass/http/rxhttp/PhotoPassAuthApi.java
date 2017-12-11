@@ -11,6 +11,8 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -122,4 +124,13 @@ public interface PhotoPassAuthApi {
     @Multipart
     @POST
     Observable<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String, RequestBody> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
+
+    /**
+     * 异步post请求，有请求参数
+     *
+     * @param url  请求url
+     * @param body 请求参数
+     */
+    @POST
+    Observable<BasicResult<JSONObject>> post(@Url String url, @Body RequestBody body, @DownloadProgress @Header(DownloadProgress.HEADER) ProgressListener listener);
 }

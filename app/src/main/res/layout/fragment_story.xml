@@ -137,7 +137,7 @@
                 android:layout_height="match_parent"
                 android:fillViewport="true"
                 android:scrollbars="none"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -216,6 +216,7 @@
                         android:textSize="@dimen/text_size_14" />
 
                     <com.pictureair.hkdlphotopass.widget.CustomTextView
+                        android:visibility="gone"
                         android:id="@+id/story_activate_daily_ppp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

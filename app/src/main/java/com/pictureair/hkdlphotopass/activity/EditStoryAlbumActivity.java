@@ -772,6 +772,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
                 showPWProgressDialog();
                 //判断是否有可用的ppp
                 getAvailablePPP();
+//                或者直接购买
+//                getGoods();
                 break;
 
             case R.id.tip_rl:
@@ -872,7 +874,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
                 .map(new Func1<JSONObject, GoodsInfo>() {
                     @Override
                     public GoodsInfo call(JSONObject jsonObject) {
-                        PictureAirLog.d("parse goods json");
+                        PictureAirLog.json("parse goods json", jsonObject.toJSONString());
                         List<GoodsInfo> allGoodsList1 = new ArrayList<>();
                         GoodsInfoJson goodsInfoJson = JsonTools.parseObject(jsonObject.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                         if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {

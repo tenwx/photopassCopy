@@ -204,7 +204,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 startActivity(intent);
                 break;
 
-            case R.id.preview_blur_dialog_buy_ppp_ll://购买ppp
+            case R.id.preview_blur_dialog_buy_ppp_ll://购买oneDay Pass,新版本只能购买一日通，，，，
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID || pppGoodsInfo == null) {
                     pwToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
@@ -228,7 +228,7 @@ public class ADVideoDetailProductActivity extends BaseActivity implements View.O
                 }
                 break;
 
-            case R.id.preview_blur_dialog_upgrade_daily_photo_ll://使用已存在的daily ppp升级
+            case R.id.preview_blur_dialog_upgrade_daily_photo_ll://使用已存在的一日通/一卡通升级，新版本方式
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     pwToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 } else {
