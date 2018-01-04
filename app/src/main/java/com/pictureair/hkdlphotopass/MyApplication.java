@@ -16,6 +16,9 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.pictureair.hkdlphotopass.http.glide.OkHttpUrlLoader;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.hkdlphotopass.greendao.DaoMaster;
 import com.pictureair.hkdlphotopass.greendao.DaoSession;
@@ -34,6 +37,9 @@ import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.database.Database;
 
+import java.io.InputStream;
+
+import cn.jpush.android.api.JPushInterface;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -91,7 +97,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LeakCanary.install(this);
-
+        Glide.get(this).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory());
         if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                     .setDefaultFontPath(CustomFontManager.CUSOTM_FONT_NAME)
@@ -113,6 +119,10 @@ public class MyApplication extends Application {
         UmengUtil.initUmeng();
         BaiduMobUtil.init(this, true, false);
         PictureAirLog.out("application on create--->");
+
+        //JPush
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
     /**

@@ -442,7 +442,7 @@
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->
-        <service android:name="com.pictureair.hkdlphotopass.service.NotificationService" />
+        <!--<service android:name="com.pictureair.hkdlphotopass.service.NotificationService" />-->
         <service android:name="com.pictureair.hkdlphotopass.service.BreakpointDownloadService" />
 
         <!-- 开机自启 -->
@@ -456,6 +456,20 @@
             </intent-filter>
         </receiver>
 
+        <!--JPush  Receiver-->
+        <receiver
+            android:name="com.pictureair.hkdlphotopass.receiver.MyReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_CLICK_ACTION" />
+                <action android:name="cn.jpush.android.intent.CONNECTION" />
+                <category android:name="com.pictureair.hkdlphotopass" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

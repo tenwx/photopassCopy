@@ -1997,7 +1997,7 @@ public class AppUtil {
                 } else {
                     config.setLocale(Locale.SIMPLIFIED_CHINESE);
                 }
-            } else if (config.locale.toString().contains("TW") || config.locale.getLanguage().contains("HK")) {
+            } else if (config.locale.toString().contains("TW") || config.locale.toString().contains("HK")) {
                 languageType = Common.TRADITIONAL_CHINESE;
                 if (Build.VERSION.SDK_INT < 24) {
                     config.locale = Locale.TRADITIONAL_CHINESE;
@@ -2015,7 +2015,7 @@ public class AppUtil {
         }
         context.getResources().updateConfiguration(config, displayMetrics);
         SPUtils.put(context, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
-        PictureAirLog.d("apputil language ---> init language completed");
+        PictureAirLog.d("apputil language ---> init language completed----》" + languageType);
     }
 
     /**

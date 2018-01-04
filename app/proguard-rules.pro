@@ -279,3 +279,16 @@ public static java.lang.String TABLENAME;
 -keepclassmembers class com.payeco.android.plugin {public *;}
 -keepattributes *Annotation*
 -keepattributes *JavascriptInterface*
+
+-keep class cn.manmanda.util.https_glide.OkHttpGlideModule
+
+#JPUSH
+-dontoptimize
+-dontpreverify
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+-keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
+
+-dontwarn cn.jiguang.**
+-keep class cn.jiguang.** { *; }

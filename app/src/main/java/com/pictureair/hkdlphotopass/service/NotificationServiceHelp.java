@@ -176,6 +176,7 @@ public class NotificationServiceHelp {
                         public void onError(
                                 SocketIOException socketIOException) {
                             // TODO Auto-generated method stub
+
                             PictureAirLog.d(TAG, "an Error occured：" + socketIOException.toString());
                             socketIOException.printStackTrace();
                             isConnected = false;
@@ -221,6 +222,6 @@ public class NotificationServiceHelp {
                 }
 
             }
-        }.start();
+        };
     }
 }

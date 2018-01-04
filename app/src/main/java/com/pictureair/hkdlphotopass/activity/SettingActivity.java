@@ -24,6 +24,8 @@ import com.pictureair.hkdlphotopass.util.SettingUtil;
 
 import java.lang.ref.WeakReference;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * 用户功能设置
  * @author talon
@@ -230,6 +232,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                     application.setMainTabIndex(-1);   // 设置 进入 app为主页
                     //断开推送
                     AppExitUtil.getInstance().AppLogout();
+                    JPushInterface.deleteAlias(this, 0);//删除JPush别名
                     break;
 
                 default:

@@ -11,12 +11,19 @@ android {
         applicationId "com.pictureair.hkdlphotopass"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 14
-        versionName "3.0.0"
+        versionCode 15
+        versionName "3.0.1"
         multiDexEnabled true//是使用多个dex文件，防止方法过多，超过65536限制
         ndk {//so文件的过滤
-            abiFilters "armeabi", "armeabi-v7a"
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a'
         }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "3ac6549fef1da5455d188f30", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
 
     packagingOptions {
@@ -167,4 +174,9 @@ dependencies {
     compile files('libs/payecoplugin_2.1.6.jar')
     compile files('libs/org.apache.http.legacy.jar')
     compile files('libs/locSDK_4.2.jar')
+    compile files('libs/Baidu_Mtj_3.8.1.7.jar')
+
+    //JPush
+    compile 'cn.jiguang.sdk:jpush:3.0.9'  // 此处以JPush 3.0.9 版本为例。
+    compile 'cn.jiguang.sdk:jcore:1.1.7'  // 此处以JCore 1.1.7 版本为例。
 }

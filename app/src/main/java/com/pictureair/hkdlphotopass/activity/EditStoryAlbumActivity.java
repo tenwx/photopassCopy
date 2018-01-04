@@ -240,7 +240,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
             public void onRefresh() {
                 PictureAirLog.out("start refresh");
                 if (albumArrayList.size() != 0 && !pwStickySectionRecyclerView.isLoadMore() && !editMode) {//有数量，不在加载更多，也没有编辑状态
-                    getPhotosFromNetWork(API2.GET_NEW_PHOTOS, ppRefreshTime, ppRefreshIds);
+                    getPhotosFromNetWork(API2.GET_NEW_PHOTOS, ppRefreshTime, "");
                 }
             }
         });
@@ -348,7 +348,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
                     @Override
                     public Integer call(Boolean aBoolean) {
-                        PictureAirLog.d("need get photos from net-->" + aBoolean);
+                        PictureAirLog.i("need get photos from net-->" + aBoolean);
                         if (!aBoolean) {
                             //从数据库中获取数据
                             getPhotosFromDB();

@@ -127,8 +127,8 @@
     <string name="story_scan_ppp">Activate Disney PhotoPass+</string>
     <string name="story_scan_daily_ppp">Activate your PhotoPass One Day Pass</string>
     <string name="story_card">Card No.:%1$s</string>
-    <string name="story_blur_expire_time">(Please purchase photos within 30 days since captured)</string>
-    <string name="story_expire_time">(Please download photos within 30 days since purchased)</string>
+    <string name="story_blur_expire_time">(Purchase photos within 30 days since captured)</string>
+    <string name="story_expire_time">(Download photos within 30 days since purchased)</string>
     <string name="story_want_to_buy">Buy</string>
     <string name="story_buy_dialog">Buy all your Character Dining digital photos linked to 1 Disney Character Dining PhotoPass Card taken during 1 day of visit</string>
     <string name="story_buy_dialog1">Buy all your digital photos linked to 1 Disney PhotoPass Card taken during 1 day of visit at the park</string>
@@ -750,4 +750,6 @@
     <string name="photo_download_clear_tips">下載完成後才可以清除</string>
     <string name="smssdk_write_identify_code">填寫驗證碼</string>
     <string name="upgrade_success">Active Success</string>
+    <string name="web_ssl_error_tips">You will be redirected to the Disney PhotoPass official website now.</string>
+    <string name="web_tips_confirm">Continue</string>
 </resources>

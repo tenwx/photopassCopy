@@ -2,13 +2,18 @@ package com.pictureair.hkdlphotopass.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.http.SslError;
 import android.util.AttributeSet;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.pictureair.hkdlphotopass.util.PictureAirLog;
+import com.pictureair.hkdlphotopass.widget.wheelview.CustomWebClient;
 
 /**
  * Created by bass on 16/4/22.
@@ -65,8 +70,8 @@ public class CustomWebView extends WebView {
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         }
         setWebChromeClient();
-        setWebViewClient();
-
+//        setWebViewClient();
+        PictureAirLog.i("https url", url);
         loadUrl(url);
     }
 
@@ -104,6 +109,12 @@ public class CustomWebView extends WebView {
                     myWebviewImp.webViewFailedToLoad();
                 }
             }
+
+//            @Override
+//            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+////                super.onReceivedSslError(view, handler, error);
+//                handler.proceed();
+//            }
         });
     }
 

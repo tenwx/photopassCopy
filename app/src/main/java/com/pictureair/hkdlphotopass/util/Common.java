@@ -49,7 +49,7 @@ public class Common {
 //    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 //    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
 //    public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
-    public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
+    public final static String TERMS_OF_USE = "http://disneytermsofuse.com/";//使用条款
     public final static String HELP_FAQ = "https://www.disneyphotopass.com.cn/help.html?type=app&lange=";//FAQ
 
     //接口
@@ -408,23 +408,23 @@ public class Common {
      * HK disney 线上域名服务器
      */
 //    public static final String BASE_URL_TEST = "http://52.74.190.1:3006";
-        public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.hk:3006";
-    public static final String PHOTO_URL = "http://www.disneyphotopass.com.hk:4000/";
+        public static final String BASE_URL_TEST = "https://api.disneyphotopass.com.hk/shoppingapi";
+    public static final String PHOTO_URL = "https://www.disneyphotopass.com.hk/";
     //    public static final String PHOTO_URL = "http://www.disneyphotopass.com.hk:4000/";
 
     //    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/alipayNotify";//alipay的异步通知URL
     public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String PAYECO_NOTIFY = "http://api.disneyphotopass.com.hk:3006/api/payecoNotify";//payeco的异步通知URL
     public static final String BARCODEURL = "http://www.disneyphotopass.com.hk?src=pp&vid=";
-    public final static String POLICY_AGREEMENT = "http://Hk-DisneyWeb-LB-332234259.ap-southeast-1.elb.amazonaws.com/policy.html?source=outer";  //政策 1
-    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.hk/terms.html?source=outer";  //条款 2
-    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+    public final static String POLICY_AGREEMENT = "https://Hk-DisneyWeb-LB-332234259.ap-southeast-1.elb.amazonaws.com/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.hk/terms.html?source=outer";  //条款 2
+    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 
     public final static String POLICY_AGREEMENT_CN = "https://www.hongkongdisneyland.cn/privacy-legal/";
     public final static String POLICY_AGREEMENT_EN = "https://www.hongkongdisneyland.com/privacy-legal/";
     public final static String POLICY_AGREEMENT_HK = "https://www.hongkongdisneyland.com/zh-hk/privacy-legal/";
 
-    public static final String BASE_URL_SOCKET = "http://api.disneyphotopass.com.hk:3006";
+    public static final String BASE_URL_SOCKET = "https://api.disneyphotopass.com.hk/shoppingapi";
 
     public static final String SITE_ID = "siteId";
 
@@ -446,5 +446,5 @@ public class Common {
     //   中文： http://www.disneyphotopass.com.hk/help.html?lange=cn
     //   英文： http://www.disneyphotopass.com.hk/help.html?lange=en
     //   繁体： http://www.disneyphotopass.com.hk/help.html?lange=zh-hk
-    public final static String FAQ = "http://www.disneyphotopass.com.hk/help.html?lange=";
+    public final static String FAQ = "https://www.disneyphotopass.com.hk/help.html?lange=";
 }

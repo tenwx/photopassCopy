@@ -1,11 +1,17 @@
 package com.pictureair.hkdlphotopass.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -81,6 +87,30 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         myToast = new PWToast(this);
         webView.setMyWebViewImp(this);
         getData();
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+//                super.onReceivedSslError(view, handler, error);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
+                builder.setTitle(R.string.web_ssl_error_tips);
+                builder.setMessage(" ");
+                builder.setPositiveButton(R.string.cancel1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.cancel();
+                    }
+                });
+                builder.setNegativeButton(R.string.web_tips_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.proceed();
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            }
+        });
     }
 
     private void getData() {
@@ -94,6 +124,8 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
             webView.start(Common.TERMS_AGREEMENT + "&lang=" + AppUtil.getLanguageY(language));
             setTopTitleShow(R.string.terms); // 设置标题
         } else if (key == 3) {
+            String we = String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), AppUtil.getLanguageY(language));
+            PictureAirLog.i("we", we);
             webView.start(String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), AppUtil.getLanguageY(language)));
             setTopTitleShow(R.string.mypage_opinions); // 设置标题
         } else if (key == 4) {  //海外支付的链接。

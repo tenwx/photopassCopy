@@ -120,7 +120,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             } else if (resultString.contains("promoid=")) {//包含promoid   https://www.disneyphotopass.com.cn/?src=coupon&promoid=xxxxxxxxxxxxxxxx
                 code = resultString.substring(resultString.lastIndexOf("promoid=") + 8, resultString.length());//promoid仅仅是抵用券的code
 
-            } else if (resultString.length() >= 16 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于16-22位之间，并且都是纯数字
+            } else if (resultString.length() >= 16 && resultString.length() <= 22) {//不包含vid，但是属于16-22位之间，单纯一串号码
                 code = resultString;
 
             } else if (getIntent().getStringExtra("type") == null && resultString.contains("chid=") && resultString.contains("uid=")) {//只有故事页面进入，才会判断递推号

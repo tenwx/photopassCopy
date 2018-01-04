@@ -10,6 +10,7 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
+import com.alibaba.fastjson.JSONArray;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.activity.MainTabActivity;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -41,7 +43,7 @@ public class SocketUtil {
     private Context mContext;
     private ArrayList<String> syncMessageList = new ArrayList<>();
     private MyApplication application = MyApplication.getInstance();
-    private Handler handler;
+//    private Handler handler;
     private String userId;
     private static final String TAG = "SocketUtil";
     public static final int SOCKET_RECEIVE_DATA = 3333;
@@ -51,7 +53,7 @@ public class SocketUtil {
 
     public SocketUtil(Context mContext, Handler handler) {
         this.mContext = mContext;
-        this.handler = handler;
+//        this.handler = handler;
         userId = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         //获得震动服务
         vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -93,7 +95,8 @@ public class SocketUtil {
     private void eventUpgradedPhotos(JSONObject updateJsonObject, boolean isDelete) {
         PictureAirLog.out("upgrade photo---->" + updateJsonObject.toString());
         int socketType = -1;
-        String ppCode = null, shootDate = null, photoId = null, siteId = null;
+        String ppCode = "", shootDate = "", photoId = "";
+        org.json.JSONArray siteID;
         //1.更新数据库
         try {
             if (syncMessageList.contains(updateJsonObject.toString() + (isDelete ? "del" : "sync"))) {//和上次的数据相同，直接返回
@@ -107,7 +110,8 @@ public class SocketUtil {
                 socketType = SocketEvent.SOCKET_PHOTOPASS;
                 ppCode = updateJsonObject.getString("customerId");
                 shootDate = updateJsonObject.optString("shootDate");
-                siteId = updateJsonObject.getString("locationIds");
+                siteID = updateJsonObject.getJSONArray("locationIds");
+                List<String> siteId = JSONArray.parseArray(siteID.toString(), String.class);
                 PictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, siteId, isDelete);
                 if (isDelete) {//清空刷新标记
                     PictureAirDbManager.deleteJsonInfosByTypeAndString(JsonInfo.DAILY_PP_REFRESH_ALL_TYPE, JsonInfo.getNeedRefreshString(ppCode, shootDate));
@@ -133,7 +137,7 @@ public class SocketUtil {
 
             EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
         } else {//如果不是处于story页面
-//            EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
+            EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
         }
     }
 
@@ -144,9 +148,9 @@ public class SocketUtil {
      */
     private void eventCatchOrderInfoOf(JSONObject message) {
         try {
+            showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_order_submit_msg));
             String info = message.getString("info");
             PictureAirLog.out("接受的订单信息:" + info);
-            showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_order_submit_msg));
         } catch (NumberFormatException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -167,7 +171,7 @@ public class SocketUtil {
         try {
             photoCount = Integer.valueOf(message.getString("c"));
             if (photoCount > 0) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, sendType).sendToTarget();// photoCount大于0 的时候去清空
+//                handler.obtainMessage(SOCKET_RECEIVE_DATA, sendType).sendToTarget();// photoCount大于0 的时候去清空
                 if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity)) {
                     int photoCountLocal = SPUtils.getInt(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
                     photoCount = photoCount + photoCountLocal;
@@ -251,7 +255,7 @@ public class SocketUtil {
             eventDoneOrderPay(message);
 //            eventUpgradedPhotos(message, false);
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
+//                handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
             }
 
         } else if (envenStr.equals("upgradedPhotos")) {//升级照片推送
@@ -260,20 +264,20 @@ public class SocketUtil {
             }
             eventUpgradedPhotos(message, false);
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "upgradedPhoto").sendToTarget();//清空推送，不能移动位置。
+//                handler.obtainMessage(SOCKET_RECEIVE_DATA, "upgradedPhoto").sendToTarget();//清空推送，不能移动位置。
             }
 
         } else if (envenStr.equals("catchOrderInfoOf" + userId)) {//下单推送
-            handler.obtainMessage(SOCKET_RECEIVE_DATA, "orderSend").sendToTarget();//清空推送，不能移动位置。
+//            handler.obtainMessage(SOCKET_RECEIVE_DATA, "orderSend").sendToTarget();//清空推送，不能移动位置。
             eventCatchOrderInfoOf(message);
 
         } else if (envenStr.equals("sendNewPhotosCountOf" + userId)) {//新照片推送
-            handler.obtainMessage(SOCKET_RECEIVE_DATA, "photoSend").sendToTarget();//清空推送，不能移动位置。
+//            handler.obtainMessage(SOCKET_RECEIVE_DATA, "photoSend").sendToTarget();//清空推送，不能移动位置。
             eventSendNewPhotosCountOf(message, "photoSend");
 
         } else if (envenStr.equals("videoGenerate")) {//视频生成推送
-            handler.obtainMessage(SOCKET_RECEIVE_DATA, "videoGenerate").sendToTarget();//清空推送，不能移动位置。
-            handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+//            handler.obtainMessage(SOCKET_RECEIVE_DATA, "videoGenerate").sendToTarget();//清空推送，不能移动位置。
+//            handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventVideoGenerate(message);
 
         } else if (envenStr.equals("delPhotos")) {//删除图片，以及删除pp对应的逻辑
@@ -283,7 +287,7 @@ public class SocketUtil {
             //处理删除照片的逻辑
             eventUpgradedPhotos(message, true);
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhotos").sendToTarget();//清空推送，不能移动位置。
+//                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhotos").sendToTarget();//清空推送，不能移动位置。
             }
         }
     }

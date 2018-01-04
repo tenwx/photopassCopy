@@ -883,4 +883,6 @@
     <string name="opinions_online">在線客服</string>
     <string name="opinions_feedback">意見反饋</string>
     <string name="upgrade_success">激活成功</string>
+    <string name="web_ssl_error_tips">正在訪問香港迪士尼處處拍官方網站。</string>
+    <string name="web_tips_confirm">確認</string>
 </resources>

@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,6 +72,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.android.schedulers.AndroidSchedulers;
@@ -171,6 +173,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         hasCreated = true;
         initView();
         setTabSelection(0, false);
+        String userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
+        PictureAirLog.i("userId", userId);
+        if (!TextUtils.isEmpty(userId)) {
+            JPushInterface.setAlias(this, 0, userId);
+        }
     }
 
     //清除acahe框架的缓存数据

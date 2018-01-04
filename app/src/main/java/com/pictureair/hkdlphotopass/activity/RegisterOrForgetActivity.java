@@ -12,6 +12,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -41,6 +42,8 @@ import com.pictureair.hkdlphotopass.widget.RegisterOrForgetCallback;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.jpush.android.api.JPushInterface;
 
 
 /**

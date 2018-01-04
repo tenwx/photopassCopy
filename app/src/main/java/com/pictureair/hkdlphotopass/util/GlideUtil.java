@@ -83,7 +83,7 @@ public class GlideUtil {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.ic_loading)
                 .error(R.drawable.ic_failed)
-                .isEncrypted(isEncrypted)
+//                .isEncrypted(isEncrypted)
                 .dontAnimate()
                 .into(imageView);
     }
@@ -140,7 +140,7 @@ public class GlideUtil {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.ic_loading)
                 .error(R.drawable.ic_failed)
-                .isEncrypted(isEncrypted)
+//                .isEncrypted(isEncrypted)
                 .signature(new StringSignature(signature))
                 .dontAnimate()
                 .into(imageView);
@@ -214,7 +214,7 @@ public class GlideUtil {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.ic_loading)
                 .error(R.drawable.ic_failed)
-                .isEncrypted(isEncrypted)
+//                .isEncrypted(isEncrypted)
                 .dontAnimate()
                 .into(simpleTarget);
     }

@@ -246,11 +246,11 @@ public class PictureAirDbManager {
 
     /**
      * 更新指定照片的购买状态
-     *
-     * @param ppCode    pp码
+     *  @param ppCode    pp码
      * @param shootDate 绑定时间
+     * @param siteId
      */
-    public static void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, String siteId, boolean isDelete) {
+    public static void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate, List<String> siteId, boolean isDelete) {
         PhotoInfoDao photoInfoDao = MyApplication.getInstance().getDaoSession().getPhotoInfoDao();
         ArrayList<PhotoInfo> photos;
         if (isDelete) {//删除操作
@@ -262,9 +262,9 @@ public class PictureAirDbManager {
 
         } else {//同步
             photos = (ArrayList<PhotoInfo>) photoInfoDao.queryBuilder()
-                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate), PhotoInfoDao.Properties.SiteId.eq(siteId))
+                    .where(PhotoInfoDao.Properties.PhotoPassCode.like("%" + ppCode + "%"), PhotoInfoDao.Properties.ShootDate.eq(shootDate), PhotoInfoDao.Properties.SiteId.in(siteId))
                     .build().forCurrentThread().list();
-            if (photos == null && photos.size() == 0) {
+            if (photos == null || photos.size() == 0) {
                 return;
             }
             for (PhotoInfo photo : photos) {

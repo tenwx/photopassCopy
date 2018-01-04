@@ -749,4 +749,6 @@
     <string name="photo_download_clear_tips">下載完成後才可以清除</string>
     <string name="smssdk_write_identify_code">填寫驗證碼</string>
     <string name="upgrade_success">激活成功</string>
+    <string name="web_ssl_error_tips">正在访问迪士尼处处拍官方网站。</string>
+    <string name="web_tips_confirm">确认</string>
 </resources>

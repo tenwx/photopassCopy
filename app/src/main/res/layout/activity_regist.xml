@@ -52,15 +52,21 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:fillViewport="true"-->
+    <!--android:scrollbars="none">-->
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/regist_content_layout"
@@ -383,263 +389,264 @@
                         android:textSize="@dimen/text_size_14" />
                 </RelativeLayout>
             </LinearLayout>
-            <!-- 忘记密码-->
+        </ScrollView>
+        <!-- 忘记密码-->
+        <LinearLayout
+            android:id="@+id/forget_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/pp_dp_20"
+            android:layout_marginRight="@dimen/pp_dp_20"
+            android:orientation="vertical"
+            android:visibility="gone">
+
             <LinearLayout
-                android:id="@+id/forget_ll"
+                android:id="@+id/forget_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/pp_dp_20"
-                android:layout_marginRight="@dimen/pp_dp_20"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/reset_pwd"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_20" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/forget_title"
+                    android:id="@+id/rl_forget_country"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_height="@dimen/pp_dp_30"
+                    android:layout_marginTop="@dimen/pp_dp_20">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <com.pictureair.hkdlphotopass.widget.CustomTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="@string/reset_pwd"
+                        android:gravity="bottom"
+                        android:paddingLeft="@dimen/pp_dp_10"
+                        android:paddingRight="@dimen/pp_dp_10"
+                        android:text="@string/country"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_20" />
+                        android:textSize="@dimen/text_size_16" />
+
+                    <com.pictureair.hkdlphotopass.widget.CustomTextView
+                        android:id="@+id/tv_forget_country"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="@dimen/pp_dp_10"
+                        android:layout_weight="1"
+                        android:gravity="right|bottom"
+                        android:text="@string/hongkong"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
 
+                <!-- 手机输入这一行 -->
                 <LinearLayout
+                    android:id="@+id/ll_forget_mobile_centen"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_dp_40"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/rl_forget_country"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/pp_dp_30"
-                        android:layout_marginTop="@dimen/pp_dp_20">
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/pp_dp_5"
+                        android:paddingRight="@dimen/pp_dp_5">
 
-                        <com.pictureair.hkdlphotopass.widget.CustomTextView
+                        <ImageView
+                            android:id="@+id/forget_phone_img"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="bottom"
-                            android:paddingLeft="@dimen/pp_dp_10"
-                            android:paddingRight="@dimen/pp_dp_10"
-                            android:text="@string/country"
+                            android:layout_marginLeft="@dimen/pp_dp_10"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/login_phone" />
+
+                        <com.pictureair.hkdlphotopass.widget.CustomTextView
+                            android:id="@+id/tv_forget_country_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/pp_dp_10"
+                            android:gravity="center_vertical|right"
+                            android:paddingRight="5dp"
+                            android:text="+852"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_16" />
 
-                        <com.pictureair.hkdlphotopass.widget.CustomTextView
-                            android:id="@+id/tv_forget_country"
-                            android:layout_width="0dp"
+                        <View
+                            android:layout_width="@dimen/pp_px_1"
+                            android:layout_height="@dimen/text_size_16"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@color/white" />
+
+                        <com.pictureair.hkdlphotopass.widget.EditTextWithClear
+                            android:id="@+id/et_forget_write_phone"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/pp_dp_10"
-                            android:layout_weight="1"
-                            android:gravity="right|bottom"
-                            android:text="@string/hongkong"
+                            android:layout_gravity="center_vertical"
+                            android:background="@null"
+                            android:gravity="center_vertical|left"
+                            android:hint="@string/smssdk_write_mobile_phone"
+                            android:imeOptions="actionNext"
+                            android:inputType="phone"
+                            android:maxLength="200"
+                            android:paddingLeft="@dimen/pp_dp_5"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_14" />
+                            android:textColorHint="@color/white"
+                            android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
-                    <!-- 手机输入这一行 -->
-                    <LinearLayout
-                        android:id="@+id/ll_forget_mobile_centen"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/pp_dp_40"
-                        android:orientation="vertical">
+                        android:layout_height="1px"
+                        android:background="@color/white" />
+                </LinearLayout>
 
-                        <LinearLayout
+                <LinearLayout
+                    android:id="@+id/ll_forget_pwd_centen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_dp_30"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/pp_dp_30"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/pp_dp_5"
+                        android:paddingRight="5dp">
+
+                        <com.pictureair.hkdlphotopass.widget.EditTextWithClear
+                            android:id="@+id/forget_pwd"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/pp_dp_30"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingBottom="@dimen/pp_dp_5"
-                            android:paddingRight="@dimen/pp_dp_5">
-
-                            <ImageView
-                                android:id="@+id/forget_phone_img"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="@dimen/pp_dp_10"
-                                android:adjustViewBounds="true"
-                                android:src="@drawable/login_phone" />
-
-                            <com.pictureair.hkdlphotopass.widget.CustomTextView
-                                android:id="@+id/tv_forget_country_num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="@dimen/pp_dp_10"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"
-                                android:text="+852"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/text_size_16" />
-
-                            <View
-                                android:layout_width="@dimen/pp_px_1"
-                                android:layout_height="@dimen/text_size_16"
-                                android:layout_marginBottom="2dp"
-                                android:layout_marginTop="2dp"
-                                android:background="@color/white" />
-
-                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
-                                android:id="@+id/et_forget_write_phone"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical"
-                                android:background="@null"
-                                android:gravity="center_vertical|left"
-                                android:hint="@string/smssdk_write_mobile_phone"
-                                android:imeOptions="actionNext"
-                                android:inputType="phone"
-                                android:maxLength="200"
-                                android:paddingLeft="@dimen/pp_dp_5"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/white"
-                                android:textSize="@dimen/text_size_16" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1px"
-                            android:background="@color/white" />
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:background="@null"
+                            android:gravity="center_vertical"
+                            android:hint="@string/pwd"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPassword"
+                            android:maxLength="200"
+                            android:paddingLeft="@dimen/pp_dp_10"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/ll_forget_pwd_centen"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="1px"
+                        android:background="@color/white" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_forget_pwd2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/pp_dp_30"
                         android:layout_marginTop="@dimen/pp_dp_30"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/pp_dp_30"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingBottom="@dimen/pp_dp_5"
-                            android:paddingRight="5dp">
-
-                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
-                                android:id="@+id/forget_pwd"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical"
-                                android:background="@null"
-                                android:gravity="center_vertical"
-                                android:hint="@string/pwd"
-                                android:imeOptions="actionNext"
-                                android:inputType="textPassword"
-                                android:maxLength="200"
-                                android:paddingLeft="@dimen/pp_dp_10"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/white"
-                                android:textSize="@dimen/text_size_16" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1px"
-                            android:background="@color/white" />
-
-                        <LinearLayout
-                            android:id="@+id/ll_forget_pwd2"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/pp_dp_30"
-                            android:layout_marginTop="@dimen/pp_dp_30"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingBottom="@dimen/pp_dp_5"
-                            android:paddingRight="@dimen/pp_dp_5">
-
-                            <com.pictureair.hkdlphotopass.widget.EditTextWithClear
-                                android:id="@+id/forget_pwd_again"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@null"
-                                android:hint="@string/smssdk_pwd2"
-                                android:imeOptions="actionNext"
-                                android:inputType="textPassword"
-                                android:maxLength="200"
-                                android:paddingLeft="@dimen/pp_dp_10"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/white"
-                                android:textSize="@dimen/text_size_16" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1px"
-                            android:background="@color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_forget_put_identify_centen"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/pp_dp_40"
-                        android:layout_marginTop="@dimen/pp_dp_20"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/pp_dp_5"
                         android:paddingRight="@dimen/pp_dp_5">
 
                         <com.pictureair.hkdlphotopass.widget.EditTextWithClear
-                            android:id="@+id/et_forget_put_identify"
-                            android:layout_width="0dp"
+                            android:id="@+id/forget_pwd_again"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/pp_dp_10"
-                            android:layout_marginRight="@dimen/pp_dp_20"
-                            android:layout_weight="1"
-                            android:background="@drawable/textedit_white"
-                            android:gravity="center"
-                            android:hint="@string/smssdk_write_identify_code2"
-                            android:imeOptions="actionGo"
-                            android:inputType="number"
-                            android:maxLength="20"
-                            android:maxLines="1"
-                            android:paddingLeft="@dimen/pp_dp_15"
-                            android:paddingRight="@dimen/pp_dp_15"
+                            android:background="@null"
+                            android:hint="@string/smssdk_pwd2"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPassword"
+                            android:maxLength="200"
+                            android:paddingLeft="@dimen/pp_dp_10"
                             android:textColor="@color/white"
                             android:textColorHint="@color/white"
                             android:textSize="@dimen/text_size_16" />
-
-                        <com.pictureair.hkdlphotopass.widget.CustomButtonFont
-                            android:id="@+id/btn_forget_next"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/pp_dp_10"
-                            android:layout_weight="1"
-                            android:background="@drawable/button_red_shape_and_selector"
-                            android:enabled="false"
-                            android:gravity="center"
-                            android:paddingLeft="@dimen/pp_dp_10"
-                            android:paddingRight="@dimen/pp_dp_10"
-                            android:text="@string/smssdk_send_verification_code"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_16" />
                     </LinearLayout>
 
-                    <com.pictureair.hkdlphotopass.widget.CustomButtonFont
-                        android:id="@+id/forget_sure"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/pp_dp_40"
-                        android:layout_marginTop="60dp"
-                        android:background="@drawable/button_white_shape_and_selector"
+                        android:layout_height="1px"
+                        android:background="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_forget_put_identify_centen"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pp_dp_40"
+                    android:layout_marginTop="@dimen/pp_dp_20"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/pp_dp_5"
+                    android:paddingRight="@dimen/pp_dp_5">
+
+                    <com.pictureair.hkdlphotopass.widget.EditTextWithClear
+                        android:id="@+id/et_forget_put_identify"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/pp_dp_10"
+                        android:layout_marginRight="@dimen/pp_dp_20"
+                        android:layout_weight="1"
+                        android:background="@drawable/textedit_white"
+                        android:gravity="center"
+                        android:hint="@string/smssdk_write_identify_code2"
+                        android:imeOptions="actionGo"
+                        android:inputType="number"
+                        android:maxLength="20"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/pp_dp_15"
+                        android:paddingRight="@dimen/pp_dp_15"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <com.pictureair.hkdlphotopass.widget.CustomButtonFont
+                        android:id="@+id/btn_forget_next"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/pp_dp_10"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_red_shape_and_selector"
                         android:enabled="false"
-                        android:padding="@dimen/pp_dp_10"
-                        android:text="@string/sign"
-                        android:textColor="@drawable/textview_selector_white_other"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/pp_dp_10"
+                        android:paddingRight="@dimen/pp_dp_10"
+                        android:text="@string/smssdk_send_verification_code"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/text_size_16" />
                 </LinearLayout>
 
-                <View
+                <com.pictureair.hkdlphotopass.widget.CustomButtonFont
+                    android:id="@+id/forget_sure"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_height="@dimen/pp_dp_40"
+                    android:layout_marginTop="60dp"
+                    android:background="@drawable/button_white_shape_and_selector"
+                    android:enabled="false"
+                    android:padding="@dimen/pp_dp_10"
+                    android:text="@string/sign"
+                    android:textColor="@drawable/textview_selector_white_other"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </RelativeLayout>
+    <!--</ScrollView>-->
 </LinearLayout>

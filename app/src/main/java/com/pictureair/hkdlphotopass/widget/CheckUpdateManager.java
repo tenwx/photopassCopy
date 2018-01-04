@@ -317,7 +317,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener, Che
      * 确定下载
      */
     public void dialogButtonPositive() {
-        String fileName = "SHDRPhotoPass_" + version + ".apk";
+        String fileName = "HKDLPhotoPass_" + version + ".apk";
         PictureAirLog.out("apk yes --->" + fileName);
         downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH + fileName);
 
