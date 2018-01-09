@@ -418,7 +418,8 @@ public class Common {
     public static final String BARCODEURL = "http://www.disneyphotopass.com.hk?src=pp&vid=";
     public final static String POLICY_AGREEMENT = "https://Hk-DisneyWeb-LB-332234259.ap-southeast-1.elb.amazonaws.com/policy.html?source=outer";  //政策 1
     public final static String TERMS_AGREEMENT = "https://www.disneyphotopass.com.hk/terms.html?source=outer";  //条款 2
-    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+//    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.hk/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+    public final static String CONTACT_AGREEMENT = "https://www.disneyphotopass.com.hk/contact.html?lange=%1$s"; // 联系我们
 
     public final static String POLICY_AGREEMENT_CN = "https://www.hongkongdisneyland.cn/privacy-legal/";
     public final static String POLICY_AGREEMENT_EN = "https://www.hongkongdisneyland.com/privacy-legal/";

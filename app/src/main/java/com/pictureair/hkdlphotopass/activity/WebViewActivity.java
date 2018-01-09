@@ -124,9 +124,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
             webView.start(Common.TERMS_AGREEMENT + "&lang=" + AppUtil.getLanguageY(language));
             setTopTitleShow(R.string.terms); // 设置标题
         } else if (key == 3) {
-            String we = String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), AppUtil.getLanguageY(language));
+            String we = String.format(Common.CONTACT_AGREEMENT, AppUtil.getLanguageY(language));
             PictureAirLog.i("we", we);
-            webView.start(String.format(Common.CONTACT_AGREEMENT, MyApplication.getTokenId(), AppUtil.getLanguageY(language)));
+            webView.start(String.format(Common.CONTACT_AGREEMENT, AppUtil.getLanguageY(language)));
             setTopTitleShow(R.string.mypage_opinions); // 设置标题
         } else if (key == 4) {  //海外支付的链接。
             String orderId = getIntent().getStringExtra("orderId");
